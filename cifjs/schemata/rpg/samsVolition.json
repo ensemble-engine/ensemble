@@ -1,0 +1,42 @@
+{
+	"fileName" : "samsVolition",
+	"type": "volition",
+	"rules": [
+		{	"name": "High magicka link allows intelligence training.",
+			"conditions": [
+				{
+					"class": "bonds",
+					"type": "magicka link",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 66
+				},
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"operator": "<",
+					"value": 10
+				},
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "y",
+					"operator": ">",
+					"value": 15
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		}
+	]
+
+}

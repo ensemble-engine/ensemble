@@ -1,0 +1,102 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [
+			{
+				"class": "relationship",
+				"type": "involved with",
+				"first": "al",
+				"second": "bob",
+				"value": true
+			},{
+				"class": "network",
+				"type": "affinity",
+				"first": "al",
+				"second": "bob",
+				"value": 75
+			},{
+				"class": "network",
+				"type": "affinity",
+				"first": "bob",
+				"second": "al",
+				"value": 90
+			},{
+				"class": "status",
+				"type": "happy",
+				"first": "bob",
+				"value": true
+			},{
+				"class": "status",
+				"type": "injured",
+				"first": "diane",
+				"value": true
+			},{
+				"class": "directedStatus",
+				"type": "attracted to",
+				"first": "al",
+				"second": "diane",
+				"value": true
+			}
+		]}, {
+		"pos": 1,
+		"data": [
+			{
+				"class": "relationship",
+				"type": "involved with",
+				"first": "bob",
+				"second": "al",
+				"value": false
+			},{
+				"class": "status",
+				"type": "happy",
+				"first": "bob",
+				"value": false
+			},{
+				"class": "directedStatus",
+				"type": "upset with",
+				"first": "bob",
+				"second": "al",
+				"value": true
+			}
+		]}, {
+		"pos": 2,
+		"data": [
+			{
+				"class": "status",
+				"type": "lonely",
+				"first": "al",
+				"value": true
+			},{
+				"class": "relationship",
+				"type": "friends",
+				"first": "bob",
+				"second": "al",
+				"value": true
+			},{
+				"class": "relationship",
+				"type": "friends",
+				"first": "diane",
+				"second": "al",
+				"value": true
+			},{
+				"class": "network",
+				"type": "affinity",
+				"first": "diane",
+				"second": "bob",
+				"value": 50
+			},{
+				"class": "network",
+				"type": "affinity",
+				"first": "bob",
+				"second": "diane",
+				"value": 80
+			},{
+				"class": "directedStatus",
+				"type": "upset with",
+				"first": "bob",
+				"second": "al",
+				"value": false
+			}
+		]}
+	]
+}

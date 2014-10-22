@@ -1,0 +1,40 @@
+{
+	"fileName" : "testActionsGrammar9.json",
+	"actions" : [
+		{
+			"name" : "STARTDATING",
+			"intent" : {
+				"class" : "relationship",
+				"type"  : "involved with",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"class" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["ASKOUT", "PICKUPLINE"]
+		},
+		{
+			"name" : "BOND",
+			"conditions" : [
+				{
+					"class" : "trait",
+					"type" : "nimble",
+					"first" : "nimbleOne"
+				},
+				{
+					"class" : "trait",
+					"type" : "lucky",
+					"first" : "nimbleOne"
+				}
+			],
+			"influenceRules" : [],
+			"leadsTo" : ["bondTerminal"]
+		}
+	]
+}

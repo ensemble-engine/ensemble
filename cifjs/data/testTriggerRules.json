@@ -1,0 +1,171 @@
+{
+	"fileName" : "testTriggerRules",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "If I'm jealous and someone hits on my sweetie, I hate them.",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y"
+				},{
+					"class": "trait",
+					"type": "jealous",
+					"first": "x"
+				},{
+					"class": "SFDBLabel",
+					"type": "romanticAdvance",
+					"first": "z",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "z",
+					"value": true
+				}
+			]
+		},
+		{
+			"name": "If your sweetie is injured, you worry about them.",
+			"conditions": [
+				{
+					"class": "status",
+					"type": "injured",
+					"first": "y"
+				},{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "directedStatus",
+					"type": "worried about",
+					"first": "x",
+					"second": "y",
+					"value": true
+				}
+			]
+		},
+		{
+			"name": "Someone with two friends is no longer lonely.",
+			"conditions": [
+				{
+					"class": "status",
+					"type": "lonely",
+					"first": "x"
+				},{
+					"class": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "y"
+				},{
+					"class": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "z"
+				}
+			],
+			"effects": [
+				{
+					"class": "status",
+					"type": "lonely",
+					"first": "x",
+					"value": false
+				}
+			]
+		},
+		{
+			"name": "If worried and no longer dating, remove status.",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"order": 0,
+					"turnsAgoBetween": ["NOW", 3]
+				},
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": false,
+					"order": 1,
+					"turnsAgoBetween": ["NOW", 3]
+
+				},
+				{
+					"class": "directedStatus",
+					"type": "worried about",
+					"first": "x",
+					"second": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "directedStatus",
+					"type": "worried about",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			]
+		}
+	],
+	"inactiveRules": [
+		{
+			"name": "If someone starts dating my ex, I stop being friends with them.",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"turnsAgoBetween": [1, 100]
+				},
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": false
+				},
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "y",
+					"second": "z",
+					"value": true
+				},
+				{
+					"class": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "z"
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "z",
+					"value": false
+				}
+			]
+		}
+	]
+
+}

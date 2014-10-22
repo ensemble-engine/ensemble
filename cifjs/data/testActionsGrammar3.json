@@ -1,0 +1,53 @@
+{
+	"fileName" : "testActionsGrammar3.json",
+	"actions" : [
+		{
+			"name" : "AFFINITYUP",
+			"intent" : {
+				"class" : "network",
+				"type"  : "affinity",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"class" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["nimblemakefriends"]
+		},
+		{
+			"name" : "nimblemakefriends",
+			"conditions" : [{
+					"class" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble1",
+					"value" : true
+				},{
+					"class" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble2",
+					"value" : true
+				},{
+					"class" : "relationship",
+					"type"  : "friends",
+					"first" : "nimble1",
+					"second" : "nimble2",
+					"value" : true
+				}],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}

@@ -1,0 +1,130 @@
+
+<html>
+<head>
+	<title>So You Want to Undertand What Is Going on With CiF...</title>
+	<link href="tutorial.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+Hello! If you are reading this, then presumambly you are interested in working with and developing on CiF! Wonderful! Hopefully this document will help get you up and running on whatever it is you would like to do! This document is still a work in progress, so expect all of the sections to become more filled in as time passes. Last updated 7/24/2014.
+
+<h1>So You'd Like To Know About...</h1>
+
+<BR>
+<h2>CiF in General</h2>
+
+This is the most up-to-date version of CiF.js known to man. Though it was originally developed for use in the Voldemort Project, all Voldemort specifics have been stripped out. Though this means that this code isn't under any NDA constraints, it is still very much so a work in progress, and probably should not be shared publicly until the code and documentation are both a little cleaner.
+
+<BR>
+<h2>The Structure of The Project </h2>
+
+What you are looking at is a directory structure whose root is "Standalone CiF." We'll cover some of the files and folders that are likely to be of interest, as well as others that might be a little more obscure.
+
+<h3> Folders </h3>
+
+<b>Data</b> -- Influence and trigger rules, casts of characters, social exchanges, and references for predicate authoring all live in this folder. Be sure to check out <b>testSocial.json</b> for examples of how to define your own CiF data types, such as your very own traits and statuses!
+<br>
+<b>Dist</b> -- Currently used to store the 'distribution' code, though this will be undergoing heavy revisions. Ultimately the code here will be minimized, uglified, combined (in a require.js friendly way), with any conditional compilation specifications stripped out. At present, only the stripping out of excess code is in place.
+<br>
+<b>Doc</b> -- This is where the documentation for the project gets generated. The documentation is generated through our build system, which you can read more about below.
+<br>
+<b>js->CiF</b> -- These files make up the core of the CiF experience. Documentation for all of the functionality of these modules should be accessible on the right hand side of the screen.
+<br>
+<b>js->tests</b> -- These files contain all of the unit tests for the core CiF modules.
+<br>
+<b>node-modules</b> -- When you install a node program, such as Grunt or jsDoc, the necessary files go to this folder.
+<br>
+<b>tutorialPages</b> -- The page that you are reading RIGHT NOW is known to jsDoc (the documentation generator we are using) as a tutorial page. Each tutorial page can have an associated json file (connected via giving it the same name as the html page) that can specify a couple of options such as the 'title' of the tutorial. This is the folder that houses all of those things.
+
+<h3> Files </h3>
+
+<b> cifconsole.html </b> -- A great debugging tool, the cifconsole allows you to alter the social state on the fly, while providing a nice visualization of the social facts database. See 'How to Use the CiF Console' below for more information. **OPEN IN FIREFOX**
+<br>
+<b> conf.json</b> -- A Configuration file used by jsDoc. Information on all of the accepted arguments can be found at http://usejsdoc.org/about-commandline.html
+<BR>
+<b> Gruntfile.js </b> -- We're using the Grunt build system to help generate documentation and distribution-ready code. The Gruntfile specifies which tasks are available, and which files to perform the tasks on.
+<br>
+<b> package.json </b> -- Used by grunt to know which version of each of the grunt plugins you have. As you install additional grunt plugins using npm (see the section "Setting up the Build System"), if you use the appropriate command line arguments when installing new plugins, this file will be updated automatically.
+<b>tests.html</b> -- The CiF.js suite of unit tests. Whenever you make a change to CiF, it is **VERY IMPORTANT** that you verify that all of the unit tests still work! **OPEN IN FIREFOX**
+
+
+
+<h2>How To Use The CiF Console </h2>
+
+In order to use this great debugging tool, first load it up by opening the file cifconsole.html in Firefox.The CiF console is still under development, but what you'll want to do first is load in a cast of characters and the social blueprints that you'll hoping to use by using the buttons in the upper right hand corner. After doing so, you should see the social types and characters you specified appear on the right hand column. There are then three tabs worth of functionality to experiment with. 
+<<BR><BR>
+The <b>Console</b> tab allows you to add, remove, or change social facts in the SFDB. Instructions for how to use it are on the right hand side of the console page.
+<BR><BR>
+The <b> Reference</b> tab is still in development.
+<BR><BR>
+The <b>SFDB Viewer</b> tab allows you to see the contents of the SFDB at any given timestep. Click on the arrows beneath the large "Timestep" number to jump forward and backward through time. You may need to load some test history to populate the SFDB by clicking on the "load test history" button in the upper right hand corner, otherwise there will be nothing to look at.
+
+
+<h2>Where to Download CiF</h2>
+
+CiF is currently located at a UCSC SVN repository: https://svn.soe.ucsc.edu/svn/vold. However, it is not "free" to download (that is, only approved UCSC students will be able to access this repository). Finding a more permament home for CiF is one of our highest priorities.
+
+<h2>How To Run The Unit Tests</h2>
+
+Open the file <b>tests.html</b> in Firefox. If all is well, you should be presented with a screen full of green passing tests! If a test does not pass, a message explaining what the test was looking for (and the value it actually saw) will be printed in red. If the unit tests crashed before completion, a red message will appear at the bottom of the page informing you that a crash has occured.
+
+<h2>How To Write Unit Tests </h2>
+
+Open up the appropriate file in the <ib>js->tests</b> folder based on the module you are writing a test for. Find the function 'runTests' within it to see the types of things already being tested for. If you want to add an additional tests to one of these existing areas, navigate to that function. Otherwise, make a new function (giving it an appropriately descriptive name for what it is testing), and call that new function within the runRules function.
+<BR><BR>
+Though perhaps the best way to learn how to write unit tests is to see how the other unit tests are written, the basic structure will consist of these three function calls:<BR><BR>
+<b>test.start("MODULENAME", "PARTOFSYSTEMYOUARETESTING");</b> -- An example MODULENAME might be RuleLibrary, and an example part of the system might be "testTimeOrderedRules."
+<BR><BR>
+<b>test.assert(ARG1, ARG2, "MESSAGE");</b> -- Asserts that ARG1 and ARG2 are equal to each other. If they are, then the unit test passes. If they are not, then the MESSAGE will appear, colored red, when you run the unit tests. This is the heart of the unit tests, and you can have as many assert statements as you want and need between the 'start' and 'finish' function calls.
+<BR><BR>
+<b>test.finish();</b> -- Signifies that this unit test is over and that you are ready to move on to the following one.
+
+<h2>How To Set Up The Build System </h2>
+We're using Grunt for our build system! You can read all about it at gruntjs.com  I think Aaron already wrote down some tutorial information about this, so I won't repeat it here? But as I'm actually installing things all over again on my windows machine, I'll write it down here anyway as I go along.
+
+A build system is a nifty way to proceduralize and automate a lot of common tasks that you might find yourself doing all the time. Say, for example, that when you want to distribute your code, you don't want to provide the 'full' javascript files, but instead take all of them and consolidate them into a single file, while minimizing, uglifying, and generally obfuscating the code. Now imagine that in those files there are some bits of code that you only want to exist when it is being developed privately, such as lines of code that make normally private functions public for testing purposes? Your build system can also strip away all those extra lines of code! Pretty magical, huh?
+<BR><BR>
+In order to get Grunt working for you, you'll need several things. First of all, you'll need to install Node from http://nodejs.org/. This should give you access to the Node package manager, npm. AFter installing node, open up a command console and try just entering in 'npm' to verify that your system now recognizes it as a command (you may need to add nodejs to your path variables for this to happen). Once you have npm up and running, you'll be able to install an impressive variety of helpful tools that our build system will use. As a good first step, let's actually get Grunt! You can do this by navigating to <i>where you'll be working,</i> such as the root of cif-standalone, and then type in the following on the command line:
+<BR><BR>
+	<b>npm install grunt</b>
+<BR><BR>
+	(NOTE: for many of these command line installs, you may need to use sudo, or otherwise prove that that you are an adiminstrator of your system). Assuming that this is the first node package you've installed in this directory, it should have created a new folder called node-modules that has Grunt in it! Huzzah! However, at this point, if you try to run Grunt on the command line it still won't work! What gives? Well, in addition to needing Grunt itself, you also need the Grunt-CLI, or Command Line Interface, to actually use Grunt. Fortunately, this is as simple as another npm command!
+<BR><BR>
+	<b>npm install -g grunt-cli</b>
+<BR><BR>
+	Try running <i>grunt</i> on the command line now! You'll probably see something that ends up looking like this:
+	<p>
+<i>
+	Local Npm module "grunt-contrib-uglify" not found. Is it installed? <BR>
+	Local Npm module "grunt-strip-code" not found. Is it installed? <BR>
+	Local Npm module "grunt-jsdoc" not found. Is it installed? <BR>
+</i>
+	</p>
+	<p>
+		Although that looks pretty scary, it's actually a really good sign! When you typed in 'grunt' on the command line, it tried to run its 'default' task, as specified in the Gruntfile.js. However, its default task requires the use of special Grunt plugins. None of these are stored in the repository (just like how Grunt itself wasn't), so we'll have to install them ourselves. Fortunatley, our good friend npm comes in once again to save the day. All you need to do is look through each of the names of the plugins that you are missing (in the above example, these would be "grunt-contrib-uglify", "grunt-strip-code", and "grunt-jsdoc", though your particular message may vary), and run another npm install command for each, with one difference: add in the --save-dev argument, and your package.json file, which is used by Grunt to know which version of each of its plugins it should use, will be updated automatically to use the latest version that you've just installed. So, commands like:
+
+	<BR><BR>
+		<b>npm install grunt-contrib-uglify --save-dev</b><br>
+		and<br>
+		<b>npm install grunt-stip-code --save-dev</b><br>
+		and<br>
+		<b>npm install grunt-jsdoc --save-dev</b>
+
+	<BR><BR>
+
+		Should be exactly what you need! Once you've installed everything, you can try running grunt on the command line one last time. The default task should then run (which at the time of this writing is generating documentation), and you should see a pleasant little confirmation that says "Done, without errors."
+	</p>
+	<p>
+		So now you have an understanding as to how to get Grunt up and running. The next big lesson will be learning how to edit the Gruntfile to actually define your own tasks. TODO: Make that section!
+	</p>
+
+
+<h2>How To Generate Documenation</h2>
+Navigate to the standalone-cif root and simply type "grunt document" on the command line (after you've set up your build system of course! See the previous section). Bear in mind that at the time of this writing, much of the documentation still needs to be revised.
+<h2>How To Generate a Release Build</h2>
+Navigate to the standalone-cif root, and type "grunt deploy" on the command line. At the time of this writing, this functionality is severely lacking; there is not much point to deploying at the moment.
+<h2>How To Add New Tasks to the Build System </h2>
+I believe that Aaron also began writing this down? So maybe we can just copy that into here.
+<h2>How CiF.js differs from CiF Classic </h2>
+Many ways! some ways include the way that the sfdb is handled, the fact that you can specify your own social types, and there is on the whole a greater separation of 'actions/instantiations' from the intents. More details will be added to this section as time goes on.
+</body>
+</html>

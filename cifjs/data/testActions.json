@@ -1,0 +1,164 @@
+{
+	"fileName" : "testActions.json",
+	"actions" : [
+		{
+			"name" : "reminisce",
+			"intent" : {
+				"class" : "network",
+				"type"  : "affinity",
+				"intentDirection" : true,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : {},
+			"acceptEffects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "+",
+				"value" : 10
+			}],
+			"rejectEffects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "+",
+				"value" : 0
+			}]
+		},
+		{
+			"name" : "handshake",
+			"intent" : {
+				"class" : "relationship",
+				"type"  : "friends",
+				"intentDirection" : true,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : {},
+			"acceptEffects" : [{
+				"class" : "relationship",
+				"type" : "friends",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}],
+			"rejectEffects" : [{
+				"class" : "relationship",
+				"type" : "friends",
+				"first" : "y",
+				"second" : "x",
+				"value" : false
+			}]
+		},
+		{
+			"name" : "StartDating",
+			"intent" : {
+				"class" : "relationship",
+				"type"  : "involved with",
+				"intentDirection" : true,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : {},
+			"acceptEffects" : [{
+				"class" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}],
+			"rejectEffects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "-",
+				"value" : 500
+			},
+			{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "x",
+				"second" : "y",
+				"operator" : "-",
+				"value" : 500
+			}]
+		},
+		{
+			"name" : "annoy",
+			"intent" : {
+				"class" : "network",
+				"type"  : "affinity",
+				"intentDirection" : false,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : {},
+			"acceptEffects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "-",
+				"value" : 10
+			}],
+			"rejectEffects" : [{
+				"class" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "-",
+				"value" : 1
+			}]	
+		},
+		{
+			"name" : "Make Plans",
+			"intent" : {
+				"class" : "relationship",
+				"type"  : "friends",
+				"intentDirection" : true,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : {},
+			"acceptEffects" : [{
+				"class" : "relationship",
+				"type" : "friends",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			},
+			{
+				"class" : "status",
+				"type" : "happy",
+				"first" : "y",
+				"value" : true
+			},
+			{
+				"class" : "status",
+				"type" : "happy",
+				"first" : "x",
+				"value" : false
+			},
+			{
+				"class" : "directedStatus",
+				"type" : "worried about",
+				"first" : "x",
+				"second" : "y",
+				"value" : true
+			},
+			{
+				"class" : "directedStatus",
+				"type" : "attracted to",
+				"first" : "y",
+				"second" : "x",
+				"value" : false
+			}],
+			"rejectEffects" : [{
+			}]	
+		}
+	]
+}

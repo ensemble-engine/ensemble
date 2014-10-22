@@ -1,0 +1,201 @@
+/*global define */
+/**
+ * This has all of the unit tests for functions that live inside of AbstractPredicate.js
+ */
+
+define(["util", "underscore", "abstractPredicate", "ruleLibrary", "sfdb", "cif", "test", "validate", "text!data/testSocial.json"],
+function(util, _,  abstractPredicate, ruleLibrary, sfdb, cif, test, validate, testSocial) {
+
+
+	/***************************************************************/
+	/* UNIT TESTS */
+	/***************************************************************/
+
+/**
+ * Run the provided test functions
+ *
+ * @method runTests
+ * @memberof AbstractPredicate
+*/
+	var runTests = function(){
+		sfdb.clearEverything();
+		testNewFactory();
+		sfdb.clearEverything();
+		testBooleanMethods();
+		sfdb.clearEverything();
+		testValueMethods();
+		sfdb.clearEverything();
+	};
+
+/**
+ * Test the use of newFactory
+ *
+ * @method testNewFactory
+ * @memberof AbstractPredicate
+ */
+	var testNewFactory = function(){
+
+		//Create a sample blueprint
+		var testBlueprint = validate.blueprint({
+			class: "testClass",
+			isBoolean: true,
+			directionType: "directed",
+			types: ["testType"]
+		}, "testNewFactory setting testBlueprint");
+
+		test.assert(sfdb.getRegisteredDirection({"class": "testClass"}), undefined, "testNewFactory: directed direction should not be registered before we've created the factory.");
+		var testFactory = abstractPredicate.newFactory(testBlueprint);
+
+
+		test.start("AbstractPredicate", "testNewFactory");
+		test.assert(typeof testFactory.make, "function", "newFactory didn't provide a make interface.");
+
+		test.assert(typeof testFactory.isTrue, "function", "newFactory was passed a blueprint specifying isBoolean but didn't provide an isTrue.");
+		test.assert(typeof testFactory.wasTrue, "function", "newFactory was passed a blueprint specifying isBoolean but didn't provide a wasTrue.");
+
+		test.assert(sfdb.getLength(), 0, "testNewFactory: sfdb length should initially be 0.");
+		//Insert our a test predicate into the SFDB
+		testFactory.make("charA", "charB", true, 0);
+		//Did make properly insert the new predicate?
+		test.assert(sfdb.getLength(), 1, "factory make :: sfdb length did not increase after calling");
+		test.assert(sfdb.getRegisteredDirection({"class": "testClass"}), "directed", "testNewFactory: directed direction was not properly registered.");
+
+		//Create a different blueprint
+		var numericBlueprint = validate.blueprint({
+			"class": "numericClass",
+			"types": ["numericType"],
+			"isBoolean": false,
+			"defaultValue": 50,
+			"directionType": "reciprocal"
+		}, "testNewFactory setting numericBlueprint");
+
+		var numericFactory = abstractPredicate.newFactory(numericBlueprint);
+
+		test.assert(numericFactory.isTrue, undefined, "A factory given a numeric blueprint should not have an isTrue in the interface.");
+		test.assert(typeof numericFactory.isBetween, "function", "newFactory was passed a blueprint specifying isBoolean=false but didn't provide a isBetween.");
+		test.assert(typeof numericFactory.wasBetween, "function", "newFactory was passed a blueprint specifying isBoolean=false but didn't provide a wasBetween.");
+		test.assert(sfdb.getRegisteredDirection({"class": "numericClass"}), "reciprocal", "testNewFactory: reciprocal direction was not properly registered.");
+
+		// Tests of bad blueprints are found in CiF.js testLoadSocialStructure
+
+		test.finish();
+	};
+
+/**
+ * Test the use of the boolean test methods
+ *
+ * @method testBooleanMethods
+ * @memberof AbstractPredicate
+ */
+
+	var testBooleanMethods = function () {
+
+		sfdb.clearEverything();
+		//Create a sample blueprint
+		var testBlueprint = {};
+		testBlueprint.class = "testClass";
+		testBlueprint.type = "testType";
+		testBlueprint.isBoolean = true;
+		testBlueprint.directionType = "directed";
+		var testFactory = abstractPredicate.newFactory(testBlueprint);
+		testFactory.make("charA", "charB", true, 0);
+
+		//TEST 2 -- Does the isTrue method work properly?
+		var testPredicate = {};
+		testPredicate.class = testBlueprint.class;
+		testPredicate.type = testBlueprint.type;
+		testPredicate.first = "charA";
+		testPredicate.second = "charB";
+		testPredicate.labels = [];
+
+		test.start("AbstractPredicate", "testBooleanMethods");
+		test.assert(testFactory.isTrue(testPredicate), true, "testFactory.isTrue :: sfdb didn't save the predicate properly.");
+		testPredicate.value = false;
+		test.assert(testFactory.isTrue(testPredicate), false, "testFactory.isTrue :: sfdb didn't return the right value for a negated predicate.");
+		testPredicate.value = true;
+		testPredicate.first = "charB";
+		testPredicate.second = "charA";
+		test.assert(testFactory.isTrue(testPredicate), false, "testFactory.isTrue :: sfdb shouldn't be true for the reversed direction on a 'directed' class.");
+
+		testPredicate.first = "charA";
+		testPredicate.second = "charB";
+		//TEST 3 -- Does the wasTrue method work as expected? Set the value to false at timeStep 5. It should be true for 0, 1, 2, 3, 4 then false at 5.
+		testFactory.make("charA", "charB", false, 5);
+		testFactory.make("charA", "charB", true, 7);
+		// In relative time steps, the charA-->charB state should now be (from the perspective of step 7):
+		// 0: true
+		// 1: false
+		// 2: false
+		// 3: true
+		// 4: true
+		test.assert(testFactory.wasTrue(testPredicate, 4, 4), true, "testFactory.wasTrue :: doesn't return the correct value for range 4, 4");
+		test.assert(testFactory.wasTrue(testPredicate, 2, 4), true, "testFactory.wasTrue :: doesn't return the correct value for range 2, 4");
+		test.assert(testFactory.wasTrue(testPredicate, 1, 2), false, "testFactory.wasTrue :: doesn't return the correct value for range 1, 2");
+		test.assert(testFactory.wasTrue(testPredicate, 1, 1), false, "testFactory.wasTrue :: doesn't return the correct value for range 1, 1");
+		test.assert(testFactory.wasTrue(testPredicate, 0, 1), true, "testFactory.wasTrue :: doesn't return the correct value for range 0, 1");
+		test.assert(testFactory.wasTrue(testPredicate, 0, 4), true, "testFactory.wasTrue :: doesn't return the correct value for range 0, 4");
+
+		test.finish();
+
+	};
+
+/**
+ * Test the use of the value test methods
+ *
+ * @method testValueMethods
+ * @memberof AbstractPredicate
+ */
+	var testValueMethods = function () {
+
+		sfdb.clearEverything();
+		//Create a sample blueprint
+		var testBlueprint = {};
+		testBlueprint.class = "testClass";
+		testBlueprint.type = "testType";
+		testBlueprint.directionType = "directed";
+		testBlueprint.isBoolean = false;
+		var testFactory = abstractPredicate.newFactory(testBlueprint);
+		testFactory.make("charA", "charB", 6, 0, []);
+
+		//TEST 1 -- Does the isBetween method work properly?
+		var testPredicate = {};
+		testPredicate.class = testBlueprint.class;
+		testPredicate.type = testBlueprint.type;
+		testPredicate.first = "charA";
+		testPredicate.second = "charB";
+
+		test.start("AbstractPredicate", "testValueMethods");
+
+		test.assert(testFactory.isBetween(testPredicate, 4, 7), true, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 4, 7");
+		test.assert(testFactory.isBetween(testPredicate, 6, 6), true, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 6, 6");
+		test.assert(testFactory.isBetween(testPredicate, 6, 7), true, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 6, 7");
+		test.assert(testFactory.isBetween(testPredicate, 5, 6), true, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 5, 6");
+		test.assert(testFactory.isBetween(testPredicate, 7, 8), false, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 7, 8");
+		test.assert(testFactory.isBetween(testPredicate, 4, 5), false, "testFactory.isBetween :: sfdb isBetween returned the wrong value for 4, 5");
+
+		//TEST 2 -- Does the wasBetween method work as expected?
+		testFactory.make("charA", "charB", 10, 5, []);
+		testFactory.make("charA", "charB", 15, 7, []);
+		// Timestep is now 7 and the value is 15. At relative step -1 and -2, the value was 10. Before that, it was 6.
+		test.assert(testFactory.wasBetween(testPredicate, 1, 20, 0, 5), true, "testFactory.wasBetween :: returned wrong value for 1, 20, 0, 5.");
+		test.assert(testFactory.wasBetween(testPredicate, 4, 6, 3, 4), true, "testFactory.wasBetween :: returned wrong value for 3, 4, 4, 6.");
+		test.assert(testFactory.wasBetween(testPredicate, 10, 12, 3, 4), false, "testFactory.wasBetween :: returned wrong value for 3, 4, 10, 12.");
+		test.assert(testFactory.wasBetween(testPredicate, 16, 20, 0, 1), false, "testFactory.wasBetween :: returned wrong value for 0, 1, 16, 20.");
+		test.assert(testFactory.wasBetween(testPredicate, 14, 16, 0, 0), true, "testFactory.wasBetween :: returned wrong value for 0, 0, 14, 16.");
+		test.assert(testFactory.wasBetween(testPredicate, 14, 16, 1, 1), false, "testFactory.wasBetween :: returned wrong value for 1, 1, 14, 16.");
+
+		test.finish();
+
+	};
+
+	/***************************************************************/
+	/* INTERFACE */
+	/***************************************************************/
+
+	var abstractPredicateTestsInterface = {
+		runTests: runTests
+	};
+
+	return abstractPredicateTestsInterface;
+
+});

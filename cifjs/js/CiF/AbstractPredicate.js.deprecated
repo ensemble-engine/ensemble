@@ -1,0 +1,184 @@
+/**
+ * This is the class AbstractPredicate
+ * Public methods are:
+ *
+ * newFactory
+ * runTests
+ *
+ * @class AbstractPredicate
+ */
+
+define(["util", "sfdb", "test"], function(util, sfdb, test) {
+
+
+	/**
+	 * This is the factory for making a new 'class' of searchPredicate. It takes in a 'blueprint' object
+	 * that has information about what the new class of predicates should be (e.g., isDirected=false, isNumeric=true)
+	 *
+	 * @method newFactory
+	 * @memberof AbstractPredicate
+	 * @param {Object} blueprint A description of the factory to make. Should contain the fields type, directionType, class, and isBoolean
+	 * @return {Object} factory Returns the factory type built according to the given blueprint
+	 */
+	var newFactory = function(blueprint){
+		var factory = {};
+		factory.class = blueprint.class;
+		factory.type = blueprint.type;
+		factory.direction = blueprint.direction;
+		//factory.directionType = blueprint.directionType;
+		//ASK should we be specifying all of the default things that get written down in the blueprint file here?
+		factory.isBoolean = blueprint.isBoolean;
+		sfdb.registerDuration(blueprint);
+		sfdb.registerDefault(blueprint);
+		sfdb.registerDirection(blueprint);
+		sfdb.registerIsBoolean(blueprint);
+		sfdb.registerMaxValue(blueprint);
+		sfdb.registerMinValue(blueprint);
+
+
+		// the make method of the factory
+		// creates a searchPredicate and sets it in the given sfdb
+		factory.make = function(first, second, value, timeStep, labelList){
+			var predicate = {};
+			predicate.class = this.class;
+			predicate.type = this.type;
+			predicate.first = first;
+			predicate.second = second;
+			predicate.value = value;
+			predicate.labels = labelList || [];
+			sfdb.set(predicate, timeStep);
+		};
+
+		//boolean vs numeric factory setting for the functions that will be available
+		if (blueprint.isBoolean === true) {
+			factory.isTrue = isTrue;
+			factory.wasTrue = wasTrue;
+		}
+		else if (blueprint.isBoolean === false) {		//we are treating the factory as numeric then
+			factory.isBetween = isBetween;
+			factory.wasBetween = wasBetween;
+		}
+		else {
+			throw new Error("newFactory:: You must define whether the blueprint is boolean or not (isBoolean was '" + blueprint.isBoolean + "'; I was looking at a blueprint for class '" + blueprint.class + "' type '" + blueprint.type + "')");
+		}
+
+		if (blueprint.directionType !== "directed" && blueprint.directionType !== "undirected" && blueprint.directionType !== "reciprocal") {
+			console.log("blueprint", blueprint);
+			throw new Error("newFactory:: You must define the blueprint's directionType, and it must be one of 'directed', 'undirected', or 'reciprocal'! (It was '" + blueprint.directionType + "'; I was looking at a blueprint for class '" + blueprint.class + "' type '" + blueprint.type + "').");
+		}
+
+		return factory;
+	};
+
+/**
+ * Function to check current boolean status that will be used if the class factory
+ * is of the type boolean
+ *
+ * @method isTrue
+ * @memberof AbstractPredicate
+ * @param {Object} searchPredicate the predicate to look up in the sfdb
+ * @return {Boolean} whether or not the given predicate is currently true
+ */
+	var isTrue = function(searchPredicate){
+		var tempPredicate = sfdb.get(searchPredicate);
+		if (tempPredicate.length > 0) {
+			if (tempPredicate[0].value === true){
+				return true;
+			}
+		}
+		return false;
+	};
+
+/**
+ * Method to check prior boolean status that will be used if the class factory
+ * is of the type Boolean.
+ * Searches the SFDB for a desired searchPredicate within a provided time period.
+ * The time block is determined by subtracting the mostRecentTime from the SFDB's
+ * currentTimeStep for the more recent bound of the time period, and subtracting
+ * lessRecentTime to determine the less recent bound of the time period. For example,
+ * to look within a period between the current time and 5 turns prior, we would pass in
+ * 0 and 5 to look between the current time step and 5 turns ago.
+ *
+ * @method wasTrue
+ * @memberof AbstractPredicate
+ * @param {Object} searchPredicate the predicate to look up in the sfdb
+ * @param {Number} mostRecentTime 	the lower bound time that we want to look within
+ * @param {Number} leastRecentTime	the upper bound time that we want to look within
+ * @return {Boolean} whether or not the given predicate was true in the specified time frame
+ */
+	var wasTrue = function(searchPredicate, mostRecentTime, leastRecentTime){
+		var tempPredicate = sfdb.get(searchPredicate, mostRecentTime, leastRecentTime);
+		if (tempPredicate.length > 0) {
+			if (tempPredicate[0].value === true){
+				return true;
+			}
+		}
+		return false;
+	};
+
+/**
+ * Method used to check if a predicates value is between the given boundaries.
+ * Assigned if the factory is of type Value
+ *
+ * @method isBetween
+ * @memberof AbstractPredicate
+ * @param {Object} searchPredicate the predicate to look up in the sfdb
+ * @param {Number} lowValue	the lower boundary to compare the results' value to
+ * @param {Number} highValue the upper boundary to compare the results' value to
+ * @return {Boolean} whether or not the predicate's value was found to be between the given values
+ */
+	var isBetween = function(searchPredicate, lowValue, highValue){
+		if (lowValue > highValue) {
+			throw "isBetween:: lowValue cannot be greater than highValue!";
+		}
+		var tempPredicate = sfdb.get(searchPredicate);
+		if (tempPredicate.length > 0) {
+			if (tempPredicate[0].value >= lowValue && tempPredicate[0].value <= highValue){
+				return true;
+			}
+		}
+		return false;
+	};
+
+/**
+ * Method used to check if a predicates value is between the given boundaries.
+ * Assigned if the factory is of type Value
+ * Searches the SFDB for a desired searchPredicate within a provided time period.
+ * The time block is determined by subtracting the mostRecentTime from the SFDB's
+ * currentTimeStep for the more recent bound of the time period, and subtracting
+ * lessRecentTime to determine the less recent bound of the time period. For example,
+ * to look within a period between the current time and 5 turns prior, we would pass in
+ * 0 and 5 to look between the current time step and 5 turns ago.
+ *
+ * @method wasBetween
+ * @memberof AbstractPredicate
+ * @param {Object} searchPredicate the predicate to look up in the sfdb
+ * @param {Number} lowValue	the lower boundary to compare the results' value to
+ * @param {Number} highValue the upper boundary to compare the results' value to
+ * @param {Number} mostRecentTime 	the lower bound time that we want to look within
+ * @param {Number} leastRecentTime	the upper bound time that we want to look within
+ * @return {Boolean} whether or not the predicate's value was found to be between the given values
+ */
+	var wasBetween = function(searchPredicate, lowValue, highValue, mostRecentTime, leastRecentTime){
+		if (lowValue > highValue) {
+			throw new Error("wasBetween:: lowValue cannot be greater than highValue!");
+		}
+		var tempPredicate = sfdb.get(searchPredicate, mostRecentTime, leastRecentTime);
+		if (tempPredicate.length > 0) {
+			if (tempPredicate[0].value >= lowValue && tempPredicate[0].value <= highValue){
+				return true;
+			}
+		}
+		return false;
+	};
+
+	var abstractPredicateInterface = {
+		newFactory : newFactory
+	};
+
+	/* test-code */
+	/* end-test-code */
+
+	return abstractPredicateInterface;
+
+});

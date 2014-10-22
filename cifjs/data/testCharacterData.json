@@ -1,0 +1,7 @@
+{
+	"cast": {
+		"alice": { "name": "Alice" },
+		"bob": { "name": "Bob" },
+		"doc": { "name": "Doc" }
+	}
+}

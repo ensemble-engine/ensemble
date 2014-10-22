@@ -1,0 +1,66 @@
+{
+	"schema": [
+		{
+			"class": "network",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["affinity", "trust"],
+			"defaultValue": 50,
+			"allowIntent": true
+		},
+		{
+			"class": "relationship",
+			"isBoolean": true,
+			"directionType": "reciprocal",
+			"types": ["friends", "involved with"],
+			"defaultValue": false,
+			"allowIntent": true
+		},
+		{
+			"class": "status",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["injured", "fatigued", "grieving", "happy", "lonely"],
+			"duration": 6,
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "directedStatus",
+			"isBoolean": true,
+			"directionType": "directed",
+			"types": ["attracted to", "worried about", "hates"],
+			"duration": 6,
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "trait",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "has a kind face", 
+					"trusting", "jealous", "sound sleeper", "hardy", "eagle-eyed", "lucky", "nimble"],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "SFDBLabel",
+			"types": ["romanticFailure", "romanticAdvance", "embarrassing"],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		},
+		{
+			"class": "attribute",
+			"isBoolean": false,
+			"directionType": "undirected",
+			"types": ["strength"],
+			"defaultValue": 10,
+			"minValue": 3,
+			"maxValue": 18
+		}
+	]
+}
+

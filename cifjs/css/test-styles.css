@@ -1,0 +1,38 @@
+/* TESTING */
+
+
+/* UNIT TESTING */
+div.groupBox {
+}
+.testFileHeader {
+	font-weight: bold;
+	font-size: 110%;
+	text-decoration: underline;
+	clear: both;
+	padding-top: 10px;
+}
+.testGroupHeader {
+	font-weight: bold;
+	font-size: 100%;
+	width: 200px;
+	float: left;
+	height: 100%;
+	outline: thin solid #ccc;
+	clear: both;
+}
+.testGroupBody {
+	width: 60%;
+	float: left;
+	outline: thin solid gray;
+}
+.testGroupSummary {
+	font-weight: bold;
+}
+
+.testPassed {
+	color: green;
+}
+
+.testFailed {
+	color: red;
+}

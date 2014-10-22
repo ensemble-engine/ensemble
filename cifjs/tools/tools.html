@@ -1,0 +1,135 @@
+<html>
+<head>
+	<title>Yarn Tools</title>
+	<script type="text/javascript">
+
+		var show = function(txt) {
+			document.getElementById("results").innerHTML = txt;
+		}
+
+		var convert = function() {
+			var raw = document.getElementById("text").value;
+			var pred;
+			var listForm = false;
+			var showReverse = false;
+			try {
+				pred = JSON.parse(raw);
+			}
+			catch (e) {
+				show("Invalid JSON: " + e);
+				console.log(raw, pred);
+				return;
+			}
+
+			if (pred.conditions && pred.effects) {
+				var result = "If ";
+				for (var i = 0; i < pred.conditions.length; i++) {
+					var c = pred.conditions[i];
+					if (c.first && c.type) {
+						if (c.operator && c.operator !== "=") {
+							result += c.first + " has " + c.operator + " " + c.value + " " + c.type + " for ";
+						} else {
+							result += c.first + " is " + c.type;
+						}
+						if (c.second) {
+							result += " " + c.second;
+						}
+					} else {
+						result += "...";
+					}
+					if (i < pred.conditions.length-1) {
+						result += " and ";
+					}
+				}
+				result += ", ";
+				for (var i = 0; i < pred.effects.length; i++) {
+					var e = pred.effects[i];
+					var changeWord;
+					if (e.class === "network") {
+						changeWord = e.intentDirection ? "increase" : "decrease";
+					} else {
+						changeWord = e.intentDirection ? "start being" : "stop being";
+					}
+					var weightWord = e.weight > 0 ? "more" : "less";
+					if (listForm) {
+						result += "<br/>-- ";
+					}
+					result += e.first + " wants to " + changeWord + " " + e.type;
+					if (e.second) {
+						result += " with " + e.second;
+					}
+					result += " " + weightWord + " (";
+					if (e.weight > 0) {
+						result += "+"
+					}
+					result += e.weight + ")";
+					if (e.second && showReverse) {
+						result += " (and is " + weightWord + " likely to accept if " + e.second + " does the same back)";
+					}
+					if (i < pred.effects.length-1 && !listForm) {
+						result += " and ";
+					} else if (listForm) {
+						result += "<br/>";
+					}
+				};
+				show(result);
+			} else {
+				show("Invalid predicate");
+			}
+
+			/*
+
+			x wants to increase buddy with y more (+5) T
+			and is more likely to accept if y does the same back
+
+			x wants to increase buddy with y less (-5) T
+			and is less likely to accept if y does the same back
+
+			x wants to decrease buddy with y more (+5) F
+			and is more likely to accept if y does the same back
+
+			x wants to become friends with y more
+			x wants to become friends with y less
+			x wants to stop being friends with
+
+
+			 */
+
+
+		};
+
+		window.onload = function() {
+			document.getElementById("text").onkeyup = convert;
+			document.getElementById("text").onchange = convert;
+		}
+		window.onkeypress = function() {
+			console.log("press!")
+			convert();
+		}
+	</script>
+
+	<style type="text/css">
+		body { font-family: Garamond; }
+		#lhs { float:left; width:425px }
+		#rhs { float:left; width:425px; height: 500px; background-color: #dde; }
+		#rhs div { padding: 15px; }
+		#text { width:400px; height: 500px }
+		#means { font-size}
+		#results { font-size: 125%;}
+	</style>
+</head>
+<body>
+
+	<div id="lhs">
+		<textarea id="text" default="Predicate here"></textarea><br/>
+		Paste predicate in the box above.
+
+	</div>
+
+	<div id="rhs">
+		<div id="means">Means:</div>
+		<div id="results"></div>
+	</div>
+
+</body>
+</html>

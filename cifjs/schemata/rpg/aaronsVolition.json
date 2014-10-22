@@ -1,0 +1,33 @@
+{
+	"fileName" : "aaronsVolition",
+	"type": "volition",
+	"rules": [
+		{	"name": "Evil seeks vengeance on good.",
+			"conditions": [
+				{
+					"class": "alignment",
+					"type": "evil",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "alignment",
+					"type": "good",
+					"first": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "bonds",
+					"type": "vengeance",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		}
+	]
+
+}
