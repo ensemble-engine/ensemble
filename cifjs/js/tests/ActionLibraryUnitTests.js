@@ -1251,13 +1251,54 @@ var testGetAction = function(){
 		//				Pick the top N actions, and return them.
 		//				MAN OH MAN -- how does the 'numPerActionGroup' equation fit into this!?!
 		//Ok. So, most of this, at least, is pretty straight forward, except for that "SOME FUNCTION" part, and maybe we'll be struck with inspiration by the time we get there.
-		test.assert(1, 0, "better write some unit tests.");
+		
 
 		//BEN: START HERE! I think that there technically *should* be two actions returned in this list
 		//(and bear in mind -- this list isn't really doing a good job of sorting by action groups or anything).
 		//The fact that it isn't returning two actions, though, is alarming and unknown why.
+
+
+		//TEST 1 -- 2 intents, 1 action per intent, 1 action per action group.
 		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
+		
+		test.assert(actions.length, 2, "Test 1 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "pickupLineTerminal", "Test 1 -- name of the first action was incorrect.");
+		test.assert(actions[0].weight, 547, "Test 1 -- weight of the first action was incorrect.");
+		test.assert(actions[1].name, "laughTerminal1", "Test 1 -- name of the second action was incorrect.");
+		test.assert(actions[1].weight, 5, "Test 1 -- weight of the second action was incorrect.");
+
+		//TEST 2 -- 2 intents, 1 action per volition, 2 actions per action group.
+		//This is being done on two intents, one of which has two terminals, and the other only has one terminal, so three things should be returned in total.
+		actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 2);
+		test.assert(actions.length, 3, "Test 2 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "pickupLineTerminal", "Test 2 -- name of first action returned was incorrect.");
+		test.assert(actions[0].weight, 547, "Test 2 -- weight of first action returned was incorrect.");
+		test.assert(actions[1].name, "laughTerminal2", "Test 2 -- name of second action returned was incorrect.");
+		test.assert(actions[1].weight, 7, "Test 2 -- weight of the second action returned was incorrect.");
+		test.assert(actions[2].name, "laughTerminal1", "Test 2 -- name of the third action returned was incorrect.");
+		test.assert(actions[2].weight, 5, "Test 2 -- weight of the third action returned was incorrect.");
+
+		//TEST 3 -- 2 intents, 2 actions per volition, 1 action per action group.
+		actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 2, 1);
+		test.assert(actions.length, 4, "Test 3 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "pickupLineTerminal", "Test 3 -- name of first actions was incorrect.");
+		test.assert(actions[0].weight, 547, "Test 3 -- weight of first action was incorrect.");
+		test.assert(actions[1].name, "askoutTerminal", "Test 3 -- name of second action was incorrect.");
+		test.assert(actions[1].weight, 5, "Test 3 -- weight of second action was incorrect.");
+		test.assert(actions[2].name, "bondTerminal", "Test 3 -- name of third action was incorrect.");
+		test.assert(actions[2].weight, 5, "Test 3 -- weight of third action was incorrect.");
+		test.assert(actions[3].name, "laughTerminal1", "Test 3 -- name of fourth action was incorrect.");
+		test.assert(actions[3].weight, 5, "Test 3 -- weight of the fourth action was incorrect.");
+
+		//TEST 4 -- 2 Intents, 2 actions per volition, 2 actions per action group.
+		actions = actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 2, 2);
 		console.log("Here is the getActions actions: " , actions);
+		test.assert(actions.length, 5, "Test 4 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "pickupLineTerminal", "Test 4 -- name of first action was incorrect.");
+		test.assert(actions[1].name, "laughTerminal2", "Test 4 -- name of second action was incorrect.");
+		test.assert(actions[2].name, "askoutTerminal", "Test 4 -- name of third action was incorrect.");
+		test.assert(actions[3].name, "bondTerminal", "Test 4 -- name of fourth action was incorrect.");
+		test.assert(actions[4].name, "laughTerminal1", "Test 4 -- name of fifth action was incorrect.");
 
 		test.finish();
 	};

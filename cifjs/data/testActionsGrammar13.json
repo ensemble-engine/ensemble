@@ -103,7 +103,7 @@
 			"name" : "LAUGH",
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["laughTerminal"]
+			"leadsTo" : ["laughTerminal1", "laughTerminal2"]
 		},
 		{
 			"name" : "bondTerminal",
@@ -123,9 +123,35 @@
 				}]
 		},
 		{
-			"name" : "laughTerminal",
+			"name" : "laughTerminal1",
 			"conditions" : [],
 			"influenceRules" : [],
+			"effects" : [{
+					"class" : "relationship",
+					"type" : "friends",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}]
+		},
+		{
+			"name" : "laughTerminal2",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are a little less inclined to do a laughTerminal2.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type"	: "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 2
+				}
+
+			],
 			"effects" : [{
 					"class" : "relationship",
 					"type" : "friends",

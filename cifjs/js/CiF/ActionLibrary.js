@@ -415,7 +415,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					}
 					var actionListLength = terminalActionParentObject.actions.length; // want to store this, because we'll be adjusting the length inside of the loop
 					for(var salienceIndex = actionListLength; salienceIndex > 0; salienceIndex -= 1){
-						if(terminalActionParentObject.actions[salienceIndex-1].salience > terminalAction.salience){
+						if(terminalActionParentObject.actions[salienceIndex-1].salience >= terminalAction.salience){
 							//it's time to stop. use the length to decide if we should even bother adding it or not, I guess.
 							if(salienceIndex === actionListLength && actionListLength >= actionsPerGroup){
 								//This new guy isn't even good enough to make the list, ignore it and stop going through the list!
