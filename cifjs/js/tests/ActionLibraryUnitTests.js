@@ -1153,6 +1153,7 @@ var testGetAction = function(){
 
 	var testGetActions = function(){
 		console.log("inside of testGetActions!");
+		cif.reset();
 		sfdb.clearEverything();
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar13);
@@ -1181,6 +1182,12 @@ var testGetAction = function(){
 			"first" : "Biff",
 			"value" : true
 		};
+		var luckyPred2 = {
+			"class" : "trait",
+			"type" : "lucky",
+			"first" : "MisterInit",
+			"value" : true
+		};
 		var nimblePred1 = {
 			"class" : "trait",
 			"type" : "nimble",
@@ -1203,6 +1210,7 @@ var testGetAction = function(){
 		cif.set(attractedToPred1);
 		cif.set(attractedToPred2);
 		cif.set(luckyPred1);
+		cif.set(luckyPred2);
 		cif.set(nimblePred1);
 		cif.set(nimblePred2);
 		cif.set(happyPred1);
