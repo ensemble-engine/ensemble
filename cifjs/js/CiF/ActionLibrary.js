@@ -1086,18 +1086,31 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		var actionList;
 		var volitionInstance = volition.getFirst(initiator, responder);
 		var intentsRepresented = 0;
+		var numActionsFromThisIntent = 0;
 		var thisIntentCountedYet = false;
 		while(intentsRepresented < numIntents){
 			thisIntentCountedYet = false;
+			numActionsFromThisIntent = 0;
 			var acceptedObject = volition.isAccepted(initiator, responder, volitionInstance);
 			var isAccepted = acceptedObject.accepted;
 			var weight = volitionInstance.weight;
 			actionList = getSortedActionsFromVolition(initiator, responder, volitionInstance, isAccepted, weight, numActionsPerGroup, cast);
+			
+			//var terminalsToAdd = extractAndSortTerminalsFromActionList(actionList);
+
 			for(var i = 0; i < actionList.length; i += 1){
 				returnList.push(util.clone(actionList[i]));
+				console.log("What does returnList look like at this point...? ", returnList);
 				if(thisIntentCountedYet === false){
 					intentsRepresented += 1;
 					thisIntentCountedYet = true;
+				}
+
+				//We've found an action from this intent, and have already added it to the return list.
+				numActionsFromThisIntent += 1;
+				if(numActionsFromThisIntent === numActionsPerIntent){
+					//We've reached our quota for this intent--let's move on to the next intent, even if there are more actions left that could be added.
+					break;
 				}
 			}
 			volitionInstance = volition.getNext(initiator, responder);
@@ -1106,7 +1119,64 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			}
 		}
 
-		return returnList;
+		//Perhaps at this point, we should sort the list based on the volition score?
+		//And, also, perhaps actually return the terminals, instead of the parent action?
+		//Or, uh, maybe not? Because right now they are sorted by the desire of the VOLITIONS themselves? 
+		//And so the argument could be made that they are *already* sorted, even if one of them with a lower volition score gets a 'higher' total score after the influence rules of the game take place.
+		//I think that this is the kind of thing that is likely going to change a lot from use case to use case. So, for the most basic version, I thnk what we'll do is this:
+		//	Return an array of fully bound terminals, sorted in volition order, but not necessarily in total influence rule order.
+		//	Cases to check (we'll want a unit test for each one of these): 
+		//		1.) 1 action per volition (easy)
+		//		2.) 2 actions per volition, multiple terminals from the same parent (e.g. laughTerminal1, laughTerminal2)
+		//		3.) 2 actions per volition, terminals from separate parents (e.g. laughTerminal1, bondTerminal1)
+		//		4.) 3 actions per volition, combining both 2 and 3 (laughTerminal1, laughTerminal2, bondTerminal1)
+		//		5.) 3+ actions per volition (hopefully solving #4 should solve this as well).
+		//var boundAction = getBestTerminalFromActionList(returnList);
+		var boundActions = extractAndSortTerminalsFromActionList(returnList);
+		return boundActions;
+	};
+
+	var extractAndSortTerminalsFromActionList = function(actionList){
+		console.log("inside of extractAndSortTerminalsFromActionList!");
+		var allTerminals = [];
+		for(var i = 0; i < actionList.length; i += 1){
+			//Any given 'entry' in this list might have multiple actions, if 'numActionsPerGroup was > 1' in previous calls.
+			var currentAction = actionList[i];
+			for(var j = 0; j < actionList[i].actions.length; j += 1){
+				//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
+				//do something special here.
+				//These are now bound at this point yet -- we will have to do that eventually!
+				//BEN: START HERE, please.
+				allTerminals.push(actionList[i].actions[j]);
+			}
+		}
+
+		//Sort them based on their score.
+		var sortedTerminals = sortActionsByVolitionScore(allTerminals);
+		for(var k = 0; k < sortedTerminals.length; k += 1){
+			var bestBindings = getBestBindingFromTerminal(sortedTerminals[k]);
+			sortedTerminals[k] = bindActionEffects2(sortedTerminals[k], bestBindings);
+		}
+
+		return sortedTerminals;
+
+
+	};
+
+	var getBestBindingFromTerminal = function(terminal){
+		//There might be multiple best bindings!
+		var potentialBestBindings = [];
+		for(var i = 0; i < terminal.goodBindings.length; i += 1){
+			//See if this goodBinding is in the running for being a bestBinding!
+			if(terminal.goodBindings[i].weight$$ === terminal.weight){
+				potentialBestBindings.push(terminal.goodBindings[i]);
+			}
+		}
+
+		//Ok, pick one of the potentialBestBindings at random!
+		var goodBindingIndex = _.random(0, potentialBestBindings.length-1);
+		var bindingsToUse = potentialBestBindings[goodBindingIndex];
+		return bindingsToUse;
 	};
 
 
