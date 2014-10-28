@@ -1,5 +1,5 @@
 Building CiF currently requires NodeJS and Grunt.
-test
+
 To install Node: (instructions here)
 
 To install Grunt (on Mac): 
