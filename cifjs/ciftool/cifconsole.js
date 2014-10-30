@@ -89,7 +89,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("#cmdVolitions").tooltip({content: "<p>Use <b>volitions</b> to see the current ranked volitions from the first character to the second.</p><ul><li>volitions(al, bob)</b> :: <i>shows what changes in the social state Al most wants towards Bob</i></li><li>volitions(Carla)</b> :: <i>Shows Carla's volitions towards everyone else.</i></li></ul>"});
 	$("#cmdNext").tooltip({content: "<p>Use <b>next</b> to advance the timestep.</p><ul><li><b>next()</b></li></ul>"});
 	$("#cmdShow").tooltip({content: "<p>Use <b>show</b> to see all currently true info about a character.</p><ul><li><b>show(diane)</b></li></ul>"});
-	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second.</p><ul><li><b>actions(al, diane)</b> :: <i>shows what actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows what actions Bob wants to take towards everyone else.</i></li></ul>"});
+	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second.</p><ul><li><b>actions(al, diane, 3)</b> :: <i>shows the top three actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
 	$("#cmdDoAction").tooltip({content: "<p>Use <b>doAction</b> to perform an action from the first character to second. The social state will be updated to reflect the results of the actions. Use the <b>actions</b> command to get the numbers of potential actions.</p><ul><li><b>doAction(al, diane, 0)</b> :: <i>performs 'action 0' from Al to Diane</i></li><li><b>doAction(bob, jane, reminisce)</b> :: <i> Make Bob reminisce with Jane.</i></li></ul>"});
 
 
@@ -281,16 +281,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	var loadActions = function(actions){
-		// actionLibrary.parseActions(actions);
-		// var myActions = actionLibrary.getActions();
-		// // Generate labels
-		// var txt = "<ul>";
-		// for (var actionPos in myActions) {
-		// 	// Can be replaced with something more complex later
-		// 	txt += "<li>" + myActions[actionPos].name + "</li>";
-		// }
-		// txt += "</ul>";
-		// $("#actionList").html(txt);
+		actionLibrary.parseActions(actions);
+		var myActions = actionLibrary.getAllActions();
+		// Generate labels
+		var txt = "<ul>";
+		for (var actionPos in myActions) {
+		// Can be replaced with something more complex later
+			txt += "<li>" + myActions[actionPos].name + "</li>";
+		}
+		txt += "</ul>";
+		$("#actionList").html(txt);
 	};
 
 	var loadAllFilesFromFolder = function(folder) {
