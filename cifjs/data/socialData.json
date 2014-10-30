@@ -40,7 +40,7 @@
 			"class": "trait",
 			"isBoolean": true,
 			"directionType": "undirected",
-			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "jealous", "trusting", "a kind face"],
+			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "jealous", "trusting", "has a kind face"],
 			"defaultValue": false,
 			"allowIntent": false
 		},

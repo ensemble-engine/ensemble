@@ -5,12 +5,14 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 	var activeRule = {};
 	var activeRuleType = "";
 
-	// The below is a dictionary storing an active file for each rule type.
 	var activeFile = "";
+	var origActiveFile = ""; // Stores the active file as of the time this rule was loaded into the editor. If this has changed when we save, we need to update the original file, too.
+	// The below is a dictionary storing an active file for each rule type.
 	var activeFileRefByRuleType = {};
 
-	// ruleOrigins, set on init, is an array of all files from which the loaded set of rules originated. Any rule's .origin field should be one of these.
-	var ruleOrigins;
+	// set on init, these are arrays of all files from which the loaded set of rules originated. Any rule's .origin field should be one of these.
+	var ruleOriginsTrigger;
+	var ruleOriginsVolition;
 
 	var intentTypes = [];
 	var allTypes = [];
@@ -22,9 +24,10 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 	var rulesViewer;
 	var saveRules; // When we init, store a reference to cifconsole.js saveRules function here.
 
-	var init = function(refToViewer, _ruleOrigins, _saveRules) {
+	var init = function(refToViewer, _ruleOriginsTrigger, _ruleOriginsVolition, _saveRules) {
 		rulesViewer = refToViewer;
-		ruleOrigins = _ruleOrigins;
+		ruleOriginsTrigger = _ruleOriginsTrigger;
+		ruleOriginsVolition = _ruleOriginsVolition;
 		saveRules = _saveRules;
 		buildIntentOptions();
 	}
@@ -95,12 +98,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			rulesViewer.show();
 			messages.showAlert("Updated Rule " + activeRule.id + ".");
 			var ruleType = activeRule.id.split("_")[0];
-			saveRules(ruleType, activeRule.origin);
+			saveRules(ruleType, activeRule.origin, origActiveFile); // Note: we passed in a ref to this function in cifconsole.js on init.
 		}
 	}
 
 	var deleteRule = function() {
-		$("#confirmDelete")
+		$("#dialogBox")
 		.html("Are you sure you want to delete the rule <span style='color:rgb(255, 130, 41)'>" + activeRule.name + "</span> from the file <span style='color:rgb(255, 130, 41)'>" + activeRule.origin + "</span>? This operation cannot be undone.")
 		.dialog({
 			title: "Confirm Delete Rule",
@@ -115,6 +118,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 						$("#tabLiRulesViewer a").click();
 						rulesViewer.show();
 						messages.showAlert("Deleted rule " + activeRule.id + ".");
+						saveRules(activeRuleType, activeRule.origin); // Note: we passed in a ref to this function in cifconsole.js on init.
+
 					} else {
 						messages.showAlert("Unable to delete rule " + activeRule.id + ".");
 					}
@@ -141,7 +146,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 
 	// When given a rule object and its type (trigger or volition), create a local copy of it. This will be the editor's version of the rule, and we'll make all changes to this version.
-	var loadRule = function(rule, type, ruleOrigins) {
+	var loadRule = function(rule, type) {
 		charBindings = {};
 		util.resetIterator("rulesEdCharBindings");
 		util.resetIterator("rulesEdNewChars");
@@ -149,10 +154,10 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		undoPosition = -1;	
 		activeRule = util.clone(rule);
 		activeRuleType = type;
-		if (activeRule.conditions.length === 0) {
+		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
 			newPredicate("conditions");
 		}
-		if (activeRule.effects.length === 0) {
+		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
 			newPredicate("effects");
 		}
 		addCurrentToUndoHistory();
@@ -163,8 +168,14 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		if (rule.origin === "__NEWRULE__") {
 			if (activeFileRefByRuleType[rule.type] === undefined) {
 				// TODO: If we don't have an activeFile set for this rule type, we need to ask the user what active file to use.
-				activeFile = "newFile";
-				alert("Choose activeFile (TODO)");
+				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+				if (ruleOrigins.length > 0) {
+					activeFile = ruleOrigins[0];
+					activeRule.origin = activeFile;
+				} else {
+					getNewRulesFile();
+					activeRule.origin = activeFile;
+				}
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
 				activeFile = activeFileRefByRuleType[rule.type];
@@ -172,6 +183,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			}
 		}
 		activeFile = activeRule.origin;
+		origActiveFile = activeFile;
 		activeFileRefByRuleType[rule.type] = activeFile;
 		showRule();
 	}
@@ -441,20 +453,72 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		});
 	}
 
+	var makeNewRulesFile = function(rawFileName) {
+		var fnParts = rawFileName.split(".");
+		// Remove .json suffix if specified
+		if (fnParts[fnParts.length-1] === "json") {
+			fnParts.length = fnParts.length - 1;
+		}
+		if (rawFileName.length > 64) {
+			"File name is too long: please use a shorter file name.";
+			return false;
+		}
+		// TODO Check if file already exists.
+		var newFileName = fnParts.join(".");
+
+		activeRule.origin = newFileName;
+		activeFile = newFileName;
+		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+		ruleOrigins.push(newFileName);
+		$("#ruleOriginSelect").replaceWith(generateRuleOriginsMenu());
+
+		return newFileName;
+	}
+
+	var getNewRulesFile = function() {
+		$("#dialogBox")
+		.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
+		var dialog = $("#dialogBox").dialog({
+			title: "New Rules File",
+			resizable: false,
+			modal: true,
+			width: 350,
+			buttons: {
+				"Create File": function() {
+					makeNewRulesFile($("#newRulesFile").val());
+					$(this).dialog("destroy");
+				},
+				Cancel: function() {
+					$(this).dialog("destroy");
+				}
+			},
+		});
+		dialog.find("form").on( "submit", function( event ) {
+			event.preventDefault();
+			makeNewRulesFile($("#newRulesFile").val());
+			$(this).dialog("destroy");
+		});
+	}
+
 	var generateRuleOriginsMenu = function() {
+		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
 		var menuOpts = ruleOrigins.map(function(o) {
 			return "<option value='" + o + "'>" + o + ".json" + "</option>";
 		});
+		menuOpts.push("<option value='__NEW__'>(New File)</option>");
 		var menu = $("<select>", {
 			id: "ruleOriginSelect",
 			name: "ruleOriginSelect",
 			change: function() {
 				var selInd = $(this)[0].selectedIndex;
 				var selection = $(this).context[selInd].value;
-				console.log("changing activeFile to ", activeFile);
-				// TODO the above is reversed right now!
-				activeFile = selection;
-				activeRule.origin = activeFile;
+				if (selection === "__NEW__") {
+					getNewRulesFile();
+				} else {
+					console.log("changing activeFile to ", activeFile);
+					activeFile = selection;
+					activeRule.origin = activeFile;
+				}
 			}
 		});
 		for (var i = 0; i < menuOpts.length; i++) {
@@ -703,7 +767,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			newPred.value = desc.defaultVal;
 		}
 
-
+		if (activeRule[predType] === undefined) {
+			activeRule[predType] = [];
+		}
 		activeRule[predType].push(newPred);
 	}
 

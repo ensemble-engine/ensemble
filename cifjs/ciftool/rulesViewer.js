@@ -13,6 +13,7 @@ define(["cif", "util", "rulesEditor", "messages", "jquery"], function(cif, util,
 
 	var loadRule = function(id, ruleSet) {
 		var rule = cif.getRuleById(id);
+		console.log("loaded rule", rule);
 		if (rule !== false) {
 			rulesEditor.loadRule(rule, ruleSet);
 		} else {
@@ -41,6 +42,7 @@ define(["cif", "util", "rulesEditor", "messages", "jquery"], function(cif, util,
 				html: "<td><p class='ruleOrigin'>" + origin + "</p><span title=\"" + origRule + "\" class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
 			});
 			row.click(function() {
+				console.log("calling loadRule(" + id + ", " + ruleSet + ")");
 				loadRule(id, ruleSet);
 			})
 			return row;

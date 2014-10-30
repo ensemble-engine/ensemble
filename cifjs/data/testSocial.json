@@ -38,8 +38,7 @@
 			"class": "trait",
 			"isBoolean": true,
 			"directionType": "undirected",
-			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "has a kind face", 
-					"trusting", "jealous", "sound sleeper", "hardy", "eagle-eyed", "lucky", "nimble"],
+			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "has a kind face", "trusting", "jealous", "sound sleeper", "hardy", "eagle-eyed", "lucky", "nimble"],
 			"defaultValue": false,
 			"allowIntent": false
 		},

@@ -252,6 +252,8 @@ function(util, _, $, sfdb) {
 				return "class '" + pred.class + "' is not a registered social scheme category.";
 			}
 			if (socialStructure[pred.class][pred.type] === undefined) {
+				console.log("pred.class", pred.class, "pred.type", pred.type);
+				console.log("socialStructure", socialStructure);
 				return "found class " + pred.class + " type " + pred.type + " but that type does not appear to be registered for that class.";
 			}
 			var descriptors = socialStructure[pred.class][pred.type];
