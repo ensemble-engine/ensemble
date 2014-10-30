@@ -55,9 +55,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	var socialStructure;
 	var characters;
 
-	// ruleOrigins stores the origins of all loaded rules.
+	var maxBackupFiles = 10;
+
+	// stores the origins of all loaded rules.
 	// For now, we assume that the fileName field within the rule matches the filename of the file it came from. TODO: possible to do this automatically?
-	var ruleOrigins = [];
+	var ruleOriginsTrigger = [];
+	var ruleOriginsVolition = [];
 
 	$("#tabs").tabs({
 		activate: function( event, ui ) {
@@ -103,32 +106,48 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("button#resetSFDBHistory").click(historyViewer.reset);
 
 
-	// Create a JSON object representing every rule from the requested rules file. Serialize it. Backup the old version of the file. Write the new version to disk.
-	// NOTE: must be defined before we call rulesEditor.init
-	var saveRules = function(ruleType, ruleFile) {
-		console.log("saveRules(" + ruleType + ", " + ruleFile + ")");
+	var backupRulesFile = function(ruleFile) {
 		// Create a backup folder for the current schema, if none exists
+		// TODO: Limit the number of backups of any specific file to a globally defined amount.
+
 		var path = lastPath;
-		var backupFolderName = ruleFile + "_backup";
+		var backupFolderName = "_bak_" + ruleFile;
 		var backupPath = path + "/" + backupFolderName;
-		fs.mkdirSync(backupPath);
+		var origFilePath = path + "/" + ruleFile + ".json";
+		var backupFilePath = backupPath + "/" + ruleFile + "_" + getDateTimeStamp() + ".json";
+
+		if (fs !== undefined) {
+			if (!fs.existsSync(origFilePath)) {
+				return;
+			}
+			if (!fs.existsSync(backupPath)) {
+				fs.mkdirSync(backupPath);
+			}
+			// Cycle backup files if we have too many.
+			var backupFiles = fs.readdirSync(backupPath);
+			// Only consider files in this directory that start with the master filename and end with .json
+			backupFiles = backupFiles.filter(function(f) {
+				return f.split("_")[0] === ruleFile && f.substr(f.length - 5) === ".json";
+			})
+			if (backupFiles.length > maxBackupFiles) {
+				// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
+				backupFiles.sort();
+				var oldestFileName = backupFiles[0];
+				console.log("More than maxBackupFiles files (" + maxBackupFiles + "), so deleting oldest file: " + oldestFileName);
+				fs.unlinkSync(backupPath + "/" + oldestFileName);
+			}
+		}
 		console.log("Making folder at ", backupPath);
 
 		// Copy the current version of the rules file to the backup folder, giving it a named timestamp.
-		var origFilePath = path + "/" + ruleFile + ".json";
-		var backupFilePath = backupPath + "/" + ruleFile + "_" + getDateTimeStamp() + ".json";
-		fs.createReadStream(origFilePath).pipe(fs.createWriteStream(backupFilePath));
-		console.log("copying '" + origFilePath + "' to '" + backupFilePath);
-
-		// TODO: Limit the number of backups of any specific file to a globally defined amount.
-
-		// TODO: rulesFile is in the form "triggerRules", but cif.getRules expects the form "trigger". Probably a way to refactor this so we don't need this kludge, & also to future-proof against additional kinds of rules.
-		var ruleTypeShort;
-		if (ruleType === "triggerRules") {
-			ruleTypeShort = "trigger";
-		} else {
-			ruleTypeShort = "volition";
+		console.log("copying '" + origFilePath + "' to '" + backupFilePath);		
+		if (fs !== undefined) {
+			var f = fs.readFileSync(origFilePath);
+			fs.writeFileSync(backupFilePath, f);
 		}
+	}
+
+	var writeRulesForFileToDisk = function(ruleTypeShort, ruleFile) {
 		var rules;
 		rules = cif.getRules(ruleTypeShort);
 
@@ -137,7 +156,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			return rule.origin === ruleFile;
 		});
 
-		console.log(filteredRules.length + " matching rules");
+		console.log(filteredRules.length + " matching rules from this file");
 
 		var preparedRulesObj = {};
 		preparedRulesObj.fileName = ruleFile;
@@ -147,9 +166,36 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		var serializedRules = JSON.stringify(preparedRulesObj, null, '\t');
 
 		// Write the serialized rules to disk.
-		fs.writeFileSync(origFilePath, serializedRules);
-		console.log("writing to '" + origFilePath + "':");
-		console.log(serializedRules);
+		var path = lastPath + "/" + ruleFile + ".json";
+		if (fs !== undefined) {
+			fs.writeFileSync(path, serializedRules);
+		}
+		console.log("writing to '" + path + "':");
+	}
+
+	// Create a JSON object representing every rule from the requested rules file. Serialize it. Backup the old version of the file. Write the new version to disk.
+	// NOTE: must be defined before we call rulesEditor.init()
+	var saveRules = function(ruleType, ruleFile, optOrigActiveFile) {
+		console.log("saveRules(" + ruleType + ", " + ruleFile + ")");
+		backupRulesFile(ruleFile);
+
+		// TODO: rulesFile is in the form "triggerRules", but cif.getRules expects the form "trigger". Probably a way to refactor this so we don't need this kludge, & also to future-proof against additional kinds of rules.
+		var ruleTypeShort;
+		console.log("ruleType");
+		if (ruleType === "triggerRules" || ruleType === "trigger") {
+			ruleTypeShort = "trigger";
+		} else {
+			ruleTypeShort = "volition";
+		}
+
+		writeRulesForFileToDisk(ruleTypeShort, ruleFile);
+
+		// If the active file changed, we need to update the old file, too (to delete the moved file).
+		if (optOrigActiveFile !== undefined && optOrigActiveFile.trim() !== "" && optOrigActiveFile != ruleFile) {
+			console.log("optOrigActiveFile is " + optOrigActiveFile + " and is different from ruleFile: " + ruleFile + ", so let's back it up too.")
+			backupRulesFile(optOrigActiveFile);
+			writeRulesForFileToDisk(ruleTypeShort, optOrigActiveFile);
+		}
 	}
 
 	var loadSchema = function(schema) {
@@ -217,11 +263,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	var loadRules = function(rules) {
 		cif.addRules(rules);
-		ruleOrigins.push(rules.fileName);
 		if (rules.type === "trigger") {
+			ruleOriginsTrigger.push(rules.fileName);
 			rulesViewer.show("trigger");
 		}
 		if (rules.type === "volition") {
+			ruleOriginsVolition.push(rules.fileName);
 			rulesViewer.show("volition");
 		}
 	};
@@ -234,16 +281,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	var loadActions = function(actions){
-		actionLibrary.parseActions(actions);
-		var myActions = actionLibrary.getActions();
-		// Generate labels
-		var txt = "<ul>";
-		for (var actionPos in myActions) {
-			// Can be replaced with something more complex later
-			txt += "<li>" + myActions[actionPos].name + "</li>";
-		}
-		txt += "</ul>";
-		$("#actionList").html(txt);
+		// actionLibrary.parseActions(actions);
+		// var myActions = actionLibrary.getActions();
+		// // Generate labels
+		// var txt = "<ul>";
+		// for (var actionPos in myActions) {
+		// 	// Can be replaced with something more complex later
+		// 	txt += "<li>" + myActions[actionPos].name + "</li>";
+		// }
+		// txt += "</ul>";
+		// $("#actionList").html(txt);
 	};
 
 	var loadAllFilesFromFolder = function(folder) {
@@ -289,7 +336,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			var schemaDir = this.value;
 			lastPath = schemaDir;
 			cif.reset();
-			ruleOrigins = [];
+			ruleOriginsTrigger = [];
+			ruleOriginsVolition = [];
 			historyViewer.reset();
 			rulesViewer.show();
 
@@ -339,7 +387,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				}
 
 				// Update the editor's rule origins.
-				rulesEditor.init(rulesViewer, ruleOrigins, saveRules);
+				rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
 				cmdLog("Schema loaded.", true);
 
 			}, function(error) {
@@ -384,7 +432,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		loadRules(JSON.parse(testTriggerRules));
 		loadRules(JSON.parse(testVolitionRules));
 		loadActions(JSON.parse(testActions));
-		rulesEditor.init(rulesViewer, ruleOrigins, saveRules);
+		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
 		cmdLog("Autoloaded default schema.", true);
 	}
 
@@ -1009,72 +1057,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	document.getElementById("inputRuleFilter").onkeyup = ruleFilterKey;
 	document.getElementById("inputRuleFilter").onchange = ruleFilterKey;
 
-
-
-	// var testVolitionRule = {	"name": "More likely to be friendly to a friend of a friend.",
-	// 		"conditions": [
-	// 			{
-	// 				"class": "relationship",
-	// 				"type": "friends",
-	// 				"first": "considerer",
-	// 				"second": "friendCandidate",
-	// 				"value": false
-	// 			},{
-	// 				"class": "relationship",
-	// 				"type": "friends",
-	// 				"first": "considerer",
-	// 				"second": "mutualFriend"
-	// 			},{
-	// 				"class": "relationship",
-	// 				"type": "friends",
-	// 				"first": "friendCandidate",
-	// 				"second": "mutualFriend"
-	// 			}
-	// 		],
-	// 		"effects": [
-	// 			{
-	// 				"class": "network",
-	// 				"type": "affinity",
-	// 				"first": "considerer",
-	// 				"second": "friendCandidate",
-	// 				"weight": 5,
-	// 				"intentDirection": true
-	// 			}
-	// 		]
-	// 	};
-	// var testTriggerRule = {
-	// 		"name": "If your sweetie is injured, you worry about them.",
-	// 		"conditions": [
-	// 			{
-	// 				"class": "status",
-	// 				"type": "injured",
-	// 				"first": "y",
-	// 				"value": true
-	// 			},{
-	// 				"class": "relationship",
-	// 				"type": "involved with",
-	// 				"first": "x",
-	// 				"second": "y"
-	// 			}
-	// 		],
-	// 		"effects": [
-	// 			{
-	// 				"class": "directedStatus",
-	// 				"type": "worried about",
-	// 				"first": "x",
-	// 				"second": "y",
-	// 				"value": true
-	// 				// "class": "network",
-	// 				// "type": "affinity",
-	// 				// "first": "x",
-	// 				// "second": "y",
-	// 				// "operator": "+",
-	// 				// "value": 10
-	// 			}
-	// 		]
-	// 	}
-	// rulesEditor.loadRule(testVolitionRule, "volition");
-	// rulesEditor.loadRule(testTriggerRule, "trigger");
 
 
 });

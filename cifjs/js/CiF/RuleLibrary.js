@@ -709,9 +709,8 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 				// Set up a cross-reference so we can look up rules by ID.
 				var rule = set[i];
 				if (rule.id) {
-					var idNum = rule.id.split("_")[1];
 					var lastPos = ruleLibrary[key].length - 1;
-					ruleIndexes[key][idNum] = lastPos;
+					ruleIndexes[key][rule.id] = lastPos;
 				}
 			}
 		}
@@ -1067,7 +1066,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			console.log("ruleLibrary[" + ruleSet + "] was undefined.");
 			return false;
 		}
-		var pos = ruleIndexes[ruleSet][id];
+		var pos = ruleIndexes[ruleSet][label];
 		if (pos === undefined) {
 			console.log("ruleIndexes", ruleIndexes);
 			console.log("ruleIndexes[" + ruleSet + "][" + id + "] was undefined.");
@@ -1079,12 +1078,25 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			return util.clone(ruleLibrary[ruleSet][pos]);
 		} else if (typeof rule === "boolean") {
 			// Delete
-			delete ruleIndexes[ruleSet][id];
-			ruleLibrary[ruleSet].splice(pos, 1);
+			// ruleIndexes is a dictionary with keys for each rule id, and values of its position in the corresponding rulesLibrary array. Splicing a rule from the middle of the array would cause all the ruleIndex position numbers to be wrong. Instead, we move the last rule in the library into the position of the one we're deleting and shorten its length by one, updating the index accordingly: this lets all other positions remain unchanged.
+
+			var lib = ruleLibrary[ruleSet];
+			var ind = ruleIndexes[ruleSet];
+			var posOfDyingRule = ind[label];
+			var posOfFinalRule = lib.length - 1;
+			var finalRuleId = lib[posOfFinalRule].id;
+
+			// Replace the rule we're deleting with the final rule in the library.
+			lib[posOfDyingRule] = lib[posOfFinalRule];
+			lib.length = lib.length - 1;
+
+			// Remove the old rule's key in the index, and update the index  for the moved rule to the position of the old.
+			delete ind[label];
+			ind[finalRuleId] = posOfDyingRule;
+
 			return true;			
 		} else {
 			// Set
-			console.log("about to set rule:", rule);
 			ruleLibrary[ruleSet][pos] = util.clone(rule);
 			return true;
 		}
