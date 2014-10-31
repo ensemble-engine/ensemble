@@ -54,6 +54,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	var socialStructure;
 	var characters;
+	var fullCharacters;
 
 	var maxBackupFiles = 10;
 
@@ -230,6 +231,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	var loadCast = function(cast) {
 		// characters = cif.addCharacters(sampleChars);
 		characters = cif.addCharacters(cast);
+		fullCharacters = cif.getCharactersWithMetadata();
 
 		// Generate labels
 		var txt = "<ul>";
@@ -237,7 +239,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			// Can be replaced with something more complex later when there's character metadata.
 			// var charObj = sampleChars.characters[charKey];
 			// txt += "<li><span class='charPrintedName'>" + charObj.name + "</span> <span class='charKey'>" + charKey + "</span>, Active</li>";
-			txt += "<li>" + characters[charPos] + "</li>"
+			txt += "<li>" + fullCharacters[characters[charPos]].name + "</li>"
 		}
 		txt += "</ul>";
 		$("#characterList").html(txt);
@@ -490,7 +492,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		var i, res, desc;
 		var resultPrimary = cif.get({"first": char});
 		var resultSecondary = cif.get({"second": char});
-		console.log("results:", resultPrimary, resultSecondary);
 		var logMsg = "<table><tr><td>";
 		for (i = 0; i < resultPrimary.length; i++) {
 			res = resultPrimary[i];
@@ -672,6 +673,20 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			return cmdLog("No characters loaded.");
 		}
 
+		var foundInBounds = function(found, desc, min, max) {
+			if (found.length < min || found.length > max) {
+				var msg = "found " + found.length + " " + desc + " references (" + found.join(", ") + ") but expected ";
+				if (min === max) {
+					msg += min + ".";
+				} else {
+					msg += "between " + min + " and " + max + ".";
+				}
+				cmdLog(msg);				
+				return false;
+			}
+			return found;
+		}
+
 		// Utility function "extract": returns an array of ordered matched items, removing them from the "params" array. Crash with an explanatory message if the wrong number of matches is found.
 		var extract = function(matchList, desc, min, max) {
 			var pos = 0;
@@ -684,17 +699,27 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					pos += 1;
 				}
 			}
-			if (found.length < min || found.length > max) {
-				var msg = "found " + found.length + " " + desc + " references (" + found.join(", ") + ") but expected ";
-				if (min === max) {
-					msg += min + ".";
-				} else {
-					msg += "between " + min + " and " + max + ".";
+			return foundInBounds(found, desc, min, max);
+		}
+
+		var charExtract = function(charDict, desc, min, max) {
+			var pos = 0;
+			var found = [];
+			var charKeys = _.keys(charDict);
+			while (pos < params.length) {
+				var foundThisTime = 0;
+				for (var i = 0; i < charKeys.length; i++) {
+					if (charDict[charKeys[i]].name.toLowerCase() === params[pos]) {
+						found.push(charKeys[i]);
+						params.splice(pos, 1);
+						foundThisTime += 1;
+					}
 				}
-				cmdLog(msg);				
-				return false;
+				if (foundThisTime === 0) {
+					pos += 1;
+				}
 			}
-			return found;
+			return foundInBounds(found, desc, min, max);
 		}
 
 		// BEGIN processCommand
@@ -730,13 +755,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 
 		if (command === "show") {
-			chars = extract(characters, "characters", 1, 1);
+			chars = charExtract(fullCharacters, "characters", 1, 1);
 			if (!chars) return;
 			return doShow(chars[0]);
 		}
 
 		if (command === "volitions") {
-			chars = extract(characters, "characters", 1, 2);
+			chars = charExtract(fullCharacters, "characters", 1, 2);
 			if (chars.length === 1) {
 				// Run for every other character.
 				for (var j = 0; j < characters.length; j++) {
@@ -757,7 +782,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			for(var i = 0; i < maxValidNumbers; i += 1){
 				validNumbers[i] = (i + 1).toString();
 			}
-			chars = extract(characters, "characters", 1, 2);
+			chars = charExtract(fullCharacters, "characters", 1, 2);
 			numberOfActions = extract(validNumbers, "numberOfActions", 0, 1);
 			console.log("Umm... ok... what is vlaue of numberOfActions right after the extract? ", numberOfActions);
 			if(numberOfActions === undefined || numberOfActions.length <= 0){
@@ -795,7 +820,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		if (command === "doaction"){
 
 			//Grab the characters from the string.
-			chars = extract(characters, "characters", 2, 2);
+			chars = charExtract(fullCharacters, "characters", 2, 2);
 			if (!chars) return;
 			var char1 = chars[0];
 			var char2 = chars[1];
@@ -903,7 +928,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		if (command === "set") {
 
 			// Look for one or two characters. Preserve the order.
-			chars = extract(characters, "characters", 1, 2);
+			chars = charExtract(fullCharacters, "characters", 1, 2);
+
 			if (!chars) return;
 
 			// Reject commands with the same character multiple times.

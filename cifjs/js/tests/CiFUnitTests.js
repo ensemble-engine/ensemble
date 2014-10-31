@@ -14,6 +14,7 @@ function(util, _, ruleLibrary, sfdb, cif, actionLibrary, test, testSocial, testV
 	var runTests = function() {
 		testLoadSocialStructure();
 		testAddRules();
+		testCharacters();
 	};
 
 	var testLoadSocialStructure = function() {
@@ -262,6 +263,36 @@ function(util, _, ruleLibrary, sfdb, cif, actionLibrary, test, testSocial, testV
 		test.finish();
 	};
 
+	var testCharacters = function() {
+		var testChars = {
+			"cast": {
+				"bob": {
+					"name": "Bob"
+				},
+				"lechuck": {
+					"name": "Le Chuck",
+					"job": "pirate"
+				},
+				"anonymous": {
+				}
+			}
+		}
+		test.start("CiF", "testCharacters");
+		var chars = cif.addCharacters(testChars);
+		test.assert(chars.length, 3, "addCharacters should return an array of length 3 with the names of each character.");
+		test.assert(chars.indexOf("lechuck") >= 0, true, "Each character in the given object should be present in the array returned from addCharacters.");
+		var newChars = cif.getCharacters();
+		test.assert(newChars.length, 3, "getCharacters should return an array of length 3, just as is returned when we first add the characters.");
+		test.assert(cif.getCharData("lechuck", "name"), "Le Chuck", "getCharData for name should return the appropriate printed name.")
+		test.assert(cif.getCharName("lechuck"), "Le Chuck", "getCharName should return the printed name for a character.");
+		test.assert(cif.getCharName("anonymous"), "anonymous", "getCharName should return the key if no printed name is defined.")
+		test.assert(cif.getCharData("lechuck", "job"), "pirate", "getCharData should be able to return arbitrary metadata.")
+		test.assert(cif.getCharData("bob", "job"), undefined, "getCharData should return undefined if a piece of metadata can't be found.");
+		test.assert(cif.getCharData("unknownChar", "job"), undefined, "getCharData should return undefined if given an invalid character.");
+
+		test.finish();
+
+	};
 	
 
 	/***************************************************************/
