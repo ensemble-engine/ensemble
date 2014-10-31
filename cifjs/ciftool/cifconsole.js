@@ -581,6 +581,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
 		}
 
+		//Go through each action, and add a row in a table to display to the user saying the name of the action
+		//the effects that would transpire if they were to do it.
 		for(i = 0; i < actions.length; i += 1){
 			logMsg += "<tr><td><span class='actionType'> [" + i + "] " + char1 + " wants to " + actions[i].name + " with " + char2 + " (" + actions[i].weight + ") </span></td>";
 			logMsg += "<td>This will become true:<BR><ul>";
@@ -589,44 +591,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				logMsg += "<li>" + englishEffect.text;
 			}
 			logMsg += "</ul></td></tr>";
-			//logMsg += "<td><span class='volitionExplanation'><b>" + char2 + " would ";
-			//logMsg += actions[i].isAccept ? "<span class='accepted'>accept</span>" : "<span class='rejected'>reject</span>";
 		}
 		
-
-		/*
-		var vol = storedVolitions.getFirst(char1, char2);
-		while (vol !== undefined){
-			console.log("this is what vol is: " , vol);
-			var possibleActionsForThisVolition = actionLibrary.getActionsFromVolition(vol);
-			for(var i = 0; i < possibleActionsForThisVolition.length; i +=1){
-
-				logMsg += "<tr><td><span class='actionType'> [" + i + "] " + char1 + " wants to " + possibleActionsForThisVolition[i].name + " with " + char2 + " (" + vol.weight + ") </span></td>";
-			}
-
-			// Show the responder's reasons for accepting or rejecting the action.
-			logMsg += "</span></td><td><span class='volitionExplanation'><b>" + char2 + " would ";
-			var acceptedObj = storedVolitions.isAccepted(char1, char2, vol);
-			logMsg += acceptedObj.accepted ? "<span class='accepted'>accept</span>" : "<span class='rejected'>reject</span>";
-			logMsg += " (" + acceptedObj.weight + ")</b>, because:<br/>";
-			console.log("rw", acceptedObj, acceptedObj.reasonsWhy);
-			if (acceptedObj.reasonsWhy.length > 0) {
-				var reasons = acceptedObj.reasonsWhy[0].englishInfluences;
-				for (i = 0; i < reasons.length; i++) {
-					var reason = reasons[i];
-					logMsg += "<span title='" + reason.englishRule + "'>" + reason.ruleName + " (" + reason.weight + ")</span><br/>";
-				}
-			} else {
-				logMsg += "<i>default (no matching rules)</i>"
-			}
-
-
-			// Retrieve the next volition and continue the while loop if it's not undefined.
-			logMsg += "</tr>";
-			vol = storedVolitions.getNext(char1, char2);
-		}
-		*/
-
 		logMsg += "</table>";
 		console.log("logMsg: " + logMsg);
 		return cmdLog(logMsg);
