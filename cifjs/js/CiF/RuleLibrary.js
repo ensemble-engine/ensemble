@@ -927,8 +927,6 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		var duration = sfdb.getRegisteredDuration(pred);
 		var isPersistent = (duration !== 0) ? true : false;
 
-		// TODO: At some point this hack should be replaced by looking up a character's registered name. 
-		// NOTE: There's a slight discontinuity here between the need to print a nice-looking sentence (i.e., say "Captain McWhillikers" instead of "capmcwhil" or whatever the key is) and the need to generate a predicate whose components can be dissected to retrieve the original rule (as the CiF Tool Rule Editor does). For now we're erring on the side of functionality and not trying to alter the way a character name appears in the predicate.
 		var nameFirst = pred.first;
 		var nameSecond = pred.second !== undefined ? pred.second : "";
 

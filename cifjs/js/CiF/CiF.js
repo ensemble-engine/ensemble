@@ -100,10 +100,10 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 			// Create an interface for each type within this class.
 			structure[classBlueprint.class] = {};
 			for (var j = 0; j < classBlueprint.types.length; j++) {
-				var type = classBlueprint.types[j];
+				var type = classBlueprint.types[j].toLowerCase();
 				var typeBlueprint = util.clone(classBlueprint);
 				typeBlueprint.type = type;
-				structure[classBlueprint.class][classBlueprint.types[j]] = registerSocialType(typeBlueprint);
+				structure[classBlueprint.class][type] = registerSocialType(typeBlueprint);
 			}
 
 		}
@@ -207,29 +207,85 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		return tab;
 	}
 
+	var savedChars;
+
 	/**
 	 * @method addCharacters
 	 * @public
 	 * @memberOf CiF
 	 * Load a character definition object.
 	 *
-	 * @param {Object} data A file defining the characters in this story.
+	 * @param {Object} data A file defining the characters in this story. Should contain a single top-level key, "cast", which holds a dictionary of character identifiers, each containing an object with character metadata. If the object contains a key "name" with the printed name of the character, the getCharName function can be used to quickly return this.
 	 *
 	 * @return {Array}      An array of strings with all character keys (same as will be used in sfdb entries, etc..
 	 */
-	var savedChars;
 	var addCharacters = function(data) {
 		// STUB: For the moment we aren't doing anything with this data,
 		// other than returning an array of keys.
 		var charData = data;
 		var chars = charData.cast;
 		savedChars = chars;
-		return _.keys(chars);
+		return getCharacters();
 	};
 
+	/**
+	 * @method getCharacters
+	 * @public
+	 * @memberOf CiF
+	 * Returns an array of character IDs for all registered characters.
+	 *
+	 * @return {Array}      An array of strings with all character keys (same as will be used in sfdb entries, etc..
+	 */
 	var getCharacters = function() {
 		return _.keys(savedChars);
-	}
+	};
+
+	/**
+	 * @method getCharactersWithMetadata
+	 * @public
+	 * @memberOf CiF
+	 * Returns the full dictionary of all character info.
+	 *
+	 * @return {Object}      A dictionary with the full record of all registered characters.
+	 */
+	var getCharactersWithMetadata = function() {
+		return util.clone(savedChars);
+	};
+
+	/**
+	 * @method getCharData
+	 * @public
+	 * @memberOf CiF
+	 * Returns a specific piece of metadata for a registered character.
+	 *
+	 * @param {String} char The ID of a registered character.
+	 * @param {String} key The metadata field requested.
+	 *
+	 * @return {Object}      The metadata value for the requested character and key, or undefined if no such key or character were found. The type of the return result is dependent on the type of the requested metadata field.
+	 */
+	var getCharData = function(char, key) {
+		if (savedChars[char] === undefined) {
+			return undefined;
+		}
+		return savedChars[char][key];
+	};
+
+	/**
+	 * @method getCharName
+	 * @public
+	 * @memberOf CiF
+	 * Shorthand function to return the printed name of a registered character. getCharName("sarah") is identical to getCharData("sarah", "name"). Returns the character key if no "name" field was found, or undefined if the requested character ID was not found.
+	 *
+	 * @param {String} char The ID of a registered character.
+	 *
+	 * @return {String}      The printed name of the requested character.
+	 */
+	var getCharName = function(char) {
+		var name = getCharData(char, "name");
+
+		// If name is undefined, just return the character's ID.
+		return name || char;
+	};
 
 	/**
 	 * @method addProcessedRules
@@ -488,6 +544,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		isValidTypeForClass		: isValidTypeForClass,
 		addCharacters			: addCharacters,
 		getCharacters			: getCharacters,
+		getCharactersWithMetadata : getCharactersWithMetadata,
+		getCharData				: getCharData,
+		getCharName				: getCharName,
 
 		loadBaseBlueprints		: loadBaseBlueprints,
 
