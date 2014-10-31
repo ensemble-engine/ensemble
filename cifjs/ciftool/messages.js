@@ -6,8 +6,13 @@ define(["jquery"], function($){
 		$("#msgBlock").html(msg).fadeIn(250);
 	}
 
+	var showError = function(msg, details) {
+		showAlert("<span class='error'>" + msg + "</span> " + (details || ""));
+	}
+
 	return {
-		showAlert: showAlert
+		showAlert: showAlert,
+		showError: showError
 	}
 
 });

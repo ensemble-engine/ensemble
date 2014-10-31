@@ -52,7 +52,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		// Ensure the new rule is valid.
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
-			messages.showAlert("<span class='error'>Canceling update: the resulting rule would be invalid.</span> " + result);
+			messages.showError("Canceling update: the resulting rule would be invalid.", result);
 			activeRule = util.clone(undoHistory[undoPosition]);
 			showRule();
 			return;
