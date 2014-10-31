@@ -583,6 +583,14 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		for(i = 0; i < actions.length; i += 1){
 			logMsg += "<tr><td><span class='actionType'> [" + i + "] " + char1 + " wants to " + actions[i].name + " with " + char2 + " (" + actions[i].weight + ") </span></td>";
+			logMsg += "<td>This will become true:<BR><ul>";
+			for(var j = 0; j < actions[i].effects.length; j += 1){
+				var englishEffect = cif.predicateToEnglish(actions[i].effects[j]);
+				logMsg += "<li>" + englishEffect.text;
+			}
+			logMsg += "</ul></td></tr>";
+			//logMsg += "<td><span class='volitionExplanation'><b>" + char2 + " would ";
+			//logMsg += actions[i].isAccept ? "<span class='accepted'>accept</span>" : "<span class='rejected'>reject</span>";
 		}
 		
 
