@@ -47,7 +47,7 @@ requirejs.config({
 	}
 });
 
-requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/testActions.json", "jqueryUI", "domReady!"], 
+requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "jqueryUI", "domReady!"], 
 function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions){
 
 	var autoLoad = true;
@@ -89,7 +89,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("#cmdVolitions").tooltip({content: "<p>Use <b>volitions</b> to see the current ranked volitions from the first character to the second.</p><ul><li>volitions(al, bob)</b> :: <i>shows what changes in the social state Al most wants towards Bob</i></li><li>volitions(Carla)</b> :: <i>Shows Carla's volitions towards everyone else.</i></li></ul>"});
 	$("#cmdNext").tooltip({content: "<p>Use <b>next</b> to advance the timestep.</p><ul><li><b>next()</b></li></ul>"});
 	$("#cmdShow").tooltip({content: "<p>Use <b>show</b> to see all currently true info about a character.</p><ul><li><b>show(diane)</b></li></ul>"});
-	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second.</p><ul><li><b>actions(al, diane, 3)</b> :: <i>shows the top three actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
+	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second, max of three.</p><ul><li><b>actions(al, diane, 3)</b> :: <i>shows the top three actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
 	$("#cmdDoAction").tooltip({content: "<p>Use <b>doAction</b> to perform an action from the first character to second. The social state will be updated to reflect the results of the actions. Use the <b>actions</b> command to get the numbers of potential actions.</p><ul><li><b>doAction(al, diane, 0)</b> :: <i>performs 'action 0' from Al to Diane</i></li><li><b>doAction(bob, jane, reminisce)</b> :: <i> Make Bob reminisce with Jane.</i></li></ul>"});
 
 
@@ -282,7 +282,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	var loadActions = function(actions){
 		actionLibrary.parseActions(actions);
-		var myActions = actionLibrary.getAllActions();
+		var myActions = actionLibrary.getTerminalActions();
 		// Generate labels
 		var txt = "<ul>";
 		for (var actionPos in myActions) {
@@ -562,8 +562,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		return cmdLog(logMsg);
 	}
 
-	var doActions = function(char1, char2){
-		console.log("Doing actions for " + char1 + " and " + char2);
+	var doActions = function(char1, char2, numberOfActions){
+		console.log("Doing actions for " + char1 + " and " + char2 + " with this number of actions: " + numberOfActions);
 		var i; 
 		var logMsg = "<table>";
 		if (storedVolitions === undefined) {
@@ -757,17 +757,33 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 
 		if (command === "actions") {
+			var validNumbers = [];
+			var maxValidNumbers = 3;
+			var numberOfActions;
+			var numActions;
+			for(var i = 0; i < maxValidNumbers; i += 1){
+				validNumbers[i] = (i + 1).toString();
+			}
 			chars = extract(characters, "characters", 1, 2);
+			numberOfActions = extract(validNumbers, "numberOfActions", 0, 1);
+			console.log("Umm... ok... what is vlaue of numberOfActions right after the extract? ", numberOfActions);
+			if(numberOfActions === undefined || numberOfActions.length <= 0){
+				numActions = 1;
+			}
+			else{
+				numActions = numberOfActions[0];
+			}
+			console.log("Ok, let's see, did I manage to parse the number of actions successfully?", numActions);
 			if(chars.length === 1){
 				//run for every other character.
 				for (var j = 0; j < characters.length; j++){
 					if (characters[j] === chars[0]) continue;
-					processCommand("actions(" + chars[0] + "," + characters[j] + ")");
+					processCommand("actions(" + chars[0] + "," + characters[j] + ", " + numActions + ")");
 				}
 				return;
 			}
 			if (!chars) return;
-			return doActions(chars[0], chars[1]);
+			return doActions(chars[0], chars[1], numActions);
 			/*
 			chars = extract(characters, "characters", 1, 2);
 			if (chars.length === 1) {
