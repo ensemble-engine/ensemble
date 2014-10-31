@@ -566,9 +566,27 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		console.log("Doing actions for " + char1 + " and " + char2 + " with this number of actions: " + numberOfActions);
 		var i; 
 		var logMsg = "<table>";
+		var actions = [];
 		if (storedVolitions === undefined) {
 			storedVolitions = cif.calculateVolition(characters);
 		}
+
+		//If we only want 1 action, we'll return the BEST action, right?
+		if(numberOfActions === 1){
+			actions[0] = cif.getAction(char1, char2, storedVolitions, characters);
+		}
+		else{
+			//If we want more than 1 action, we'll do that for them too!
+			//We are going to default to '1 action per volition' for 'numberOfActions' worth of volitions
+			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
+		}
+
+		for(i = 0; i < actions.length; i += 1){
+			logMsg += "<tr><td><span class='actionType'> [" + i + "] " + char1 + " wants to " + actions[i].name + " with " + char2 + " (" + actions[i].weight + ") </span></td>";
+		}
+		
+
+		/*
 		var vol = storedVolitions.getFirst(char1, char2);
 		while (vol !== undefined){
 			console.log("this is what vol is: " , vol);
@@ -599,6 +617,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			logMsg += "</tr>";
 			vol = storedVolitions.getNext(char1, char2);
 		}
+		*/
 
 		logMsg += "</table>";
 		console.log("logMsg: " + logMsg);
@@ -771,7 +790,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				numActions = 1;
 			}
 			else{
-				numActions = numberOfActions[0];
+				numActions = parseInt(numberOfActions[0]);
 			}
 			console.log("Ok, let's see, did I manage to parse the number of actions successfully?", numActions);
 			if(chars.length === 1){
