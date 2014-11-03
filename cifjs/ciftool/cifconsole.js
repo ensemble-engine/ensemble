@@ -643,27 +643,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
-		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
-		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
-		//the 'first' entry in the list of best actions. Perfect, right?
-		var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
-		if(numberOfActions > 1){
-			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
-			if(actions[0].name !== bestAction.name){
-				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
-				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
-					if(actions[swapIndex].name === bestAction.name){
-						//Ok, we found where we need to swap!
-						var tempAction = actions[0];
-						actions[0] = actions[swapIndex];
-						actions[swapIndex] = tempAction;
-					}
-				}
-			}
-		}
-		else{ // ok, we are dealing with an easy case. Thank goodness.
-			actions[0] = bestAction;
-		}
+		actions = getActionList(char1, char2, storedVolitions, numberOfActions);
 
 /*
 		//If we only want 1 action, we'll return the BEST action, right?
@@ -1157,6 +1137,32 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			cmdLog("Not a valid command.");
 		}
 	};
+
+	var getActionList = function(char1, char2, storedVolitions, numberOfActions){
+		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
+		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
+		//the 'first' entry in the list of best actions. Perfect, right?
+		var actions = [];
+		var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+		if(numberOfActions > 1){
+			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
+			if(actions[0].name !== bestAction.name){
+				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
+				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
+					if(actions[swapIndex].name === bestAction.name){
+						//Ok, we found where we need to swap!
+						var tempAction = actions[0];
+						actions[0] = actions[swapIndex];
+						actions[swapIndex] = tempAction;
+					}
+				}
+			}
+		}
+		else{ // ok, we are dealing with an easy case. Thank goodness.
+			actions[0] = bestAction;
+		}
+		return actions;
+	}
 	
 	// Handle a keypress on the console, which might be a letter, enter (to submit) or up/down arrow (to scroll through command history).
 	var keyPress = function(e) {
