@@ -57,6 +57,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	var fullCharacters;
 
 	var maxBackupFiles = 10;
+	var maxValidNumbers = 3; // The maximum number of actions that are printed between pairs of characters.
 
 	// stores the origins of all loaded rules.
 	// For now, we assume that the fileName field within the rule matches the filename of the file it came from. TODO: possible to do this automatically?
@@ -635,13 +636,36 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// Handle the "actions" console command (show the current actions that the first character wants to take towards the second.)
 	var doActions = function(char1, char2, numberOfActions){
 		console.log("Doing actions for " + char1 + " and " + char2 + " with this number of actions: " + numberOfActions);
-		var i; 
+		var i;
 		var logMsg = "<table>";
 		var actions = [];
 		if (storedVolitions === undefined) {
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
+		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
+		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
+		//the 'first' entry in the list of best actions. Perfect, right?
+		var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+		if(numberOfActions > 1){
+			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
+			if(actions[0].name !== bestAction.name){
+				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
+				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
+					if(actions[swapIndex].name === bestAction.name){
+						//Ok, we found where we need to swap!
+						var tempAction = actions[0];
+						actions[0] = actions[swapIndex];
+						actions[swapIndex] = tempAction;
+					}
+				}
+			}
+		}
+		else{ // ok, we are dealing with an easy case. Thank goodness.
+			actions[0] = bestAction;
+		}
+
+/*
 		//If we only want 1 action, we'll return the BEST action, right?
 		if(numberOfActions === 1){
 			actions[0] = cif.getAction(char1, char2, storedVolitions, characters);
@@ -651,7 +675,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			//We are going to default to '1 action per volition' for 'numberOfActions' worth of volitions
 			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
 		}
-
+*/
 		//Go through each action, and add a row in a table to display to the user saying the name of the action
 		//the effects that would transpire if they were to do it.
 		for(i = 0; i < actions.length; i += 1){
@@ -848,7 +872,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		if (command === "actions") {
 			var validNumbers = [];
-			var maxValidNumbers = 3;
 			var numberOfActions;
 			var numActions;
 			for(var i = 0; i < maxValidNumbers; i += 1){
@@ -902,9 +925,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				return cmdLog("Can't reference the same character twice.");
 			}
 
+			if (storedVolitions === undefined) {
+				storedVolitions = cif.calculateVolition(chars);
+			}
+
+			//Let's get all of the actions that a character can do towards another...
+			var potentialActions = cif.getActions(char1, char2, storedVolitions, chars, maxValidNumbers, 1, 1);
+
+			console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
+
 			//Get the list of all possible action names that exist.
 			var actionNames = [];
-			var actions = actionLibrary.getActions();
+			var actions = actionLibrary.getAllActions();
 			for(var i = 0; i < actions.length; i+= 1){
 				actionNames.push(actions[i].name.toLowerCase());
 			}
@@ -930,6 +962,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			var foundDesiredAction = false;
 			var acceptedArray = [];
 			var isAccepted;
+
+			/*
 			while (vol !== undefined){
 				var possibleActionsForThisVolition = actionLibrary.getActionsFromVolition(vol);
 				for(var i = 0; i < possibleActionsForThisVolition.length; i +=1){
@@ -951,6 +985,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				// Retrieve the next volition and continue the while loop if it's not undefined.
 				vol = storedVolitions.getNext(char1, char2);
 			}
+			*/
 
 			//So, this will catch two things:
 			//1.) If they typed in a nonsense action that doesn't exist
