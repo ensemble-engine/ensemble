@@ -1,0 +1,33 @@
+
+<html>
+<head>
+	<title>Making a sample game...</title>
+	<link href="tutorial.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+Today we will be making a simple, sample game using CiF!
+
+To start with, you'll be wanting to make a new file. We'll call it ourFunGame.html. You'll want to fill it up with your typical html friends, the html tag, the body tag, the title tag, you know the drill.
+
+The big important thing that you add is the following line:
+
+<pre><script src="cif.js"></script></pre>
+
+And that should get you access to all of the wonders of CiF.
+
+You can also include the following line:
+
+<pre>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function()) {
+	var loadResult = cif.init();
+	console.log(loadResult);
+	}
+}
+</pre>
+
+This will make sure that the page does not start up until all of cif has been successfully loaded. You should see a little true appear on your javascript console if cif was loaded successfully.
+
+</body>
+</html>

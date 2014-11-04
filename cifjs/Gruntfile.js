@@ -43,6 +43,34 @@ module.exports = function(grunt) {
           buildDir: './build', // Where the build version of my node-webkit app is saved
       },
       src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+    },
+    copy2: {
+      dist : {
+        files: [{
+          cwd: '.',  // set working folder / root to copy
+          src: 'jsdoc-default.css',           // copy all files and subfolders
+          dest: 'tutorialPages/',    // destination folder
+          flatten: true,
+          expand: true,           // required when using cwd
+          rename: function(dest, src) {
+            return dest + src.replace('jsdoc-default','crazyNewName');
+          }
+        }]
+      }
+    },
+    copy: {
+      dist : {
+        files: [{
+          cwd: '.',  // set working folder / root to copy
+          src: 'tutorialPages/crazyNewName.css',           // copy all files and subfolders
+          dest: 'doc/styles/',    // destination folder
+          flatten: true,
+          expand: true,           // required when using cwd
+          rename: function(dest, src) {
+            return dest + src.replace('crazyNewName','jsdoc-default');
+          }
+        }]
+      }
     }
   });
 
@@ -57,6 +85,9 @@ module.exports = function(grunt) {
 
   // Load the plugin to wrap CiF Console as a standalone app.
   grunt.loadNpmTasks('grunt-node-webkit-builder');
+
+  // Load the plugin to copy files
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task(s).
   grunt.registerTask('default', ['document']);
@@ -73,6 +104,13 @@ module.exports = function(grunt) {
     "jsdoc"
     ]);
 
+  grunt.registerTask("document2", [
+    "jsdoc",
+    "copy"
+    ]);
+
   grunt.registerTask("build", ["nodewebkit"]);
+
+  grunt.registerTask("copyCssFile", ["copy"]);
 
 };
