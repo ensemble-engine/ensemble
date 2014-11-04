@@ -9,6 +9,7 @@
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-jsdoc": "~0.5.6",
     "grunt-node-webkit-builder": "^0.2.2",
+    "grunt-require": "^1.1.2",
     "grunt-strip-code": "~0.1.2"
   }
 }

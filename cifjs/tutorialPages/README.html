@@ -2,23 +2,26 @@
 <html>
 <head>
 	<title>So You Want to Undertand What Is Going on With CiF...</title>
-	<link href="tutorial.css" rel="stylesheet" type="text/css">
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 Hello! If you are reading this, then presumambly you are interested in working with and developing on CiF! Wonderful! Hopefully this document will help get you up and running on whatever it is you would like to do! This document is still a work in progress, so expect all of the sections to become more filled in as time passes. Last updated 7/24/2014.
 
 <h1>So You'd Like To Know About...</h1>
 
-<BR>
+<p>
 <h2>CiF in General</h2>
 
 This is the most up-to-date version of CiF.js known to man. Though it was originally developed for use in the Voldemort Project, all Voldemort specifics have been stripped out. Though this means that this code isn't under any NDA constraints, it is still very much so a work in progress, and probably should not be shared publicly until the code and documentation are both a little cleaner.
 
-<BR>
+
+<p>
 <h2>The Structure of The Project </h2>
 
 What you are looking at is a directory structure whose root is "Standalone CiF." We'll cover some of the files and folders that are likely to be of interest, as well as others that might be a little more obscure.
 
+
+<p>
 <h3> Folders </h3>
 
 <b>Data</b> -- Influence and trigger rules, casts of characters, social exchanges, and references for predicate authoring all live in this folder. Be sure to check out <b>testSocial.json</b> for examples of how to define your own CiF data types, such as your very own traits and statuses!
@@ -35,6 +38,8 @@ What you are looking at is a directory structure whose root is "Standalone CiF."
 <br>
 <b>tutorialPages</b> -- The page that you are reading RIGHT NOW is known to jsDoc (the documentation generator we are using) as a tutorial page. Each tutorial page can have an associated json file (connected via giving it the same name as the html page) that can specify a couple of options such as the 'title' of the tutorial. This is the folder that houses all of those things.
 
+
+<p>
 <h3> Files </h3>
 
 <b> cifconsole.html </b> -- A great debugging tool, the cifconsole allows you to alter the social state on the fly, while providing a nice visualization of the social facts database. See 'How to Use the CiF Console' below for more information. **OPEN IN FIREFOX**
@@ -47,7 +52,7 @@ What you are looking at is a directory structure whose root is "Standalone CiF."
 <b>tests.html</b> -- The CiF.js suite of unit tests. Whenever you make a change to CiF, it is **VERY IMPORTANT** that you verify that all of the unit tests still work! **OPEN IN FIREFOX**
 
 
-
+<p>
 <h2>How To Use The CiF Console </h2>
 
 In order to use this great debugging tool, first load it up by opening the file cifconsole.html in Firefox.The CiF console is still under development, but what you'll want to do first is load in a cast of characters and the social blueprints that you'll hoping to use by using the buttons in the upper right hand corner. After doing so, you should see the social types and characters you specified appear on the right hand column. There are then three tabs worth of functionality to experiment with. 
@@ -58,15 +63,17 @@ The <b> Reference</b> tab is still in development.
 <BR><BR>
 The <b>SFDB Viewer</b> tab allows you to see the contents of the SFDB at any given timestep. Click on the arrows beneath the large "Timestep" number to jump forward and backward through time. You may need to load some test history to populate the SFDB by clicking on the "load test history" button in the upper right hand corner, otherwise there will be nothing to look at.
 
-
+<p>
 <h2>Where to Download CiF</h2>
 
 CiF is currently located at a UCSC SVN repository: https://svn.soe.ucsc.edu/svn/vold. However, it is not "free" to download (that is, only approved UCSC students will be able to access this repository). Finding a more permament home for CiF is one of our highest priorities.
 
+<p>
 <h2>How To Run The Unit Tests</h2>
 
 Open the file <b>tests.html</b> in Firefox. If all is well, you should be presented with a screen full of green passing tests! If a test does not pass, a message explaining what the test was looking for (and the value it actually saw) will be printed in red. If the unit tests crashed before completion, a red message will appear at the bottom of the page informing you that a crash has occured.
 
+<p>
 <h2>How To Write Unit Tests </h2>
 
 Open up the appropriate file in the <ib>js->tests</b> folder based on the module you are writing a test for. Find the function 'runTests' within it to see the types of things already being tested for. If you want to add an additional tests to one of these existing areas, navigate to that function. Otherwise, make a new function (giving it an appropriately descriptive name for what it is testing), and call that new function within the runRules function.
@@ -78,6 +85,7 @@ Though perhaps the best way to learn how to write unit tests is to see how the o
 <BR><BR>
 <b>test.finish();</b> -- Signifies that this unit test is over and that you are ready to move on to the following one.
 
+<p>
 <h2>How To Set Up The Build System </h2>
 We're using Grunt for our build system! You can read all about it at gruntjs.com  I think Aaron already wrote down some tutorial information about this, so I won't repeat it here? But as I'm actually installing things all over again on my windows machine, I'll write it down here anyway as I go along.
 
@@ -117,14 +125,20 @@ In order to get Grunt working for you, you'll need several things. First of all,
 		So now you have an understanding as to how to get Grunt up and running. The next big lesson will be learning how to edit the Gruntfile to actually define your own tasks. TODO: Make that section!
 	</p>
 
-
+<p>
 <h2>How To Generate Documenation</h2>
 Navigate to the standalone-cif root and simply type "grunt document" on the command line (after you've set up your build system of course! See the previous section). Bear in mind that at the time of this writing, much of the documentation still needs to be revised.
+<p>
 <h2>How To Generate a Release Build</h2>
 Navigate to the standalone-cif root, and type "grunt deploy" on the command line. At the time of this writing, this functionality is severely lacking; there is not much point to deploying at the moment.
+<p>
 <h2>How To Add New Tasks to the Build System </h2>
 I believe that Aaron also began writing this down? So maybe we can just copy that into here.
+<p>
 <h2>How CiF.js differs from CiF Classic </h2>
 Many ways! some ways include the way that the sfdb is handled, the fact that you can specify your own social types, and there is on the whole a greater separation of 'actions/instantiations' from the intents. More details will be added to this section as time goes on.
+<p>
+<h2>Who to Blame</h2>
+<img src="images/aaronFace.jpeg"> <img src="images/benFace.jpeg">
 </body>
 </html>

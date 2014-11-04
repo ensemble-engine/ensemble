@@ -48,13 +48,20 @@ module.exports = function(grunt) {
       dist : {
         files: [{
           cwd: '.',  // set working folder / root to copy
-          src: 'tutorialPages/crazyNewName.css',           // copy all files and subfolders
+          src: 'tutorialPages/tutorialPageStyle.css',           // copy all files and subfolders
           dest: 'doc/styles/',    // destination folder
           flatten: true,
           expand: true,           // required when using cwd
           rename: function(dest, src) {
-            return dest + src.replace('crazyNewName','jsdoc-default');
+            return dest + src.replace('tutorialPageStyle','jsdoc-default');
           }
+        },
+        {
+          cwd: 'tutorialPages/images',  // set working folder / root to copy
+          src: '*',           // copy all files and subfolders
+          dest: 'doc/images',    // destination folder
+          flatten: true,
+          expand: true,           // required when using cwd
         }]
       }
     },
@@ -99,7 +106,7 @@ module.exports = function(grunt) {
 
   // Load plugin to combine files using require.js into a single production file.
   grunt.loadNpmTasks('grunt-require');
-  
+
   // Default task(s).
   grunt.registerTask('default', ['document']);
 
@@ -112,10 +119,6 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask("document", [
-    "jsdoc"
-    ]);
-
-  grunt.registerTask("document2", [
     "jsdoc",
     "copy"
     ]);

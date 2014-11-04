@@ -6,7 +6,7 @@ html
 
 body
 {
-	font: 54px "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
+	font: 14px "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
 	line-height: 130%;
 	color: #000;
 	background-color: #fff;
@@ -42,6 +42,19 @@ header
 #main {
     float: left;
     width: 100%;
+}
+
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+h2{
+	color: green;
+}
+
+h3{
+	color: blue;
 }
 
 section
