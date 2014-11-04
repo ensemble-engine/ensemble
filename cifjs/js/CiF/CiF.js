@@ -11,6 +11,7 @@ define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "test", "v
 function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 
 
+
 	/**
 	 * Loads a stock set of blueprints useful for testing. (relationship, networks, etc.)
 	 *
@@ -20,6 +21,32 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		sfdb.clearEverything();
 		return loadSocialStructure( bp );
 	};
+
+
+
+	var loadFile = function(filename) {
+
+		var fileResults;
+
+		if (!window.XMLHttpRequest) {
+			console.log("Browser doesn't support XMLHttpRequest.");
+			return false;
+		}
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				fileResults = JSON.parse(xmlhttp.responseText);
+			} else {
+				console.log("xmlhttp not ready!");
+				return false;
+			}
+		}
+
+		xmlhttp.open("GET", filename, false); // false = synchronously
+		xmlhttp.send();
+
+		return fileResults;
+	}
 
 
 	/**
@@ -533,6 +560,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 
 	var init = function() {
 		sfdb.init();
+		return "Ok";
 	};
 
 	var cifInterface = {
@@ -549,6 +577,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getCharName				: getCharName,
 
 		loadBaseBlueprints		: loadBaseBlueprints,
+		loadFile				: loadFile,
 
 		calculateVolition		: ruleLibrary.calculateVolition,
 		runTriggerRules			: ruleLibrary.runTriggerRules,
@@ -588,6 +617,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 //EXPERIMENT: don't think we want these to be public.
 	//addTriggerRules			: addTriggerRules,
 	//addVolitionRules		: addVolitionRules,
+
+	// Export interface to a global variable, "cif".
+	cif = cifInterface;
 
 	return cifInterface;
 

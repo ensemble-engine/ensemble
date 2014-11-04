@@ -43,7 +43,28 @@ module.exports = function(grunt) {
           buildDir: './build', // Where the build version of my node-webkit app is saved
       },
       src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
-    }
+    },
+    requirejs: {
+        options: {
+            baseUrl: '.',
+            config: ['cif-config.js'],
+            name: 'js/CiF/CiF',
+            require: 'jslib/require',
+            almond: 'jslib/almond',
+            out: 'bin/cif.js',
+            wrap: true
+        },
+        dev: {
+            options: {
+                build: false
+            }
+        },
+        prod: {
+            options: {
+                build: true
+            }
+        }
+      },
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -58,6 +79,9 @@ module.exports = function(grunt) {
   // Load the plugin to wrap CiF Console as a standalone app.
   grunt.loadNpmTasks('grunt-node-webkit-builder');
 
+  // Load plugin to combine files using require.js into a single production file.
+  grunt.loadNpmTasks('grunt-require');
+
   // Default task(s).
   grunt.registerTask('default', ['document']);
 
@@ -66,7 +90,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask("deploy", [
-    "strip_code"
+    "strip_code", "requirejs:prod"
   ]);
 
   grunt.registerTask("document", [
