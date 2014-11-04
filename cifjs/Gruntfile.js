@@ -44,20 +44,6 @@ module.exports = function(grunt) {
       },
       src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
     },
-    copy2: {
-      dist : {
-        files: [{
-          cwd: '.',  // set working folder / root to copy
-          src: 'jsdoc-default.css',           // copy all files and subfolders
-          dest: 'tutorialPages/',    // destination folder
-          flatten: true,
-          expand: true,           // required when using cwd
-          rename: function(dest, src) {
-            return dest + src.replace('jsdoc-default','crazyNewName');
-          }
-        }]
-      }
-    },
     copy: {
       dist : {
         files: [{
@@ -71,7 +57,28 @@ module.exports = function(grunt) {
           }
         }]
       }
-    }
+    },
+    requirejs: {
+        options: {
+            baseUrl: '.',
+            config: ['cif-config.js'],
+            name: 'js/CiF/CiF',
+            require: 'jslib/require',
+            almond: 'jslib/almond',
+            out: 'bin/cif.js',
+            wrap: true
+        },
+        dev: {
+            options: {
+                build: false
+            }
+        },
+        prod: {
+            options: {
+                build: true
+            }
+        }
+      }
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -86,9 +93,13 @@ module.exports = function(grunt) {
   // Load the plugin to wrap CiF Console as a standalone app.
   grunt.loadNpmTasks('grunt-node-webkit-builder');
 
+
   // Load the plugin to copy files
   grunt.loadNpmTasks('grunt-contrib-copy');
 
+  // Load plugin to combine files using require.js into a single production file.
+  grunt.loadNpmTasks('grunt-require');
+  
   // Default task(s).
   grunt.registerTask('default', ['document']);
 
@@ -97,7 +108,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask("deploy", [
-    "strip_code"
+    "strip_code", "requirejs:prod"
   ]);
 
   grunt.registerTask("document", [
