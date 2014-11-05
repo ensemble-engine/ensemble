@@ -925,7 +925,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			var validEntries = [];
 			for(var i = 0; i < potentialActions.length; i+= 1){
 				//actionNames.push(actions[i].name.toLowerCase());
-				validEntries.push(potentialActions[i].name);
+				validEntries.push(potentialActions[i].name.toLowerCase());
 				validEntries.push(i.toString());
 			}
 
@@ -990,7 +990,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			//var nameIndex = potentialActions.indexOf(actionSearch);
 			var desiredAction;
 			for(i = 0; i < potentialActions.length; i += 1){
-				if(potentialActions[i].name === actionSearch || i.toString() === actionSearch){
+				if(potentialActions[i].name.toLowerCase() === actionSearch || i.toString() === actionSearch){
 					desiredAction = potentialActions[i];
 					break; // if we got it, we got it! Get outta here!
 				}
