@@ -571,41 +571,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return undefined;
 	};
 
-	//#CODEREVIEW: I think this doAction is obsolete -- double check that it still works with the freshly written 'getAction' function.
-	/**
-	 * @method performAction
-	 * @description performAction has the 'initiator' character perform the action 'actionName' towards the responder. If the responder's volition is above a certain threshold, the action's "acceptEffects" will transpire. Otherwise, the "rejectEffects" will occur.
-	 * @param  {[string]} actionName The name of the action to perform.
-	 * @param  {[string]} initiator  The name of the character that is performing the action.
-	 * @param  {[string]} responder  The name of the character that is having the action performed on them.
-	 * @param  {object} registeredVolitions Our volition cache.
-	 */
-	var doAction = function(actionName, initiator, responder, registeredVolitions){
-		//First, we have to find our action based on the name.
-		var action = getActionFromName(actionName);
-
-		if(action === undefined){
-			console.error("Instructed to perform action " + actionName + " but that is not defined in the actionLibrary.");
-		}
-
-		//Now let's fill in the 'blank' roles with actual character names.
-		//This will be done by assuming that whatever role is specified in the 'intent'
-		//for 'first' is going to be the initiator, and 'second' is going to be the responder.
-		action = bindActionEffects(initiator, responder, action);
-
-		//Now we have to see if the action is accepted or rejected.
-		var isAccepted = registeredVolitions.isAccepted(initiator, responder, action.intent);
-
-		//And now, based on if it is accepted or rejected, we want to do either the accept or reject effects.
-		console.log("is Accepted", isAccepted);
-		if(isAccepted.accepted){
-			setActionEffects(action.acceptEffects, initiator, responder);
-		}
-		else{
-			setActionEffects(action.rejectEffects, initiator, responder);
-		}
-	};
-
 	//#CODEREVIEW: This is definitely obsolete. Get rid of it.
 	/**
 	 * POSSIBLY OBSOLETE
@@ -1006,7 +971,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		parseActions : parseActions,
 		getAllActions : getAllActions,
 		getActionFromName : getActionFromName,
-		doAction : doAction,
 		bindActionEffects : bindActionEffects,
 		bindActionEffects2 : bindActionEffects2,
 		categorizeActionGrammar : categorizeActionGrammar,
