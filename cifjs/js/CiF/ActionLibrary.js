@@ -198,33 +198,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * //TODO: Double check that this method stil works? I think it might be obsolete...
-	 * @method getActionsFromVolition
-	 * @description Given information about a specific intent/volition, returns an array of all actions that adjust that volition
-	 * @param  {Object} volition [An object that specifies a volition a character wants to take towards another character.]
-	 * @return {[]}          [An array representing all of the actions that the 'first' character as specified in the volition parameter wants to take towards the 'second' character in the volition parameter.]
-	 */
-	/*
-	var getActionsFromVolition = function(volition){
-		var relatedActions = [];
-		var actionIntent;
-		for(var i = 0; i < actions.length; i +=1){
-			actionIntent = actions[i].intent;
-			if(actionIntent.class === volition.class &&
-				actionIntent.type === volition.type &&
-				actionIntent.intentDirection === volition.intentDirection){
-					//it appears that this is an action pertaining to this volition!
-					relatedActions.push(util.clone(actions[i]));
-			}
-		}
-		return relatedActions;
-	};
-	*/
-
-	//I'm gonna hold off on writing an official description for now, but in general, this is what I'm hoping for:
-	//We get some voition (like start dating)
-	//From this volition, we know whehter it is going to be accepted or not. That will be important in determining what terminals we are interested in.
-	/**
 	 * @method getTerminalActionsFromVolition
 	 * @description This method takes the names of the initiator and responder of an action and a registered volition 
 	 * between them, and will go through the entire grammar for the intnet specified in the volition and return all 
@@ -239,11 +212,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Array]}                    [An Array of potential actions that can be carried out from the initiator to the responder]
 	 */
 	var getTerminalActionsFromVolition = function(initiator, responder, volition, isAccepted, weight, numActionsPerGroup, cast){
-		//var volition = registeredVolition.getFirst(initiator, responder);
-		//var acceptedObject = registeredVolition.isAccepted(initiator, responder, volition);
-		//var weight = volition.weight;
-		//console.log("^^^^^^^^^ weight is: " + weight);
-		//var isAccepted = acceptedObject.accepted;
 		var actionIntent;
 		var goodTerminals = [];
 		var returnTerminalList = [];
@@ -279,39 +247,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//#CODEREVIEW: Maybe just return goodTerminals right here.
 					
 					returnTerminalList = goodTerminals; //Ok, so, it said temp temp temp, but actually I think this is pretty much exactly what we want!
-
-
-					//TEMP TEMP
-					//return goodTerminals; // just for debugging help.
-
-					//We want the return array to be a dictionary/associative array with index entries
-					//equal to the names of the nonTerminal actions that got us to the terminals.
-					//I don't think we need this anymore, in all honesty. We do checks for this when we are actually finding the good termiansl (hence, them being considered "good" !).
-					/*
-					for(var j = 0; j < goodTerminals.length; j += 1){
-						potentialTerminal = goodTerminals[j];
-						if(potentialTerminal.isAccept === isAccepted){
-							returnTerminalList.push(potentialTerminal);
-						}
-					}
-					*/
-
-					//Now, actually push in the terminal actions.
-					/*
-					for (var key in goodTerminals){
-						if (goodTerminals.hasOwnProperty(key)){
-							for(var k = 0; k < goodTerminals[key].length; k += 1){
-								potentialTerminal = goodTerminals[key][k];
-								if(potentialTerminal.isAccept === isAccepted){
-									if(returnTerminalList[key] === undefined){
-										returnTerminalList[key] = [];
-									}
-									returnTerminalList[key].push(potentialTerminal);
-								}
-							}
-						}
-					}
-					*/
 			}
 		}
 
