@@ -900,10 +900,12 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundActions;
 	};
 
+	//TODO: Does this work if you ahve more than two layers worth of actions?
 	/**
-	 * [extractAndSortTerminalsFromActionList description]
-	 * @param  {[type]} actionList [description]
-	 * @return {[type]}            [description]
+	 * @method extractAndSortTerminalsFromActionList 
+	 * @description Given an actionList, gets the terminals out of them, finds the best binding for each one, sorts them, and returns them in sorted order. 
+	 * @param  {[Array]} actionList [An array of actions -- many of these will likely have their own arrays of actions to lead to]
+	 * @return {[Array]}            [A sorted list of all terminals.]
 	 */
 	var extractAndSortTerminalsFromActionList = function(actionList){
 		console.log("inside of extractAndSortTerminalsFromActionList!");
@@ -915,7 +917,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 				//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
 				//do something special here.
 				//These are now bound at this point yet -- we will have to do that eventually!
-				//BEN: START HERE, please.
 				allTerminals.push(actionList[i].actions[j]);
 			}
 		}
@@ -928,8 +929,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		}
 
 		return sortedTerminals;
-
-
 	};
 
 	var getBestBindingFromTerminal = function(terminal){
