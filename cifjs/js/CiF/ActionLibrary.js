@@ -358,6 +358,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			if(terminalAction !== undefined){
 				terminalsAtThisLevel = true;
 				terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
+				terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
 				//console.log("$$$$$ Here is my terminal action before going into the 'I found a terminal action' thing!", terminalAction);
 
 				currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
@@ -500,6 +501,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				var nonTerminalAction = getTerminalActionFromNameGeneric(actionName, nonTerminals);
 				nonTerminalAction.goodBindings = nonTerminal.goodBindings;
 				nonTerminalAction.weight = nonTerminal.weight;
+				if(nonTerminal.lineage === undefined){
+					nonTerminalAction.lineage = nonTerminal.name;
+				}
+				else{
+					nonTerminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+				}
+				
 				//nonTerminalAction.conditions = nonTerminal.conditions;
 				currentUniqueBindings = getUniqueActionBindings(nonTerminalAction, uniqueBindings);
 				if(!actionIsAppropriate(nonTerminalAction, isAccepted, currentUniqueBindings)){

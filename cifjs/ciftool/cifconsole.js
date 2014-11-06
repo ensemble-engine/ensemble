@@ -660,6 +660,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		//the effects that would transpire if they were to do it.
 		for(i = 0; i < actions.length; i += 1){
 			logMsg += "<tr><td><span class='actionType'> [" + i + "] " + char1 + " wants to " + actions[i].name + " with " + char2 + " (" + actions[i].weight + ") </span></td>";
+			logMsg += "<td>Intent: " + actions[i].lineage.substr(0, actions[i].lineage.indexOf("-")) + "</td>";
 			logMsg += "<td>This will become true:<BR><ul>";
 			for(var j = 0; j < actions[i].effects.length; j += 1){
 				var englishEffect = cif.predicateToEnglish(actions[i].effects[j]);
