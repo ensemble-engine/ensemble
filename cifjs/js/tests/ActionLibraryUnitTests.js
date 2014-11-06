@@ -23,7 +23,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		sfdb.clearEverything();
 		//testDoAction();
 		sfdb.clearEverything();
-		testBindActionEffects();
+		//testBindActionEffects();
 		sfdb.clearEverything();
 		testCategorizeActionGrammar();
 		sfdb.clearEverything();

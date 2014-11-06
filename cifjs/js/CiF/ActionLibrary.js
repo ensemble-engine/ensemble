@@ -571,37 +571,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return undefined;
 	};
 
-	//#CODEREVIEW: This is definitely obsolete. Get rid of it.
-	/**
-	 * POSSIBLY OBSOLETE
-	 * @method bindActionEffects
-	 * @description Takes the roles specified in the 'intent' of an action, assumes that 'first' is the initiator and that 'second' is the responder, and then replaces the key that was used in the first/second slot throughout all of the effects of the action.
-	 * @param  {string} initiator the name of the initiator of the action
-	 * @param  {string} responder the name of the responder of the action
-	 * @param {object} actionObject An object representing all of the pertinent information about an action.
-	 * @return {object}           [the object that was passed in, but with roles  (such as 'x' and 'y') replaced with character's names in all of the effects]
-	 */
-	var bindActionEffects = function(initiator, responder, actionObject){
-		var bindingLegend = [];
-		bindingLegend[actionObject.intent.first] = initiator;
-		bindingLegend[actionObject.intent.second] = responder;
-		for(var i = 0; i < actionObject.acceptEffects.length; i += 1){
-			//Replace all of the "x"s and "y"s and what have you with actual character names.
-			actionObject.acceptEffects[i].first = bindingLegend[actionObject.acceptEffects[i].first];
-			actionObject.acceptEffects[i].second = bindingLegend[actionObject.acceptEffects[i].second];
-		}
-		for(i = 0; i < actionObject.rejectEffects.length; i += 1){
-			actionObject.rejectEffects[i].first = bindingLegend[actionObject.rejectEffects[i].first];
-			actionObject.rejectEffects[i].second = bindingLegend[actionObject.rejectEffects[i].second];
-		}
-		return actionObject;
-	};
-
 	//#CODEREVIEW: Give this a better name so that we know this is the 'real' bindActionEffects
-	//PHEW... OK... yes, Ben Start Here indeed...
-	//When did I write this?
 	var bindActionEffects2 = function(actionObject, bindingsToUse){
-		console.log("inside of bindActionEffects2! BEN START HERE!");
 		for(var i = 0; i < actionObject.effects.length; i += 1){
 			actionObject.effects[i].first = bindingsToUse[actionObject.effects[i].first];
 			actionObject.effects[i].second = bindingsToUse[actionObject.effects[i].second];
@@ -971,7 +942,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		parseActions : parseActions,
 		getAllActions : getAllActions,
 		getActionFromName : getActionFromName,
-		bindActionEffects : bindActionEffects,
+		//bindActionEffects : bindActionEffects,
 		bindActionEffects2 : bindActionEffects2,
 		categorizeActionGrammar : categorizeActionGrammar,
 		getStartSymbols : getStartSymbols,
