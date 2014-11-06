@@ -18,7 +18,6 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		sfdb.clearEverything();
 		testParseActions();
 		sfdb.clearEverything();
-		testGetActionsFromVolition();
 		sfdb.clearEverything();
 		testGetActionFromName();
 		sfdb.clearEverything();
@@ -74,54 +73,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.finish();
 	};
 
-	var testGetActionsFromVolition = function(){
-		
-		var sampleVolitions = {
-			"simon": {
-				"monica": [
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
-				]
-			},
-			"monica": {
-				"simon": [
-					{ "class": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
-				]
-			}
-		};
-		
-
-		var v = volition.register("main", sampleVolitions);
-		var firstVolition = v.getFirst("monica", "simon");
-		var potentialActions = actionLibrary.getActionsFromVolition(firstVolition);
-		console.log("potentialActions", potentialActions);
-
-		test.start("ActionLibrary", "testGetActionsFromVolition");
-		test.assert(firstVolition.type, "affinity", "The first volition should be pertaining to affinity down.");
-		test.assert(firstVolition.intentDirection, false, "the first volition should be pertaining to affinity down.");
-		test.assert(potentialActions.length, 1, "There should only be one action for this volition.");
-		test.assert(potentialActions[0].name, "annoy", "The action that monica wants to do with Simon should be annoy.");
-		
-		var simonToMonicaVolition = v.getFirst("simon", "monica");
-		var potentialActionsSimonToMonica = actionLibrary.getActionsFromVolition(simonToMonicaVolition);
-		console.log("potentialActionsSimonToMonica", potentialActionsSimonToMonica);
-		test.assert(simonToMonicaVolition.type, "affinity", "the first volition from simon to monica should pertain to affinity up.");
-		test.assert(simonToMonicaVolition.intentDirection, true, "the first volition from simon to monica should pertain to affinity up.");
-		test.assert(potentialActionsSimonToMonica.length, 1, "There should only be one action for Simon to Monica for this volition.");
-		test.assert(potentialActionsSimonToMonica[0].name, "reminisce", "the action that simon wants to do with monica should reminisce.");
-
-		var simonToMonicaVolition2 = v.getNext("simon", "monica");
-		potentialActionsSimonToMonica = actionLibrary.getActionsFromVolition(simonToMonicaVolition2);
-		test.assert(simonToMonicaVolition2.type, "involved with", "the second volition from simon to monica should pertain to start involved with.");
-		test.assert(simonToMonicaVolition2.intentDirection, true, "the second volition from simon to monica should pertain to start involved with");
-		test.assert(potentialActionsSimonToMonica.length, 1, "There should only be zero actions for Simon to Monica for this volition.");
-
-
-		test.finish();
-
-	};
+	
 
 	var testGetActionFromName = function(){
 		test.start("ActionLibrary", "testGetActionFromName");

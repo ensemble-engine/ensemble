@@ -17,22 +17,46 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var nonTerminals = [];
 	var terminalActions = [];
 
+	/**
+	 * @method getAllActions 
+	 * @description returns an array containing every action (terminal or otherwise) available in the social world.
+	 * @return {Array} [An array containing every single action defined in the social world.]
+	 */
 	var getAllActions = function(){
 		return actions;
 	};
 
+	/**
+	 * @method getStartSymbols 
+	 * @description Returns an array containing every 'start action.' Conceived to return all actions specifically tied to an intent.
+	 * @return {Array} [An array containing every 'root' acton (every action tied to an intent) in the social world]
+	 */
 	var getStartSymbols = function(){
 		return startSymbols;
 	};
 
+	/**
+	 * @method getNonTerminals 
+	 * @description Returns an array containing every 'non terminal' This will include both root and non-root actions, but exclude terminal actions.
+	 * @return {[type]} [An array containing every 'non terminal' action.]
+	 */
 	var getNonTerminals = function(){
 		return nonTerminals;
 	};
 
+	/**
+	 * @method getTerminalActions 
+	 * @description Returns an array containing every terminal action.
+	 * @return {[type]} [An array containing every terminal action]
+	 */
 	var getTerminalActions = function(){
 		return terminalActions;
 	};
 
+	/**
+	 * @methodclearActionLibrary 
+	 * @description Completely empties out the the action library by zero-ing out the arrays of actions, startSymbols, nonTerminals, and terminalActions. Used mainly for testing purposes.
+	 */
 	var clearActionLibrary = function(){
 		actions = [];
 		startSymbols = [];
@@ -40,11 +64,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		terminalActions = [];
 	};
 
+	/**
+	 * @method parseActions 
+	 * @description Takes in either a JSON file or a JSON string representing the definition of an action or actions and stores it in the action library. This effect is cumulative; calling this function on multiple files will lead to the actions from both files being stored in the action library.]
+	 * @param  {JSON} data [Either a JSON string or a JSON file defining an action or actions.]
+	 * @return {array}      [An array of every action currently stored in the action library.]
+	 */
 	var parseActions = function(data){
 		var parsedActions;
 		var fileName;
 		var actionsToCategorize = [];
-		//console.log("here is the value of data...", data);
 
 		try {
 			if (typeof data === "string") {
@@ -71,10 +100,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			// ////#CODEREVIEW: add validation that there can't be two different actions that have the same intent defined.
 			validate.action(action, "Examining action  #" + i);
 
-		//}
-
-		
-		//for(var j = 0; j < parsedActions.length; j += 1){
 			if(actionAlreadyExists(action)){
 				console.error("Error! The action " + action.name + " is already defined!" );
 				continue;
@@ -82,11 +107,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			actions.push(util.clone(action));
 			actionsToCategorize.push(action);
 		}
-		//actions = util.clone(parsedActions);
 		categorizeActionGrammar(actionsToCategorize);
 		return actions;
 	};
 
+	/**
+	 * @method actionAlreadyExists 
+	 * @description a simple helper function to see if a newly parsed in action hasn't already been defined -- this is done by looking at the name of the action. This means that even if two actions are quite different, if they share the same name an error will be printed to the console.]
+	 * @param  {Object} potentialNewAction [The action that has just been read in, and is to be checked against the actions already in the action library.]
+	 * @return {Boolean}                    [Returns true if the action already exists. False otherwise.]
+	 */
 	var actionAlreadyExists = function(potentialNewAction){
 		for(var i = 0; i < actions.length; i += 1){
 			if(actions[i].name === potentialNewAction.name){
@@ -104,7 +134,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var categorizeActionGrammar = function(actionPool){
 		var currentAction;
 		for(var i = 0; i < actionPool.length; i += 1){
-			currentAction = util.clone(actionPool[i])
+			currentAction = util.clone(actionPool[i]);
 			if(actionPool[i].intent !== undefined){
 				startSymbols.push(currentAction);
 			}
@@ -118,7 +148,18 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	};
 
-	//#CODEREVIEW : Write this preamble!
+	/**
+	 * @method getSortedActionsFromVolition
+	 * @description Finds the actions that the initiator wants to take towards the responder, and sorts them by volition score.
+	 * @param  {String}  initiator          [The name of the initiator of the action]
+	 * @param  {String}  responder          [The name of the responder of the action]
+	 * @param  {Object}  registeredVolition [A registered volition object]
+	 * @param  {Boolean} isAccepted         [Whether or not the responder accepts the intent of the volition.]
+	 * @param  {Number}  weight             [How much the initiator wants to pursue this volition.]
+	 * @param  {[Number]}  numActionsPerGroup [Used to determine how many 'actions per group' to include. Will ultimately default to one if unspecified.]
+	 * @param  {Array}  cast               [The characters to use in consideration for the binding of various roles the actions might need.]
+	 * @return {[Array]}                     [An array of actions the initiator wants to take towards the responder, sorted by weight.]
+	 */
 	var getSortedActionsFromVolition = function(initiator, responder, registeredVolition, isAccepted, weight, numActionsPerGroup, cast){
 		//console.log("Inside of getSortedactionsFromVolition");
 
@@ -128,32 +169,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	};
 
-	var sortActionsByVolitionScore = function(actions){
-		//TODO: WRITEME!
-		//
-		
-		//ok, so... umm... what?
-		//What do we need to do?
-		//We need to look inside of each action array that we'll have in here, and then sort them
-		//based on their 'weight' attribute. I think. I think maybe it is just as easy as that!
-		//the only problem is that we don't know how deep it goes! So we...
-		//
-		//NEED RECURSION AGAIN!
-		//I've been wielding its dark art a lot, lately.
-		
-		//console.log("This is what actions look like inside of sort actions by volition score: ", actions);
 
-/*
-		for(var i = 0; i < actions.length; i += 1){
-			var nextActions = actions[i].actions;
-			if(nextActions !== undefined){
-				sortActionsByVolitionsScore(actions[i].actions);
-			}			
-		}
-		*/
+	/**
+	 * @method sortActionsByVolitionScore 
+	 * @description Sorts an array of actions based on their weights in descending order.. Specifically, each action has a list of actions that it 'leads to' -- and it is THIS list of actions that is being sorted. Uses recursion to get to the end of the chain. Also sorts the GoodBindings of each weight as well.
+	 * @param  {Array} actions [An array of actions to be sorted]
+	 * @return {Array}         [The sorted actions]
+	 */
+	var sortActionsByVolitionScore = function(actions){
 		var descSortedActions = _.sortBy(actions, "weight");
 		actions = descSortedActions.reverse(); // now all of our actions are sorted, sweet!
-		//console.log("Maybe this is all sorted now? " , descSortedActions);
 
 		//And, uh, I guess now we want to do the same as we drill downwards?
 		for(var i = 0; i < actions.length; i += 1){
@@ -179,6 +204,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @param  {Object} volition [An object that specifies a volition a character wants to take towards another character.]
 	 * @return {[]}          [An array representing all of the actions that the 'first' character as specified in the volition parameter wants to take towards the 'second' character in the volition parameter.]
 	 */
+	/*
 	var getActionsFromVolition = function(volition){
 		var relatedActions = [];
 		var actionIntent;
@@ -193,6 +219,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		}
 		return relatedActions;
 	};
+	*/
 
 	//I'm gonna hold off on writing an official description for now, but in general, this is what I'm hoping for:
 	//We get some voition (like start dating)
@@ -1191,7 +1218,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	var actionLibraryInterface = {
 		parseActions : parseActions,
 		getAllActions : getAllActions,
-		getActionsFromVolition : getActionsFromVolition,
 		getActionFromName : getActionFromName,
 		doAction : doAction,
 		bindActionEffects : bindActionEffects,
