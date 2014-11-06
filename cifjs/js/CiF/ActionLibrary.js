@@ -588,6 +588,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Object]}                [An object containing all of the unique roles used by this point in the action chain.]
 	 */
 	var getUniqueActionBindings = function(actionObject, uniqueBindings){
+
 		//Go through all of the conditions and check them for new roles
 		var conditions = actionObject.conditions;
 		for (var i = 0 ; i < conditions.length ; i += 1) {
@@ -651,11 +652,11 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 					//a character has been specified to work in this role (could be initiator, responder, or something else)
 					//remove them from the available cast members, but make sure that they are 'lodged' in the unique bindings.
 					//We remove them from the available cast members, because it means this character should be unavailable for any other role.
-					// if availableCastMembers.indexOf(characterName) >= 0
-					// //#CODEREVIEW - do the above.
-					var castIndex = $.inArray(characterName, availableCastMembers);
-					if( castIndex !== -1){
-						availableCastMembers.splice(castIndex, 1);
+					if(availableCastMembers !== undefined){
+						var castIndex = availableCastMembers.indexOf(characterName);
+						if(castIndex >= 0){
+							availableCastMembers.splice(castIndex, 1);
+						}
 					}
 
 					//And just as the initiator and responder roles have already been clearly defined earlier,
@@ -691,7 +692,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 				if(evaluationResult === true){
 					//Awesome! It's true! Push it on to our return array for later!
-					//console.log("BOOYAH!!!!! Found a working combination: ", uniqueBindings);
 					returnArray.push(util.clone(uniqueBindings));
 				}
 				else{
@@ -720,20 +720,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return returnArray;
 	};
 
-	//#CODEREVIEW: The name is confusing (cif.set ? actually 'setting' some property of the action's effects? it is the former!) Also, this probably should live inside of the cif file, gets an action passed in.	
-	/**
-	 * @method setActionEffects 
-	 * @description Given an 'effectSet' that came from an action (either the acceptEffects or rejectEffects) go through each one and set it into the sfdb. This function assumes that the effectSet bieng passed in has already been bound (that is to say, that there aren't generic 'roles' in the first and second slots, but actual character names.)
-	 * 
-	 * @param {[]} effectSet The effects to enact that came from the action -- either it's 'acceptEffects' or rejectEffects.
-	 * @param {[string]} initiator [the name of the initiator of the action]
-	 * @param {[string]} responder [the name of the responder of the action]
-	 */
-	var setActionEffects = function(effectSet, initiator, responder){
-		for(var i = 0; i < effectSet.length; i += 1){
-			//cif.set(effectSet[i]);
-		}
-	};
 
 	var bindActionCondition = function(conditions, bindingToUse){
 		for(var i = 0; i < conditions.length; i += 1){
