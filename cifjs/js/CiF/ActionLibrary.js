@@ -931,6 +931,12 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return sortedTerminals;
 	};
 
+	/**
+	 * @method getBestBindingFromTerminal 
+	 * @description Given a terminal action, looks at it's list of good bindings and finds the one that matches the score of the action itself. If multiple ones do, picks one at random.
+	 * @param  {[Object]} terminal [An Action]
+	 * @return {[Object]}          [An object representing which bindings are the best ones to use for this action]
+	 */
 	var getBestBindingFromTerminal = function(terminal){
 		//There might be multiple best bindings!
 		var potentialBestBindings = [];
