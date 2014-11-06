@@ -588,12 +588,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Object]}                [An object containing all of the unique roles used by this point in the action chain.]
 	 */
 	var getUniqueActionBindings = function(actionObject, uniqueBindings){
-		//If we don't have a uniqueBindings object passed in, create a new one.
-		//#CODEREVIEW: We should probably just assume that uniqueBindings is already defined, so we don't need this check.
-		if(uniqueBindings === undefined){
-			uniqueBindings = {};
-		}
-
 		//Go through all of the conditions and check them for new roles
 		var conditions = actionObject.conditions;
 		for (var i = 0 ; i < conditions.length ; i += 1) {
