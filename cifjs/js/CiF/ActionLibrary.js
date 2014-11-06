@@ -720,7 +720,13 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return returnArray;
 	};
 
-
+	/**
+	 * @method bindActionCondition 
+	 * @description Takes in an array of conditions and a specific binding to use, and replaces all 'generic roles' in the conditions (e.g., "x", "y", "cheater", etc.) with actual character names.
+	 * @param  {Array} conditions   [An Array of conditions filled with generic roles (such a initiator, x, or cheater)]
+	 * @param  {[Object]} bindingToUse [A dictionary of sorts mapping which charactes should be used to fill in which roles]
+	 * @return {[Array]}              [An array of the same conditions passed in, but with their generic roles filled in with character names.]
+	 */
 	var bindActionCondition = function(conditions, bindingToUse){
 		for(var i = 0; i < conditions.length; i += 1){
 			if(conditions[i].first !== undefined){
@@ -732,9 +738,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		}
 		return conditions;
 	};
+	
 
 	//Given a binding, goes througha all of the influence rules of an action
 	//and keeps a running sum of their effects. Then returns that sum.
+	/**
+	 * @method evaluateActionInfluenceRules 
+	 * @description Given a binding, goes through all of the influence rules of an action and keeps a rnning sum of their effects, then returns that sum.
+	 * @param  {[Object]} action       [An action, with specified influence rules]
+	 * @param  {[Object]} bindingToUse [A specfication of the characters to use to fill in each role in the action's influence rules]
+	 * @return {[Number]}              [The sum of the influence rules for this action given this binding.]
+	 */
 	var evaluateActionInfluenceRules = function(action, bindingToUse){
 		var volitionSum = 0;
 
@@ -755,6 +769,12 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	//already be sorted already, so it's just an easy matter of finding the 'first' thing in every
 	//action list until we find one with no other actions -- then that means that we're at the 
 	//best terminal!
+	/**
+	 * @method getBestTerminalFromActionList 
+	 * @description Returns the 'best' terminal from an actionList, where best is defined to be the terminal with the highest weight. This function assumes the actionList has already been sorted.
+	 * @param  {[Array]} actionList [An array of actions. Each of these actions itself contains another array of actions. All of these arrays within arrays, however, should be sorted already before calling this function.]
+	 * @return {[Object]}            [The best (highest weighted) terminal action, with it's roles filled in with the best binding of characters]
+	 */
 	var getBestTerminalFromActionList = function(actionList){
 		console.log("inside of getTerminalsFromActionList");
 		if(actionList.length <= 0){
@@ -791,6 +811,16 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 	//Given a volition object, returns the single 'best' action for that volition,
 	//using the best binding. if multiple best bindings exist, just picks one at random.
+	/**
+	 * @method getAction 
+	 * @description CiF Interface function. Given a volition object, returns the single 'best' action for that volition using the best binding. If multiple best bindings exist, it will pick one at random.
+	 * @param  {[String]} initiator          [The name of the character initiating the action]
+	 * @param  {[String]} responder          [The name of the 'recipient of the action']
+	 * @param  {[Object]} volition           [A registered volition object]
+	 * @param  {[Array]} cast               [The cast of characters to be used for consideration of the filling in of roles.]
+	 * @param  {[Number]} numActionsPerGroup [How many terminals from a single 'actionGroup' should be returned. Defaults to 1 if unspecified.]
+	 * @return {[Object]}                    [Returns the best, bound action for this particular initiator, responder, and cast.]
+	 */
 	var getAction = function(initiator, responder, volition, cast, numActionsPerGroup){
 		console.log("inside getAction");
 		//console.log("This is the contents of the actionLibrary: " , actionLibrary);
@@ -815,7 +845,18 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundAction;
 	};
 
-
+	/**
+	 * @method getActions 
+	 * @description Similar to getAction, but allows the user to specify the number of intents to draw from, and the number of actions that shold come from each intent.
+	 * @param  {[String]} initiator           [The name of the character initiating the action]
+	 * @param  {[String]} responder           [The name of the recipient of the action]
+	 * @param  {[Object]} volition            [The registered volition object.]
+	 * @param  {[Array]} cast                [The pool of characters to be used for consideration for the filling in of roles.]
+	 * @param  {[Number]} numIntents          [The total number of different intents to pull actions from.]
+	 * @param  {[Number]} numActionsPerIntent [How many actions should come from each intent.]
+	 * @param  {[Number]} numActionsPerGroup  [How many terminals should come from any given 'action group']
+	 * @return {[Array]}                     [A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.]
+	 */
 	var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
 		console.log("inside of getActions!");
 		if(numActionsPerGroup === undefined) numActionsPerGroup = 1;
@@ -833,8 +874,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			var isAccepted = acceptedObject.accepted;
 			var weight = volitionInstance.weight;
 			actionList = getSortedActionsFromVolition(initiator, responder, volitionInstance, isAccepted, weight, numActionsPerGroup, cast);
-			
-			//var terminalsToAdd = extractAndSortTerminalsFromActionList(actionList);
 
 			for(var i = 0; i < actionList.length; i += 1){
 				returnList.push(util.clone(actionList[i]));
@@ -857,23 +896,15 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			}
 		}
 
-		//Perhaps at this point, we should sort the list based on the volition score?
-		//And, also, perhaps actually return the terminals, instead of the parent action?
-		//Or, uh, maybe not? Because right now they are sorted by the desire of the VOLITIONS themselves? 
-		//And so the argument could be made that they are *already* sorted, even if one of them with a lower volition score gets a 'higher' total score after the influence rules of the game take place.
-		//I think that this is the kind of thing that is likely going to change a lot from use case to use case. So, for the most basic version, I thnk what we'll do is this:
-		//	Return an array of fully bound terminals, sorted in volition order, but not necessarily in total influence rule order.
-		//	Cases to check (we'll want a unit test for each one of these): 
-		//		1.) 1 action per volition (easy)
-		//		2.) 2 actions per volition, multiple terminals from the same parent (e.g. laughTerminal1, laughTerminal2)
-		//		3.) 2 actions per volition, terminals from separate parents (e.g. laughTerminal1, bondTerminal1)
-		//		4.) 3 actions per volition, combining both 2 and 3 (laughTerminal1, laughTerminal2, bondTerminal1)
-		//		5.) 3+ actions per volition (hopefully solving #4 should solve this as well).
-		//var boundAction = getBestTerminalFromActionList(returnList);
 		var boundActions = extractAndSortTerminalsFromActionList(returnList);
 		return boundActions;
 	};
 
+	/**
+	 * [extractAndSortTerminalsFromActionList description]
+	 * @param  {[type]} actionList [description]
+	 * @return {[type]}            [description]
+	 */
 	var extractAndSortTerminalsFromActionList = function(actionList){
 		console.log("inside of extractAndSortTerminalsFromActionList!");
 		var allTerminals = [];
