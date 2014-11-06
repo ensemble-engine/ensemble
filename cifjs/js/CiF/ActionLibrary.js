@@ -466,6 +466,11 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	//MYU OLD INFLUENCE RULE CODE, but separated out (because I think other things were calling it!)
 	//Going to change all instances of 'nonTerminal' to 'action', because I think any action can actually
 	//be passed through this now.
+	/**
+	 * @method computeInfluenceRuleWeight 
+	 * @description Takes in an action, goes through all of its valid bindings, and evaluates the influence rule for each set of bindings. Stores the weight with each binding and, for the best weight (i.e. the best binding) stores it at the level of the action.
+	 * @param  {Object} action [The action to compute the weight for. Should have at least one 'goodBinding' attached to it]
+	 */
 	var computeInfluenceRuleWeight = function(action){
 		var bestWeightFoundSoFar = -999999;
 		for(var goodBindingIndex = 0; goodBindingIndex < action.goodBindings.length; goodBindingIndex += 1){
@@ -492,13 +497,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			action.goodBindings[goodBindingIndex].weight$$ = candidateWeight;
 			
 		}
-	}
+	};
 
-	//Function that checks all of the various things that can make an action "not appropriate"
-	//e.g. it is an "accept" action when we are looking for reject action.
-	//Or it doesn't pass the conditions.
-	//Because at this point we don't know if we are dealing with a terminal or a non-terminal, we 
-	//have to look at the fields this action contains to figure out what kind of checks to do.
 	/**
 	 * @method actionIsAppropriate
 	 * @description actionIsAppropriate checks various qualities that would make an action "not appropriate", such as an action being marked as an "accept" action when we are looking for a reject action.
