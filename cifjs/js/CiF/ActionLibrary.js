@@ -463,34 +463,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return returnValue;
 	};
 
-	//old bindings is an array of bindings, new bindings is a single binding.
-	//Goes through the old binding array, goes through each key, sees if it matches
-	//the same key in new bindings (note: new bindings might have additional roles that
-	//old bindings lacks, but that's ok). If we find a match, then we return the
-	//weight$$ value in that particular binding.
-	//Theoretically this SHOULD always find a match. If it doesn't, then wrong values were passed in/the
-	//function wasn't used in the correct context. 
-	//SEEMS TO BE OBSOLETE NOW
-	var findWeightFromPreviousBinding = function(newBindings, oldBindings){
-		var mismatchFound = false;
-		for(var i = 0; i < oldBindings.length; i += 1){
-			for (var role in oldBindings[i]){
-				if(oldBindings[i][role] !== newBindings[role]){
-					//Oops, this binding doesn't work!
-					mismatchFound = true;
-					break;
-				}
-			}
-			if(mismatchFound === false){
-				//we found the perfect binding!
-				return oldBindings.weight$$;
-			}
-			else{
-				mismatchFound = false; // reset for the next loop...
-			}
-		}
-	};
-
 	//MYU OLD INFLUENCE RULE CODE, but separated out (because I think other things were calling it!)
 	//Going to change all instances of 'nonTerminal' to 'action', because I think any action can actually
 	//be passed through this now.
