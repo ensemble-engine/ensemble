@@ -271,22 +271,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			return;
 		}
 
-		//TODO: WHAT IF: We just did the check for 'goodness' here? That seems like it might be better.
-		//TODO: Maybe we should just rename this function to something like 'getTerminals'
-		//TODO: Let's finish the function first, and then we can worry about refactoring it later.
 		currentUniqueBindings = getUniqueActionBindings(nonTerminal, uniqueBindings);
 		//#CODEREVIEW -- why is cast passed in twice here? Ah, because one is available and one is all. But "all" never changes, so insead of passing in a clone, how about just a reference.
 		var nonTerminalWorkingBindingCombinations = getWorkingBindingCombinations(nonTerminal, util.clone(uniqueBindings), util.clone(cast), util.clone(nonTerminal.goodBindings), util.clone(cast));
 		if(nonTerminalWorkingBindingCombinations.length <= 0){
-			//Oops, there is no possible combination of cast members that make this work! So no point in going down this path anymore!
-			//console.log("At a non-terminal, we didn't find any possible combinations to make it work! Aborting this path.");
+			//Oops, there is no possible combination of cast members that make this work! 
+			//So no point in going down this path anymore!
 			return;
 		}
 
-		//#CODEREVIEW: I don't think we ever use oldGoodBindings -- kill it!
-		//#CODEREVIEW: We also don't have to CLONE nonTerminalWorkingBindingCombinations -- just assign it!
-		var oldGoodBindings = util.clone(nonTerminal.goodBindings);
-		nonTerminal.goodBindings = util.clone(nonTerminalWorkingBindingCombinations);
+		nonTerminal.goodBindings = nonTerminalWorkingBindingCombinations;
 
 		//So, now at this point, where I have all of the 'good bindings' at this level... I guess what I want to do
 		//is go through all of the influence rules, for each binding, and re-score them?
@@ -321,15 +315,12 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				terminalsAtThisLevel = true;
 				terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
 				terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
-				//console.log("$$$$$ Here is my terminal action before going into the 'I found a terminal action' thing!", terminalAction);
 
 				currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
-				//TODO: Do a similar thing at the nonterminal level, but for now let's just get it working here first.
 				var workingBindingCombinations = getWorkingBindingCombinations(terminalAction, util.clone(currentUniqueBindings), util.clone(cast), util.clone(terminalAction.goodBindings), util.clone(cast));
 				
-				//#CODEREVIEW: this clone seems unnecessary -- maybe just assign them.
-				terminalAction.goodBindings = util.clone(workingBindingCombinations);
-				//console.log("Working binding combinations: ", workingBindingCombinations);
+				terminalAction.goodBindings = workingBindingCombinations;
+
 				//we found a terminal symbol! Great, let's add it to the list!
 				//Let's do some checks to make sure that the action that we're looking at is good.
 				//This means checking it's conditions, and checking if it's "isAccept" matches what we want.
@@ -338,9 +329,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//console.log("how many times do you see me? inappropriate action: " , terminalAction);
 					continue;
 				}
-				if(terminalAction.name === "actualFriends4Degrees"){
-					//console.log("ok, here we are at mr. problem...");
-				}
+
 				//In "traditional CiF" we would only want one of these things. The most salient.
 				//But here we have the power to take the X most salient, if we so desire.
 				//TODO: (Of course) there is a LOT of thinking that has to go into how conditions work with all of this stuff... I'm kind of dreading that a little big!
@@ -348,17 +337,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				//So, ok... here is what I'm going to do... I'm going to change all of this
 				//returnList manipulation, into creating a new 'action object' thingy, which will
 				//have an action array, and it is THAt array that will under go manipulation.
-
-/*
-				//'original working'
-				if(returnList[nonTerminal.name] === undefined){
-					returnList[nonTerminal.name] = []; // make it a little array?
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-					returnList[nonTerminal.name].push(terminalAction);
-				}
-*/
 
 				//AND FINE, I'm caving in! Let's compute influence rules for this terminal action, too!
 				computeInfluenceRuleWeight(terminalAction);
@@ -405,64 +383,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 							break; // We're at the end of the loop, but let's break anywya just because.
 						}
 					}
-
 				}
-				/* //'original working'
-				else{
-					//ok, here we want to do a chck for this guy's salience, in case we don't have it yet.
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-
-					//And now here we want to do a special thing where we figure out the relative salience?
-					
-					var actionListLength = returnList[nonTerminal.name].length; // want to store this, because we'll be adjusting the length inside of the loop
-					//for(var salienceIndex = 0; salienceIndex < actionListLength; salienceIndex += 1){
-					for(var salienceIndex = actionListLength; salienceIndex > 0; salienceIndex -= 1){
-						//Ok, so we're starting at the end and going backwards.
-						//It's possible that the new terminal one has a salience that's SO LOW we just ignore it
-						//--that would be if the 'first' one we look at (i.e. the one already at the end of the list) is bigger than it.
-						//--In which case we just stop.
-						//If it is bigger than the first one, then we know it is going to be ON the list, and then it is just a matter of
-						//keeping on going until you find the perfect spot for it to go.
-						if(returnList[nonTerminal.name][salienceIndex-1].salience > terminalAction.salience){
-							//it's time to stop. use the length to decide if we should even bother adding it or not, I guess.
-							if(salienceIndex === actionListLength && actionListLength >= actionsPerGroup){
-								//This new guy isn't even good enough to make the list, ignore it and stop going through the list!
-							}
-							else{
-								//ok, cool, our new guy is bigger. Let's put him in.
-								returnList[nonTerminal.name].splice(salienceIndex, 0, terminalAction);
-								//And now check to see if anything needs to be removed.
-								if(returnList[nonTerminal.name].length > actionsPerGroup){
-									returnList[nonTerminal.name].splice(actionsPerGroup, returnList[nonTerminal.name].length - actionsPerGroup);
-								}
-							}
-							break;
-						}
-						//If we've made it to here, that implies that we've found a new most salience thing
-						//but let's wrap it an if just in case.
-						if( (salienceIndex-1) === 0 && terminalAction.salience > returnList[nonTerminal.name][salienceIndex-1].salience){
-							//we found a new 'most salience' thing, so put it at the front of the list!
-							returnList[nonTerminal.name].splice(salienceIndex - 1, 0, terminalAction);
-							//And now check to see if anything needs to be removed.
-							if(returnList[nonTerminal.name].length > actionsPerGroup){
-								returnList[nonTerminal.name].splice(actionsPerGroup, returnList[nonTerminal.name].length - actionsPerGroup);
-							}
-							break; // We're at the end of the loop, but let's break anywya just because.
-						}
-					}
-				}
-				*/
-				
 			}
 			else{ // Ah, we must be dealing with another non-terminal! let's DIG DEEPER!
-				//TODO: Have there be some kind of nice functionality to double check against the inclusion of loops (probably doesn't belong here though)
-				
+			
 				//#CODEREVIEW: This code is pretty much exactly repeated elsewhere in this function. Make it it's own function, maybe passing in special parametrs as needed.
 				var nonTerminalAction = getTerminalActionFromNameGeneric(actionName, nonTerminals);
 				nonTerminalAction.goodBindings = nonTerminal.goodBindings;
 				nonTerminalAction.weight = nonTerminal.weight;
+
+				//Figure out the 'lineage' of the action (i.e., keep track of the path we've taken down the tree.)
 				if(nonTerminal.lineage === undefined){
 					nonTerminalAction.lineage = nonTerminal.name;
 				}
@@ -470,7 +400,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					nonTerminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
 				}
 				
-				//nonTerminalAction.conditions = nonTerminal.conditions;
+				//Get the unique bindings that still work.
 				currentUniqueBindings = getUniqueActionBindings(nonTerminalAction, uniqueBindings);
 				if(!actionIsAppropriate(nonTerminalAction, isAccepted, currentUniqueBindings)){
 					//oops, either the conditions or the isAccept didn't pass! Let's move along...
@@ -478,78 +408,28 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					continue;
 				}
 
+				//RECURSIVE CALL! Using the non-terminal we're on as the starting point for the next level down the tree.
 				var diggingDeeperActions = getTerminalActionsFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
 				if(diggingDeeperActions === undefined || diggingDeeperActions.length <= 0){
 					continue; // oops! This 'leads to' led to something that had no valid bindings! Better move on!
 				}
 				
+				//Store the actions we found by 'digging deeper'
 				nonTerminalAction.actions = [];
 				for(var ddActionIndex = 0; ddActionIndex < diggingDeeperActions.length; ddActionIndex += 1){
 					var thingToAdd = diggingDeeperActions[ddActionIndex];
 					nonTerminalAction.actions.push(util.clone(thingToAdd));
 				}
 
-				//#CODEREVIEW: We don't use this anymore.
-				var nonTerminalActionObject = {};
-
-				//BEN START HERE: Ok, I think this is where the issue is... I don't think that 
-				//we actually have the chance to 'augment it later' -- by this point it should already be
-				//'augmented -- the act of calling 'digging deeper actions' was our chance to get the weight,
-				//but we didn't store it BECUASE we are still using the archaic return list for salience.
-				//I think if we convert the 'salience area' to use the 'modern' format for return lists,
-				//all of this (goodBindings and weight) will become a lot easier.
-				//Yeah, totally, and then we'll change 
-				//nonTerminalActionObject.weight = diggingDeeperActions.weight (or whatever)
-				//in fact, maybe we actually want to move all of this stuff over to the salience area?
-				//Noo.. no no no... it is important that we have them here too!
-				
-				/*
-				
-				// 'Worked' as of 9/25 10am -- but fell apart when the tree had more than 4 levels to it.
-				nonTerminalActionObject.name = actionName;
-				nonTerminalActionObject.weight = diggingDeeperActions[0].weight; // and we'll augment this later.
-				nonTerminalActionObject.goodBindings = nonTerminalAction.goodBindings;
-				nonTerminalActionObject.conditions = nonTerminalAction.conditions;
-				nonTerminalActionObject.actions = [];
-				*/
-			
-
-
-				//Great! we just (potentially) grabbed a lot more terminal actions! Let's go through them one by one and add them to our return list!
-				//for(var j = 0; j < diggingDeeperActions[actionName].length; j += 1){
-				//#CODEREVIEW - This doesn't get used at all! Get rid of it!
-				for(var j = 0; j < diggingDeeperActions.length; j += 1){
-				
-					//Add to the child the 'good combinations' discovered by the parent...
-					//diggingDeeperActions[actionName][j].goodBindings = util.clone(nonTerminal.goodBindings);
-					
-					/*
-					//9-22 4pm WORKED, but didn't have enough space for enough information. Going to change that...
-					if(returnList[actionName] === undefined){
-						returnList[actionName] = [];
-					}
-					returnList[actionName].push(diggingDeeperActions[actionName][j]);
-					*/
-				
-					/*
-					//9/25 10AM -- 'worked' until we had 4 layers worth of actions. Then got weird and broken.
-					for(var k = 0; k < diggingDeeperActions[j].actions.length; k += 1){
-						nonTerminalActionObject.actions.push(diggingDeeperActions[j].actions[k]);
-					}
-					*/
-					
-
-				}
-				//So, we also added in this lines...
-				//returnList.push(util.clone(nonTerminalActionObject));
+				//And return the nonTerminalAction we created, that has stored within it now all of the 'good actions' that it can lead to.
 				returnList.push(util.clone(nonTerminalAction));
 			}
 
 		}
 
+		//Because there might be non-terminals and terminals at the same level, do a check 
+		//to see if we need to add anything in at this level in the tree.
 		if(terminalsAtThisLevel === true){
-			//returnList.push(util.clone(terminalActionParentObject.actions)); //what is life like if we only return the TERMINALS here?
-			//returnList = util.clone(terminalActionParentObject.actions);
 			for(var terminalsToPushUpIndex = 0; terminalsToPushUpIndex < terminalActionParentObject.actions.length; terminalsToPushUpIndex += 1){
 				returnList.push(util.clone(terminalActionParentObject.actions[terminalsToPushUpIndex]));
 			}
