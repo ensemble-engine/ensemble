@@ -1,0 +1,68 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "INTUP",
+			"intent" : {
+				"class" : "attribute",
+				"type"  : "intelligence",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["read", "train"]
+		},
+		{
+			"name" : "read",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 1
+			}]
+		},
+		{
+			"name" : "train",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 2
+			}]
+		},
+		{
+			"name" : "KINSHIPUP",
+			"intent" : {
+				"class" : "bonds",
+				"type"  : "kinship",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["hug"]
+		},
+		{
+			"name" : "hug",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "bonds",
+				"type" : "kinship",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 1
+			}]
+		}
+	]
+}

@@ -597,6 +597,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getRegisteredDirection	: sfdb.getRegisteredDirection,
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
+		addActions				: actionLibrary.parseActions,
 		
 		addRules				: addRules,
 		getRules				: getRules,

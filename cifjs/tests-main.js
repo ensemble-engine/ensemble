@@ -44,6 +44,7 @@ require.config({
 		,"actionLibraryUnitTests": "js/tests/ActionLibraryUnitTests"
 		,"volitionUnitTests": "js/tests/VolitionUnitTests" 
 		,"validateUnitTests": "js/tests/ValidateUnitTests"
+		,"externalApplicationTest": "js/tests/ExternalApplicationTest"
 
 	},
 
@@ -61,7 +62,7 @@ require.config({
 
 // Main entry function for Project Yarn
 
-require(["volition", "text!data/testState.json", "sfdb", "ruleLibrary", "actionLibrary", "cif", "cifUnitTests", "sfdbUnitTests", "ruleLibraryUnitTests", "volitionUnitTests", "validateUnitTests", "actionLibraryUnitTests", "domReady!"], function(volition, testState, sfdb, ruleLibrary, actionLibrary, cif, cifUnitTests, sfdbUnitTests, ruleLibraryUnitTests, volitionUnitTests, validateUnitTests, actionLibraryUnitTests){
+require(["volition", "text!data/testState.json", "sfdb", "ruleLibrary", "actionLibrary", "cif", "cifUnitTests", "sfdbUnitTests", "ruleLibraryUnitTests", "volitionUnitTests", "validateUnitTests", "actionLibraryUnitTests", "externalApplicationTest", "domReady!"], function(volition, testState, sfdb, ruleLibrary, actionLibrary, cif, cifUnitTests, sfdbUnitTests, ruleLibraryUnitTests, volitionUnitTests, validateUnitTests, actionLibraryUnitTests, externalApplicationTest){
 
 	console.log("Beginning tests-main.js main function.");
 	//try{
@@ -74,6 +75,7 @@ require(["volition", "text!data/testState.json", "sfdb", "ruleLibrary", "actionL
 		volitionUnitTests.runTests();
 		validateUnitTests.runTests();
 		actionLibraryUnitTests.runTests();
+		externalApplicationTest.runTests();
 
 	//}
 	//catch(e) {

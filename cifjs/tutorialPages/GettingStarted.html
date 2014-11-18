@@ -1,0 +1,177 @@
+
+<html>
+<head>
+	<title>Getting Started</title>
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h3>Where to Download</h3>
+
+You can download CiF.js [HERE]
+
+<h3>What you Get</h3>
+
+In addition to documentation, such as what you're reading now, and an amazing CiF Tool, invaluable for both authoring and testing, you'll find a little file called <b>cif.js</b>. This file is everything that you'll need to make use of all of the wonders of CiF in your game!
+
+<h3>How to Include CiF in a Project Of Your Own </h3>
+
+Right now we are expecting cif.js to be used in web-based projects. To start using CiF, simply make a new .html file (let's call it test.html) in the same directory that you downloaded cif.js to, and fill it with the following lines
+
+<pre> 
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My great CiF powered project!&lt;/title&gt;
+	&lt;script src="cif.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	Hello, world!
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+If you're going to be working with files from your local machine, you'll going to have to set up a local server first. If you do not do this, javascript will complain about cross domain compatability, which is a security issue. To resolve this, open up a console and navigate to the directory that you have downloaded cif.js to, and type the following line:
+
+<pre>
+	python -m SimpleHTTPServer
+</pre>
+
+After doing this, you'll want to open up your favorite web browser, such as Chrome or Firefox, and navigate to this URL:
+
+<pre>
+	http://localhost:8000/test.html
+</pre>
+
+This is where your super fun game will be, once you make it!
+
+<h3>Using CiF: Basic Setup</h3>
+
+The very first thing you'll want to do is to initialize cif. Thanks to the script tag that you used to include cif.js, you should now have access to a nifty little cif interface object that will have every cif related function you could ever need. Because CiF is a little large, we're going to wrap our use of it in an event listener to make sure we don't use it before it fully loads.
+
+So, to initialize CiF, you'll want to write the following:
+
+<pre>
+&lt;script&gt;
+	document.addEventListener('DOMContentLoaded', function () {
+		setTimeout(function() {
+			var loadResult = cif.init();
+			console.log(loadResult);
+		}, 100)
+	});
+&lt;/script&gt;
+</pre>
+
+This won't be too incredibly flashy, but if you look at your test.html page in your web browser, and open up the Javascript Console (in Chrome, this can be accessed by clicking on the "Three Horizontal Bars" in the upper right hand corner of the window, hovering your mouse over the "more tools" option that appears, and then selecting the JavaScript console option that appears from there), you should see a little message that says "ok."
+
+Congratulations, you have officially initialized CiF!
+
+However, in order to really get mileage out of CiF, you'll have to give it some material to work with. You'll want to specify a <b>social schema</b> that defines the <i>stuff</i> that makes up your characters and their connections to each other (things like character traits, or types of relationships). You'll have to specify some <b>characters</b> to live in your social world. It might be good to give CiF a few <b>volition rules</b> and <b>trigger rules</b> to help characters form volitions for how to they want to change the social state. And then, finally, specifying some <b>actions</b> will give your characters a way to actually enact the changes they hope for on the social state.
+
+You'll want each of these things, your <b>schema, characters, volition rules, trigger rules, and actions</b> to each be stored in their own json file. You'll load them up into CiF in a very similar manner to how we initialized the system. Expand the above script tag so that it looks like this:
+<pre> 
+&lt;script&gt;
+	document.addEventListener('DOMContentLoaded', function () {
+		setTimeout(function() {
+			var loadResult = cif.init();
+			console.log(loadResult);
+
+			var rawSchema = cif.loadFile("schema.json");
+			var schema = cif.loadSocialStructure(rawSchema);
+
+			var rawCast = cif.loadFile("cast.json");
+			var cast = cif.addCharacters(rawCast);
+
+			var rawRules = cif.loadFile("testTrigger.json");
+			console.log(rawRules);
+			var ids = cif.addRules(rawRules);
+			console.log("ids", ids);
+			ids = cif.addRules(cif.loadFile("samsVolition.json"));
+			console.log("ids2", ids);
+
+			var rawActions = cif.loadFile("actions.json");
+			var actions = cif.addActions(rawActions);
+
+			console.log("schema", schema);
+			console.log("cast", cast);
+
+			console.log("actions", actions);
+		}, 100)
+	});
+&lt;/script&gt;
+</pre>
+
+<h3>Using CiF: How to Figure Out What Characters Want To Do</h3>
+
+So, great! You've fleshed out CiF with characters and volition rules. Now you want to see what the characters want to do with each other! The way you would do that is with a call like this:
+
+<pre>
+	var storedVolitions = cif.calculateVolitions(cast);
+</pre>
+
+This will calculate all of the volitions between all possible pairs of characters specified in the cast array you pass in to the calculateVolitions function. So, if your cast consisted of the characters "Abe", "Bill", and "Cassie", stored volitions would have information about what Abe wants to do towards Bill, what Abe wants to do towards Cassie, what Bill wants to do towards Abe, what Bill wants to do towards Cassie, and so on. To actually see what those volitions are, you would call:
+
+<pre>
+	var firstVolition = storedVolitions.getFirst("Bill", "Abe");
+</pre>
+
+This returns the highest scored volition that Bill has for Abe. But depending on how you've authored your system, it is quite possible that Bill has more than just one volition. You can see the second-most highest rated volition with a call to "getNext" like so:
+
+<pre>
+	var volition = storedVolitions.getNext("Bill", "Abe");
+</pre>
+
+<h3>Using CiF: Making Characters do Things </h3>
+
+Knowing the volitions of the characters is a good first step, but wouldn't it be nice if the characters had the ability to change the world around them? This is where actions come into play! To see the actions a character wants to take towards another, you can use the following command:
+
+<pre>
+	var action = cif.getAction("bill", "abe", storedVolitions, cast);
+</pre>
+
+This will get you an action object, filled with interesting information, such as the name of the action. Another useful field to know is action.effects -- this contains information describing how the world should change when this action is performed. In order to actually enact those changes, you'll want to have something like this:
+
+<pre>
+	for(var i = 0; i < action.effects.length; i += 1){
+		cif.set(effects[i]);
+	}
+</pre>
+
+This will either add, remove, or edit an entry from the Social Facts Database (SFDB). The world is now changed forever!
+
+<h3>Using CiF: Completing the Loop</h3>
+
+Just because the SFDB has been changed, the character's still have their lingering volitions from the previous state of the world. However, to fix that, all you need is a simple call to calculate volitions once again!
+
+<pre>
+	storedActions = cif.calculateVolitions(cast);
+</pre>
+
+And Ta-Da! Whatever effects the previous action had on the state of the world is now going to influence all of the characters' future actions!
+
+Depending on your game, you also may want to put in a call to advance CiF's current time step. You can do this by simply calling:
+
+<pre>
+	cif.setupNextTimeStep();
+</pre>
+
+<h3>The End (For Now)</h3>
+
+This is just scratching the surface of the capabilities of CiF. However, hopefully this has provided you, gentle reader, with an understanding of how to integrate CiF into your project, and some of the key functions that you'll likely be calling again and again in your main game loop.
+
+Additional tutorials and sample games are in the works, but for now, have fun making dynamic social worlds!
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
