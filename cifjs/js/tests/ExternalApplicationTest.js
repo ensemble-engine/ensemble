@@ -61,9 +61,13 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 				var vol = storedVolitions.getFirst(char1, char2);
 				console.log(vol);
 
+				var bestActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
+				console.log("Actions: ", bestActions);
+
+				/*
 				var bestAction = cif.getAction(char1, char2, storedVolitions, cast);
 				console.log("Actions: ", bestAction);
-
+				*/
 
 
 	};

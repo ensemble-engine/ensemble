@@ -901,6 +901,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	};
 
 	//TODO: Does this work if you ahve more than two layers worth of actions?
+	//TODO: Or for ANY non-standard structure for that matter?
 	/**
 	 * @method extractAndSortTerminalsFromActionList 
 	 * @description Given an actionList, gets the terminals out of them, finds the best binding for each one, sorts them, and returns them in sorted order. 
@@ -913,11 +914,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		for(var i = 0; i < actionList.length; i += 1){
 			//Any given 'entry' in this list might have multiple actions, if 'numActionsPerGroup was > 1' in previous calls.
 			var currentAction = actionList[i];
-			for(var j = 0; j < actionList[i].actions.length; j += 1){
-				//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
-				//do something special here.
-				//These are now bound at this point yet -- we will have to do that eventually!
-				allTerminals.push(actionList[i].actions[j]);
+			if(actionList[i].actions !== undefined){
+				for(var j = 0; j < actionList[i].actions.length; j += 1){
+					//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
+					//do something special here.
+					//These are now bound at this point yet -- we will have to do that eventually!
+					allTerminals.push(actionList[i].actions[j]);
+				}
+			}
+			else{
+				//if actionList[i].actions is undefined, that must mean that we are DEALING with a terminal already!
+				allTerminals.push(actionList[i]);
 			}
 		}
 

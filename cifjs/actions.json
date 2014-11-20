@@ -49,6 +49,12 @@
 			},
 			"conditions" : [],
 			"influenceRules" : [],
+			"leadsTo" : ["PhysicalKinshipUp"]
+		},
+		{
+			"name" : "PhysicalKinshipUp",
+			"conditions" : [],
+			"influenceRules" : [],
 			"leadsTo" : ["hug"]
 		},
 		{
