@@ -8,7 +8,7 @@
 
 <h3>Where to Download</h3>
 
-You can download CiF.js [HERE]
+CiF.js is not actually available for download currently. Sorry! We're just handing it out to our friends for the time being.
 
 <h3>What you Get</h3>
 
@@ -52,12 +52,10 @@ So, to initialize CiF, you'll want to write the following:
 
 <pre>
 &lt;script&gt;
-	document.addEventListener('DOMContentLoaded', function () {
-		setTimeout(function() {
-			var loadResult = cif.init();
-			console.log(loadResult);
-		}, 100)
-	});
+	document.addEventListener('cifLoaded', function (e) {
+		var loadResult = cif.init();
+		console.log(loadResult);
+	}, false);
 &lt;/script&gt;
 </pre>
 
@@ -70,33 +68,31 @@ However, in order to really get mileage out of CiF, you'll have to give it some 
 You'll want each of these things, your <b>schema, characters, volition rules, trigger rules, and actions</b> to each be stored in their own json file. You'll load them up into CiF in a very similar manner to how we initialized the system. Expand the above script tag so that it looks like this:
 <pre> 
 &lt;script&gt;
-	document.addEventListener('DOMContentLoaded', function () {
-		setTimeout(function() {
-			var loadResult = cif.init();
-			console.log(loadResult);
+	document.addEventListener('cifLoaded', function (e) {
+		var loadResult = cif.init();
+		console.log(loadResult);
 
-			var rawSchema = cif.loadFile("schema.json");
-			var schema = cif.loadSocialStructure(rawSchema);
+		var rawSchema = cif.loadFile("schema.json");
+		var schema = cif.loadSocialStructure(rawSchema);
 
-			var rawCast = cif.loadFile("cast.json");
-			var cast = cif.addCharacters(rawCast);
+		var rawCast = cif.loadFile("cast.json");
+		var cast = cif.addCharacters(rawCast);
 
-			var rawRules = cif.loadFile("testTrigger.json");
-			console.log(rawRules);
-			var ids = cif.addRules(rawRules);
-			console.log("ids", ids);
-			ids = cif.addRules(cif.loadFile("samsVolition.json"));
-			console.log("ids2", ids);
+		var rawRules = cif.loadFile("testTrigger.json");
+		console.log(rawRules);
+		var ids = cif.addRules(rawRules);
+		console.log("ids", ids);
+		ids = cif.addRules(cif.loadFile("samsVolition.json"));
+		console.log("ids2", ids);
 
-			var rawActions = cif.loadFile("actions.json");
-			var actions = cif.addActions(rawActions);
+		var rawActions = cif.loadFile("actions.json");
+		var actions = cif.addActions(rawActions);
 
-			console.log("schema", schema);
-			console.log("cast", cast);
+		console.log("schema", schema);
+		console.log("cast", cast);
 
-			console.log("actions", actions);
-		}, 100)
-	});
+		console.log("actions", actions);
+	}, false);
 &lt;/script&gt;
 </pre>
 

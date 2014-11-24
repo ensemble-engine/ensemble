@@ -14,8 +14,18 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 	
 	var runTests = function() {
 				cif.reset();
-				console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!")
+				console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
 
+
+				//document.addEventListener("newMessage", cifInitCallback, false);
+				document.addEventListener('build', function (e) {
+					console.log("** hello?!!?");
+				  // e.target matches document from above
+				}, false);
+
+		var event = document.createEvent('Event');
+		event.initEvent('build', true, true);
+		document.dispatchEvent(event);
 
 				var loadResult = cif.init();
 				console.log(loadResult);
@@ -70,6 +80,10 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 				*/
 
 
+	};
+
+	var cifInitCallback = function(){
+		console.log("******* cif init callback");
 	};
 
 	
