@@ -23,27 +23,25 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 				  // e.target matches document from above
 				}, false);
 
-		var event = document.createEvent('Event');
-		event.initEvent('build', true, true);
-		document.dispatchEvent(event);
+
 
 				var loadResult = cif.init();
 				console.log(loadResult);
 
-				var rawSchema = cif.loadFile("schema.json");
+				var rawSchema = cif.loadFile("externalApplicationFiles/schema.json");
 				var schema = cif.loadSocialStructure(rawSchema);
 
-				var rawCast = cif.loadFile("cast.json");
+				var rawCast = cif.loadFile("externalApplicationFiles/cast.json");
 				var cast = cif.addCharacters(rawCast);
 
-				var rawRules = cif.loadFile("testTrigger.json");
+				var rawRules = cif.loadFile("externalApplicationFiles/testTrigger.json");
 				console.log(rawRules);
 				var ids = cif.addRules(rawRules);
 				console.log("ids", ids);
-				ids = cif.addRules(cif.loadFile("samsVolition.json"));
+				ids = cif.addRules(cif.loadFile("externalApplicationFiles/samsVolition.json"));
 				console.log("ids2", ids);
 
-				var rawActions = cif.loadFile("actions.json");
+				var rawActions = cif.loadFile("externalApplicationFiles/actions.json");
 				var actions = cif.addActions(rawActions);
 
 				console.log("schema", schema);
