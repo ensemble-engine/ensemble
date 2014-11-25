@@ -314,7 +314,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			if(terminalAction !== undefined){
 				terminalsAtThisLevel = true;
 				terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
-				terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+				if(nonTerminal.lineage === undefined){
+					terminalAction.lineage = nonTerminal.name;
+				}
+				else{
+					terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+				}
+				//terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
 
 				currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
 				var workingBindingCombinations = getWorkingBindingCombinations(terminalAction, util.clone(currentUniqueBindings), util.clone(cast), util.clone(terminalAction.goodBindings), util.clone(cast));

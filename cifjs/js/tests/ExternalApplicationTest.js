@@ -72,6 +72,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 				var bestActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
 				console.log("Actions: ", bestActions);
 
+				var bestSelfActions = cif.getActions(char1, char1, storedVolitions, cast, 2, 1);
+				console.log("Self Actions: ", bestSelfActions);
+
 				/*
 				var bestAction = cif.getAction(char1, char2, storedVolitions, cast);
 				console.log("Actions: ", bestAction);

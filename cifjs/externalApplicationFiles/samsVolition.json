@@ -61,6 +61,27 @@
 					"intentDirection": true
 				}
 			]
+		},
+		{	"name": "Everyone is smart!",
+			"conditions": [
+				{
+					"class": "bonds",
+					"type": "kinship",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 0
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
 		}
 	]
 }
