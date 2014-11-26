@@ -13,72 +13,80 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 	
 	var runTests = function() {
-				cif.reset();
-				console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
+		cif.reset();
+		sfdb.clearEverything();
+		actionLibrary.clearActionLibrary();
+		console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
 
 
-				//document.addEventListener("newMessage", cifInitCallback, false);
-				document.addEventListener('build', function (e) {
-					console.log("** hello?!!?");
-				  // e.target matches document from above
-				}, false);
+		//document.addEventListener("newMessage", cifInitCallback, false);
+		document.addEventListener('build', function (e) {
+			console.log("** hello?!!?");
+		  // e.target matches document from above
+		}, false);
 
 
 
-				var loadResult = cif.init();
-				console.log(loadResult);
+		var loadResult = cif.init();
+		console.log(loadResult);
 
-				var rawSchema = cif.loadFile("externalApplicationFiles/schema.json");
-				var schema = cif.loadSocialStructure(rawSchema);
+		var rawSchema = cif.loadFile("externalApplicationFiles/schema.json");
+		var schema = cif.loadSocialStructure(rawSchema);
 
-				var rawCast = cif.loadFile("externalApplicationFiles/cast.json");
-				var cast = cif.addCharacters(rawCast);
+		var rawCast = cif.loadFile("externalApplicationFiles/cast.json");
+		var cast = cif.addCharacters(rawCast);
 
-				var rawRules = cif.loadFile("externalApplicationFiles/testTrigger.json");
-				console.log(rawRules);
-				var ids = cif.addRules(rawRules);
-				console.log("ids", ids);
-				ids = cif.addRules(cif.loadFile("externalApplicationFiles/samsVolition.json"));
-				console.log("ids2", ids);
+		var rawRules = cif.loadFile("externalApplicationFiles/testTrigger.json");
+		console.log(rawRules);
+		var ids = cif.addRules(rawRules);
+		console.log("ids", ids);
+		ids = cif.addRules(cif.loadFile("externalApplicationFiles/samsVolition.json"));
+		console.log("ids2", ids);
 
-				var rawActions = cif.loadFile("externalApplicationFiles/actions.json");
-				var actions = cif.addActions(rawActions);
+		var rawActions = cif.loadFile("externalApplicationFiles/actions.json");
+		var actions = cif.addActions(rawActions);
 
-				console.log("schema", schema);
-				console.log("cast", cast);
-				console.log("actions", actions);
+		console.log("schema", schema);
+		console.log("cast", cast);
+		console.log("actions", actions);
 
-				cif.dumpSFDB();
+		cif.dumpSFDB();
 
-				var testPredicate = {
-					"class" : "bond",
-					"type" : "kinship",
-					"first" : "brax",
-					"second" : "grunt",
-					"value" : 3
-				};
+		var testPredicate = {
+			"class" : "bond",
+			"type" : "kinship",
+			"first" : "brax",
+			"second" : "grunt",
+			"value" : 3
+		};
 
-				cif.set(testPredicate);
+		cif.set(testPredicate);
 
-				cif.dumpSFDB();
+		cif.dumpSFDB();
 
-				var storedVolitions = cif.calculateVolition(cast);
+		var storedVolitions = cif.calculateVolition(cast);
 
-				var char1 = "brax";
-				var char2 = "grunt";
-				var vol = storedVolitions.getFirst(char1, char2);
-				console.log(vol);
+		var char1 = "brax";
+		var char2 = "grunt";
+		var vol = storedVolitions.getFirst(char1, char2);
+		console.log(vol);
 
-				var bestActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
-				console.log("Actions: ", bestActions);
+		var bestActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
+		console.log("Actions: ", bestActions);
 
-				var bestSelfActions = cif.getActions(char1, char1, storedVolitions, cast, 2, 1);
-				console.log("Self Actions: ", bestSelfActions);
+		var bestSelfActions = cif.getActions(char1, char1, storedVolitions, cast, 2, 1);
+		console.log("Self Actions: ", bestSelfActions);
 
-				/*
-				var bestAction = cif.getAction(char1, char2, storedVolitions, cast);
-				console.log("Actions: ", bestAction);
-				*/
+		for(var i = 0; i < bestSelfActions[0].effects.length; i += 1){
+			cif.set(bestSelfActions[0].effects[i]);
+		}
+
+		cif.dumpSFDB();
+
+		/*
+		var bestAction = cif.getAction(char1, char2, storedVolitions, cast);
+		console.log("Actions: ", bestAction);
+		*/
 
 
 	};
