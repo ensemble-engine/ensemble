@@ -1,0 +1,31 @@
+{
+	"fileName": "volitionRules",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "Everyone Wants to Increase Closeness",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": -10
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "closeness",
+					"first": "x",
+					"second" : "y",
+					"weight": 5,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionsRules",
+			"id": "volitionRule1"
+		}
+	]
+}

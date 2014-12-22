@@ -1,0 +1,31 @@
+{
+	"schema": [
+		{
+			"class": "network",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["closeness", "attraction"],
+			"defaultValue": 0,
+			"minValue": 0,
+			"maxValue": 100,
+			"allowIntent": true
+		},
+		{
+			"class" : "mood",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types": ["confident", "unsure"],
+			"allowIntent" : false,
+			"defaultValue" : false
+		},
+		{
+			"class" : "trait",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types" : ["hero", "love", "rival"],
+			"allowIntent" : false,
+			"defaultValue" : false
+		}
+	]
+}
+

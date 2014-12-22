@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- Project Yarn Main Page -->
+
+<html>
+<head>
+	<title>CiF Test</title>
+	<script src="cif.js"></script>
+	
+</head>
+<body>
+
+	<h1>Hello?</h1>
+
+
+	<script type="text/javascript">
+
+		document.addEventListener('cifLoaded', function (e) {
+			var loadResult = cif.init();
+			console.log(loadResult);
+
+			var rawSchema = cif.loadFile("schema.json");
+			var schema = cif.loadSocialStructure(rawSchema);
+
+			var rawCast = cif.loadFile("cast.json");
+			var cast = cif.addCharacters(rawCast);
+
+			var rawRules = cif.loadFile("testTrigger.json");
+			console.log(rawRules);
+			var ids = cif.addRules(rawRules);
+			console.log("ids", ids);
+			ids = cif.addRules(cif.loadFile("samsVolition.json"));
+			console.log("ids2", ids);
+
+			var rawActions = cif.loadFile("actions.json");
+			var actions = cif.addActions(rawActions);
+
+			console.log("schema", schema);
+			console.log("cast", cast);
+			console.log("actions", actions);
+
+			var storedVolitions = cif.calculateVolition(cast);
+
+			var char1 = "brax";
+			var char2 = "grunt";
+			var vol = storedVolitions.getFirst(char1, char2);
+			console.log(vol);
+
+			var actions = cif.getAction(char1, char2, storedVolitions, cast);
+			console.log("Actions: ", actions);
+		}, false);
+	</script>
+
+</body>
+</html>

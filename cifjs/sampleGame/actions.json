@@ -1,0 +1,31 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISECLOSENESS",
+			"intent" : {
+				"class" : "network",
+				"type"  : "closeness",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["writeLoveNote"]
+		},
+		{
+			"name" : "writeLoveNote",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "network",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}
