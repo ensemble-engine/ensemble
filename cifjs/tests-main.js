@@ -77,6 +77,8 @@ require(["volition", "text!data/testState.json", "sfdb", "ruleLibrary", "actionL
 		actionLibraryUnitTests.runTests();
 		externalApplicationTest.runTests();
 
+ console.log("my thing blah blah blah!");
+
 	//}
 	//catch(e) {
 	//     $("#testResults").append("<div class='testFileHeader' style='color:red;'>Crashed During Testing!!</div>");

@@ -101,7 +101,7 @@ You'll want each of these things, your <b>schema, characters, volition rules, tr
 So, great! You've fleshed out CiF with characters and volition rules. Now you want to see what the characters want to do with each other! The way you would do that is with a call like this:
 
 <pre>
-	var storedVolitions = cif.calculateVolitions(cast);
+	var storedVolitions = cif.calculateVolition(cast);
 </pre>
 
 This will calculate all of the volitions between all possible pairs of characters specified in the cast array you pass in to the calculateVolitions function. So, if your cast consisted of the characters "Abe", "Bill", and "Cassie", stored volitions would have information about what Abe wants to do towards Bill, what Abe wants to do towards Cassie, what Bill wants to do towards Abe, what Bill wants to do towards Cassie, and so on. To actually see what those volitions are, you would call:
