@@ -46,6 +46,8 @@
 			var rawCast = cif.loadFile("cast.json");
 			var cast = cif.addCharacters(rawCast);
 
+			console.log("Here is our cast! " , cast);
+
 			var rawTriggerRules = cif.loadFile("triggerRules.json");
 			var triggerRules = cif.addRules(rawTriggerRules);
 			
@@ -56,40 +58,19 @@
 			var actions = cif.addActions(rawActions);
 
 			//Set up our initial state
-			var heroTrait = {
-				"class" : "trait",
-				"type" : "hero",
-				"first" : "hero"
-			}
-			var loveTrait = {
-				"class" : "trait",
-				"type" : "love",
-				"first" : "first"
-			}
-			var rivalTrait = {
-				"class" : "trait",
-				"type" : "rival",
-				"first" : "rival"
-			}
-			var heroToLoveCloseness = {
-				"class": "feelings",
-				"type": "closeness",
-				"first" : "hero",
-				"second" : "love" ,
-				"value" : 0
-			};
-
-			cif.set(heroTrait);
-			cif.set(loveTrait);
-			cif.set(rivalTrait);
-			cif.set(heroToLoveCloseness);
+			setUpLoversAndRivalsInitialState();
+			drawCharacters();
 
 			var storedVolitions = cif.calculateVolition(cast);
 
-			var char1 = "you";
+			var char1 = "hero";
 			var char2 = "love";
+
+
 			var vol = storedVolitions.getFirst(char1, char2);
-			console.log(vol);
+			console.log("here is the first volition from hero to love: " , vol);
+			vol = storedVolitions.getNext(char1, char2);
+			console.log("Here is the second volition from hero to love: ", vol);
 
 			var actions = cif.getAction(char1, char2, storedVolitions, cast);
 			console.log("Actions: ", actions);
