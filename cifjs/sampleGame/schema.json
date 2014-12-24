@@ -1,7 +1,7 @@
 {
 	"schema": [
 		{
-			"class": "network",
+			"class": "feeling",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["closeness", "attraction"],

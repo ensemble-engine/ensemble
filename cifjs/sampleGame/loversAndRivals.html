@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Project Yarn Main Page -->
+
+<html>
+<head>
+	<title>CiF Test</title>
+	<script src="cif.js"></script>
+	<script src="loversAndRivals.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+	<h1>Our super fun game!</h1>
+
+	<div class = "field" onclick="move()">
+		<div class = "character" id="hero">
+			\O/
+		</div>
+		<div class = "character" id="love">
+			0\
+		</div>
+		<div class = "character" id="rival">
+			@.o
+		</div>
+	</div>
+
+	<button id="myFirstButton" onclick=move()>Inside the button.</button>
+	<button id="2" onclick="positionCharacter('hero', 10)">Inside the button.</button>
+	<button id="3" onclick="positionCharacter('hero', 50)">Inside the button.</button>
+	<button id="4" onclick="positionCharacter('hero', 80)">Inside the button.</button>
+	<button id="5" onclick="positionCharacter('hero', 120)">Inside the button.</button>
+	<button id="6" onclick="positionCharacter('hero', 150)">Inside the button.</button>
+
+	<script type="text/javascript">
+
+		document.addEventListener('cifLoaded', function (e) {
+
+			//Init CiF
+			var loadResult = cif.init();
+			console.log(loadResult);
+
+			//Load in our schema, cast, triggerRules and volitionRules, and actions.
+			var rawSchema = cif.loadFile("schema.json");
+			var schema = cif.loadSocialStructure(rawSchema);
+
+			var rawCast = cif.loadFile("cast.json");
+			var cast = cif.addCharacters(rawCast);
+
+			var rawTriggerRules = cif.loadFile("triggerRules.json");
+			var triggerRules = cif.addRules(rawTriggerRules);
+			
+			var rawVolitionRules = cif.loadFile("volitionRules.json");
+			var volitionRules = cif.addRules(rawVolitionRules);
+
+			var rawActions = cif.loadFile("actions.json");
+			var actions = cif.addActions(rawActions);
+
+			//Set up our initial state
+			var heroTrait = {
+				"class" : "trait",
+				"type" : "hero",
+				"first" : "hero"
+			}
+			var loveTrait = {
+				"class" : "trait",
+				"type" : "love",
+				"first" : "first"
+			}
+			var rivalTrait = {
+				"class" : "trait",
+				"type" : "rival",
+				"first" : "rival"
+			}
+			var heroToLoveCloseness = {
+				"class": "feelings",
+				"type": "closeness",
+				"first" : "hero",
+				"second" : "love" ,
+				"value" : 0
+			};
+
+			cif.set(heroTrait);
+			cif.set(loveTrait);
+			cif.set(rivalTrait);
+			cif.set(heroToLoveCloseness);
+
+			var storedVolitions = cif.calculateVolition(cast);
+
+			var char1 = "you";
+			var char2 = "love";
+			var vol = storedVolitions.getFirst(char1, char2);
+			console.log(vol);
+
+			var actions = cif.getAction(char1, char2, storedVolitions, cast);
+			console.log("Actions: ", actions);
+
+			helloWorld();
+
+		}, false);
+	</script>
+
+</body>
+</html>

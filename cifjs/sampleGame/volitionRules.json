@@ -6,7 +6,7 @@
 			"name": "Everyone Wants to Increase Closeness",
 			"conditions": [
 				{
-					"class": "network",
+					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -16,7 +16,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second" : "y",
@@ -26,6 +26,35 @@
 			],
 			"origin": "volitionsRules",
 			"id": "volitionRule1"
+		},
+		{
+			"name": "The hero REALLY wants to increase closeness to the love",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "hero",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "love",
+					"first": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second" : "y",
+					"weight": 20,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionsRules",
+			"id": "volitionRule2"
 		}
 	]
 }

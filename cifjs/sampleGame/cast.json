@@ -1,6 +1,6 @@
 {
 	"cast": {
-		"you": {
+		"hero": {
 			"name": "You"
 		},
 		"love": {
