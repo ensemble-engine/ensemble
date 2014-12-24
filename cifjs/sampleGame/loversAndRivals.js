@@ -54,7 +54,7 @@ var setUpLoversAndRivalsInitialState = function(){
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "hero",
-		"value" : 30
+		"value" : 10
 	};
 
 
@@ -66,7 +66,7 @@ var setUpLoversAndRivalsInitialState = function(){
 	cif.set(tempCloseness);
 };
 
-var drawCharacters = function(){
+var drawCharacters = function(widthOfField){
 	var hero = document.getElementById("hero");
 	var love = document.getElementById("love");
 	var rival = document.getElementById("rival");
@@ -104,5 +104,12 @@ var drawCharacters = function(){
 
 	console.log("Hero to love: " + heroToLoveCloseness + " love to hero: " + loveToHeroCloseness + " love to rival: " + loveToRivalCloseness);
 
-	//console.log("Uhh, I'm not actually super sure what results are going to be! " , results);
+	//Actually reposition the characters based on their closeness values.
+	//The love's position is an amalgamation of things.
+	var lovePosition = (widthOfField/2) + loveToRivalCloseness - loveToHeroCloseness; // starts in middle, pulled in both directions.
+	
+	hero.style.left = heroToLoveCloseness + 'px';
+	love.style.left = lovePosition + "px";
+	rival.style.left = widthOfField + "px"; // rival never moves.
 };
+
