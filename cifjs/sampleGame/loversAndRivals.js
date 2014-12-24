@@ -113,3 +113,22 @@ var drawCharacters = function(widthOfField){
 	rival.style.left = widthOfField + "px"; // rival never moves.
 };
 
+var actionButtonClicked = function(){
+	console.log("Action button clicked!");
+};
+
+var drawChatBubble = function(){
+	var returnString = "";
+	var chatBubble1 = " /--------------\\ ";
+	var chatBubble2 = "|                |";
+	var chatBubble3 = "|                |";
+	var chatBubble4 = "|                |";
+	var chatBubble5 = "|                |";
+	var chatBubble6 = " \\______________/ ";
+	var chatBubble7 = "       \\/         ";
+
+	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
+	return returnString;
+
+
+};

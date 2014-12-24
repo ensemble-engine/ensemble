@@ -4,7 +4,7 @@
 		{
 			"name" : "RAISECLOSENESS",
 			"intent" : {
-				"class" : "network",
+				"class" : "feeling",
 				"type"  : "closeness",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -16,10 +16,11 @@
 		},
 		{
 			"name" : "writeLoveNote",
+			"displayName" : "Write Love Note",
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "network",
+				"class" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",

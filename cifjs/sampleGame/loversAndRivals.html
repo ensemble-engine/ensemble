@@ -24,6 +24,13 @@
 		</div>
 	</div>
 
+	<div id="actionArea">
+		<h1> What to do this turn:</h1>
+		<div id="actionList"> </div>
+	</div>
+
+	<div id="chatBubble"></div>
+
 	<button id="myFirstButton" onclick=move()>Inside the button.</button>
 	<button id="2" onclick="positionCharacter('hero', 10)">Inside the button.</button>
 	<button id="3" onclick="positionCharacter('hero', 50)">Inside the button.</button>
@@ -66,13 +73,33 @@
 			var char1 = "hero";
 			var char2 = "love";
 
+			chatBubble = document.getElementById("chatBubble");
+			chatBubble.innerHTML = drawChatBubble();
+
 
 			var vol = storedVolitions.getFirst(char1, char2);
 			console.log("here is the first volition from hero to love: " , vol);
 			vol = storedVolitions.getNext(char1, char2);
 			console.log("Here is the second volition from hero to love: ", vol);
 
-			var actions = cif.getAction(char1, char2, storedVolitions, cast);
+			var actions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
+
+			//Let's make a button for each action the hero wants to take!
+			for(var i = 0; i < actions.length; i += 1){
+				//somehow make a new button? Through the DOM I suppose?
+				//And we'll have to clean it up when we're done I guess!
+				console.log("HELLLLLLLLOOO");
+				var buttonnode= document.createElement('input');
+				buttonnode.setAttribute('type','button');
+				buttonnode.setAttribute('name',actions[0].name);
+				buttonnode.setAttribute('value',actions[0].displayName);
+				buttonnode.attachEvent('onclick',actionButtonClicked);
+
+				var actionList = document.getElementById("actionList");
+				actionList.appendChild(buttonnode);
+
+
+			}
 			console.log("Actions: ", actions);
 
 			helloWorld();
