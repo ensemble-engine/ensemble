@@ -82,18 +82,20 @@
 			vol = storedVolitions.getNext(char1, char2);
 			console.log("Here is the second volition from hero to love: ", vol);
 
-			var actions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
+			var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
 
 			//Let's make a button for each action the hero wants to take!
-			for(var i = 0; i < actions.length; i += 1){
+			for(var i = 0; i < possibleActions.length; i += 1){
 				//somehow make a new button? Through the DOM I suppose?
 				//And we'll have to clean it up when we're done I guess!
 				console.log("HELLLLLLLLOOO");
 				var buttonnode= document.createElement('input');
 				buttonnode.setAttribute('type','button');
-				buttonnode.setAttribute('name',actions[0].name);
-				buttonnode.setAttribute('value',actions[0].displayName);
-				buttonnode.attachEvent('onclick',actionButtonClicked);
+				buttonnode.setAttribute('name',possibleActions[0]);
+				buttonnode.setAttribute('value',possibleActions[0].displayName);
+				buttonnode.actionToPerform = possibleActions[0];
+				buttonnode.onclick = actionButtonClicked;
+				//buttonnode.attachEvent('onclick', actionButtonClicked2);
 
 				var actionList = document.getElementById("actionList");
 				actionList.appendChild(buttonnode);

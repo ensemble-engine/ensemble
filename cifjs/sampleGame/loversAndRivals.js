@@ -114,7 +114,63 @@ var drawCharacters = function(widthOfField){
 };
 
 var actionButtonClicked = function(){
-	console.log("Action button clicked!");
+	console.log("No way that actually worked did it...? " , this.actionToPerform);
+	console.log("Action button clicked! Maybe I have access to it's name? " , this.name);
+	console.log("And even better, maybe this will give me EVERYTHING about the action " , this.value);
+
+	//What do we want to have happen when an action is clicked?
+	//
+	//Clean away all of the other actions -- they made their choice!
+	var actionList = document.getElementById("actionList");
+	actionList.innerHTML = "";
+
+	//Play some SICK ANIMATION (like a text bubble flashing!)
+	playInstantiationAnimation();
+
+	//CHANGE THE SOCIAL STATE -- social physics baby!!!
+	//CHECK OUT THAT KICK A@@ this.actionToPerform variable baby -- nothing is stopping me now!
+
+	//Re-draw the people (maybe even by having them MOVE to their new positions...)
+	//
+	//And then start the previous loop all over again.
+};
+
+var playInstantiationAnimation = function() {
+	console.log("playing our sick sanimation.");
+	var chatBubble = document.getElementById("chatBubble");
+	var animationLength = 160;
+	var animationFrame = 0;
+	var animationFrames = [];
+	animationFrames[0] = drawChatBubble();
+	animationFrames[1] = drawChatBubbleWritingFrame2();
+	animationFrames[2] = drawChatBubbleWritingFrame3();
+	animationFrames[3] = drawChatBubbleWritingFrame4();
+
+	function frame() {
+		console.log("sweet animation frame incoming...");
+		animationLength--; // update parameters
+		var evenOrOdd = animationLength % 40;
+		if(evenOrOdd === 0){
+			animationFrame += 1;
+			if(animationFrame > 3) animationFrame = 0;
+		}
+		if(evenOrOdd <= 5){
+			console.log("visible false NOQW");
+			chatBubble.style.visibility = "hidden";
+			chatBubble.innerHTML = animationFrames[animationFrame];
+		}
+		else{
+			chatBubble.style.visibility = "visible";
+		}
+		if (animationLength <= 0) {
+
+			clearInterval(id);
+			chatBubble.style.visibility = "visible";
+		}
+	}
+
+	var id = setInterval(frame, 10); // draw every 10ms
+
 };
 
 var drawChatBubble = function(){
@@ -129,6 +185,47 @@ var drawChatBubble = function(){
 
 	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
 	return returnString;
-
-
 };
+
+var drawChatBubbleWritingFrame2 = function(){
+	var returnString = "";
+	var chatBubble1 = " /--------------\\ ";
+	var chatBubble2 = "|                |";
+	var chatBubble3 = "|    ~~~~~~~     |";
+	var chatBubble4 = "|                |";
+	var chatBubble5 = "|                |";
+	var chatBubble6 = " \\______________/ ";
+	var chatBubble7 = "       \\/         ";
+
+	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
+	return returnString;
+};
+
+var drawChatBubbleWritingFrame3 = function(){
+	var returnString = "";
+	var chatBubble1 = " /--------------\\ ";
+	var chatBubble2 = "|                |";
+	var chatBubble3 = "|    ~~~~~~~     |";
+	var chatBubble4 = "|    ~~~~~~~     |";
+	var chatBubble5 = "|                |";
+	var chatBubble6 = " \\______________/ ";
+	var chatBubble7 = "       \\/         ";
+
+	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
+	return returnString;
+};
+
+var drawChatBubbleWritingFrame4 = function(){
+	var returnString = "";
+	var chatBubble1 = " /--------------\\ ";
+	var chatBubble2 = "|                |";
+	var chatBubble3 = "|    ~~~~~~~     |";
+	var chatBubble4 = "|    ~~~~~~~     |";
+	var chatBubble5 = "|    ~~~~~~~     |";
+	var chatBubble6 = " \\______________/ ";
+	var chatBubble7 = "       \\/         ";
+
+	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
+	return returnString;
+};
+
