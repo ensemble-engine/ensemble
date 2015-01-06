@@ -161,6 +161,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			return;
 		}
 
+		//Make this path that we've found equal to 'lastPath'
+		//Also might be helpful with setting a 'default' schema location.
+		var path2 = process.execPath;
+		console.log("PATH: " , path2);
+		path2 = path2.split("CiF Tool")[0];
+		console.log("nicer path: " , path2);
+
 		var path = lastPath;
 		var backupFolderName = "_bak_" + ruleFile;
 		var backupPath = path + "/" + backupFolderName;

@@ -1,3 +1,12 @@
+var stateInformation = {
+ "loveToHeroCloseness" : "NA",
+ "loveToHeroAttraction" : "NA",
+ "heroToLoveCloseness" : "NA",
+ "heroToLoveAttraction" : "NA",
+ "loveToRivalCloseness" : "NA",
+ "loveToRivalAttraction" :"NA"
+};
+
 var helloWorld = function(){
 	console.log("Hello, World!");
 };
@@ -56,14 +65,16 @@ var setUpLoversAndRivalsInitialState = function(){
 		"second" : "hero",
 		"value" : 10
 	};
-
-
 	
 	//Actually insert this state into CiF's social facts database.
 	cif.set(heroTrait);
 	cif.set(loveTrait);
 	cif.set(rivalTrait);
 	cif.set(tempCloseness);
+
+	//update our local copies of these variables, and display them.
+	updateLocalStateInformation();
+	displayStateInformation();
 };
 
 var drawCharacters = function(widthOfField){
@@ -128,12 +139,96 @@ var actionButtonClicked = function(){
 	playInstantiationAnimation();
 
 	//CHANGE THE SOCIAL STATE -- social physics baby!!!
+	var effects = this.actionToPerform.effects; // should be an array of effects.
+	for(var i = 0; i < effects.length; i += 1){
+		cif.set(effects[i]);
+	}
+
+
+	//cif wants to now go through these effects and use them to update the social state.
+
 	//CHECK OUT THAT KICK A@@ this.actionToPerform variable baby -- nothing is stopping me now!
 
 	//Re-draw the people (maybe even by having them MOVE to their new positions...)
-	//
+	//Also re-draw any debug/state informaton we want.
+	updateLocalStateInformation();
+	displayStateInformation();
+
 	//And then start the previous loop all over again.
 };
+
+var displayStateInformation = function(){
+	document.getElementById("closenessHeroToLoverNumber").innerHTML = stateInformation.heroToLoveCloseness;
+	document.getElementById("closenessLoverToHeroNumber").innerHTML = stateInformation.loveToHeroCloseness;
+	document.getElementById("closenessLoverToRivalNumber").innerHTML = stateInformation.loveToRivalCloseness;
+	document.getElementById("attractionHeroToLoverNumber").innerHTML = stateInformation.heroToLoveAttraction;
+	document.getElementById("attractionLoverToHeroNumber").innerHTML = stateInformation.loveToHeroAttraction;
+	document.getElementById("attractionLoverToRivalNumber").innerHTML = stateInformation.loveToRivalAttraction;
+}
+
+var updateLocalStateInformation = function(){
+	//First, let's grab the data we'll want to display.
+	var loveToHeroClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "love",
+		"second" : "hero"
+	};
+	var loveToRivalClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "love",
+		"second" : "rival"
+	};
+	var heroToLoveClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "hero",
+		"second" : "love"
+	};
+	var loveToHeroAttractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "love",
+		"second" : "hero"
+	};
+	var heroToLoveattractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "hero",
+		"second" : "love"
+	};
+	var loveToRivalAttractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "love",
+		"second" : "rival"
+	};
+
+	//Get love to hero closeness.
+	var results = cif.get(loveToHeroClosenessPred);
+	stateInformation.loveToHeroCloseness = results[0].value;
+
+	//Get love to rival closeness
+	results = cif.get(loveToRivalClosenessPred);
+	stateInformation.loveToRivalCloseness= results[0].value;
+
+	//Get hero to Love closeness
+	results = cif.get(heroToLoveClosenessPred);
+	stateInformation.heroToLoveCloseness = results[0].value;
+
+	//get love to hero attraction
+	results = cif.get(loveToHeroAttractionPred);
+	stateInformation.loveToHeroAttraction = results[0].value;
+
+	//get love to rival attraction
+	results = cif.get(loveToRivalAttractionPred);
+	stateInformation.loveToRivalAttraction = results[0].value;
+
+	//get hero to love attraction
+	results = cif.get(heroToLoveattractionPred);
+	stateInformation.heroToLoveAttraction = results[0].value;
+}
 
 var playInstantiationAnimation = function() {
 	console.log("playing our sick sanimation.");

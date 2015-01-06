@@ -3,7 +3,7 @@
 	"type": "trigger",
 	"rules": [
 		{
-			"name": "If I'm jealous and someone hits on my sweetie, I hate them.",
+			"name": "If I'm jealous and someone hits on my sweetie, I hate them A LOT.",
 			"conditions": [
 				{
 					"class": "relationship",
@@ -16,7 +16,7 @@
 					"first": "x"
 				},{
 					"class": "SFDBLabel",
-					"type": "romanticAdvance",
+					"type": "romantic advance",
 					"first": "z",
 					"second": "y"
 				}

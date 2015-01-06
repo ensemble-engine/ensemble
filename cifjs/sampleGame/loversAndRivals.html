@@ -38,6 +38,22 @@
 	<button id="5" onclick="positionCharacter('hero', 120)">Inside the button.</button>
 	<button id="6" onclick="positionCharacter('hero', 150)">Inside the button.</button>
 
+	<div id="stateArea">
+		<h1>Social State</h1>
+		<div id="closenessStateDisplay">
+			<h2>Closeness</h2>
+			<div id="closenessHeroToLover">Hero to Lover: <span id="closenessHeroToLoverNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Hero: <span id="closenessLoverToHeroNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Rival: <span id="closenessLoverToRivalNumber">NA</span></div>
+		</div>
+		<div id="attractionStateDisplay">
+			<h2>Attraction</h2>
+			<div id="attractionHeroToLover">Hero to Lover: <span id="attractionHeroToLoverNumber">NA</span></div>
+			<div id="attractionLoverToHero">Lover to Hero: <span id="attractionLoverToHeroNumber">NA</span></div>
+			<div id="attractionLoverToRival">Lover to Rival: <span id="attractionLoverToRivalNumber">NA</span></div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
 
 		document.addEventListener('cifLoaded', function (e) {
