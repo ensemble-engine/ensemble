@@ -167,7 +167,8 @@ define(["util", "underscore", "test"], function(util, _, test) {
 		for (var first = 0; first < castLength; first++) {
 			for (var second = 0; second < castLength; second++) {
 				if (second === first) {
-					continue;
+					//For 'undirected' volitions, we want people to be able to direct volitions towards themselves.
+					//continue;
 				}
 
 				volitions[cast[first]][cast[second]] = _.sortBy(volitions[cast[first]][cast[second]], vSort);
@@ -224,7 +225,8 @@ define(["util", "underscore", "test"], function(util, _, test) {
 			volitionShell[cast[i]] = {};
 			for (var j = 0; j < cast.length; j++) {
 				if (i === j) {
-					continue;
+					//We want the i === j case to be represented, as a means of characters having undirected volitions (e.g., a character wants to boost their own intelligence).
+					//continue;
 				}
 				volitionShell[cast[i]][cast[j]] = [];
 			}

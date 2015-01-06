@@ -113,7 +113,8 @@
 					"first" : "initiator",
 					"second" : "responder",
 					"value" : true
-				}]
+				}],
+			"isAccept" : true	
 		},
 		{
 			"name" : "laughTerminal1",
@@ -125,7 +126,8 @@
 					"first" : "initiator",
 					"second" : "responder",
 					"value" : true
-				}]
+				}],
+			"isAccept" : true	
 		},
 		{
 			"name" : "laughTerminal2",
@@ -151,7 +153,8 @@
 					"first" : "initiator",
 					"second" : "responder",
 					"value" : true
-				}]
+				}],
+			"isAccept" : true	
 		}
 	]
 }

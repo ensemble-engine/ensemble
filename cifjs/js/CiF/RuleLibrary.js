@@ -614,6 +614,15 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			//and then directly update/adjust the value at that spot in the array.
 			
 			//TODO: currently, adjustWeight cannot handle a situation where there is no second person in the effect. We might want to handle this.
+			var direction = sfdb.getRegisteredDirection(effect);
+			console.log(direction);
+			if(effect.second === undefined){
+				if(direction === "undirected" ){
+				//ok, we are dealing with a situation where a character is attempting to adjust an undirected property.
+				//Do this by making the 'second' character actually the first.
+				effect.second = effect.first;
+				}
+			}
 			var lengthOfPairsEffectsArray = calculatedVolitions[effect.first][effect.second].length;
 			for (var i = 0 ; i <= lengthOfPairsEffectsArray ; i += 1) {
 

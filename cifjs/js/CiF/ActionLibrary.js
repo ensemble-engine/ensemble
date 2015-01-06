@@ -17,22 +17,46 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var nonTerminals = [];
 	var terminalActions = [];
 
+	/**
+	 * @method getAllActions 
+	 * @description returns an array containing every action (terminal or otherwise) available in the social world.
+	 * @return {Array} [An array containing every single action defined in the social world.]
+	 */
 	var getAllActions = function(){
 		return actions;
 	};
 
+	/**
+	 * @method getStartSymbols 
+	 * @description Returns an array containing every 'start action.' Conceived to return all actions specifically tied to an intent.
+	 * @return {Array} [An array containing every 'root' acton (every action tied to an intent) in the social world]
+	 */
 	var getStartSymbols = function(){
 		return startSymbols;
 	};
 
+	/**
+	 * @method getNonTerminals 
+	 * @description Returns an array containing every 'non terminal' This will include both root and non-root actions, but exclude terminal actions.
+	 * @return {[type]} [An array containing every 'non terminal' action.]
+	 */
 	var getNonTerminals = function(){
 		return nonTerminals;
 	};
 
+	/**
+	 * @method getTerminalActions 
+	 * @description Returns an array containing every terminal action.
+	 * @return {[type]} [An array containing every terminal action]
+	 */
 	var getTerminalActions = function(){
 		return terminalActions;
 	};
 
+	/**
+	 * @methodclearActionLibrary 
+	 * @description Completely empties out the the action library by zero-ing out the arrays of actions, startSymbols, nonTerminals, and terminalActions. Used mainly for testing purposes.
+	 */
 	var clearActionLibrary = function(){
 		actions = [];
 		startSymbols = [];
@@ -40,11 +64,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		terminalActions = [];
 	};
 
+	/**
+	 * @method parseActions 
+	 * @description Takes in either a JSON file or a JSON string representing the definition of an action or actions and stores it in the action library. This effect is cumulative; calling this function on multiple files will lead to the actions from both files being stored in the action library.]
+	 * @param  {JSON} data [Either a JSON string or a JSON file defining an action or actions.]
+	 * @return {array}      [An array of every action currently stored in the action library.]
+	 */
 	var parseActions = function(data){
 		var parsedActions;
 		var fileName;
 		var actionsToCategorize = [];
-		//console.log("here is the value of data...", data);
 
 		try {
 			if (typeof data === "string") {
@@ -71,10 +100,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			// ////#CODEREVIEW: add validation that there can't be two different actions that have the same intent defined.
 			validate.action(action, "Examining action  #" + i);
 
-		//}
-
-		
-		//for(var j = 0; j < parsedActions.length; j += 1){
 			if(actionAlreadyExists(action)){
 				console.error("Error! The action " + action.name + " is already defined!" );
 				continue;
@@ -82,11 +107,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			actions.push(util.clone(action));
 			actionsToCategorize.push(action);
 		}
-		//actions = util.clone(parsedActions);
 		categorizeActionGrammar(actionsToCategorize);
 		return actions;
 	};
 
+	/**
+	 * @method actionAlreadyExists 
+	 * @description a simple helper function to see if a newly parsed in action hasn't already been defined -- this is done by looking at the name of the action. This means that even if two actions are quite different, if they share the same name an error will be printed to the console.]
+	 * @param  {Object} potentialNewAction [The action that has just been read in, and is to be checked against the actions already in the action library.]
+	 * @return {Boolean}                    [Returns true if the action already exists. False otherwise.]
+	 */
 	var actionAlreadyExists = function(potentialNewAction){
 		for(var i = 0; i < actions.length; i += 1){
 			if(actions[i].name === potentialNewAction.name){
@@ -104,7 +134,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var categorizeActionGrammar = function(actionPool){
 		var currentAction;
 		for(var i = 0; i < actionPool.length; i += 1){
-			currentAction = util.clone(actionPool[i])
+			currentAction = util.clone(actionPool[i]);
 			if(actionPool[i].intent !== undefined){
 				startSymbols.push(currentAction);
 			}
@@ -118,7 +148,18 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	};
 
-	//#CODEREVIEW : Write this preamble!
+	/**
+	 * @method getSortedActionsFromVolition
+	 * @description Finds the actions that the initiator wants to take towards the responder, and sorts them by volition score.
+	 * @param  {String}  initiator          [The name of the initiator of the action]
+	 * @param  {String}  responder          [The name of the responder of the action]
+	 * @param  {Object}  registeredVolition [A registered volition object]
+	 * @param  {Boolean} isAccepted         [Whether or not the responder accepts the intent of the volition.]
+	 * @param  {Number}  weight             [How much the initiator wants to pursue this volition.]
+	 * @param  {[Number]}  numActionsPerGroup [Used to determine how many 'actions per group' to include. Will ultimately default to one if unspecified.]
+	 * @param  {Array}  cast               [The characters to use in consideration for the binding of various roles the actions might need.]
+	 * @return {[Array]}                     [An array of actions the initiator wants to take towards the responder, sorted by weight.]
+	 */
 	var getSortedActionsFromVolition = function(initiator, responder, registeredVolition, isAccepted, weight, numActionsPerGroup, cast){
 		//console.log("Inside of getSortedactionsFromVolition");
 
@@ -128,32 +169,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	};
 
-	var sortActionsByVolitionScore = function(actions){
-		//TODO: WRITEME!
-		//
-		
-		//ok, so... umm... what?
-		//What do we need to do?
-		//We need to look inside of each action array that we'll have in here, and then sort them
-		//based on their 'weight' attribute. I think. I think maybe it is just as easy as that!
-		//the only problem is that we don't know how deep it goes! So we...
-		//
-		//NEED RECURSION AGAIN!
-		//I've been wielding its dark art a lot, lately.
-		
-		//console.log("This is what actions look like inside of sort actions by volition score: ", actions);
 
-/*
-		for(var i = 0; i < actions.length; i += 1){
-			var nextActions = actions[i].actions;
-			if(nextActions !== undefined){
-				sortActionsByVolitionsScore(actions[i].actions);
-			}			
-		}
-		*/
+	/**
+	 * @method sortActionsByVolitionScore 
+	 * @description Sorts an array of actions based on their weights in descending order.. Specifically, each action has a list of actions that it 'leads to' -- and it is THIS list of actions that is being sorted. Uses recursion to get to the end of the chain. Also sorts the GoodBindings of each weight as well.
+	 * @param  {Array} actions [An array of actions to be sorted]
+	 * @return {Array}         [The sorted actions]
+	 */
+	var sortActionsByVolitionScore = function(actions){
 		var descSortedActions = _.sortBy(actions, "weight");
 		actions = descSortedActions.reverse(); // now all of our actions are sorted, sweet!
-		//console.log("Maybe this is all sorted now? " , descSortedActions);
 
 		//And, uh, I guess now we want to do the same as we drill downwards?
 		for(var i = 0; i < actions.length; i += 1){
@@ -173,31 +198,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * //TODO: Double check that this method stil works? I think it might be obsolete...
-	 * @method getActionsFromVolition
-	 * @description Given information about a specific intent/volition, returns an array of all actions that adjust that volition
-	 * @param  {Object} volition [An object that specifies a volition a character wants to take towards another character.]
-	 * @return {[]}          [An array representing all of the actions that the 'first' character as specified in the volition parameter wants to take towards the 'second' character in the volition parameter.]
-	 */
-	var getActionsFromVolition = function(volition){
-		var relatedActions = [];
-		var actionIntent;
-		for(var i = 0; i < actions.length; i +=1){
-			actionIntent = actions[i].intent;
-			if(actionIntent.class === volition.class &&
-				actionIntent.type === volition.type &&
-				actionIntent.intentDirection === volition.intentDirection){
-					//it appears that this is an action pertaining to this volition!
-					relatedActions.push(util.clone(actions[i]));
-			}
-		}
-		return relatedActions;
-	};
-
-	//I'm gonna hold off on writing an official description for now, but in general, this is what I'm hoping for:
-	//We get some voition (like start dating)
-	//From this volition, we know whehter it is going to be accepted or not. That will be important in determining what terminals we are interested in.
-	/**
 	 * @method getTerminalActionsFromVolition
 	 * @description This method takes the names of the initiator and responder of an action and a registered volition 
 	 * between them, and will go through the entire grammar for the intnet specified in the volition and return all 
@@ -212,11 +212,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Array]}                    [An Array of potential actions that can be carried out from the initiator to the responder]
 	 */
 	var getTerminalActionsFromVolition = function(initiator, responder, volition, isAccepted, weight, numActionsPerGroup, cast){
-		//var volition = registeredVolition.getFirst(initiator, responder);
-		//var acceptedObject = registeredVolition.isAccepted(initiator, responder, volition);
-		//var weight = volition.weight;
-		//console.log("^^^^^^^^^ weight is: " + weight);
-		//var isAccepted = acceptedObject.accepted;
 		var actionIntent;
 		var goodTerminals = [];
 		var returnTerminalList = [];
@@ -252,39 +247,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//#CODEREVIEW: Maybe just return goodTerminals right here.
 					
 					returnTerminalList = goodTerminals; //Ok, so, it said temp temp temp, but actually I think this is pretty much exactly what we want!
-
-
-					//TEMP TEMP
-					//return goodTerminals; // just for debugging help.
-
-					//We want the return array to be a dictionary/associative array with index entries
-					//equal to the names of the nonTerminal actions that got us to the terminals.
-					//I don't think we need this anymore, in all honesty. We do checks for this when we are actually finding the good termiansl (hence, them being considered "good" !).
-					/*
-					for(var j = 0; j < goodTerminals.length; j += 1){
-						potentialTerminal = goodTerminals[j];
-						if(potentialTerminal.isAccept === isAccepted){
-							returnTerminalList.push(potentialTerminal);
-						}
-					}
-					*/
-
-					//Now, actually push in the terminal actions.
-					/*
-					for (var key in goodTerminals){
-						if (goodTerminals.hasOwnProperty(key)){
-							for(var k = 0; k < goodTerminals[key].length; k += 1){
-								potentialTerminal = goodTerminals[key][k];
-								if(potentialTerminal.isAccept === isAccepted){
-									if(returnTerminalList[key] === undefined){
-										returnTerminalList[key] = [];
-									}
-									returnTerminalList[key].push(potentialTerminal);
-								}
-							}
-						}
-					}
-					*/
 			}
 		}
 
@@ -309,22 +271,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			return;
 		}
 
-		//TODO: WHAT IF: We just did the check for 'goodness' here? That seems like it might be better.
-		//TODO: Maybe we should just rename this function to something like 'getTerminals'
-		//TODO: Let's finish the function first, and then we can worry about refactoring it later.
 		currentUniqueBindings = getUniqueActionBindings(nonTerminal, uniqueBindings);
 		//#CODEREVIEW -- why is cast passed in twice here? Ah, because one is available and one is all. But "all" never changes, so insead of passing in a clone, how about just a reference.
 		var nonTerminalWorkingBindingCombinations = getWorkingBindingCombinations(nonTerminal, util.clone(uniqueBindings), util.clone(cast), util.clone(nonTerminal.goodBindings), util.clone(cast));
 		if(nonTerminalWorkingBindingCombinations.length <= 0){
-			//Oops, there is no possible combination of cast members that make this work! So no point in going down this path anymore!
-			//console.log("At a non-terminal, we didn't find any possible combinations to make it work! Aborting this path.");
+			//Oops, there is no possible combination of cast members that make this work! 
+			//So no point in going down this path anymore!
 			return;
 		}
 
-		//#CODEREVIEW: I don't think we ever use oldGoodBindings -- kill it!
-		//#CODEREVIEW: We also don't have to CLONE nonTerminalWorkingBindingCombinations -- just assign it!
-		var oldGoodBindings = util.clone(nonTerminal.goodBindings);
-		nonTerminal.goodBindings = util.clone(nonTerminalWorkingBindingCombinations);
+		nonTerminal.goodBindings = nonTerminalWorkingBindingCombinations;
 
 		//So, now at this point, where I have all of the 'good bindings' at this level... I guess what I want to do
 		//is go through all of the influence rules, for each binding, and re-score them?
@@ -358,15 +314,19 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			if(terminalAction !== undefined){
 				terminalsAtThisLevel = true;
 				terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
-				//console.log("$$$$$ Here is my terminal action before going into the 'I found a terminal action' thing!", terminalAction);
+				if(nonTerminal.lineage === undefined){
+					terminalAction.lineage = nonTerminal.name;
+				}
+				else{
+					terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+				}
+				//terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
 
 				currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
-				//TODO: Do a similar thing at the nonterminal level, but for now let's just get it working here first.
 				var workingBindingCombinations = getWorkingBindingCombinations(terminalAction, util.clone(currentUniqueBindings), util.clone(cast), util.clone(terminalAction.goodBindings), util.clone(cast));
 				
-				//#CODEREVIEW: this clone seems unnecessary -- maybe just assign them.
-				terminalAction.goodBindings = util.clone(workingBindingCombinations);
-				//console.log("Working binding combinations: ", workingBindingCombinations);
+				terminalAction.goodBindings = workingBindingCombinations;
+
 				//we found a terminal symbol! Great, let's add it to the list!
 				//Let's do some checks to make sure that the action that we're looking at is good.
 				//This means checking it's conditions, and checking if it's "isAccept" matches what we want.
@@ -375,9 +335,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//console.log("how many times do you see me? inappropriate action: " , terminalAction);
 					continue;
 				}
-				if(terminalAction.name === "actualFriends4Degrees"){
-					//console.log("ok, here we are at mr. problem...");
-				}
+
 				//In "traditional CiF" we would only want one of these things. The most salient.
 				//But here we have the power to take the X most salient, if we so desire.
 				//TODO: (Of course) there is a LOT of thinking that has to go into how conditions work with all of this stuff... I'm kind of dreading that a little big!
@@ -385,17 +343,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				//So, ok... here is what I'm going to do... I'm going to change all of this
 				//returnList manipulation, into creating a new 'action object' thingy, which will
 				//have an action array, and it is THAt array that will under go manipulation.
-
-/*
-				//'original working'
-				if(returnList[nonTerminal.name] === undefined){
-					returnList[nonTerminal.name] = []; // make it a little array?
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-					returnList[nonTerminal.name].push(terminalAction);
-				}
-*/
 
 				//AND FINE, I'm caving in! Let's compute influence rules for this terminal action, too!
 				computeInfluenceRuleWeight(terminalAction);
@@ -442,65 +389,24 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 							break; // We're at the end of the loop, but let's break anywya just because.
 						}
 					}
-
 				}
-				/* //'original working'
-				else{
-					//ok, here we want to do a chck for this guy's salience, in case we don't have it yet.
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-
-					//And now here we want to do a special thing where we figure out the relative salience?
-					
-					var actionListLength = returnList[nonTerminal.name].length; // want to store this, because we'll be adjusting the length inside of the loop
-					//for(var salienceIndex = 0; salienceIndex < actionListLength; salienceIndex += 1){
-					for(var salienceIndex = actionListLength; salienceIndex > 0; salienceIndex -= 1){
-						//Ok, so we're starting at the end and going backwards.
-						//It's possible that the new terminal one has a salience that's SO LOW we just ignore it
-						//--that would be if the 'first' one we look at (i.e. the one already at the end of the list) is bigger than it.
-						//--In which case we just stop.
-						//If it is bigger than the first one, then we know it is going to be ON the list, and then it is just a matter of
-						//keeping on going until you find the perfect spot for it to go.
-						if(returnList[nonTerminal.name][salienceIndex-1].salience > terminalAction.salience){
-							//it's time to stop. use the length to decide if we should even bother adding it or not, I guess.
-							if(salienceIndex === actionListLength && actionListLength >= actionsPerGroup){
-								//This new guy isn't even good enough to make the list, ignore it and stop going through the list!
-							}
-							else{
-								//ok, cool, our new guy is bigger. Let's put him in.
-								returnList[nonTerminal.name].splice(salienceIndex, 0, terminalAction);
-								//And now check to see if anything needs to be removed.
-								if(returnList[nonTerminal.name].length > actionsPerGroup){
-									returnList[nonTerminal.name].splice(actionsPerGroup, returnList[nonTerminal.name].length - actionsPerGroup);
-								}
-							}
-							break;
-						}
-						//If we've made it to here, that implies that we've found a new most salience thing
-						//but let's wrap it an if just in case.
-						if( (salienceIndex-1) === 0 && terminalAction.salience > returnList[nonTerminal.name][salienceIndex-1].salience){
-							//we found a new 'most salience' thing, so put it at the front of the list!
-							returnList[nonTerminal.name].splice(salienceIndex - 1, 0, terminalAction);
-							//And now check to see if anything needs to be removed.
-							if(returnList[nonTerminal.name].length > actionsPerGroup){
-								returnList[nonTerminal.name].splice(actionsPerGroup, returnList[nonTerminal.name].length - actionsPerGroup);
-							}
-							break; // We're at the end of the loop, but let's break anywya just because.
-						}
-					}
-				}
-				*/
-				
 			}
 			else{ // Ah, we must be dealing with another non-terminal! let's DIG DEEPER!
-				//TODO: Have there be some kind of nice functionality to double check against the inclusion of loops (probably doesn't belong here though)
-				
+			
 				//#CODEREVIEW: This code is pretty much exactly repeated elsewhere in this function. Make it it's own function, maybe passing in special parametrs as needed.
 				var nonTerminalAction = getTerminalActionFromNameGeneric(actionName, nonTerminals);
 				nonTerminalAction.goodBindings = nonTerminal.goodBindings;
 				nonTerminalAction.weight = nonTerminal.weight;
-				//nonTerminalAction.conditions = nonTerminal.conditions;
+
+				//Figure out the 'lineage' of the action (i.e., keep track of the path we've taken down the tree.)
+				if(nonTerminal.lineage === undefined){
+					nonTerminalAction.lineage = nonTerminal.name;
+				}
+				else{
+					nonTerminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+				}
+				
+				//Get the unique bindings that still work.
 				currentUniqueBindings = getUniqueActionBindings(nonTerminalAction, uniqueBindings);
 				if(!actionIsAppropriate(nonTerminalAction, isAccepted, currentUniqueBindings)){
 					//oops, either the conditions or the isAccept didn't pass! Let's move along...
@@ -508,78 +414,28 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					continue;
 				}
 
+				//RECURSIVE CALL! Using the non-terminal we're on as the starting point for the next level down the tree.
 				var diggingDeeperActions = getTerminalActionsFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
 				if(diggingDeeperActions === undefined || diggingDeeperActions.length <= 0){
 					continue; // oops! This 'leads to' led to something that had no valid bindings! Better move on!
 				}
 				
+				//Store the actions we found by 'digging deeper'
 				nonTerminalAction.actions = [];
 				for(var ddActionIndex = 0; ddActionIndex < diggingDeeperActions.length; ddActionIndex += 1){
 					var thingToAdd = diggingDeeperActions[ddActionIndex];
 					nonTerminalAction.actions.push(util.clone(thingToAdd));
 				}
 
-				//#CODEREVIEW: We don't use this anymore.
-				var nonTerminalActionObject = {};
-
-				//BEN START HERE: Ok, I think this is where the issue is... I don't think that 
-				//we actually have the chance to 'augment it later' -- by this point it should already be
-				//'augmented -- the act of calling 'digging deeper actions' was our chance to get the weight,
-				//but we didn't store it BECUASE we are still using the archaic return list for salience.
-				//I think if we convert the 'salience area' to use the 'modern' format for return lists,
-				//all of this (goodBindings and weight) will become a lot easier.
-				//Yeah, totally, and then we'll change 
-				//nonTerminalActionObject.weight = diggingDeeperActions.weight (or whatever)
-				//in fact, maybe we actually want to move all of this stuff over to the salience area?
-				//Noo.. no no no... it is important that we have them here too!
-				
-				/*
-				
-				// 'Worked' as of 9/25 10am -- but fell apart when the tree had more than 4 levels to it.
-				nonTerminalActionObject.name = actionName;
-				nonTerminalActionObject.weight = diggingDeeperActions[0].weight; // and we'll augment this later.
-				nonTerminalActionObject.goodBindings = nonTerminalAction.goodBindings;
-				nonTerminalActionObject.conditions = nonTerminalAction.conditions;
-				nonTerminalActionObject.actions = [];
-				*/
-			
-
-
-				//Great! we just (potentially) grabbed a lot more terminal actions! Let's go through them one by one and add them to our return list!
-				//for(var j = 0; j < diggingDeeperActions[actionName].length; j += 1){
-				//#CODEREVIEW - This doesn't get used at all! Get rid of it!
-				for(var j = 0; j < diggingDeeperActions.length; j += 1){
-				
-					//Add to the child the 'good combinations' discovered by the parent...
-					//diggingDeeperActions[actionName][j].goodBindings = util.clone(nonTerminal.goodBindings);
-					
-					/*
-					//9-22 4pm WORKED, but didn't have enough space for enough information. Going to change that...
-					if(returnList[actionName] === undefined){
-						returnList[actionName] = [];
-					}
-					returnList[actionName].push(diggingDeeperActions[actionName][j]);
-					*/
-				
-					/*
-					//9/25 10AM -- 'worked' until we had 4 layers worth of actions. Then got weird and broken.
-					for(var k = 0; k < diggingDeeperActions[j].actions.length; k += 1){
-						nonTerminalActionObject.actions.push(diggingDeeperActions[j].actions[k]);
-					}
-					*/
-					
-
-				}
-				//So, we also added in this lines...
-				//returnList.push(util.clone(nonTerminalActionObject));
+				//And return the nonTerminalAction we created, that has stored within it now all of the 'good actions' that it can lead to.
 				returnList.push(util.clone(nonTerminalAction));
 			}
 
 		}
 
+		//Because there might be non-terminals and terminals at the same level, do a check 
+		//to see if we need to add anything in at this level in the tree.
 		if(terminalsAtThisLevel === true){
-			//returnList.push(util.clone(terminalActionParentObject.actions)); //what is life like if we only return the TERMINALS here?
-			//returnList = util.clone(terminalActionParentObject.actions);
 			for(var terminalsToPushUpIndex = 0; terminalsToPushUpIndex < terminalActionParentObject.actions.length; terminalsToPushUpIndex += 1){
 				returnList.push(util.clone(terminalActionParentObject.actions[terminalsToPushUpIndex]));
 			}
@@ -613,37 +469,14 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return returnValue;
 	};
 
-	//old bindings is an array of bindings, new bindings is a single binding.
-	//Goes through the old binding array, goes through each key, sees if it matches
-	//the same key in new bindings (note: new bindings might have additional roles that
-	//old bindings lacks, but that's ok). If we find a match, then we return the
-	//weight$$ value in that particular binding.
-	//Theoretically this SHOULD always find a match. If it doesn't, then wrong values were passed in/the
-	//function wasn't used in the correct context. 
-	//SEEMS TO BE OBSOLETE NOW
-	var findWeightFromPreviousBinding = function(newBindings, oldBindings){
-		var mismatchFound = false;
-		for(var i = 0; i < oldBindings.length; i += 1){
-			for (var role in oldBindings[i]){
-				if(oldBindings[i][role] !== newBindings[role]){
-					//Oops, this binding doesn't work!
-					mismatchFound = true;
-					break;
-				}
-			}
-			if(mismatchFound === false){
-				//we found the perfect binding!
-				return oldBindings.weight$$;
-			}
-			else{
-				mismatchFound = false; // reset for the next loop...
-			}
-		}
-	};
-
 	//MYU OLD INFLUENCE RULE CODE, but separated out (because I think other things were calling it!)
 	//Going to change all instances of 'nonTerminal' to 'action', because I think any action can actually
 	//be passed through this now.
+	/**
+	 * @method computeInfluenceRuleWeight 
+	 * @description Takes in an action, goes through all of its valid bindings, and evaluates the influence rule for each set of bindings. Stores the weight with each binding and, for the best weight (i.e. the best binding) stores it at the level of the action.
+	 * @param  {Object} action [The action to compute the weight for. Should have at least one 'goodBinding' attached to it]
+	 */
 	var computeInfluenceRuleWeight = function(action){
 		var bestWeightFoundSoFar = -999999;
 		for(var goodBindingIndex = 0; goodBindingIndex < action.goodBindings.length; goodBindingIndex += 1){
@@ -670,13 +503,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			action.goodBindings[goodBindingIndex].weight$$ = candidateWeight;
 			
 		}
-	}
+	};
 
-	//Function that checks all of the various things that can make an action "not appropriate"
-	//e.g. it is an "accept" action when we are looking for reject action.
-	//Or it doesn't pass the conditions.
-	//Because at this point we don't know if we are dealing with a terminal or a non-terminal, we 
-	//have to look at the fields this action contains to figure out what kind of checks to do.
 	/**
 	 * @method actionIsAppropriate
 	 * @description actionIsAppropriate checks various qualities that would make an action "not appropriate", such as an action being marked as an "accept" action when we are looking for a reject action.
@@ -749,72 +577,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return undefined;
 	};
 
-	//#CODEREVIEW: I think this doAction is obsolete -- double check that it still works with the freshly written 'getAction' function.
-	/**
-	 * @method performAction
-	 * @description performAction has the 'initiator' character perform the action 'actionName' towards the responder. If the responder's volition is above a certain threshold, the action's "acceptEffects" will transpire. Otherwise, the "rejectEffects" will occur.
-	 * @param  {[string]} actionName The name of the action to perform.
-	 * @param  {[string]} initiator  The name of the character that is performing the action.
-	 * @param  {[string]} responder  The name of the character that is having the action performed on them.
-	 * @param  {object} registeredVolitions Our volition cache.
-	 */
-	var doAction = function(actionName, initiator, responder, registeredVolitions){
-		//First, we have to find our action based on the name.
-		var action = getActionFromName(actionName);
-
-		if(action === undefined){
-			console.error("Instructed to perform action " + actionName + " but that is not defined in the actionLibrary.");
-		}
-
-		//Now let's fill in the 'blank' roles with actual character names.
-		//This will be done by assuming that whatever role is specified in the 'intent'
-		//for 'first' is going to be the initiator, and 'second' is going to be the responder.
-		action = bindActionEffects(initiator, responder, action);
-
-		//Now we have to see if the action is accepted or rejected.
-		var isAccepted = registeredVolitions.isAccepted(initiator, responder, action.intent);
-
-		//And now, based on if it is accepted or rejected, we want to do either the accept or reject effects.
-		console.log("is Accepted", isAccepted);
-		if(isAccepted.accepted){
-			setActionEffects(action.acceptEffects, initiator, responder);
-		}
-		else{
-			setActionEffects(action.rejectEffects, initiator, responder);
-		}
-	};
-
-	//#CODEREVIEW: This is definitely obsolete. Get rid of it.
-	/**
-	 * POSSIBLY OBSOLETE
-	 * @method bindActionEffects
-	 * @description Takes the roles specified in the 'intent' of an action, assumes that 'first' is the initiator and that 'second' is the responder, and then replaces the key that was used in the first/second slot throughout all of the effects of the action.
-	 * @param  {string} initiator the name of the initiator of the action
-	 * @param  {string} responder the name of the responder of the action
-	 * @param {object} actionObject An object representing all of the pertinent information about an action.
-	 * @return {object}           [the object that was passed in, but with roles  (such as 'x' and 'y') replaced with character's names in all of the effects]
-	 */
-	var bindActionEffects = function(initiator, responder, actionObject){
-		var bindingLegend = [];
-		bindingLegend[actionObject.intent.first] = initiator;
-		bindingLegend[actionObject.intent.second] = responder;
-		for(var i = 0; i < actionObject.acceptEffects.length; i += 1){
-			//Replace all of the "x"s and "y"s and what have you with actual character names.
-			actionObject.acceptEffects[i].first = bindingLegend[actionObject.acceptEffects[i].first];
-			actionObject.acceptEffects[i].second = bindingLegend[actionObject.acceptEffects[i].second];
-		}
-		for(i = 0; i < actionObject.rejectEffects.length; i += 1){
-			actionObject.rejectEffects[i].first = bindingLegend[actionObject.rejectEffects[i].first];
-			actionObject.rejectEffects[i].second = bindingLegend[actionObject.rejectEffects[i].second];
-		}
-		return actionObject;
-	};
-
 	//#CODEREVIEW: Give this a better name so that we know this is the 'real' bindActionEffects
-	//PHEW... OK... yes, Ben Start Here indeed...
-	//When did I write this?
 	var bindActionEffects2 = function(actionObject, bindingsToUse){
-		console.log("inside of bindActionEffects2! BEN START HERE!");
 		for(var i = 0; i < actionObject.effects.length; i += 1){
 			actionObject.effects[i].first = bindingsToUse[actionObject.effects[i].first];
 			actionObject.effects[i].second = bindingsToUse[actionObject.effects[i].second];
@@ -830,11 +594,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Object]}                [An object containing all of the unique roles used by this point in the action chain.]
 	 */
 	var getUniqueActionBindings = function(actionObject, uniqueBindings){
-		//If we don't have a uniqueBindings object passed in, create a new one.
-		//#CODEREVIEW: We should probably just assume that uniqueBindings is already defined, so we don't need this check.
-		if(uniqueBindings === undefined){
-			uniqueBindings = {};
-		}
 
 		//Go through all of the conditions and check them for new roles
 		var conditions = actionObject.conditions;
@@ -899,11 +658,11 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 					//a character has been specified to work in this role (could be initiator, responder, or something else)
 					//remove them from the available cast members, but make sure that they are 'lodged' in the unique bindings.
 					//We remove them from the available cast members, because it means this character should be unavailable for any other role.
-					// if availableCastMembers.indexOf(characterName) >= 0
-					// //#CODEREVIEW - do the above.
-					var castIndex = $.inArray(characterName, availableCastMembers);
-					if( castIndex !== -1){
-						availableCastMembers.splice(castIndex, 1);
+					if(availableCastMembers !== undefined){
+						var castIndex = availableCastMembers.indexOf(characterName);
+						if(castIndex >= 0){
+							availableCastMembers.splice(castIndex, 1);
+						}
 					}
 
 					//And just as the initiator and responder roles have already been clearly defined earlier,
@@ -939,7 +698,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 				if(evaluationResult === true){
 					//Awesome! It's true! Push it on to our return array for later!
-					//console.log("BOOYAH!!!!! Found a working combination: ", uniqueBindings);
 					returnArray.push(util.clone(uniqueBindings));
 				}
 				else{
@@ -968,21 +726,13 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return returnArray;
 	};
 
-	//#CODEREVIEW: The name is confusing (cif.set ? actually 'setting' some property of the action's effects? it is the former!) Also, this probably should live inside of the cif file, gets an action passed in.	
 	/**
-	 * @method setActionEffects 
-	 * @description Given an 'effectSet' that came from an action (either the acceptEffects or rejectEffects) go through each one and set it into the sfdb. This function assumes that the effectSet bieng passed in has already been bound (that is to say, that there aren't generic 'roles' in the first and second slots, but actual character names.)
-	 * 
-	 * @param {[]} effectSet The effects to enact that came from the action -- either it's 'acceptEffects' or rejectEffects.
-	 * @param {[string]} initiator [the name of the initiator of the action]
-	 * @param {[string]} responder [the name of the responder of the action]
+	 * @method bindActionCondition 
+	 * @description Takes in an array of conditions and a specific binding to use, and replaces all 'generic roles' in the conditions (e.g., "x", "y", "cheater", etc.) with actual character names.
+	 * @param  {Array} conditions   [An Array of conditions filled with generic roles (such a initiator, x, or cheater)]
+	 * @param  {[Object]} bindingToUse [A dictionary of sorts mapping which charactes should be used to fill in which roles]
+	 * @return {[Array]}              [An array of the same conditions passed in, but with their generic roles filled in with character names.]
 	 */
-	var setActionEffects = function(effectSet, initiator, responder){
-		for(var i = 0; i < effectSet.length; i += 1){
-			//cif.set(effectSet[i]);
-		}
-	};
-
 	var bindActionCondition = function(conditions, bindingToUse){
 		for(var i = 0; i < conditions.length; i += 1){
 			if(conditions[i].first !== undefined){
@@ -994,9 +744,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		}
 		return conditions;
 	};
+	
 
 	//Given a binding, goes througha all of the influence rules of an action
 	//and keeps a running sum of their effects. Then returns that sum.
+	/**
+	 * @method evaluateActionInfluenceRules 
+	 * @description Given a binding, goes through all of the influence rules of an action and keeps a rnning sum of their effects, then returns that sum.
+	 * @param  {[Object]} action       [An action, with specified influence rules]
+	 * @param  {[Object]} bindingToUse [A specfication of the characters to use to fill in each role in the action's influence rules]
+	 * @return {[Number]}              [The sum of the influence rules for this action given this binding.]
+	 */
 	var evaluateActionInfluenceRules = function(action, bindingToUse){
 		var volitionSum = 0;
 
@@ -1017,6 +775,12 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	//already be sorted already, so it's just an easy matter of finding the 'first' thing in every
 	//action list until we find one with no other actions -- then that means that we're at the 
 	//best terminal!
+	/**
+	 * @method getBestTerminalFromActionList 
+	 * @description Returns the 'best' terminal from an actionList, where best is defined to be the terminal with the highest weight. This function assumes the actionList has already been sorted.
+	 * @param  {[Array]} actionList [An array of actions. Each of these actions itself contains another array of actions. All of these arrays within arrays, however, should be sorted already before calling this function.]
+	 * @return {[Object]}            [The best (highest weighted) terminal action, with it's roles filled in with the best binding of characters]
+	 */
 	var getBestTerminalFromActionList = function(actionList){
 		console.log("inside of getTerminalsFromActionList");
 		if(actionList.length <= 0){
@@ -1053,6 +817,16 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 	//Given a volition object, returns the single 'best' action for that volition,
 	//using the best binding. if multiple best bindings exist, just picks one at random.
+	/**
+	 * @method getAction 
+	 * @description CiF Interface function. Given a volition object, returns the single 'best' action for that volition using the best binding. If multiple best bindings exist, it will pick one at random.
+	 * @param  {[String]} initiator          [The name of the character initiating the action]
+	 * @param  {[String]} responder          [The name of the 'recipient of the action']
+	 * @param  {[Object]} volition           [A registered volition object]
+	 * @param  {[Array]} cast               [The cast of characters to be used for consideration of the filling in of roles.]
+	 * @param  {[Number]} numActionsPerGroup [How many terminals from a single 'actionGroup' should be returned. Defaults to 1 if unspecified.]
+	 * @return {[Object]}                    [Returns the best, bound action for this particular initiator, responder, and cast.]
+	 */
 	var getAction = function(initiator, responder, volition, cast, numActionsPerGroup){
 		console.log("inside getAction");
 		//console.log("This is the contents of the actionLibrary: " , actionLibrary);
@@ -1077,7 +851,18 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundAction;
 	};
 
-
+	/**
+	 * @method getActions 
+	 * @description Similar to getAction, but allows the user to specify the number of intents to draw from, and the number of actions that shold come from each intent.
+	 * @param  {[String]} initiator           [The name of the character initiating the action]
+	 * @param  {[String]} responder           [The name of the recipient of the action]
+	 * @param  {[Object]} volition            [The registered volition object.]
+	 * @param  {[Array]} cast                [The pool of characters to be used for consideration for the filling in of roles.]
+	 * @param  {[Number]} numIntents          [The total number of different intents to pull actions from.]
+	 * @param  {[Number]} numActionsPerIntent [How many actions should come from each intent.]
+	 * @param  {[Number]} numActionsPerGroup  [How many terminals should come from any given 'action group']
+	 * @return {[Array]}                     [A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.]
+	 */
 	var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
 		console.log("inside of getActions!");
 		if(numActionsPerGroup === undefined) numActionsPerGroup = 1;
@@ -1095,8 +880,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			var isAccepted = acceptedObject.accepted;
 			var weight = volitionInstance.weight;
 			actionList = getSortedActionsFromVolition(initiator, responder, volitionInstance, isAccepted, weight, numActionsPerGroup, cast);
-			
-			//var terminalsToAdd = extractAndSortTerminalsFromActionList(actionList);
 
 			for(var i = 0; i < actionList.length; i += 1){
 				returnList.push(util.clone(actionList[i]));
@@ -1119,35 +902,35 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			}
 		}
 
-		//Perhaps at this point, we should sort the list based on the volition score?
-		//And, also, perhaps actually return the terminals, instead of the parent action?
-		//Or, uh, maybe not? Because right now they are sorted by the desire of the VOLITIONS themselves? 
-		//And so the argument could be made that they are *already* sorted, even if one of them with a lower volition score gets a 'higher' total score after the influence rules of the game take place.
-		//I think that this is the kind of thing that is likely going to change a lot from use case to use case. So, for the most basic version, I thnk what we'll do is this:
-		//	Return an array of fully bound terminals, sorted in volition order, but not necessarily in total influence rule order.
-		//	Cases to check (we'll want a unit test for each one of these): 
-		//		1.) 1 action per volition (easy)
-		//		2.) 2 actions per volition, multiple terminals from the same parent (e.g. laughTerminal1, laughTerminal2)
-		//		3.) 2 actions per volition, terminals from separate parents (e.g. laughTerminal1, bondTerminal1)
-		//		4.) 3 actions per volition, combining both 2 and 3 (laughTerminal1, laughTerminal2, bondTerminal1)
-		//		5.) 3+ actions per volition (hopefully solving #4 should solve this as well).
-		//var boundAction = getBestTerminalFromActionList(returnList);
 		var boundActions = extractAndSortTerminalsFromActionList(returnList);
 		return boundActions;
 	};
 
+	//TODO: Does this work if you ahve more than two layers worth of actions?
+	//TODO: Or for ANY non-standard structure for that matter?
+	/**
+	 * @method extractAndSortTerminalsFromActionList 
+	 * @description Given an actionList, gets the terminals out of them, finds the best binding for each one, sorts them, and returns them in sorted order. 
+	 * @param  {[Array]} actionList [An array of actions -- many of these will likely have their own arrays of actions to lead to]
+	 * @return {[Array]}            [A sorted list of all terminals.]
+	 */
 	var extractAndSortTerminalsFromActionList = function(actionList){
 		console.log("inside of extractAndSortTerminalsFromActionList!");
 		var allTerminals = [];
 		for(var i = 0; i < actionList.length; i += 1){
 			//Any given 'entry' in this list might have multiple actions, if 'numActionsPerGroup was > 1' in previous calls.
 			var currentAction = actionList[i];
-			for(var j = 0; j < actionList[i].actions.length; j += 1){
-				//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
-				//do something special here.
-				//These are now bound at this point yet -- we will have to do that eventually!
-				//BEN: START HERE, please.
-				allTerminals.push(actionList[i].actions[j]);
+			if(actionList[i].actions !== undefined){
+				for(var j = 0; j < actionList[i].actions.length; j += 1){
+					//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
+					//do something special here.
+					//These are now bound at this point yet -- we will have to do that eventually!
+					allTerminals.push(actionList[i].actions[j]);
+				}
+			}
+			else{
+				//if actionList[i].actions is undefined, that must mean that we are DEALING with a terminal already!
+				allTerminals.push(actionList[i]);
 			}
 		}
 
@@ -1159,10 +942,14 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		}
 
 		return sortedTerminals;
-
-
 	};
 
+	/**
+	 * @method getBestBindingFromTerminal 
+	 * @description Given a terminal action, looks at it's list of good bindings and finds the one that matches the score of the action itself. If multiple ones do, picks one at random.
+	 * @param  {[Object]} terminal [An Action]
+	 * @return {[Object]}          [An object representing which bindings are the best ones to use for this action]
+	 */
 	var getBestBindingFromTerminal = function(terminal){
 		//There might be multiple best bindings!
 		var potentialBestBindings = [];
@@ -1183,10 +970,8 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	var actionLibraryInterface = {
 		parseActions : parseActions,
 		getAllActions : getAllActions,
-		getActionsFromVolition : getActionsFromVolition,
 		getActionFromName : getActionFromName,
-		doAction : doAction,
-		bindActionEffects : bindActionEffects,
+		//bindActionEffects : bindActionEffects,
 		bindActionEffects2 : bindActionEffects2,
 		categorizeActionGrammar : categorizeActionGrammar,
 		getStartSymbols : getStartSymbols,

@@ -734,6 +734,8 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		if (initialTimeStep !== undefined) {
 			currentTimeStep = initialTimeStep;
 		}
+		//offstageCharacters = [];
+
 	};
 
 	var sfdbInterface = {

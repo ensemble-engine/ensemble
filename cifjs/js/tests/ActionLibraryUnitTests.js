@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ActionLibrary.js
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json"],
-function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json"],
+function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions) {
 
 
 	/***************************************************************/
@@ -18,13 +18,12 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		sfdb.clearEverything();
 		testParseActions();
 		sfdb.clearEverything();
-		testGetActionsFromVolition();
 		sfdb.clearEverything();
 		testGetActionFromName();
 		sfdb.clearEverything();
 		//testDoAction();
 		sfdb.clearEverything();
-		testBindActionEffects();
+		//testBindActionEffects();
 		sfdb.clearEverything();
 		testCategorizeActionGrammar();
 		sfdb.clearEverything();
@@ -41,6 +40,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		testGetAction();
 		sfdb.clearEverything();
 		testGetActions();
+		testUndirectedActions();
+		sfdb.clearEverything();
 
 
 	};
@@ -74,54 +75,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.finish();
 	};
 
-	var testGetActionsFromVolition = function(){
-		
-		var sampleVolitions = {
-			"simon": {
-				"monica": [
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
-				]
-			},
-			"monica": {
-				"simon": [
-					{ "class": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
-				]
-			}
-		};
-		
-
-		var v = volition.register("main", sampleVolitions);
-		var firstVolition = v.getFirst("monica", "simon");
-		var potentialActions = actionLibrary.getActionsFromVolition(firstVolition);
-		console.log("potentialActions", potentialActions);
-
-		test.start("ActionLibrary", "testGetActionsFromVolition");
-		test.assert(firstVolition.type, "affinity", "The first volition should be pertaining to affinity down.");
-		test.assert(firstVolition.intentDirection, false, "the first volition should be pertaining to affinity down.");
-		test.assert(potentialActions.length, 1, "There should only be one action for this volition.");
-		test.assert(potentialActions[0].name, "annoy", "The action that monica wants to do with Simon should be annoy.");
-		
-		var simonToMonicaVolition = v.getFirst("simon", "monica");
-		var potentialActionsSimonToMonica = actionLibrary.getActionsFromVolition(simonToMonicaVolition);
-		console.log("potentialActionsSimonToMonica", potentialActionsSimonToMonica);
-		test.assert(simonToMonicaVolition.type, "affinity", "the first volition from simon to monica should pertain to affinity up.");
-		test.assert(simonToMonicaVolition.intentDirection, true, "the first volition from simon to monica should pertain to affinity up.");
-		test.assert(potentialActionsSimonToMonica.length, 1, "There should only be one action for Simon to Monica for this volition.");
-		test.assert(potentialActionsSimonToMonica[0].name, "reminisce", "the action that simon wants to do with monica should reminisce.");
-
-		var simonToMonicaVolition2 = v.getNext("simon", "monica");
-		potentialActionsSimonToMonica = actionLibrary.getActionsFromVolition(simonToMonicaVolition2);
-		test.assert(simonToMonicaVolition2.type, "involved with", "the second volition from simon to monica should pertain to start involved with.");
-		test.assert(simonToMonicaVolition2.intentDirection, true, "the second volition from simon to monica should pertain to start involved with");
-		test.assert(potentialActionsSimonToMonica.length, 1, "There should only be zero actions for Simon to Monica for this volition.");
-
-
-		test.finish();
-
-	};
+	
 
 	var testGetActionFromName = function(){
 		test.start("ActionLibrary", "testGetActionFromName");
@@ -1300,6 +1254,53 @@ var testGetAction = function(){
 		test.assert(actions[3].name, "bondTerminal", "Test 4 -- name of fourth action was incorrect.");
 		test.assert(actions[4].name, "laughTerminal1", "Test 4 -- name of fifth action was incorrect.");
 
+		test.finish();
+	};
+
+	var testUndirectedActions = function(){
+		test.start("ActionLibrary", "testUndirectedActions");
+
+		//Zero everything out, load in the schema/actions/rules we want to be using.
+		cif.reset();
+		sfdb.clearEverything();
+		actionLibrary.clearActionLibrary();
+		actionLibrary.parseActions(rpgActions);
+		cif.loadBaseBlueprints(rpgSchema);
+		cif.addRules(samsVolition);
+		sfdb.setupNextTimeStep(0);
+		var cast = ["brax", "tarloc", "finnigan", "charles"];
+
+		//Calculate volitions and find the top action.
+		var volitions = cif.calculateVolition(cast);
+		var actions = cif.getActions("brax", "brax", volitions, cast, 2, 1, 1);
+		var topAction = actions[0];
+
+		//The predicate we are going to be searching for (value is left off to make it generic)
+		var braxIntelligence = {
+			"class" : "attribute",
+			"type" : "intelligence",
+			"first" : "brax"
+		};
+
+		//SFDB should be empty at this point, creates a new 'default' entry in it (which should be 10)
+		var result = cif.get(braxIntelligence);
+
+		//Make sure that the thing that was returned was correct.
+		test.assert(actions.length, 1, "Wrong number of actions returned.");
+		test.assert(actions[0].name, "read", "Wrong action returned when boosting an undirected element.");
+		test.assert(actions[0].weight, 15, "unexpected weight for boosting an undirected element.");
+		test.assert(result[0].value, 10, "SFDB for the result was unexpected value.");
+
+		//Go through each effect of the action and 'set' it's effects (should increase intelligence by 1)
+		for(var i = 0; i < actions[0].effects.length; i += 1){
+			cif.set(actions[0].effects[i]);
+		}
+
+		//Get the new value of intelligence, and double check that it did in fact increase by 1.
+		result = cif.get(braxIntelligence);
+		test.assert(result[0].value, 11, "After doing the 'read' action, Brax's intelligence did not appear to increase.");
+
+		//All done!
 		test.finish();
 	};
 

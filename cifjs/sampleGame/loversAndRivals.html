@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!-- Project Yarn Main Page -->
+
+<html>
+<head>
+	<title>CiF Test</title>
+	<script src="cif.js"></script>
+	<script src="loversAndRivals.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+	<h1>Our super fun game!</h1>
+
+	<div class = "field" onclick="move()">
+		<div class = "character" id="hero">
+			\O/
+		</div>
+		<div class = "character" id="love">
+			0\
+		</div>
+		<div class = "character" id="rival">
+			@.o
+		</div>
+	</div>
+
+	<div id="actionArea">
+		<h1> What to do this turn:</h1>
+		<div id="actionList"> </div>
+	</div>
+
+	<div id="chatBubble"></div>
+
+	<button id="myFirstButton" onclick=move()>Inside the button.</button>
+	<button id="2" onclick="positionCharacter('hero', 10)">Inside the button.</button>
+	<button id="3" onclick="positionCharacter('hero', 50)">Inside the button.</button>
+	<button id="4" onclick="positionCharacter('hero', 80)">Inside the button.</button>
+	<button id="5" onclick="positionCharacter('hero', 120)">Inside the button.</button>
+	<button id="6" onclick="positionCharacter('hero', 150)">Inside the button.</button>
+
+	<div id="stateArea">
+		<h1>Social State</h1>
+		<div id="closenessStateDisplay">
+			<h2>Closeness</h2>
+			<div id="closenessHeroToLover">Hero to Lover: <span id="closenessHeroToLoverNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Hero: <span id="closenessLoverToHeroNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Rival: <span id="closenessLoverToRivalNumber">NA</span></div>
+		</div>
+		<div id="attractionStateDisplay">
+			<h2>Attraction</h2>
+			<div id="attractionHeroToLover">Hero to Lover: <span id="attractionHeroToLoverNumber">NA</span></div>
+			<div id="attractionLoverToHero">Lover to Hero: <span id="attractionLoverToHeroNumber">NA</span></div>
+			<div id="attractionLoverToRival">Lover to Rival: <span id="attractionLoverToRivalNumber">NA</span></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		document.addEventListener('cifLoaded', function (e) {
+
+			//Init CiF
+			var loadResult = cif.init();
+			console.log(loadResult);
+
+			//Load in our schema, cast, triggerRules and volitionRules, and actions.
+			var rawSchema = cif.loadFile("schema.json");
+			var schema = cif.loadSocialStructure(rawSchema);
+
+			var rawCast = cif.loadFile("cast.json");
+			var cast = cif.addCharacters(rawCast);
+
+			console.log("Here is our cast! " , cast);
+
+			var rawTriggerRules = cif.loadFile("triggerRules.json");
+			var triggerRules = cif.addRules(rawTriggerRules);
+			
+			var rawVolitionRules = cif.loadFile("volitionRules.json");
+			var volitionRules = cif.addRules(rawVolitionRules);
+
+			var rawActions = cif.loadFile("actions.json");
+			var actions = cif.addActions(rawActions);
+
+			//Set up our initial state
+			setUpLoversAndRivalsInitialState();
+			drawCharacters(500);
+
+			var storedVolitions = cif.calculateVolition(cast);
+
+			var char1 = "hero";
+			var char2 = "love";
+
+			chatBubble = document.getElementById("chatBubble");
+			chatBubble.innerHTML = drawChatBubble();
+
+
+			var vol = storedVolitions.getFirst(char1, char2);
+			console.log("here is the first volition from hero to love: " , vol);
+			vol = storedVolitions.getNext(char1, char2);
+			console.log("Here is the second volition from hero to love: ", vol);
+
+			var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
+
+			//Let's make a button for each action the hero wants to take!
+			for(var i = 0; i < possibleActions.length; i += 1){
+				//somehow make a new button? Through the DOM I suppose?
+				//And we'll have to clean it up when we're done I guess!
+				console.log("HELLLLLLLLOOO");
+				var buttonnode= document.createElement('input');
+				buttonnode.setAttribute('type','button');
+				buttonnode.setAttribute('name',possibleActions[0]);
+				buttonnode.setAttribute('value',possibleActions[0].displayName);
+				buttonnode.actionToPerform = possibleActions[0];
+				buttonnode.onclick = actionButtonClicked;
+				//buttonnode.attachEvent('onclick', actionButtonClicked2);
+
+				var actionList = document.getElementById("actionList");
+				actionList.appendChild(buttonnode);
+
+
+			}
+			console.log("Actions: ", actions);
+
+			helloWorld();
+
+		}, false);
+	</script>
+
+</body>
+</html>

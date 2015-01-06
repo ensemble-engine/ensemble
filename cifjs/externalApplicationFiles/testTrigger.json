@@ -1,0 +1,27 @@
+{
+	"fileName": "testTrigger",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "New Trigger Rule",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10
+				}
+			],
+			"origin": "testTrigger",
+			"id": "triggerRules_5"
+		}
+	]
+}

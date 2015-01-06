@@ -559,7 +559,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	/***************************************************************/
 
 	var init = function() {
-		sfdb.init();
+		sfdb.init();		
 		return "Ok";
 	};
 
@@ -597,6 +597,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getRegisteredDirection	: sfdb.getRegisteredDirection,
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
+		addActions				: actionLibrary.parseActions,
 		
 		addRules				: addRules,
 		getRules				: getRules,
@@ -620,6 +621,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 
 	// Export interface to a global variable, "cif".
 	cif = cifInterface;
+	var event = document.createEvent('Event');
+	event.initEvent('cifLoaded', true, true);
+	document.dispatchEvent(event);
 
 	return cifInterface;
 
