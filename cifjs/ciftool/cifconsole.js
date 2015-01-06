@@ -78,7 +78,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	});
 
 	// Activate tabs to switch between rulesets in Rules pane.
-	$("#rulesTabs").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+	$("#rulesTabs").tabs({
+		activate: function(event, ui) { 
+			var tabName = ui.newTab[0].innerText;
+			$("#newRuleButton").html("New " + tabName + " Rule");
+		}
+	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
 	// Set up console command tooltips.
 	$("#cmdSet").tooltip({content: "<p>Use <b>set</b> to change any social fact. Parameter order doesn't matter except for character order in directed facts:</p><ul><li><b>set(Bob, Al, friends)</b></li><li><b>set(bob, trust, al, 75)</b></li><li><b>set(happy, al)</b></li><li><b>set(carla, attracted to, bob, false)</b></li></ul>"});
@@ -101,15 +106,32 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("button#timeStepBack").click(historyViewer.stepBack);
 	$("button#resetSFDBHistory").click(historyViewer.reset);
 
-	$("#newRule").click(newRule);
+	// Handle clicking on the "New Rule" button: create a new stub rule, register it with CiF, load it into the editor, and switch to that tab.
+	var newRule = function() {
+		var type = $("#tabstrigger").is(":visible") ? "trigger" : "volition";
+
+		var newRule = {};
+		newRule.name = "New " + util.iCap(type) + " Rule";
+		newRule.conditions = [];
+		newRule.effects = [];
+		
+		var ruleWrapper = {};
+		ruleWrapper.fileName = "__NEWRULE__";
+		ruleWrapper.rules = [newRule];
+		ruleWrapper.type = type;
+		
+		var newIds = cif.addRules(ruleWrapper);
+		var newLoadedRule = cif.getRuleById(newIds[0]);
+		rulesEditor.loadRule(newLoadedRule, type);
+		$("#tabLiRulesEditor a").click();
+	}
+
+	$("#newRuleButton").click(newRule);
 
 	// Handle message block.
 	$("#msgBlock").click(function(){
 		$(this).stop(true,true).fadeOut();
 	});
-
-
-
 
 	// ****************************************************************
 	// UTILITY FUNCTIONS
@@ -470,28 +492,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		txt += "</ul>";
 		$("#actionList").html(txt);
 	};
-
-
-	// Handle clicking on the "New Rule" button: create a new stub rule, register it with CiF, load it into the editor, and switch to that tab.
-	var newRule = function() {
-		var type = $("#tabstrigger").is(":visible") ? "trigger" : "volition";
-
-		var newRule = {};
-		newRule.name = "New " + util.iCap(type) + " Rule";
-		newRule.conditions = [];
-		newRule.effects = [];
-		
-		var ruleWrapper = {};
-		ruleWrapper.fileName = "__NEWRULE__";
-		ruleWrapper.rules = [newRule];
-		ruleWrapper.type = type;
-		
-		var newIds = cif.addRules(ruleWrapper);
-		var newLoadedRule = cif.getRuleById(newIds[0]);
-		rulesEditor.loadRule(newLoadedRule, type);
-		$("#tabLiRulesEditor a").click();
-	}
-
 
 	cif.init();
 	rulesViewer.init();
