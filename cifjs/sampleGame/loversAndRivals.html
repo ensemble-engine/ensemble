@@ -63,21 +63,21 @@
 			console.log(loadResult);
 
 			//Load in our schema, cast, triggerRules and volitionRules, and actions.
-			var rawSchema = cif.loadFile("schema.json");
+			var rawSchema = cif.loadFile("data/schema.json");
 			var schema = cif.loadSocialStructure(rawSchema);
 
-			var rawCast = cif.loadFile("cast.json");
+			var rawCast = cif.loadFile("data/cast.json");
 			var cast = cif.addCharacters(rawCast);
 
 			console.log("Here is our cast! " , cast);
 
-			var rawTriggerRules = cif.loadFile("triggerRules.json");
+			var rawTriggerRules = cif.loadFile("data/triggerRules.json");
 			var triggerRules = cif.addRules(rawTriggerRules);
 			
-			var rawVolitionRules = cif.loadFile("volitionRules.json");
+			var rawVolitionRules = cif.loadFile("data/volitionRules.json");
 			var volitionRules = cif.addRules(rawVolitionRules);
 
-			var rawActions = cif.loadFile("actions.json");
+			var rawActions = cif.loadFile("data/actions.json");
 			var actions = cif.addActions(rawActions);
 
 			//Set up our initial state

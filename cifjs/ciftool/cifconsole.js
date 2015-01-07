@@ -50,7 +50,7 @@ requirejs.config({
 requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
 function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
-	var autoLoad = true;	// Load sample schema on launch.
+	var autoLoad = false;	// Load sample schema on launch.
 
 	var socialStructure;
 	var characters;
@@ -318,6 +318,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	// Load a folder containing a set of schema files from disk into the editor and into CiF.
 	var loadPackage = function() {
+		console.log("inside of loadPackage");
 		var chooser = document.querySelector('#fileDialog');
 
 		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in cifconsole.html) and confirmed their selection by clicking OK.
@@ -504,6 +505,10 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	cif.init();
 	rulesViewer.init();
 
+	if (autoLoad === false && fs === undefined) {
+		autoLoad = true; // let's have it use autoload when using the webpage version of the console.
+	}
+
 	if (autoLoad) {
 		loadSchema(JSON.parse(sampleData));
 		loadCast(JSON.parse(sampleChars));
@@ -513,6 +518,11 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		loadActions(JSON.parse(testActions));
 		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
 		cmdLog("Autoloaded default schema.", true);
+	}
+	else{
+		//ask the user to specify a schema.
+		console.log("ello, ello!");
+		loadPackage();
 	}
 
 	var storedVolitions;
