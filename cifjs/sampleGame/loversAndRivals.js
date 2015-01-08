@@ -28,6 +28,40 @@ var move = function(){
 	var id = setInterval(frame, 10); // draw every 10ms
 };
 
+var moveAllCharacters = function() {
+	console.log("inside of moveAllCharacters");
+	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
+};
+
+var moveByCharacterName = function(name, destination){
+	console.log("moveByCharacterName name: " , name);
+	console.log("moveByCharacterName destination: " , destination);
+	var elem = document.getElementById(name);
+	console.log("This is what the left thing is: ", elem.style.left);
+	var startPos = parseInt(elem.style.left, 10); // start off with their current left position.
+	var currentPos = startPos;
+	console.log("startPos " , startPos);
+	console.log("elem " , elem);
+
+	function frame() {
+		if(startPos > destination){ // we are moving backwards.
+			console.log("decrementing...");
+			currentPos -= 1;
+		}
+		else if (startPos < destination){ // we are moving forwards.
+			currentPos += 1;
+			console.log("incrementing...");
+		}
+		elem.style.left = currentPos + 'px';
+		if (currentPos == destination) {
+			clearInterval(id);
+		}
+	}
+
+	var id = setInterval(frame, 10); // draw every 10ms
+
+};
+
 var positionCharacter = function(id, pos){
 	console.log("I got here, id is " + id + " and pos is " + pos);
 	var elem = document.getElementById(id);
@@ -128,6 +162,8 @@ var actionButtonClicked = function(){
 	console.log("No way that actually worked did it...? " , this.actionToPerform);
 	console.log("Action button clicked! Maybe I have access to it's name? " , this.name);
 	console.log("And even better, maybe this will give me EVERYTHING about the action " , this.value);
+	//BEN START HERE!
+	moveAllCharacters();
 
 	//What do we want to have happen when an action is clicked?
 	//
@@ -153,6 +189,7 @@ var actionButtonClicked = function(){
 	//Also re-draw any debug/state informaton we want.
 	updateLocalStateInformation();
 	displayStateInformation();
+	moveAllCharacters();
 
 	//And then start the previous loop all over again.
 };
@@ -242,7 +279,7 @@ var playInstantiationAnimation = function() {
 	animationFrames[3] = drawChatBubbleWritingFrame4();
 
 	function frame() {
-		console.log("sweet animation frame incoming...");
+		//console.log("sweet animation frame incoming...");
 		animationLength--; // update parameters
 		var evenOrOdd = animationLength % 40;
 		if(evenOrOdd === 0){
@@ -250,7 +287,7 @@ var playInstantiationAnimation = function() {
 			if(animationFrame > 3) animationFrame = 0;
 		}
 		if(evenOrOdd <= 5){
-			console.log("visible false NOQW");
+			//console.log("visible false NOQW");
 			chatBubble.style.visibility = "hidden";
 			chatBubble.innerHTML = animationFrames[animationFrame];
 		}
