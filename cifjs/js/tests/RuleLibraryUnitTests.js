@@ -960,7 +960,7 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 
 		var sfdbLabelPred = validate.triggerCondition({
 			"class": "SFDBLabel",
-			"type": "romanticAdvance",
+			"type": "romantic advance",
 			"first": "clara",
 			"second": "reggie"
 		});

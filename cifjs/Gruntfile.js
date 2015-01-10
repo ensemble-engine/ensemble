@@ -37,12 +37,28 @@ module.exports = function(grunt) {
             }
         }
     },
-    nodewebkit: {
+    blah: {
       options: {
           platforms: ['win','osx'],
-          buildDir: './build', // Where the build version of my node-webkit app is saved
+          buildDir: './TechnicalAlphaRelease/build', // Where the build version of my node-webkit app is saved
       },
       src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+    },
+    nodewebkit: {
+      dist: {
+        options: {
+           platforms: ['win','osx'],
+            buildDir: './build', // Where the build version of my node-webkit app is saved
+       },
+       src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+      },
+      techRelease : {
+        options: {
+           platforms: ['win','osx'],
+            buildDir: './TechnicalAlphaRelease/build', // Where the build version of my node-webkit app is saved
+         },
+         src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+      }
     },
     copy: {
       dist : {
@@ -79,13 +95,13 @@ module.exports = function(grunt) {
           flatten: false,
           expand: true           // required when using cwd
         },
-        {
-          cwd: 'build/',  // set working folder / root to copy
-          src: '**',           // copy all files and subfolders
-          dest: 'TechnicalAlphaRelease/build/',    // destination folder
-          flatten: false,
-          expand: true           // required when using cwd
-        },
+       // {
+       //   cwd: 'build/',  // set working folder / root to copy
+       //   src: '**',           // copy all files and subfolders
+       //   dest: 'TechnicalAlphaRelease/build/',    // destination folder
+       //   flatten: false,
+       //   expand: true           // required when using cwd
+       // },
         {
           cwd: 'schemata/',  // set working folder / root to copy
           src: '**',           // copy all files and subfolders
@@ -101,12 +117,12 @@ module.exports = function(grunt) {
           expand: true           // required when using cwd
         },
         {
-          cwd: '.',  // set working folder / root to copy
-          src: 'doc/*',           // copy all files and subfolders
+          cwd: 'doc/',  // set working folder / root to copy
+          src: '**',           // copy all files and subfolders
           dest: 'TechnicalAlphaRelease/doc/',    // destination folder
-          flatten: true,
+          flatten: false,
           expand: true,           // required when using cwd
-        }] 
+        }]
       }
     },
     requirejs: {
@@ -171,6 +187,10 @@ module.exports = function(grunt) {
   grunt.registerTask("copyCssFile", ["copy:dist"]);
 
   // Make a folder for 'release'
-  grunt.registerTask("techRelease", ["copy:techRelease"]);
+  grunt.registerTask("techRelease", ["document", "deploy", "build", "nodewebkit:techRelease", "copy:techRelease"]);
+
+  //There is some problem going on where the console seems to not WORK when copied :( -- maybe build a new version from the webkit version?)
+  //grunt.registerTask("techRelease", ["copy:techRelease"]);
+
 
 };

@@ -31,6 +31,7 @@ var move = function(){
 var moveAllCharacters = function() {
 	console.log("inside of moveAllCharacters");
 	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
+	moveByCharacterName("love", 40);
 };
 
 var moveByCharacterName = function(name, destination){
