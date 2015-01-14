@@ -26,7 +26,12 @@
 
 	<div id="actionArea">
 		<h1> What to do this turn:</h1>
-		<div id="actionList"> </div>
+		Towards Love:
+		<div id="actionListHeroLove"> </div>
+		Towards Yourself:
+		<div id="actionListHeroHero"></div>
+		Towards Rival:
+		<div id="actionListHeroRival"></div>
 	</div>
 
 	<div id="chatBubble"></div>
@@ -84,40 +89,43 @@
 			setUpLoversAndRivalsInitialState();
 			drawCharacters(500);
 
-			var storedVolitions = cif.calculateVolition(cast);
 
-			var char1 = "hero";
-			var char2 = "love";
+			//MAIN GAME LOOP
+			//1.) Calculate Volitions
+			//2.) Populate Action Area
+			//3.) Handle action selection
+			var storedVolitions = cif.calculateVolition(cast);
+			//Give the player options for what they can click on!
+			populateActionList(storedVolitions, cast);
+
+
+			var nextTurn = function(){
+				console.log("We have achieved A NEW TURN!");
+				storedVolitions = cif.calculateVolition(cast);
+				populateActionList(storedVolitions, cast);
+				cleanUpUIForNewTurn();
+			}
+
+			document.addEventListener("nextTurn", nextTurn);
+
+
+
+/*
 
 			chatBubble = document.getElementById("chatBubble");
 			chatBubble.innerHTML = drawChatBubble();
 
+*/
 
-			var vol = storedVolitions.getFirst(char1, char2);
+/*
+			var vol = storedVolitions.getFirst("hero", "love");
 			console.log("here is the first volition from hero to love: " , vol);
 			vol = storedVolitions.getNext(char1, char2);
 			console.log("Here is the second volition from hero to love: ", vol);
-
-			var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
-
-			//Let's make a button for each action the hero wants to take!
-			for(var i = 0; i < possibleActions.length; i += 1){
-				//somehow make a new button? Through the DOM I suppose?
-				//And we'll have to clean it up when we're done I guess!
-				console.log("HELLLLLLLLOOO");
-				var buttonnode= document.createElement('input');
-				buttonnode.setAttribute('type','button');
-				buttonnode.setAttribute('name',possibleActions[0]);
-				buttonnode.setAttribute('value',possibleActions[0].displayName);
-				buttonnode.actionToPerform = possibleActions[0];
-				buttonnode.onclick = actionButtonClicked;
-				//buttonnode.attachEvent('onclick', actionButtonClicked2);
-
-				var actionList = document.getElementById("actionList");
-				actionList.appendChild(buttonnode);
+*/
 
 
-			}
+
 			console.log("Actions: ", actions);
 
 			helloWorld();

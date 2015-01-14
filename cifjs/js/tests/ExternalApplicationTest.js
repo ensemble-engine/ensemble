@@ -17,12 +17,20 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		sfdb.clearEverything();
 		actionLibrary.clearActionLibrary();
 		console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
+		
+		originalTest();
+		cif.reset();
+		sfdb.clearEverything();
+		actionLibrary.clearActionLibrary();
 
+		loversAndRivalsTest();
+	};
 
+	var originalTest = function(){
 		//document.addEventListener("newMessage", cifInitCallback, false);
 		document.addEventListener('build', function (e) {
 			console.log("** hello?!!?");
-		  // e.target matches document from above
+			// e.target matches document from above
 		}, false);
 
 
@@ -87,8 +95,55 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var bestAction = cif.getAction(char1, char2, storedVolitions, cast);
 		console.log("Actions: ", bestAction);
 		*/
+	};
 
+	var loversAndRivalsTest = function() {
+		console.log("testing loversAndRivals data...");
+		var loadResult = cif.init();
+		console.log(loadResult);
 
+		var rawSchema = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/schema.json");
+		var schema = cif.loadSocialStructure(rawSchema);
+
+		var rawCast = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/cast.json");
+		var cast = cif.addCharacters(rawCast);
+
+		var rawRules = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/triggerRules.json");
+		console.log(rawRules);
+		var ids = cif.addRules(rawRules);
+		console.log("ids", ids);
+		ids = cif.addRules(cif.loadFile("externalApplicationFiles/dataLoversAndRivals/volitionRules.json"));
+		console.log("ids2", ids);
+
+		var rawActions = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/actions.json");
+		var actions = cif.addActions(rawActions);
+
+		console.log("schema", schema);
+		console.log("cast", cast);
+		console.log("actions", actions);
+
+		var char1 = "hero";
+		var char2 = "love";
+
+		var storedVolitions = cif.calculateVolition(cast);
+		var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 3);
+
+		console.log("possible actions: " , possibleActions);
+
+		//now let's set the hero's closeness to love to 10, to test the odd behavior we're experiencing.
+		var newCloseness = {
+			"class" : "feeling",
+			"type" : "closeness",
+			"first" : "hero",
+			"second" : "love",
+			"value" : 10
+		};
+		cif.set(newCloseness);
+
+		storedVolitions = cif.calculateVolition(cast);
+		possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 2);
+
+		console.log("new possible actions: " , possibleActions);
 	};
 
 	var cifInitCallback = function(){

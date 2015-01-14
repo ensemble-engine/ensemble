@@ -159,18 +159,45 @@ var drawCharacters = function(widthOfField){
 	rival.style.left = widthOfField + "px"; // rival never moves.
 };
 
+//Fills the actionList div with buttons corresponding to the actions the player can take.
+var populateActionList = function(storedVolitions, cast){
+	var char1 = "hero";
+	var char2 = "love";
+	
+	//These are specifically actions from the hero to the love (there might be others).
+	//Num intents to look at: 2
+	//Num actions per intent: 3 (for now!)
+	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 3);
+	console.log("Possible Actions: ", possibleActions);
+
+	//Let's make a button for each action the hero wants to take!
+	for(var i = 0; i < possibleActions.length; i += 1){
+		//somehow make a new button? Through the DOM I suppose?
+		//And we'll have to clean it up when we're done I guess!
+		console.log("HELLLLLLLLOOO");
+		var buttonnode= document.createElement('input');
+		buttonnode.setAttribute('type','button');
+		buttonnode.setAttribute('name',possibleActions[i]);
+		buttonnode.setAttribute('value',possibleActions[i].displayName);
+		buttonnode.actionToPerform = possibleActions[i];
+		buttonnode.onclick = actionButtonClicked;
+		//buttonnode.attachEvent('onclick', actionButtonClicked2);
+
+		var actionList = document.getElementById("actionListHeroLove");
+		actionList.appendChild(buttonnode);
+	}
+};
+
 var actionButtonClicked = function(){
 	console.log("No way that actually worked did it...? " , this.actionToPerform);
 	console.log("Action button clicked! Maybe I have access to it's name? " , this.name);
 	console.log("And even better, maybe this will give me EVERYTHING about the action " , this.value);
-	//BEN START HERE!
 	moveAllCharacters();
 
 	//What do we want to have happen when an action is clicked?
-	//
+	
 	//Clean away all of the other actions -- they made their choice!
-	var actionList = document.getElementById("actionList");
-	actionList.innerHTML = "";
+	clearActionList();
 
 	//Play some SICK ANIMATION (like a text bubble flashing!)
 	playInstantiationAnimation();
@@ -191,8 +218,29 @@ var actionButtonClicked = function(){
 	updateLocalStateInformation();
 	displayStateInformation();
 	moveAllCharacters();
+};
 
-	//And then start the previous loop all over again.
+var clearActionList = function(){
+	//We're first going to make the entire action list disappear, so as not to distract the player from
+	//the beautiful instantiations.
+	var actionArea = document.getElementById("actionArea");
+	actionArea.style.visibility = "hidden";
+
+	//Now we're actually going to remove the actions from the actionLists, because with the new socialState,
+	//characters will likely want to take new actions towards each other.
+	var heroToLoveActionList = document.getElementById("actionListHeroLove");
+	heroToLoveActionList.innerHTML = "";
+	var heroToRivalActionList = document.getElementById("actionListHeroRival");
+	heroToRivalActionList.innerHTML = "";
+	var heroToHeroActionList = document.getElementById("actionListHeroHero");
+	heroToHeroActionList.innerHTML = "";
+};
+
+//There are certain things that we might need to 'refresh' again (the visibility of the action list,
+//the state of dialogue bubbles, etc.)
+var cleanUpUIForNewTurn = function(){
+	var actionArea = document.getElementById("actionArea");
+	actionArea.style.visibility = "visible";
 };
 
 var displayStateInformation = function(){
@@ -202,7 +250,7 @@ var displayStateInformation = function(){
 	document.getElementById("attractionHeroToLoverNumber").innerHTML = stateInformation.heroToLoveAttraction;
 	document.getElementById("attractionLoverToHeroNumber").innerHTML = stateInformation.loveToHeroAttraction;
 	document.getElementById("attractionLoverToRivalNumber").innerHTML = stateInformation.loveToRivalAttraction;
-}
+};
 
 var updateLocalStateInformation = function(){
 	//First, let's grab the data we'll want to display.
@@ -299,6 +347,12 @@ var playInstantiationAnimation = function() {
 
 			clearInterval(id);
 			chatBubble.style.visibility = "visible";
+
+			//Dispatch an event so that we know that the instantiation animation has completed.
+			//And start up the next turn!
+			var event = document.createEvent('Event');
+			event.initEvent('nextTurn', true, true);
+			document.dispatchEvent(event);
 		}
 	}
 
