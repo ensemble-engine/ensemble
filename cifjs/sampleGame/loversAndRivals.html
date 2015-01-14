@@ -99,6 +99,11 @@
 			populateActionList(storedVolitions, cast);
 
 
+			//Test
+			var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 3);
+			console.log("This is what love wants to do towards hero: ", testActions);
+			console.log("Here is the sfdb... ", cif.dumpSFDB());
+
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
 				storedVolitions = cif.calculateVolition(cast);

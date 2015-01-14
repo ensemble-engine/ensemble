@@ -19,13 +19,13 @@
 					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
-					"second" : "y",
-					"weight": 587,
+					"second": "y",
+					"weight": 5,
 					"intentDirection": true
 				}
 			],
-			"origin": "volitionsRules",
-			"id": "volitionRule1"
+			"origin": "volitionRules",
+			"id": "volitionRules_2"
 		},
 		{
 			"name": "The hero REALLY wants to increase closeness to the love",
@@ -48,13 +48,43 @@
 					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
-					"second" : "y",
+					"second": "y",
 					"weight": 20,
 					"intentDirection": true
 				}
 			],
-			"origin": "volitionsRules",
-			"id": "volitionRule2"
+			"origin": "volitionRules",
+			"id": "volitionRules_3"
+		},
+		{
+			"name": "The love generally doesn't want to get close to the hero",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "love",
+					"first": "love",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "hero",
+					"first": "hero",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "love",
+					"second": "hero",
+					"weight": -10,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_4"
 		}
 	]
 }

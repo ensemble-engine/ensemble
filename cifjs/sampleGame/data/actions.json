@@ -18,7 +18,7 @@
 			"name" : "WRITELOVENOTE",
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["writeLoveNote"]
+			"leadsTo" : ["writeLoveNoteAccept", "writeLoveNoteReject"]
 		},
 		{
 			"name" : "KISS",
@@ -48,10 +48,26 @@
 			}]
 		},
 		{
-			"name" : "writeLoveNote",
-			"displayName" : "Write Love Note",
+			"name" : "writeLoveNoteAccept",
+			"displayName" : "Write Love Note <ACCEPT>",
 			"conditions" : [],
 			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "writeLoveNoteReject",
+			"displayName" : "Write Love Note <REJECT>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
 			"effects" : [{
 				"class" : "feeling",
 				"type" : "closeness",
