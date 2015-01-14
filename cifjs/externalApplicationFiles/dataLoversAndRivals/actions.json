@@ -1,0 +1,65 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISECLOSENESS",
+			"intent" : {
+				"class" : "feeling",
+				"type"  : "closeness",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WRITELOVENOTE", "KISS"]
+		},
+		{
+			"name" : "WRITELOVENOTE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["writeLoveNote"]
+		},
+		{
+			"name" : "KISS",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["kiss"]
+		},
+		{
+			"name" : "kiss",
+			"displayName" : "Kiss",
+			"conditions" : [{
+				"class" : "feeling",
+				"type"  : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : 9,
+				"operator" : ">"
+				}],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "writeLoveNote",
+			"displayName" : "Write Love Note",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}
