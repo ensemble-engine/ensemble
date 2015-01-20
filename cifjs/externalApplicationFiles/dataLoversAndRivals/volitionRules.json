@@ -19,13 +19,14 @@
 					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
-					"second" : "y",
-					"weight": 587,
-					"intentDirection": true
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
 				}
 			],
-			"origin": "volitionsRules",
-			"id": "volitionRule1"
+			"origin": "volitionRules",
+			"id": "volitionRules_2"
 		},
 		{
 			"name": "The hero REALLY wants to increase closeness to the love",
@@ -48,13 +49,96 @@
 					"class": "feeling",
 					"type": "closeness",
 					"first": "x",
-					"second" : "y",
+					"second": "y",
 					"weight": 20,
 					"intentDirection": true
 				}
 			],
-			"origin": "volitionsRules",
-			"id": "volitionRule2"
+			"origin": "volitionRules",
+			"id": "volitionRules_3"
+		},
+		{
+			"name": "The love generally doesn't want to get close to the hero",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "love",
+					"first": "love",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "hero",
+					"first": "hero",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "love",
+					"second": "hero",
+					"weight": -10,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_4"
+		},
+		{
+			"name": "Weak people desire strength",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 0,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_5"
+		},
+		{
+			"name": "The hero doesn't particularly want to get closer to the rival",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "hero",
+					"first": "hero",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "rival",
+					"first": "rival",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "hero",
+					"second": "rival",
+					"weight": -10,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_6"
 		}
 	]
 }

@@ -15,6 +15,150 @@
 			"leadsTo" : ["WRITELOVENOTE", "KISS"]
 		},
 		{
+			"name" : "RAISESTRENGTH",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "strength",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WEIGHTLIFT", "PUSHUP"]
+		},
+		{
+			"name" : "RAISEINTELLIGENCE",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "intelligence",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["STUDY"]
+		},
+		{
+			"name" : "STUDY",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["studyMath", "studyAnatomy"]
+		},
+		{
+			"name" : "studyMath",
+			"conditions" : [],
+			"displayName" : "Study Math",
+			"influenceRules" : [
+				{
+					"name": "People in this world are inclined to study math.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type" : "anyone",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 10
+				}
+			],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10		
+			}]
+		},
+		{
+			"name" : "studyAnatomy",
+			"conditions" : [],
+			"displayName" : "Study Anatomy",
+			"influenceRules" : [
+				{
+					"name": "Strong people in this world are inclined to study anatomy.",
+					"conditions": [
+						{
+							"class" : "attribute",
+							"type" : "strength",
+							"first" : "initiator",
+							"operator" : ">",
+							"value" : 20
+						}
+					],
+					"weight" : 30
+				}
+			],
+			"effects" : [{
+					"class" : "attribute",
+					"type" : "strength",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				},
+				{
+					"class" : "attribute",
+					"type" : "intelligence",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				}
+			]
+
+		},
+		{
+			"name" : "WEIGHTLIFT",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["weightLiftSuccess", "weightLiftFail"]
+		},
+		{
+			"name" : "weightLiftSuccess",
+			"conditions" : [],
+			"displayName" : "Weightlift <SUCCESS>",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "weightLiftFail",
+			"displayName" : "Weight Lift <FAIL>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "-",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "PUSHUP",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["pushup1"]
+		},
+		{
+			"name" : "pushup1",
+			"conditions" : [],
+			"displayName" : "Do Pushups",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}
+			]
+		},
+		{
 			"name" : "WRITELOVENOTE",
 			"conditions" : [],
 			"influenceRules" : [],

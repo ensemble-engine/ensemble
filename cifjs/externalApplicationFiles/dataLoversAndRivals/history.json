@@ -1,0 +1,28 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"class" : "trait",
+			"type" : "hero",
+			"first" : "hero",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "love",
+			"first" : "love",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "rival",
+			"first" : "rival",
+			"value" : true
+				}
+		]}, {
+		"pos": 1,
+		"data": [
+		]}, {
+		"pos": 2,
+		"data": [
+		]}
+	]
+}

@@ -782,7 +782,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	 * @return {[Object]}            [The best (highest weighted) terminal action, with it's roles filled in with the best binding of characters]
 	 */
 	var getBestTerminalFromActionList = function(actionList){
-		console.log("inside of getTerminalsFromActionList");
+		//console.log("inside of getTerminalsFromActionList");
 		if(actionList.length <= 0){
 			//we shouldn't be getting in here with an empty actionList!
 			return undefined;
@@ -864,12 +864,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	 * @return {[Array]}                     [A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.]
 	 */
 	var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
-		console.log("inside of getActions!");
+		//console.log("inside of getActions!");
 		if(numActionsPerGroup === undefined) numActionsPerGroup = 1;
 
 		var returnList = [];
 		var actionList;
 		var volitionInstance = volition.getFirst(initiator, responder);
+		if(volitionInstance === undefined){
+			//This means that this initiator has NO volitions towards this responder. Abort!
+			var emptyList = [];
+			return emptyList;
+		}
 		var intentsRepresented = 0;
 		var numActionsFromThisIntent = 0;
 		var thisIntentCountedYet = false;
@@ -883,7 +888,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 			for(var i = 0; i < actionList.length; i += 1){
 				returnList.push(util.clone(actionList[i]));
-				console.log("What does returnList look like at this point...? ", returnList);
+				//console.log("What does returnList look like at this point...? ", returnList);
 				if(thisIntentCountedYet === false){
 					intentsRepresented += 1;
 					thisIntentCountedYet = true;
@@ -915,7 +920,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	 * @return {[Array]}            [A sorted list of all terminals.]
 	 */
 	var extractAndSortTerminalsFromActionList = function(actionList){
-		console.log("inside of extractAndSortTerminalsFromActionList!");
+		//console.log("inside of extractAndSortTerminalsFromActionList!");
 		var allTerminals = [];
 		for(var i = 0; i < actionList.length; i += 1){
 			//Any given 'entry' in this list might have multiple actions, if 'numActionsPerGroup was > 1' in previous calls.

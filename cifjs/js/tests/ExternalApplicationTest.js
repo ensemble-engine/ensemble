@@ -103,7 +103,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		console.log(loadResult);
 
 		var rawSchema = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/schema.json");
-		var schema = cif.loadSocialStructure(rawSchema);
+		//var schema = cif.loadSocialStructure(rawSchema);
+		var schema = cif.loadBaseBlueprints(rawSchema);
 
 		var rawCast = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/cast.json");
 		var cast = cif.addCharacters(rawCast);
@@ -121,6 +122,29 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		console.log("schema", schema);
 		console.log("cast", cast);
 		console.log("actions", actions);
+
+		var heroTrait = {
+			"class" : "trait",
+			"type" : "hero",
+			"first" : "hero",
+			"value" : true
+		};
+		var loveTrait = {
+			"class" : "trait",
+			"type" : "love",
+			"first" : "love",
+			"value" : true
+		};
+		var rivalTrait = {
+			"class" : "trait",
+			"type" : "rival",
+			"first" : "rival",
+			"value" : true
+		};
+
+		cif.set(heroTrait);
+		cif.set(loveTrait);
+		cif.set(rivalTrait);
 
 		var char1 = "hero";
 		var char2 = "love";
@@ -143,7 +167,14 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		storedVolitions = cif.calculateVolition(cast);
 		possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 2);
 
+		console.log("stored volitions: " , storedVolitions.dump());
+		var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 2);
+		console.log("This is what love wants to do towards hero: ", testActions);
+
 		console.log("new possible actions: " , possibleActions);
+
+		var heroToHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 2);
+		console.log("actions from hero to hero!" , heroToHeroActions);
 	};
 
 	var cifInitCallback = function(){

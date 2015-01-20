@@ -15,6 +15,67 @@
 			"leadsTo" : ["WRITELOVENOTE", "KISS"]
 		},
 		{
+			"name" : "RAISESTRENGTH",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "strength",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WEIGHTLIFT", "PUSHUP"]
+		},
+		{
+			"name" : "WEIGHTLIFT",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["weightLiftSuccess", "weightLiftFail"]
+		},
+		{
+			"name" : "weightLiftSuccess",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "weightLiftFail",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "-",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "PUSHUP",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["pushup1"]
+		},
+		{
+			"name" : "pushup1",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}
+			]
+		},
+		{
 			"name" : "WRITELOVENOTE",
 			"conditions" : [],
 			"influenceRules" : [],

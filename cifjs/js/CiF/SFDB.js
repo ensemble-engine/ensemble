@@ -391,7 +391,36 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		}
 
 		return matchedResults;
-	}
+	};
+
+	/**
+	 * @method loadHistory Take a history definition object, and load it into CiF.]
+	 * @param  {[object]} content [A javascript object detailing the social history to populate the sfdb with.]
+	 */
+	var loadHistory = function(content) {
+		var history = content.history;
+		var lastPos = -9999999999;
+		for (var i = 0; i < history.length; i++) {
+			// TODO add more error checking to look for out-of-order history steps, etc.
+			var historyAtTime = history[i];
+			if (historyAtTime.pos <= lastPos) {
+				console.log("Tried to load a history file but timeStep " + historyAtTime.pos + " came after timeStep " + lastPos + "; history files must declare timesteps sequentially.");
+				return;
+			}
+			lastPos = historyAtTime.pos;
+			setupNextTimeStep(historyAtTime.pos);
+			for (var j = 0; j < historyAtTime.data.length; j++) {
+				var pred = historyAtTime.data[j];
+				try {
+					set(pred);
+				} catch(e) {
+					console.log("invalid history file! double check  predicate on console");
+					console.log("invalid predicate in history:", pred);
+					return;
+				}
+			}
+		}
+	};
 
 
 	// Return a hash string guaranteed to be unique for each distinct predicate regardless of key order.
@@ -761,6 +790,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		clearEverything			: clearEverything,
 		set 					: set,
 		get 					: publicGet,
+		loadHistory				: loadHistory,
 		sfdbHistoryToString 	: sfdbHistoryToString,
 		sfdbFullHistoryToString	: sfdbFullHistoryToString,
 		putCharacterOffstage	: putCharacterOffstage,

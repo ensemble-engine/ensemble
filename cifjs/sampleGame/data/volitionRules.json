@@ -21,7 +21,8 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentDirection": true,
+					"value": true
 				}
 			],
 			"origin": "volitionRules",
@@ -79,12 +80,173 @@
 					"first": "love",
 					"second": "hero",
 					"weight": -10,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_4"
+		},
+		{
+			"name": "Weak people desire strength",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
 					"intentDirection": true,
 					"value": true
 				}
 			],
 			"origin": "volitionRules",
-			"id": "volitionRules_4"
+			"id": "volitionRules_5"
+		},
+		{
+			"name": "The hero doesn't particularly want to get closer to the rival",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "hero",
+					"first": "hero",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "rival",
+					"first": "rival",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "hero",
+					"second": "rival",
+					"weight": -10,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_6"
+		},
+		{
+			"name": "People want to get closer to smart people",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "Smarty",
+					"value": 20,
+					"operator": ">"
+				},
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "onlooker",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "onlooker",
+					"second": "Smarty",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_7"
+		},
+		{
+			"name": "People want to get closer to strong people",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "onlooker",
+					"value": true
+				},
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "strongperson",
+					"value": 20,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "onlooker",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_8"
+		},
+		{
+			"name": "Everyone desires intelligence",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_9"
+		},
+		{
+			"name": "Everyone Desires Strength",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_10"
 		}
 	]
 }

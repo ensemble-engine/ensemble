@@ -598,6 +598,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
+		addHistory				: sfdb.loadHistory,
 		
 		addRules				: addRules,
 		getRules				: getRules,

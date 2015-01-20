@@ -27,21 +27,14 @@
 	<div id="actionArea">
 		<h1> What to do this turn:</h1>
 		Towards Love:
-		<div id="actionListHeroLove"> </div>
+		<div id="actionList_hero_love"> </div>
 		Towards Yourself:
-		<div id="actionListHeroHero"></div>
+		<div id="actionList_hero_hero"></div>
 		Towards Rival:
-		<div id="actionListHeroRival"></div>
+		<div id="actionList_hero_rival"></div>
 	</div>
 
 	<div id="chatBubble"></div>
-
-	<button id="myFirstButton" onclick=move()>Inside the button.</button>
-	<button id="2" onclick="positionCharacter('hero', 10)">Inside the button.</button>
-	<button id="3" onclick="positionCharacter('hero', 50)">Inside the button.</button>
-	<button id="4" onclick="positionCharacter('hero', 80)">Inside the button.</button>
-	<button id="5" onclick="positionCharacter('hero', 120)">Inside the button.</button>
-	<button id="6" onclick="positionCharacter('hero', 150)">Inside the button.</button>
 
 	<div id="stateArea">
 		<h1>Social State</h1>
@@ -56,6 +49,11 @@
 			<div id="attractionHeroToLover">Hero to Lover: <span id="attractionHeroToLoverNumber">NA</span></div>
 			<div id="attractionLoverToHero">Lover to Hero: <span id="attractionLoverToHeroNumber">NA</span></div>
 			<div id="attractionLoverToRival">Lover to Rival: <span id="attractionLoverToRivalNumber">NA</span></div>
+		</div>
+		<div id="Hero Attributes">
+			<h2>Hero Attributes</h2>
+			<div id="heroStrength">Strength: <span id="heroStrengthNumber">NA</span></div>
+			<div id="heroIntelligence">Intelligence: <span id="heroIntelligenceNumber">NA</span></div>
 		</div>
 	</div>
 
@@ -85,6 +83,11 @@
 			var rawActions = cif.loadFile("data/actions.json");
 			var actions = cif.addActions(rawActions);
 
+			var rawHistory = cif.loadFile("data/history.json");
+			var history = cif.addHistory(rawHistory);
+
+			//cif.dumpSFDB();
+
 			//Set up our initial state
 			setUpLoversAndRivalsInitialState();
 			drawCharacters(500);
@@ -96,20 +99,25 @@
 			//3.) Handle action selection
 			var storedVolitions = cif.calculateVolition(cast);
 			//Give the player options for what they can click on!
-			populateActionList(storedVolitions, cast);
-
+			populateActionLists(storedVolitions, cast);
 
 			//Test
-			var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 3);
-			console.log("This is what love wants to do towards hero: ", testActions);
-			console.log("Here is the sfdb... ", cif.dumpSFDB());
+			//console.log("The starting volitions: " , storedVolitions.dump());
+
+			//Test
+			//var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
+
+			var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 100);
+			//
+			//console.log("This is what love wants to do towards hero: ", testActions);
+			//cif.dumpSFDB();
 
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
 				storedVolitions = cif.calculateVolition(cast);
-				populateActionList(storedVolitions, cast);
+				populateActionLists(storedVolitions, cast);
 				cleanUpUIForNewTurn();
-			}
+			};
 
 			document.addEventListener("nextTurn", nextTurn);
 
@@ -131,9 +139,7 @@
 
 
 
-			console.log("Actions: ", actions);
-
-			helloWorld();
+			//console.log("Actions: ", actions);
 
 		}, false);
 	</script>

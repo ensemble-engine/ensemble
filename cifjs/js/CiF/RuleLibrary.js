@@ -615,7 +615,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			
 			//TODO: currently, adjustWeight cannot handle a situation where there is no second person in the effect. We might want to handle this.
 			var direction = sfdb.getRegisteredDirection(effect);
-			console.log(direction);
+			//console.log(direction);
 			if(effect.second === undefined){
 				if(direction === "undirected" ){
 				//ok, we are dealing with a situation where a character is attempting to adjust an undirected property.

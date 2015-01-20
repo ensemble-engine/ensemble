@@ -16,15 +16,35 @@
 			"directionType" : "undirected",
 			"types": ["confident", "unsure"],
 			"allowIntent" : false,
-			"defaultValue" : false
+			"defaultValue" : false,
+			"duration" : 3
+		},
+		{
+			"class" : "attribute",
+			"types" : ["strength", "intelligence"],
+			"isBoolean" : false,
+			"directionType" : "undirected",
+			"allowIntent" : true,
+			"defaultValue" : 0,
+			"maxValue" : 100,
+			"minValue" : 0
 		},
 		{
 			"class" : "trait",
 			"isBoolean" : true,
 			"directionType" : "undirected",
-			"types" : ["hero", "love", "rival"],
+			"types" : ["hero", "love", "rival", "anyone"],
 			"allowIntent" : false,
 			"defaultValue" : false
+		},
+		{
+			"class": "SFDBLabel",
+			"types": ["romanticFailure", "romantic advance", "embarrassing"],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
 		}
 	]
 }
