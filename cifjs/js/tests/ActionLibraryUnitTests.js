@@ -558,13 +558,13 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 		test.assert(joke.name, "telljoke1", "name is wrong for joke action");
 		test.assert(joke.isAccept, true, "isAccept is wrong for joke action");
-		test.assert(joke.salience, 0, "salience is wrong for joke action");
+		test.assert(joke.salience, 60, "salience is wrong for joke action"); // salience is 60 because of initial volition
 		test.assert(joke.effects.length, 1, "length of jokes effects is incorrect");
 		test.assert(_.keys(joke.conditions).length, 0, "wrong number of conditions for joke action");
 
 		test.assert(reminisce.name, "reminisce1", "name is wrong for reminisce action");
 		test.assert(reminisce.isAccept, true, "isAccept is wrong for reminisce action");
-		test.assert(reminisce.salience, 0, "salience is wrong for reminisce action");
+		test.assert(reminisce.salience, 60, "salience is wrong for reminisce action"); // salience is 60 because of initial volition
 		test.assert(reminisce.effects.length, 1, "length of reminisce effects is incorrect");
 		test.assert(_.keys(reminisce.conditions).length, 0, "wrong number of conditions for reminisce action");
 
@@ -587,7 +587,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(test2Action.goodBindings.length, 2, "(TEST 2) Action goodBindings is incorrect");
 		test.assert(test2Action.conditions.length, 3, "(TEST 2) Action conditions is incorrect");
 		test.assert(test2Action.effects.length, 1, "(TEST 2) Action effects is incorrect");
-		test.assert(test2Action.salience, 15, "(TEST 2) Action salience is incorrect");
+		test.assert(test2Action.salience, 60, "(TEST 2) Action salience is incorrect");
 		
 		var goodBinding1 = test2Action.goodBindings[0];
 		test.assert(goodBinding1.initiator, "MisterInit", "initiatorBinding is wrong in first combination (TEST2)" );
@@ -623,7 +623,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(test3Action.goodBindings.length, 1, "(TEST 3) Action goodBindings is incorrect");
 		test.assert(test3Action.conditions.length, 2, "(TEST 3) Action conditions is incorrect");
 		test.assert(test3Action.effects.length, 1, "(TEST 3) Action effects is incorrect");
-		test.assert(test3Action.salience, 10, "(TEST 3) Action salience is incorrect");
+		test.assert(test3Action.salience, 60, "(TEST 3) Action salience is incorrect");
 		
 		goodBinding1 = test3Action.goodBindings[0];
 		test.assert(goodBinding1.initiator, "MisterInit", "initiatorBinding is wrong in first combination (TEST3)" );
@@ -1218,8 +1218,8 @@ var testGetAction = function(){
 		test.assert(actions.length, 2, "Test 1 -- number of actions returned was incorrect.");
 		test.assert(actions[0].name, "pickupLineTerminal", "Test 1 -- name of the first action was incorrect.");
 		test.assert(actions[0].weight, 547, "Test 1 -- weight of the first action was incorrect.");
-		test.assert(actions[1].name, "laughTerminal1", "Test 1 -- name of the second action was incorrect.");
-		test.assert(actions[1].weight, 5, "Test 1 -- weight of the second action was incorrect.");
+		test.assert(actions[1].name, "laughTerminal2", "Test 1 -- name of the second action was incorrect.");
+		test.assert(actions[1].weight, 7, "Test 1 -- weight of the second action was incorrect.");
 
 		//TEST 2 -- 2 intents, 1 action per volition, 2 actions per action group.
 		//This is being done on two intents, one of which has two terminals, and the other only has one terminal, so three things should be returned in total.
@@ -1237,11 +1237,11 @@ var testGetAction = function(){
 		test.assert(actions.length, 4, "Test 3 -- number of actions returned was incorrect.");
 		test.assert(actions[0].name, "pickupLineTerminal", "Test 3 -- name of first actions was incorrect.");
 		test.assert(actions[0].weight, 547, "Test 3 -- weight of first action was incorrect.");
-		test.assert(actions[1].name, "askoutTerminal", "Test 3 -- name of second action was incorrect.");
-		test.assert(actions[1].weight, 5, "Test 3 -- weight of second action was incorrect.");
-		test.assert(actions[2].name, "bondTerminal", "Test 3 -- name of third action was incorrect.");
+		test.assert(actions[1].name, "laughTerminal2", "Test 3 -- name of second action was incorrect.");
+		test.assert(actions[1].weight, 7, "Test 3 -- weight of second action was incorrect.");
+		test.assert(actions[2].name, "askoutTerminal", "Test 3 -- name of third action was incorrect.");
 		test.assert(actions[2].weight, 5, "Test 3 -- weight of third action was incorrect.");
-		test.assert(actions[3].name, "laughTerminal1", "Test 3 -- name of fourth action was incorrect.");
+		test.assert(actions[3].name, "bondTerminal", "Test 3 -- name of fourth action was incorrect.");
 		test.assert(actions[3].weight, 5, "Test 3 -- weight of the fourth action was incorrect.");
 
 		//TEST 4 -- 2 Intents, 2 actions per volition, 2 actions per action group.

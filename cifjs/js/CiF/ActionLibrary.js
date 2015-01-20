@@ -346,9 +346,18 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 				//AND FINE, I'm caving in! Let's compute influence rules for this terminal action, too!
 				computeInfluenceRuleWeight(terminalAction);
+				if(terminalAction.salience === undefined ){
+					terminalAction.salience = 0;
+				}
+				if(terminalAction.weight === undefined){
+					terminalAction.weight = 0;
+				}
+
+				terminalAction.salience = terminalAction.weight + terminalAction.salience; // if there is a hard-coded sailence, honor it.
 
 				//#CODEREVIEW: Get rid of salience code? Just comment it out maybe. We shouldn't have code executing that isn't doing anything.
 				//#CODEREVIEW: AH, ok! Change all of these things that are looking at salience to instead look at influence rule weight instead.
+				//#CODEREVIEW: Currently doing the above suggestion by just assigning the weight to the salience property.
 				if(terminalActionParentObject.actions === undefined || terminalActionParentObject.actions.length <= 0){
 					terminalActionParentObject.actions = [];
 					if(terminalAction.salience === undefined){
