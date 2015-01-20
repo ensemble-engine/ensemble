@@ -420,6 +420,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 				}
 			}
 		}
+		return content;
 	};
 
 
@@ -576,8 +577,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		sfdb = [];
 		currentTimeStep = -1;
 		defaultValues = {};
+		maxValues = {};
+		minValues = {};
 		directions = {};
 		isBooleans = {};
+		clonePolicies = {};
+		durations = {};
 		offstageCharacters = [];
 		eliminatedCharacters = [];
 	};

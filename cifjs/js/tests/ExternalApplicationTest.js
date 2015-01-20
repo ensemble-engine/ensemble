@@ -119,32 +119,15 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var rawActions = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/actions.json");
 		var actions = cif.addActions(rawActions);
 
+		var rawHistory = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/history.json");
+		var history = cif.addHistory(rawHistory);
+
 		console.log("schema", schema);
 		console.log("cast", cast);
 		console.log("actions", actions);
+		console.log("history: " , history);
 
-		var heroTrait = {
-			"class" : "trait",
-			"type" : "hero",
-			"first" : "hero",
-			"value" : true
-		};
-		var loveTrait = {
-			"class" : "trait",
-			"type" : "love",
-			"first" : "love",
-			"value" : true
-		};
-		var rivalTrait = {
-			"class" : "trait",
-			"type" : "rival",
-			"first" : "rival",
-			"value" : true
-		};
-
-		cif.set(heroTrait);
-		cif.set(loveTrait);
-		cif.set(rivalTrait);
+		cif.dumpSFDB();
 
 		var char1 = "hero";
 		var char2 = "love";
@@ -155,6 +138,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		console.log("possible actions: " , possibleActions);
 
 		//now let's set the hero's closeness to love to 10, to test the odd behavior we're experiencing.
+		/*
 		var newCloseness = {
 			"class" : "feeling",
 			"type" : "closeness",
@@ -163,6 +147,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 			"value" : 10
 		};
 		cif.set(newCloseness);
+		*/
 
 		storedVolitions = cif.calculateVolition(cast);
 		possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 2);
@@ -175,6 +160,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 		var heroToHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 2);
 		console.log("actions from hero to hero!" , heroToHeroActions);
+
+		
 	};
 
 	var cifInitCallback = function(){

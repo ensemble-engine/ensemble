@@ -102,15 +102,17 @@
 			populateActionLists(storedVolitions, cast);
 
 			//Test
-			//console.log("The starting volitions: " , storedVolitions.dump());
+			console.log("The starting volitions: " , storedVolitions.dump());
 
 			//Test
 			//var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
 
-			var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 100);
-			//
+			//var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 100);
 			//console.log("This is what love wants to do towards hero: ", testActions);
 			//cif.dumpSFDB();
+			
+			var testHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 100);
+			console.log("This is what hero wants to do towards hero: " , testHeroActions);
 
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
