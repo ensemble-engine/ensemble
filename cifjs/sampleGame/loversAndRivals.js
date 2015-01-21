@@ -9,6 +9,11 @@ var stateInformation = {
  "heroIntelligence" : "NA"
 };
 
+var gameVariables = {
+	"gameOver" : false,
+	"endingText" : "NA"
+};
+
 var move = function(){
 	
 	var elem = document.getElementById("hero");
@@ -244,6 +249,19 @@ var clearActionList = function(){
 	heroToRivalActionList.innerHTML = "";
 	var heroToHeroActionList = document.getElementById("actionList_hero_hero");
 	heroToHeroActionList.innerHTML = "";
+};
+
+//Checks to see if the game is over!
+var checkForEndConditions = function(){
+	if(stateInformation.loveToRivalCloseness >= 90){
+		//uh oh, we lose!
+		gameVariables.gameOver = true;
+		gameVariables.endingText = "Game Over! Your Love is in the arms of your rival!";
+	}
+	if(stateInformation.loveToHeroAttraction >= 50){
+		gameVariables.gameOver = true;
+		gameVariables.endingText = "Game Over! Your Love is sufficiently attracted in you for you to feel good about yourself!";
+	}
 };
 
 //There are certain things that we might need to 'refresh' again (the visibility of the action list,

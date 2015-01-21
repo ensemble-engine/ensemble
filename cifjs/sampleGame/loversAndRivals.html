@@ -10,7 +10,12 @@
 </head>
 <body>
 
-	<h1>Our super fun game!</h1>
+	<div id="titleDiv">
+		<h1>Lovers and Rivals!</h1>
+	</div>
+	<div id="statusDiv">
+		<h3 id="statusMessage"></h3>
+	</div>
 
 	<div class = "field" onclick="move()">
 		<div class = "character" id="hero">
@@ -116,11 +121,18 @@
 
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
-				cif.setupNextTimeStep();
-				cif.dumpSFDB();
-				storedVolitions = cif.calculateVolition(cast);
-				populateActionLists(storedVolitions, cast);
-				cleanUpUIForNewTurn();
+				checkForEndConditions();
+				if(gameVariables.gameOver === true){
+					var endMessageArea = document.getElementById("statusMessage");
+					endMessageArea.innerHTML = gameVariables.endingText;
+				}
+				else{
+					cif.setupNextTimeStep();
+					cif.dumpSFDB();
+					storedVolitions = cif.calculateVolition(cast);
+					populateActionLists(storedVolitions, cast);
+					cleanUpUIForNewTurn();
+				}
 			};
 
 			document.addEventListener("nextTurn", nextTurn);

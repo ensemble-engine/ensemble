@@ -34,3 +34,12 @@ body {
 	font-size: 10px;
 	white-space: nowrap;
 }
+
+#titleDiv{
+	float : left;
+}
+
+#statusDiv{
+	margin-left : 75px;
+	float : left;
+}

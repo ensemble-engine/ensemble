@@ -70,8 +70,8 @@
 				"value" : 10		
 			},
 			{
-					"class" : "SFDBLabel",
-					"type" : "self involved",
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
 				}]
@@ -110,8 +110,8 @@
 					"value" : 10
 				},
 				{
-					"class" : "SFDBLabel",
-					"type" : "self involved",
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
 				}
@@ -137,8 +137,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
@@ -156,8 +156,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
@@ -181,8 +181,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}
