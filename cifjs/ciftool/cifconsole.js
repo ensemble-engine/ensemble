@@ -282,12 +282,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 	}
 
-	var loadAllFilesFromFolder = function(folder) {
+	var loadAllFilesFromFolder = function(allFilesInFolder) {
+		var files = allFilesInFolder.split(";");
 		return new Promise(function(resolve, reject) {
-			var files, fileContents;
+			var fileContents;
 			try {
 				fileContents = [];
-				files = fs.readdirSync(folder);
 				for (var i = 0; i < files.length; i++) {
 					var filename = files[i];
 					// Ignore files without a .json extension.
@@ -298,7 +298,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					}
 
 					// Ignore files that don't appear to BE json.
-					var content = JSON.parse(fs.readFileSync(folder + "/" + filename, 'utf-8'));
+					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
 
 					content.source_file = filename;
 					fileContents.push(content);
