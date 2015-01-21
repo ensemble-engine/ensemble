@@ -35,7 +35,7 @@ var moveAllCharacters = function() {
 	console.log("inside of moveAllCharacters");
 
 	//Takes a little bit of computation!
-	var loveDestination = (stateInformation.widthOfField/2 - stateInformation.loveToHeroCloseness*2 + stateInformation.loveToRivalCloseness*2.5);
+	var loveDestination = (stateInformation.widthOfField/2 - stateInformation.loveToHeroCloseness*1.5 + stateInformation.loveToRivalCloseness*2.5);
 	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
 	moveByCharacterName("love", loveDestination);
 };
@@ -132,6 +132,7 @@ var setupCharacterPositions = function(widthOfField){
 
 	//Get hero to Love closeness
 	var heroToLoveCloseness = stateInformation.heroToLoveCloseness;
+
 
 	//store the width of field information
 	stateInformation.widthOfField = widthOfField;
@@ -271,9 +272,9 @@ var checkForEndConditions = function(){
 		gameVariables.gameOver = true;
 		gameVariables.endingText = "Game Over! Your Love is in the arms of your rival!";
 	}
-	if(stateInformation.loveToHeroAttraction >= 50){
+	if(stateInformation.loveToHeroCloseness >= 90 && stateInformation.heroToLoveCloseness >= 90){
 		gameVariables.gameOver = true;
-		gameVariables.endingText = "Game Over! Your Love is sufficiently attracted in you for you to feel good about yourself!";
+		gameVariables.endingText = "Game Over! Your Love is sufficiently interested in you for you to feel good about yourself!";
 	}
 };
 

@@ -127,14 +127,14 @@
 		{
 			"name" : "weightLiftSuccess",
 			"conditions" : [],
-			"displayName" : "Weightlift <SUCCESS>",
+			"displayName" : "Weightlift",
 			"influenceRules" : [],
 			"effects" : [{
 				"class" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
-				"value" : 10
+				"value" : 5
 			},
 			{
 				"class" : "SFDBLabelUndirected",
@@ -210,7 +210,19 @@
 				"second" : "responder",
 				"value" : 40,
 				"operator" : ">"
-				}],
+				},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "trait",
+				"type" : "rival",
+				"first" : "evilPerson",
+				"value" : true
+			}],
 			"influenceRules" : [],
 			"effects" : [{
 				"class" : "feeling",
@@ -218,6 +230,27 @@
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "evilPerson",
+				"operator" : "=",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "evilPerson",
+				"operator" : "=",
 				"value" : 10
 			}]
 		},
@@ -230,7 +263,7 @@
 				"type"  : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
-				"value" : 40,
+				"value" : -10,
 				"operator" : ">"
 				}],
 			"influenceRules" : [],
@@ -240,7 +273,14 @@
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "-",
-				"value" : 10
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 100
 			}]
 		},
 		{
@@ -254,6 +294,13 @@
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
 				"operator" : "+",
 				"value" : 10
 			}]

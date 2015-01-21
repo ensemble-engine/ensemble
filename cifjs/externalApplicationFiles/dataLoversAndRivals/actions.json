@@ -127,14 +127,14 @@
 		{
 			"name" : "weightLiftSuccess",
 			"conditions" : [],
-			"displayName" : "Weightlift <SUCCESS>",
+			"displayName" : "Weightlift",
 			"influenceRules" : [],
 			"effects" : [{
 				"class" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
-				"value" : 10
+				"value" : 5
 			},
 			{
 				"class" : "SFDBLabelUndirected",
