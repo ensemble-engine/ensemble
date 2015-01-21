@@ -323,7 +323,17 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in cifconsole.html) and confirmed their selection by clicking OK.
 		chooser.addEventListener("change", function(evt) {
-			var schemaDir = this.value;
+
+			// Due to annoying bug noted at link below, we have to do string-munging to get the folder selected. Also complicated by forward vs backslashes in paths on Mac vs Windows.
+			// https://github.com/nwjs/nw.js/issues/2961
+			var listOfAllFiles = this.value;
+			var firstFile = listOfAllFiles.split(";")[0];
+			var posOfLastSlash = firstFile.lastIndexOf("/");
+			if (posOfLastSlash < 0) {
+				posOfLastSlash = firstFile.lastIndexOf("\\");
+			}
+			var schemaDir = firstFile.substr(0,posOfLastSlash);
+			// Finally! Now we can save:
 			lastPath = schemaDir;
 			cif.reset();
 			ruleOriginsTrigger = [];
@@ -333,7 +343,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
 			// http://www.html5rocks.com/en/tutorials/es6/promises/		
-			loadAllFilesFromFolder(schemaDir).then(function(files) {
+			loadAllFilesFromFolder(listOfAllFiles).then(function(files) {
 				// "files" is now an array of objects, the parsed contents of the files. First find the schema definition.
 
 				var schemaPos = -1;
