@@ -56,7 +56,7 @@ module.exports = function(grunt) {
       techRelease : {
         options: {
            platforms: ['win','osx'],
-            buildDir: './TechnicalAlphaRelease/build', // Where the build version of my node-webkit app is saved
+            buildDir: './TechnicalAlphaRelease/authoringToolBuilds', // Where the build version of my node-webkit app is saved
          },
          src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
       }
@@ -90,12 +90,19 @@ module.exports = function(grunt) {
           expand: true           // required when using cwd
         },
         {
-          cwd: 'cache/',  // set working folder / root to copy
-          src: '**',           // copy all files and subfolders
-          dest: 'TechnicalAlphaRelease/cache/',    // destination folder
+          cwd: 'sampleGame',
+          src: '**',
+          dest: 'TechnicalAlphaRelease/sampleGame/',
           flatten: false,
-          expand: true           // required when using cwd
+          expand: true
         },
+       // {
+       //   cwd: 'cache/',  // set working folder / root to copy
+       //   src: '**',           // copy all files and subfolders
+       //   dest: 'TechnicalAlphaRelease/cache/',    // destination folder
+       //   flatten: false,
+       //   expand: true           // required when using cwd
+       // },
        // {
        //   cwd: 'build/',  // set working folder / root to copy
        //   src: '**',           // copy all files and subfolders
@@ -106,7 +113,7 @@ module.exports = function(grunt) {
         {
           cwd: 'schemata/',  // set working folder / root to copy
           src: '**',           // copy all files and subfolders
-          dest: 'TechnicalAlphaRelease/schemata/',    // destination folder
+          dest: 'TechnicalAlphaRelease/exampleSchemata/',    // destination folder
           flatten: false,
           expand: true           // required when using cwd
         },
