@@ -32,21 +32,20 @@
 			"first" : "love",
 			"value" : true
 				},{
-			"class" : "feeling",
-			"type" : "closeness",
-			"first" : "love",
-			"second" : "hero",
-			"value" : 100
-			},{
 			"class" : "attribute",
 			"type" : "strength",
 			"first" : "hero",
-			"value" : 30
-			},{
+			"value" : 0
+				},{
+			"class" : "SFDBLabel",
+			"type" : "self involved",
+			"first" : "hero",
+			"value" : true
+				},{
 			"class" : "attribute",
 			"type" : "intelligence",
 			"first" : "hero",
-			"value" : 30
+			"value" : 0
 			}
 		]}
 	]

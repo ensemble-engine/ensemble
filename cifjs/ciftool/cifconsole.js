@@ -381,7 +381,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				cmdLog("Schema loaded.", true);
 
 			}, function(error) {
+				console.log("Is this the error message I'm getting at?")
 				cmdLog("Error " + error);
+				console.log("Was this the error I just saw? " ,  error);
 			});
 
 		}, false);

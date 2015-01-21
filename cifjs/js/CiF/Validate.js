@@ -176,7 +176,7 @@ function(util, _, $, sfdb) {
 		var msg = "";
 
 		// Skip SFDBLabel predicates for now.
-		if (predicate.class === "SFDBLabel") return false;
+		if (predicate.class === "SFDBLabel" || predicate.class === "SFDBLabelUndirected") return false;
 
 		// Verify that the contents of a particular key exist and are of the expected type. If isRequired is false, it's okay for the given key to be missing. Add problem details to the isPredBad scoped "msg" variable.
 		var isTypeWrong = function(pred, key, type, isRequired) {

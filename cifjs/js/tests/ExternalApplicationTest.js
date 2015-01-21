@@ -161,6 +161,10 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var heroToHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 2);
 		console.log("actions from hero to hero!" , heroToHeroActions);
 
+		cif.dumpSFDB();
+		cif.runTriggerRules(cast);
+		cif.dumpSFDB();
+
 		
 	};
 

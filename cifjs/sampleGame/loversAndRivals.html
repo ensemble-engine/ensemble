@@ -90,7 +90,7 @@
 
 			//Set up our initial state
 			setUpLoversAndRivalsInitialState();
-			drawCharacters(500);
+			setupCharacterPositions(500);
 
 
 			//MAIN GAME LOOP
@@ -116,6 +116,8 @@
 
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
+				cif.setupNextTimeStep();
+				cif.dumpSFDB();
 				storedVolitions = cif.calculateVolition(cast);
 				populateActionLists(storedVolitions, cast);
 				cleanUpUIForNewTurn();

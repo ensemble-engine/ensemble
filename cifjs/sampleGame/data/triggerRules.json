@@ -22,6 +22,41 @@
 			],
 			"origin": "triggerRules",
 			"id": "triggerRules_1"
+		},
+		{
+			"name": "Love is disinterested in self involved people",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "self involved",
+					"first": "selfInvolvedGuy",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "love",
+					"first": "theLove",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "self involved",
+					"first": "notSelfInvolvedPerson",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "theLove",
+					"second" : "notSelfInvolvedPerson",
+					"operator" : "+",
+					"value": 10
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_1"
 		}
 	]
 }

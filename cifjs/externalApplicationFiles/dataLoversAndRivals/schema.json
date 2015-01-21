@@ -39,7 +39,7 @@
 		},
 		{
 			"class": "SFDBLabel",
-			"types": ["romanticFailure", "romantic advance", "embarrassing"],
+			"types": ["romantic failure", "romantic advance", "embarrassing", "self involved"],
 			"isBoolean": true,
 			"directionType": "directed",
 			"defaultValue": false,

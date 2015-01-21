@@ -47,6 +47,7 @@ module.exports = function(grunt) {
     nodewebkit: {
       dist: {
         options: {
+           downloadUrl: "http://dl.nwjs.io/",
            platforms: ['win','osx'],
             buildDir: './build', // Where the build version of my node-webkit app is saved
        },

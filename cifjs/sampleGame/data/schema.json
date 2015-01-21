@@ -39,9 +39,18 @@
 		},
 		{
 			"class": "SFDBLabel",
-			"types": ["romanticFailure", "romantic advance", "embarrassing"],
+			"types": ["romantic failure", "romantic advance"],
 			"isBoolean": true,
 			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		},
+		{
+			"class": "SFDBLabelUndirected",
+			"types": ["embarrassing", "self involved"],
+			"isBoolean": true,
+			"directionType": "undirected",
 			"defaultValue": false,
 			"allowIntent": false,
 			"duration": 0

@@ -68,7 +68,13 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10		
-			}]
+			},
+			{
+					"class" : "SFDBLabel",
+					"type" : "self involved",
+					"first" : "initiator",
+					"value" : true
+				}]
 		},
 		{
 			"name" : "studyAnatomy",
@@ -83,7 +89,7 @@
 							"type" : "strength",
 							"first" : "initiator",
 							"operator" : ">",
-							"value" : 20
+							"value" : 10
 						}
 					],
 					"weight" : 30
@@ -102,6 +108,12 @@
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
+				},
+				{
+					"class" : "SFDBLabel",
+					"type" : "self involved",
+					"first" : "initiator",
+					"value" : true
 				}
 			]
 
@@ -123,6 +135,12 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10
+			},
+			{
+				"class" : "SFDBLabel",
+				"type" : "self involved",
+				"first" : "initiator",
+				"value" : true
 			}]
 		},
 		{
@@ -136,6 +154,12 @@
 				"first" : "initiator",
 				"operator" : "-",
 				"value" : 10
+			},
+			{
+				"class" : "SFDBLabel",
+				"type" : "self involved",
+				"first" : "initiator",
+				"value" : true
 			}]
 		},
 		{
@@ -155,6 +179,12 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10
+			},
+			{
+				"class" : "SFDBLabel",
+				"type" : "self involved",
+				"first" : "initiator",
+				"value" : true
 			}
 			]
 		},

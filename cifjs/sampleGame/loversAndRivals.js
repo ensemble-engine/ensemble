@@ -27,8 +27,11 @@ var move = function(){
 
 var moveAllCharacters = function() {
 	console.log("inside of moveAllCharacters");
+
+	//Takes a little bit of computation!
+	var loveDestination = (stateInformation.widthOfField/2 - stateInformation.loveToHeroCloseness*2 + stateInformation.loveToRivalCloseness*2.5);
 	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
-	moveByCharacterName("love", 40);
+	moveByCharacterName("love", loveDestination);
 };
 
 var moveByCharacterName = function(name, destination){
@@ -110,7 +113,7 @@ var setUpLoversAndRivalsInitialState = function(){
 	displayStateInformation();
 };
 
-var drawCharacters = function(widthOfField){
+var setupCharacterPositions = function(widthOfField){
 	var hero = document.getElementById("hero");
 	var love = document.getElementById("love");
 	var rival = document.getElementById("rival");
@@ -123,6 +126,9 @@ var drawCharacters = function(widthOfField){
 
 	//Get hero to Love closeness
 	var heroToLoveCloseness = stateInformation.heroToLoveCloseness;
+
+	//store the width of field information
+	stateInformation.widthOfField = widthOfField;
 
 	//console.log("Hero to love: " + heroToLoveCloseness + " love to hero: " + loveToHeroCloseness + " love to rival: " + loveToRivalCloseness);
 
@@ -174,6 +180,7 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 		buttonnode.setAttribute('name',action);
 		buttonnode.setAttribute('value',action.displayName);
 		buttonnode.actionToPerform = action;
+		buttonnode.cast = cast;
 		buttonnode.onclick = actionButtonClicked;
 		//buttonnode.attachEvent('onclick', actionButtonClicked2);
 
@@ -192,7 +199,7 @@ var actionButtonClicked = function(){
 	console.log("No way that actually worked did it...? " , this.actionToPerform);
 	console.log("Action button clicked! Maybe I have access to it's name? " , this.name);
 	console.log("And even better, maybe this will give me EVERYTHING about the action " , this.value);
-	moveAllCharacters();
+	//moveAllCharacters();
 
 	//What do we want to have happen when an action is clicked?
 	
@@ -207,6 +214,9 @@ var actionButtonClicked = function(){
 	for(var i = 0; i < effects.length; i += 1){
 		cif.set(effects[i]);
 	}
+
+	//RUN SOME TRIGGER RULES based on the new state!
+	cif.runTriggerRules(this.cast);
 
 
 	//cif wants to now go through these effects and use them to update the social state.
