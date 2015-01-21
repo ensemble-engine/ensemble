@@ -528,6 +528,17 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				return false; // oops, looking for one truth value but found another!
 			}
 		}
+
+		//If actions don't have an isAccept defined, assume that they are an isAccept of true.
+		//This only works with TERMINAL ACTIONS.
+		//TODO: Come up with a more robust means of teting for terminal actions than looking at existance of leadsTo and effects
+		if(action.isAccept === undefined && action.leadsTo === undefined && action.effects !== undefined){
+			if(isAccepted === false){
+				return false; // oops, if undefined we assume true, but we are looking for false!
+			}
+		}
+
+
 		//If we get to this point, and the action has no "goodBindings" associated with it,
 		//that means that there is no combination of characters that exists that satisfies all 
 		//of the conditions that have been specified by this point in the "action tree." Therefore,

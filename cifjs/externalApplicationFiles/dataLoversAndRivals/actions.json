@@ -70,8 +70,8 @@
 				"value" : 10		
 			},
 			{
-					"class" : "SFDBLabel",
-					"type" : "self involved",
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
 				}]
@@ -110,8 +110,8 @@
 					"value" : 10
 				},
 				{
-					"class" : "SFDBLabel",
-					"type" : "self involved",
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
 				}
@@ -137,8 +137,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
@@ -156,8 +156,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
@@ -181,8 +181,8 @@
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabel",
-				"type" : "self involved",
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}
@@ -198,19 +198,12 @@
 			"name" : "KISS",
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["kiss"]
+			"leadsTo" : ["kissSuccess", "kissFail"]
 		},
 		{
-			"name" : "kiss",
-			"displayName" : "Kiss",
-			"conditions" : [{
-				"class" : "feeling",
-				"type"  : "closeness",
-				"first" : "initiator",
-				"second" : "responder",
-				"value" : 9,
-				"operator" : ">"
-				}],
+			"name" : "kissSuccess",
+			"displayName" : "Kiss <SUCCESS>",
+			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
 				"class" : "feeling",
@@ -218,6 +211,21 @@
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "kissFail",
+			"displayName" : "Kiss <FAIL>",
+			"isAccept" : false,
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "-",
 				"value" : 10
 			}]
 		},
@@ -249,6 +257,12 @@
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 10
+			},{
+				"class" : "SFDBLabel",
+				"type" : "romantic-failure",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : true
 			}]
 		}
 	]

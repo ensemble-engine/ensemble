@@ -134,8 +134,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 		var storedVolitions = cif.calculateVolition(cast);
 		var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 3);
-
-		console.log("possible actions: " , possibleActions);
+		var possibleActionsLoveToHero = cif.getActions(char2, char1, storedVolitions, cast, 2, 3);
+		console.log("possible actions from hero to love: " , possibleActions);
+		console.log("possible actions from love to hero: " , possibleActionsLoveToHero);
 
 		//now let's set the hero's closeness to love to 10, to test the odd behavior we're experiencing.
 		/*

@@ -24,14 +24,8 @@
 			"id": "triggerRules_1"
 		},
 		{
-			"name": "Love is disinterested in self involved people",
+			"name": "Love is repulsed by self indulged people",
 			"conditions": [
-				{
-					"class": "SFDBLabel",
-					"type": "self involved",
-					"first": "selfInvolvedGuy",
-					"value": true
-				},
 				{
 					"class": "trait",
 					"type": "love",
@@ -39,9 +33,15 @@
 					"value": true
 				},
 				{
-					"class": "SFDBLabel",
-					"type": "self involved",
-					"first": "notSelfInvolvedPerson",
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someoneElse",
 					"value": false
 				}
 			],
@@ -50,13 +50,44 @@
 					"class": "feeling",
 					"type": "closeness",
 					"first": "theLove",
-					"second" : "notSelfInvolvedPerson",
-					"operator" : "+",
-					"value": 10
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
 				}
 			],
 			"origin": "triggerRules",
-			"id": "triggerRules_1"
+			"id": "triggerRules_2"
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "wouldBeLover",
+					"second": "victim",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "someoneElse",
+					"second": "victim",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "victim",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_13"
 		}
 	]
 }

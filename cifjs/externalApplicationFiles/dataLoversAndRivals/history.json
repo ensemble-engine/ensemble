@@ -36,16 +36,11 @@
 			"type" : "strength",
 			"first" : "hero",
 			"value" : 0
-				},{
-			"class" : "SFDBLabel",
-			"type" : "self involved",
-			"first" : "hero",
-			"value" : true
-				},{
+			},{
 			"class" : "attribute",
 			"type" : "intelligence",
 			"first" : "hero",
-			"value" : 0
+			"value" : 5
 			}
 		]}
 	]

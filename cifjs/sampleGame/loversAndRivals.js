@@ -11,7 +11,8 @@ var stateInformation = {
 
 var gameVariables = {
 	"gameOver" : false,
-	"endingText" : "NA"
+	"endingText" : "NA",
+	"turnNumber" : 0
 };
 
 var move = function(){
@@ -163,7 +164,7 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 	//Num intents to look at: 2
 	//Num actions per intent: 3 (for now!)
 	//console.log("storedVolitions before getting possible actions... " , storedVolitions.dump());
-	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 5, 1);
+	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 5, 2);
 	//console.log("Possible Actions From " + char1 + " to " + char2 + ": ", possibleActions);
 
 	var divName = "actionList_" + char1 + "_" + char2;
@@ -212,7 +213,7 @@ var actionButtonClicked = function(){
 	clearActionList();
 
 	//Play some SICK ANIMATION (like a text bubble flashing!)
-	playInstantiationAnimation();
+	//playInstantiationAnimation();
 
 	//CHANGE THE SOCIAL STATE -- social physics baby!!!
 	var effects = this.actionToPerform.effects; // should be an array of effects.
@@ -223,6 +224,13 @@ var actionButtonClicked = function(){
 	//RUN SOME TRIGGER RULES based on the new state!
 	cif.runTriggerRules(this.cast);
 
+	//Print out if the action was 'accepted' or rejected!
+	var statusArea = document.getElementById("statusMessage");
+	var acceptMessage = this.actionToPerform.displayName + " successful!";
+	if(this.actionToPerform.isAccept !== undefined && this.actionToPerform.isAccept === false){
+		acceptMessage = this.actionToPerform.displayName + " failed!";
+	}
+	statusArea.innerHTML = acceptMessage;
 
 	//cif wants to now go through these effects and use them to update the social state.
 
@@ -233,6 +241,11 @@ var actionButtonClicked = function(){
 	updateLocalStateInformation();
 	displayStateInformation();
 	moveAllCharacters();
+
+	//set up next turn.
+	var event = document.createEvent('Event');
+	event.initEvent('nextTurn', true, true);
+	document.dispatchEvent(event);
 };
 
 var clearActionList = function(){
@@ -269,6 +282,9 @@ var checkForEndConditions = function(){
 var cleanUpUIForNewTurn = function(){
 	var actionArea = document.getElementById("actionArea");
 	actionArea.style.visibility = "visible";
+
+	var turnNumberArea = document.getElementById("turnNumberPlace");
+	turnNumberArea.innerHTML = gameVariables.turnNumber;
 };
 
 var displayStateInformation = function(){

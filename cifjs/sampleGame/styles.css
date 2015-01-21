@@ -41,5 +41,9 @@ body {
 
 #statusDiv{
 	margin-left : 75px;
-	float : left;
+	clear : both;
+}
+
+#actionList_hero_rival{
+	visibility : hidden;
 }

@@ -56,7 +56,38 @@
 				}
 			],
 			"origin": "triggerRules",
-			"id": "triggerRules_11"
+			"id": "triggerRules_2"
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "wouldBeLover",
+					"second": "victim",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "someoneElse",
+					"second": "victim",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "victim",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_13"
 		}
 	]
 }
