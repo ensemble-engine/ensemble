@@ -1,11 +1,9 @@
-/*
-actionLibrary -- parses and stores data pertaining to actions 
-(i.e. things that the characters can engage in to alter the social state)
-
-TODO: Many of these functions will begin to fall apart when we start getting into "instantiations."
-TODO: Connected to above ^^^ there are presently some severe assumptions with regards to the initiator/responder, first/second dynamic that will need to be revisited for 3 (or more) person actions.
-
-@class ActionLibrary
+/**
+ * This is the class actionLibrary
+ *
+ *
+ * @class  ActionLibrary
+ * @private
  */
 
 define(["util", "underscore", "validate", "volition", "ruleLibrary"],
@@ -19,6 +17,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method getAllActions 
+	 * @private
 	 * @description returns an array containing every action (terminal or otherwise) available in the social world.
 	 * @return {Array} [An array containing every single action defined in the social world.]
 	 */
@@ -28,6 +27,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method getStartSymbols 
+	 * @private
 	 * @description Returns an array containing every 'start action.' Conceived to return all actions specifically tied to an intent.
 	 * @return {Array} [An array containing every 'root' acton (every action tied to an intent) in the social world]
 	 */
@@ -37,6 +37,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method getNonTerminals 
+	 * @private
 	 * @description Returns an array containing every 'non terminal' This will include both root and non-root actions, but exclude terminal actions.
 	 * @return {[type]} [An array containing every 'non terminal' action.]
 	 */
@@ -65,9 +66,11 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * @method parseActions 
+	 * @method addActions
+	 * @public
+	 * @memberOf CiF 
 	 * @description Takes in either a JSON file or a JSON string representing the definition of an action or actions and stores it in the action library. This effect is cumulative; calling this function on multiple files will lead to the actions from both files being stored in the action library.]
-	 * @param  {JSON} data [Either a JSON string or a JSON file defining an action or actions.]
+	 * @param  {JSON} data - Either a JSON string or a JSON file defining an action or actions.
 	 * @return {array}      [An array of every action currently stored in the action library.]
 	 */
 	var parseActions = function(data){
@@ -113,6 +116,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method actionAlreadyExists 
+	 * @private
 	 * @description a simple helper function to see if a newly parsed in action hasn't already been defined -- this is done by looking at the name of the action. This means that even if two actions are quite different, if they share the same name an error will be printed to the console.]
 	 * @param  {Object} potentialNewAction [The action that has just been read in, and is to be checked against the actions already in the action library.]
 	 * @return {Boolean}                    [Returns true if the action already exists. False otherwise.]
@@ -172,6 +176,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method sortActionsByVolitionScore 
+	 * @private
 	 * @description Sorts an array of actions based on their weights in descending order.. Specifically, each action has a list of actions that it 'leads to' -- and it is THIS list of actions that is being sorted. Uses recursion to get to the end of the chain. Also sorts the GoodBindings of each weight as well.
 	 * @param  {Array} actions [An array of actions to be sorted]
 	 * @return {Array}         [The sorted actions]
@@ -483,6 +488,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	//be passed through this now.
 	/**
 	 * @method computeInfluenceRuleWeight 
+	 * @private
 	 * @description Takes in an action, goes through all of its valid bindings, and evaluates the influence rule for each set of bindings. Stores the weight with each binding and, for the best weight (i.e. the best binding) stores it at the level of the action.
 	 * @param  {Object} action [The action to compute the weight for. Should have at least one 'goodBinding' attached to it]
 	 */
@@ -554,6 +560,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	//#CODEREVIEW: Consolodate these three functions. Maybe create a separate 'isTerminal' function that returns a boolean?
 	/**
 	 * @method getActionFromNameGeneric
+	 * @private
 	 * @description Given the name of an action, searches through a provided array to find the corresponding action object and returns it.
 	 * @param  {string} actionName [The name of the action we are hunting for in the provided array.]
 	 * @return {object}            [An object representing all relevant information pertaining to the requested action. Returns undefined if no such action exists.]
@@ -569,6 +576,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method getTerminalActionFromName
+	 * @private
 	 * @description Given the name of an action, searches through the terminal action array to find the corresponding action object and returns it.
 	 * @param  {string} actionName [The name of the action we are hunting for in the actions array.]
 	 * @return {object}            [An object representing all relevant information pertaining to the requested action. Returns undefined if no such action exists.]
@@ -584,6 +592,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	/**
 	 * @method getActionFromName
+	 * @private
 	 * @description Given the name of an action, searches through the action array to find the corresponding action object and returns it.
 	 * @param  {string} actionName [The name of the action we are hunting for in the actions array.]
 	 * @return {object}            [An object representing all relevant information pertaining to the requested action. Returns undefined if no such action exists.]
@@ -873,15 +882,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 	/**
 	 * @method getActions 
+	 * @memberOf CiF
+	 * @public
 	 * @description Similar to getAction, but allows the user to specify the number of intents to draw from, and the number of actions that shold come from each intent.
-	 * @param  {[String]} initiator           [The name of the character initiating the action]
-	 * @param  {[String]} responder           [The name of the recipient of the action]
-	 * @param  {[Object]} volition            [The registered volition object.]
-	 * @param  {[Array]} cast                [The pool of characters to be used for consideration for the filling in of roles.]
-	 * @param  {[Number]} numIntents          [The total number of different intents to pull actions from.]
-	 * @param  {[Number]} numActionsPerIntent [How many actions should come from each intent.]
-	 * @param  {[Number]} numActionsPerGroup  [How many terminals should come from any given 'action group']
-	 * @return {[Array]}                     [A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.]
+	 * @param  {String} initiator - The name of the character initiating the action
+	 * @param  {String} responder - The name of the recipient of the action
+	 * @param  {Object} volition - The registered volition object.
+	 * @param  {Array} cast - The pool of characters to be used for consideration for the filling in of roles.
+	 * @param  {Number} numIntents - The total number of different intents to pull actions from.
+	 * @param  {Number} numActionsPerIntent - How many actions should come from each intent.
+	 * @param  {Number} numActionsPerGroup - How many terminals should come from any given 'action group'
+	 * @return {Array} A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.
 	 */
 	var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
 		//console.log("inside of getActions!");

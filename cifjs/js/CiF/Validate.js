@@ -1,7 +1,6 @@
 /**
  * This is the class Validate, for verification of predicates and other data.
  *
- * @class Validate
  */
 
 define(["util", "underscore", "jquery", "sfdb"], 

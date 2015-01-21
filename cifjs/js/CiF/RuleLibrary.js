@@ -5,7 +5,8 @@
  * calculateVolition
  * runTriggerRules
  *
- * @class RuleLibrary
+ * @class  RuleLibrary
+ * @private
  */
 
 define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb, volition, _, util, log, test) {
@@ -458,12 +459,13 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 	};
 
 /**
- * Run the SFDB's appropriate trigger rules with a given cast. Trigger rules always run at the current timeStep.
+ * @description  Run the SFDB's appropriate trigger rules with a given cast. Trigger rules always run at the current timeStep.
  *
  * @method runTriggerRules
- * @memberof RuleLibrary
- * @param {Array} cast the array of cast members
- * @param {Object} params Debugging info to pass down the chain to runRules.
+ * @memberof CiF
+ * @param {Array} cast - the array of cast members
+ * @param {Object} params - Debugging info to pass down the chain to runRules. Can be safely ignored.
+ * @return {Object} An object representing the changes made to the social state as a result of running these trigger rules.
  */
 	var runTriggerRules = function (cast, params) {
 				// Construct an array of fired trigger rules.
@@ -543,8 +545,8 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
  * how badly they want to do those actions (how much weight they have).
  *
  * @method calculateVolition
- * @memberof RuleLibrary
- * @param {Array} cast	an array of the cast of characters to calculate volition for
+ * @memberof CiF
+ * @param {Array} cast - an array of the cast of characters to calculate volition for
  * @return {Object} calculatedVolitions a dictionary containing the cast and their volitions
  */
 	var calculateVolition = function (cast) {

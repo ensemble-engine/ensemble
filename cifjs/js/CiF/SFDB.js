@@ -1,6 +1,7 @@
 /**
 * This is the class SFDB
-* @class SFDB
+* @class  SFDB
+* @private
 */
 define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
@@ -53,8 +54,10 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 	
 	/**
-	 * Debugging function: Dumps the whole SFDB object to the console.
-	 *
+	 * @method  dumpSFDB
+	 * @description Debugging function: Dumps the whole SFDB object to the console.
+	 * @public
+	 * @memberOf CiF
 	 */
 	var dumpSFDB = function() {
 		console.log("sfdb:", sfdb);
@@ -142,11 +145,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 /**
-* Catches the SFDB's currentTimeStep to the timeStep specified.
+* @description  Catches the SFDB's currentTimeStep to the timeStep specified.
 *
 * @method setUpNextTimeStep
-* @memberof SFDB
-* @param {Number} timeStep	the timeStep to catch up the SFDB to. If omitted, assumes the currentTimeStep + 1.
+* @memberof CiF
+* @return {int} The current timestep. 
+* @param {Number} timeStep - the timeStep to catch up the SFDB to. If omitted, assumes the currentTimeStep + 1.
 */
 	var setupNextTimeStep = function (timeStep) {
 		if (currentTimeStep === -1) {
@@ -290,14 +294,14 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	/**
-	* Search the SFDB for a desired searchPredicate within a provided time period.
-	* We assume that mostRecentTime and leastRecentTime exist and are formatted properly. cif.get() should be called by public, this should only be used internally.
+	* @description  Search the SFDB for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. cif.get() should be called by public, this should only be used internally.
 	*
 	* @method get
-	* @memberof SFDB
-	* @param {Object} searchPredicate	a predicate we want to search the SFDB for
-	* @param {Number} mostRecentTime 	the lower bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
-	* @param {Number} leastRecentTime	the upper bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
+	* @memberof CiF
+	* @param {Object} searchPredicate - a predicate we want to search the SFDB for
+	* @param {Number} mostRecentTime - the lower bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
+	* @param {Number} leastRecentTime - the upper bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
+	* @param {Bool} useDefaultValue - If true, then if the searchPredicate is not explicitly found in the sfdb it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
 	* @return {Array} matchedResults	the array holding the found predicates which match the query
 	*/
 	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue) {
@@ -394,10 +398,14 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	/**
-	 * @method loadHistory Take a history definition object, and load it into CiF.]
-	 * @param  {[object]} content [A javascript object detailing the social history to populate the sfdb with.]
+	 * @method addHistory 
+	 * @description  Take a history definition object, and load it into CiF. See sampleGame/data/history.json for an example.
+	 * @public
+	 * @memberOf CiF
+	 * @return {object} A Parsed JSON file representing the history that was just loaded in.
+	 * @param  {object} content - A javascript object detailing the social history to populate the sfdb with.
 	 */
-	var loadHistory = function(content) {
+	var addHistory = function(content) {
 		var history = content.history;
 		var lastPos = -9999999999;
 		for (var i = 0; i < history.length; i++) {
@@ -453,12 +461,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 
 /**
- * Allows a predicate to be saved to the SFDB at a given timeStep
- * Handles stored predicate updating as well as storing new predicates
+ * @description Allows a predicate to be saved to the SFDB at the current timeStep. Handles stored predicate updating as well as storing new predicates
  *
  * @method set
- * @memberof SFDB
- * @param {Object} predicate	the predicate that we would like to save to the SFDB
+ * @memberof CiF
+ * @public
+ * @param {Object} setPredicate - the predicate that we would like to save to the SFDB
  */
 	var set = function(setPredicate) {
 		var pattern = {};
@@ -795,7 +803,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		clearEverything			: clearEverything,
 		set 					: set,
 		get 					: publicGet,
-		loadHistory				: loadHistory,
+		addHistory				: addHistory,
 		sfdbHistoryToString 	: sfdbHistoryToString,
 		sfdbFullHistoryToString	: sfdbFullHistoryToString,
 		putCharacterOffstage	: putCharacterOffstage,

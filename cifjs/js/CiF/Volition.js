@@ -25,7 +25,8 @@
  * calculateVolition
  * runTriggerRules
  *
- * @class Volition
+ * @class volition
+ * @private
  */
 
 

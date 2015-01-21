@@ -12,14 +12,16 @@ To start with, you'll be wanting to make a new file. We'll call it ourFunGame.ht
 
 The big important thing that you add is the following line:
 
-<pre><script src="cif.js"></script></pre>
+<pre>
+	&lt;script src="cif.js"&gt; &lt;/script&gt;
+</pre>
 
 And that should get you access to all of the wonders of CiF.
 
 You can also include the following line:
 
 <pre>
-<script type="text/javascript">
+&lt;script type="text/javascript"&gt;
 document.addEventListener('DOMContentLoaded', function()) {
 	var loadResult = cif.init();
 	console.log(loadResult);

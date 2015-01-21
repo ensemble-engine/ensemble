@@ -1,7 +1,6 @@
 /*global define */
 /**
  * This class is the top level interface into CiF.
- * Public methods are:
  *
  *
  * @class CiF
@@ -11,10 +10,15 @@ define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "test", "v
 function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 
 
-
 	/**
-	 * Loads a stock set of blueprints useful for testing. (relationship, networks, etc.)
+	 * @method loadBaseBlueprints
+	 * @memberof CiF
+	 * @private
+	 * 
+	 * @description Loads a stock set of blueprints useful for testing. (relationship, networks, etc.)
 	 *
+	 * @param {Object} bp - a blueprint object.
+	 * 
 	 * @return {Object} An object with an interface to the loaded factories.
 	 */
 	var loadBaseBlueprints = function(bp) {
@@ -23,7 +27,17 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	};
 
 
-
+	/**
+	 * @method loadFile
+	 * @memberof CiF
+	 * @public
+	 * 
+	 * @description Will load in a file representing some data object for the CiF world. This function will need to be called with your triggerRules, volitionRules, and socialSchema, among others.
+	 *
+	 * @param {Object} filename - The relative path to the data file.
+	 * 
+	 * @return {Object} A JSON object representing the parsed contents of the filename.
+	 */
 	var loadFile = function(filename) {
 
 		var fileResults;
@@ -82,7 +96,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 * @public
 	 * @description Take an object specifying a set of social relation types, and generate a
 	 * set of factories with interfaces into that specification. See
-	 * data/testSocial.json for an example of structure.
+	 * sampleGame/data/schema.json for an example of structure.
 	 *
 	 * @param  {Object} data The object to load
 	 * 
@@ -240,7 +254,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 * @method addCharacters
 	 * @public
 	 * @memberOf CiF
-	 * Load a character definition object.
+	 * 
+	 * @description Load a character definition object.
 	 *
 	 * @param {Object} data A file defining the characters in this story. Should contain a single top-level key, "cast", which holds a dictionary of character identifiers, each containing an object with character metadata. If the object contains a key "name" with the printed name of the character, the getCharName function can be used to quickly return this.
 	 *
@@ -527,15 +542,13 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	var doAction = function(actionName, initiator, responder, registeredVolitions){
 		actionLibrary.doAction(actionName, initiator, responder, registeredVolitions);
 	};
-
-
 	
 
 	/**
 	 * @method reset
 	 * @public
 	 * @memberOf CiF
-	 * Completely resets CiF to a blank-slate state. 
+	 * @description Completely resets CiF to a blank-slate state. 
 	 *
 	 */
 	var reset = function() {
@@ -558,6 +571,14 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	/* INTERFACE */
 	/***************************************************************/
 
+	/**
+	 * @method init
+	 * @public
+	 * @memberOf CiF
+	 * @description initializes cif to be ready for use.
+	 * @return {String} Returns a success message upon initialization.
+	 *
+	 */
 	var init = function() {
 		sfdb.init();		
 		return "Ok";
@@ -598,7 +619,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
-		addHistory				: sfdb.loadHistory,
+		addHistory				: sfdb.addHistory,
 		
 		addRules				: addRules,
 		getRules				: getRules,
