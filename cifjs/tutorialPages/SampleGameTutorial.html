@@ -18,15 +18,15 @@ The big important thing that you add is the following line:
 
 And that should get you access to all of the wonders of CiF.
 
-You can also include the following line:
+You should also include the following line:
 
 <pre>
-&lt;script type="text/javascript"&gt;
-document.addEventListener('DOMContentLoaded', function()) {
-	var loadResult = cif.init();
-	console.log(loadResult);
-	}
-}
+&lt;script&gt;
+	document.addEventListener('cifLoaded', function (e) {
+		var loadResult = cif.init();
+		console.log(loadResult);
+	}, false);
+&lt;/script&gt;
 </pre>
 
 This will make sure that the page does not start up until all of cif has been successfully loaded. You should see a little true appear on your javascript console if cif was loaded successfully.
