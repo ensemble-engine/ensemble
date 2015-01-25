@@ -3,24 +3,34 @@
 <head>
 	<title>Making a sample game...</title>
 	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 </head>
 <body>
 
-Today we will be making a simple, sample game using CiF!
+<p>
+	<b><i>As of this time, CiF applications seem to only work on Chrome. Apologies to Firefox and IE users!</i></b>
 
-To start with, you'll be wanting to make a new file. We'll call it ourFunGame.html. You'll want to fill it up with your typical html friends, the html tag, the body tag, the title tag, you know the drill.
+<p>
+This tutorial will walk you through the process of using CiF to make a sample game. The completed source code for the game we'll be making, Lovers and Rivals, is packaged with CiF in the sampleGame folder. However, sometimes the best way to learn is to build something yourself from scratch.
 
-The big important thing that you add is the following line:
+<p>
+So, let's start at the very beginning! Before you actually do any coding, <a href="tutorial-CiFUserREADME.html#localhostSetup">you'll want to set up a localhost</a>. Once that's out of the way, it all starts with an html file, which we'll call <i>loversAndRivals.html</i>. You'll want to fill it up with your typical html friends, the html tag, the body tag, the title tag, you know the drill.
 
-<pre>
+<p>
+Once you have the basics in place, you'll want to add the following line inside your head tag:
+
+<pre class="prettyprint">
 	&lt;script src="cif.js"&gt; &lt;/script&gt;
 </pre>
 
-And that should get you access to all of the wonders of CiF.
+<p>
+And that should get you access to all of the wonders of CiF! Simple as that!
 
-You should also include the following line:
+<p>
 
-<pre>
+You should also include the following lines:
+
+<pre class="prettyprint">
 &lt;script&gt;
 	document.addEventListener('cifLoaded', function (e) {
 		var loadResult = cif.init();
@@ -29,7 +39,11 @@ You should also include the following line:
 &lt;/script&gt;
 </pre>
 
-This will make sure that the page does not start up until all of cif has been successfully loaded. You should see a little true appear on your javascript console if cif was loaded successfully.
+<p>
+This ensures that your page won't start up until all of CiF has been successfully loaded. Everything that we'll be writing for the rest of this tutorial will take place within the bounds of this event listener. To double check that you have everything up and running, open up the <a href="https://developer.chrome.com/devtools">Chrome developer tools,</a> and verify that a success message was printed to the console. Congratulations, you're ready to rock and roll!
+
+<p>
+
 
 
 
