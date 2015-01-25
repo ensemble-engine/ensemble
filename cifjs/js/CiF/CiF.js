@@ -121,10 +121,14 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		if (blueprints === undefined) {
 			throw new Error("Error: social structure data file must be JSON that defines a top-level key 'schema'");
 		}
+		var atLeastOneClassAllowsIntent = false;
 		for (var i = 0; i < blueprints.length; i++) {
 			var classBlueprint = blueprints[i];
 
 			// Error Checking
+			if (classBlueprint.allowIntent === true) {
+				atLeastOneClassAllowsIntent = true;
+			}
 			if (structure[classBlueprint.class]) {
 				throw new Error("DATA ERROR in CiF.loadSocialStructure: the class '" + classBlueprint.class + "' is defined more than once.");
 			}
@@ -147,6 +151,10 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 				structure[classBlueprint.class][type] = registerSocialType(typeBlueprint);
 			}
 
+		}
+
+		if (!atLeastOneClassAllowsIntent) {
+			throw new Error("SCHEMA ERROR: A schema must include at least one class where allowIntent is true, otherwise there are no possible actions for characters to take.");
 		}
 
 		socialStructure = structure;

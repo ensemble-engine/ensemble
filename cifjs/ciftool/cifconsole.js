@@ -411,7 +411,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// Take a schema definition object, register it with CiF, and display its details in the UI.
 	var loadSchema = function(schema) {
 
-		socialStructure = cif.loadSocialStructure(schema);
+		try {
+			socialStructure = cif.loadSocialStructure(schema);	
+		} catch(e) {
+			messages.showError(e);
+			return;
+		}
 
 		// Generate explanatory text.
 		var exp = "";
