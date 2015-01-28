@@ -90,6 +90,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 
 	var save = function() {
+		if(activeFile === ""){
+			return; // don't save if we aren't working with an actual file.
+		}
 		var results = cif.setRuleById(activeRule.id, activeRule);
 		if (!results) {
 			messages.showAlert("Unable to save rule.");
@@ -180,6 +183,11 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
 				activeFile = activeFileRefByRuleType[rule.type];
+				//BEN START HERE: This assumes that the user selected a file from a list. 
+				//If they created a new file, they won't have actually created it by this point; 
+				//and thus it returns an empty string! Maybe make it so that when they actually push 
+				//the button (the call back I believe is in ruleEditor line 499) and have as part of 
+				//that process changing the value of 'active rule' that might help us out?
 				activeRule.origin = activeFile;
 			}
 		}
@@ -472,6 +480,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
 		ruleOrigins.push(newFileName);
 		$("#ruleOriginSelect").replaceWith(generateRuleOriginsMenu());
+
+		//We're going to save the new file automatically once it is created.
+		save();
 
 		return newFileName;
 	}
