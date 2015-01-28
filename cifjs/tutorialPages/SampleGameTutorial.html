@@ -43,7 +43,37 @@ You should also include the following lines:
 This ensures that your page won't start up until all of CiF has been successfully loaded. Everything that we'll be writing for the rest of this tutorial will take place within the bounds of this event listener. To double check that you have everything up and running, open up the <a href="https://developer.chrome.com/devtools">Chrome developer tools,</a> and verify that a success message was printed to the console. Congratulations, you're ready to rock and roll!
 
 <p>
+We'll start making some game specific code in the next tutorial. For now, go down this sanity-check-list!
 
+<ul>
+	<li>You're using Chrome as your browser</li>
+	<li>You've set up a localhost as outlined <a href="tutorial-CiFUserREADME.html#localhostSetup">here</a>. </li>
+	<li>Your html file that you're working in looks a little something like this:
+
+<pre class="prettyprint">
+
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My Fun Game!&lt;/title&gt;
+	&lt;script src="cif.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;script type="text/javascript"&gt;
+
+		document.addEventListener('cifLoaded', function (e) {
+			//Init CiF
+			var loadResult = cif.init();
+			console.log(loadResult);
+		}, false);
+	&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+	</li>
+</ul>
+
+<p>
+Once you've gotten all of that in place, you're ready to move on to Part 2!
 
 
 
