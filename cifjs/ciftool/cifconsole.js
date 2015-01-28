@@ -121,10 +121,21 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		ruleWrapper.rules = [newRule];
 		ruleWrapper.type = type;
 		
+		//BEN START HERE
 		var newIds = cif.addRules(ruleWrapper);
+		var cifRule = cif.getRuleById(newIds[0]);
+		if(cifRule === false){
+			//Something bad happened where the rule apparantly wasn't added correctly. Abort and show an error.
+			messages.showError("Canceling New Rule: Error adding empty new rule to CiF");
+			return;
+		}
 		var newLoadedRule = cif.getRuleById(newIds[0]);
 		rulesEditor.loadRule(newLoadedRule, type);
 		$("#tabLiRulesEditor a").click();
+
+		//BEN ALSO START HERE!
+		//Try to programmatically click the 'update rule eset button' here...
+		rulesEditor.save();
 	}
 
 	$("#newRuleButton").click(newRule);

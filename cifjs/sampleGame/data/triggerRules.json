@@ -1,31 +1,93 @@
 {
 	"fileName": "triggerRules",
-	"type": "volition",
+	"type": "trigger",
 	"rules": [
 		{
-			"name": "This was kind of a weird empty Volition Rule",
+			"name": "Rival is always confident",
 			"conditions": [
 				{
-					"class": "feeling",
-					"type": "closeness",
-					"first": "everyMan",
-					"second": "everyOtherMan",
-					"value": 0
+					"class": "trait",
+					"type": "rival",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "mood",
+					"type": "confident",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_1"
+		},
+		{
+			"name": "Love is repulsed by self indulged people",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "love",
+					"first": "theLove",
+					"value": true
+				},
+				{
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someoneElse",
+					"value": false
 				}
 			],
 			"effects": [
 				{
 					"class": "feeling",
 					"type": "closeness",
-					"first": "everyMan",
-					"second": "everyOtherMan",
-					"weight": 5,
-					"intentDirection": false,
-					"value": true
+					"first": "theLove",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
 				}
 			],
 			"origin": "triggerRules",
-			"id": "volitionRules_14"
+			"id": "triggerRules_2"
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "wouldBeLover",
+					"second": "victim",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "someoneElse",
+					"second": "victim",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "victim",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_3"
 		}
 	]
 }

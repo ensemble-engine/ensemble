@@ -154,6 +154,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		undoPosition = -1;	
 		activeRule = util.clone(rule);
 		activeRuleType = type;
+		rule.type = type;
 		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
 			newPredicate("conditions");
 		}
@@ -890,7 +891,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 	return {
 		init: init,
-		loadRule: loadRule
+		loadRule: loadRule,
+		save : save
 	}
 
 });
