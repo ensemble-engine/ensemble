@@ -131,11 +131,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 		var newLoadedRule = cif.getRuleById(newIds[0]);
 		rulesEditor.loadRule(newLoadedRule, type);
-		$("#tabLiRulesEditor a").click();
+		
 
 		//BEN ALSO START HERE!
 		//Try to programmatically click the 'update rule eset button' here...
 		rulesEditor.save();
+		$("#tabLiRulesEditor a").click();
 	}
 
 	$("#newRuleButton").click(newRule);
