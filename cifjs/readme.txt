@@ -18,3 +18,6 @@ To install Grunt (on Mac):
 		npm install grunt-strip-code --save-dev
 		npm install grunt-jsdoc --save-dev
 
+
+	I bet I can't commit this right? RIGHT!?!?!
+
