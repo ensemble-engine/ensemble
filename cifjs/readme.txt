@@ -17,8 +17,3 @@ To install Grunt (on Mac):
 		npm install grunt-contrib-uglify --save-dev
 		npm install grunt-strip-code --save-dev
 		npm install grunt-jsdoc --save-dev
-
-
-	I bet I can't commit this right? RIGHT!?!?!
-	How about this second change. Now that I've changed the name of my key, who knows right allb ets are all off right!?1
-OOF, made a mistake with the test. Testing it this time now for sure.
