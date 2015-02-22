@@ -17,4 +17,3 @@ To install Grunt (on Mac):
 		npm install grunt-contrib-uglify --save-dev
 		npm install grunt-strip-code --save-dev
 		npm install grunt-jsdoc --save-dev
-
