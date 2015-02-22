@@ -1,8 +1,9 @@
 {
-	"fileName" : "aaronsVolition",
+	"fileName": "aaronsVolition",
 	"type": "volition",
 	"rules": [
-		{	"name": "Evil seeks vengeance on good.",
+		{
+			"name": "Evil seeks vengeance on good.",
 			"conditions": [
 				{
 					"class": "alignment",
@@ -26,8 +27,32 @@
 					"weight": 5,
 					"intentDirection": true
 				}
-			]
+			],
+			"origin": "aaronsVolition",
+			"id": "volitionRules_1"
+		},
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "aaronsVolition",
+			"id": "volitionRules_9"
 		}
 	]
-
 }
