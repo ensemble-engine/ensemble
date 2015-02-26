@@ -88,8 +88,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		}
 	}
 
-
-	var save = function() {
+	//if optSkipBackpu is true, it won't create a backup file.
+	var save = function(optSkipBackup) {
 		if(activeFile === ""){
 			return; // don't save if we aren't working with an actual file.
 		}
@@ -101,7 +101,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			rulesViewer.show();
 			messages.showAlert("Updated Rule " + activeRule.id + ".");
 			var ruleType = activeRule.id.split("_")[0];
-			saveRules(ruleType, activeRule.origin, origActiveFile); // Note: we passed in a ref to this function in cifconsole.js on init.
+			saveRules(ruleType, activeRule.origin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in cifconsole.js on init.
 		}
 	}
 

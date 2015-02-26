@@ -135,7 +135,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		//BEN ALSO START HERE!
 		//Try to programmatically click the 'update rule eset button' here...
-		rulesEditor.save();
+		//True here means to skip the backup file creation.
+		rulesEditor.save(true);
 		$("#tabLiRulesEditor a").click();
 	}
 
@@ -173,7 +174,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		var min = d.getMinutes();
 		stamp += (min < 10 ? ("0" + min) : min);
 		return stamp;
-	}
+	};
 
 
 	// ****************************************************************
@@ -188,7 +189,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	// Create a timestamped backup file for the given ruleFile, deleting old backups if there are more than maxBackupFiles of them for this file.
-	var backupRulesFile = function(ruleFile) {
 
 		// If we don't have filesystem access (perhaps because we're running in a browser), skip.
 		if (fs === undefined) {
@@ -268,14 +268,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			fs.writeFileSync(path, serializedRules);
 			// console.log("writing to '" + path + "':");
 		}
-	}
+	};
 
 
 	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
 	// NOTE: must be defined before we call rulesEditor.init()
-	var saveRules = function(ruleType, ruleFile, optOrigActiveFile) {
+	var saveRules = function(ruleType, ruleFile, optOrigActiveFile, optSkipBackup) {
 
-		backupRulesFile(ruleFile);
+		if(optSkipBackup === undefined || optSkipBackup === false){
+			backupRulesFile(ruleFile);
+		}
 
 		var ruleTypeShort;
 		if (ruleType === "triggerRules" || ruleType === "trigger") {
@@ -292,7 +294,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			backupRulesFile(optOrigActiveFile);
 			writeRulesForFileToDisk(ruleTypeShort, optOrigActiveFile);
 		}
-	}
+	};
 
 	var loadAllFilesFromFolder = function(allFilesInFolder) {
 		var files = allFilesInFolder.split(";");
@@ -324,12 +326,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				}
 
 				resolve(fileContents);
-		    } catch(e) {
+			} catch(e) {
 				reject(Error(e));
-		    }
+			}
 
 		});
-	}
+	};
 
 
 	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
@@ -409,13 +411,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				cmdLog("Schema loaded.", true);
 
 			}, function(error) {
-				console.log("Is this the error message I'm getting at?")
+				console.log("Is this the error message I'm getting at?");
 				cmdLog("Error " + error);
 				console.log("Was this the error I just saw? " ,  error);
 			});
 
 		}, false);
-		chooser.click();  
+		chooser.click();
 
 	};
 
