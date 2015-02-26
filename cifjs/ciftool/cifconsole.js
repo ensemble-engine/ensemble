@@ -312,6 +312,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					// Ignore files that don't appear to BE json.
 					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
 
+					// Ignore files that appear to be backup files.
+					if(filename.indexOf("_bak_") > -1){
+						console.log("Skipping '" + filename + "' because it appears to be a backup file.");
+						continue;
+					}
+
 					content.source_file = filename;
 					fileContents.push(content);
 					console.log("Adding '"+filename+"'; fileContents now ", fileContents);
