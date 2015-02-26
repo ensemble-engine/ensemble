@@ -55,6 +55,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	var socialStructure;
 	var characters;
 	var fullCharacters;
+	var skipBackup = "skip"; // helper variable to skip backuping up files when creating a new rule.
 
 	var maxBackupFiles = 10;
 	var maxValidNumberOfActions = 10; // The maximum number of actions that are printed between pairs of characters.
@@ -80,7 +81,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	// Activate tabs to switch between rulesets in Rules pane.
 	$("#rulesTabs").tabs({
-		activate: function(event, ui) { 
+		activate: function(event, ui) {
 			var tabName = ui.newTab[0].innerText;
 			$("#newRuleButton").html("New " + tabName + " Rule");
 		}
@@ -135,10 +136,10 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		//BEN ALSO START HERE!
 		//Try to programmatically click the 'update rule eset button' here...
-		//True here means to skip the backup file creation.
-		rulesEditor.save(true);
+		//pass in 'true' to signify we should opt out of making a backup file.
+		rulesEditor.save(skipBackup);
 		$("#tabLiRulesEditor a").click();
-	}
+	};
 
 	$("#newRuleButton").click(newRule);
 
@@ -189,6 +190,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	// Create a timestamped backup file for the given ruleFile, deleting old backups if there are more than maxBackupFiles of them for this file.
+	var backupRulesFile = function(ruleFile) {
 
 		// If we don't have filesystem access (perhaps because we're running in a browser), skip.
 		if (fs === undefined) {
@@ -225,7 +227,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		// Only consider files in this directory as counting towards the maximum if they start with the master filename and end with .json
 		backupFiles = backupFiles.filter(function(f) {
 			return f.split("_")[0] === ruleFile && f.substr(f.length - 5) === ".json";
-		})
+		});
 		if (backupFiles.length > maxBackupFiles) {
 			// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
 			backupFiles.sort();
@@ -239,7 +241,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		// console.log("copying '" + origFilePath + "' to '" + backupFilePath);		
 		var f = fs.readFileSync(origFilePath);
 		fs.writeFileSync(backupFilePath, f);
-	}
+	};
 
 
 	// Take a rules type (like "volition" etc.) and a filename, and write out all the rules CiF has of that type and matching that filename origin to the file in question.
@@ -275,7 +277,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// NOTE: must be defined before we call rulesEditor.init()
 	var saveRules = function(ruleType, ruleFile, optOrigActiveFile, optSkipBackup) {
 
-		if(optSkipBackup === undefined || optSkipBackup === false){
+		if(optSkipBackup !== skipBackup){
 			backupRulesFile(ruleFile);
 		}
 
@@ -326,12 +328,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				}
 
 				resolve(fileContents);
-			} catch(e) {
+		    } catch(e) {
 				reject(Error(e));
-			}
+		    }
 
 		});
-	};
+	}
 
 
 	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
@@ -411,13 +413,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				cmdLog("Schema loaded.", true);
 
 			}, function(error) {
-				console.log("Is this the error message I'm getting at?");
+				console.log("Is this the error message I'm getting at?")
 				cmdLog("Error " + error);
 				console.log("Was this the error I just saw? " ,  error);
 			});
 
 		}, false);
-		chooser.click();
+		chooser.click();  
 
 	};
 

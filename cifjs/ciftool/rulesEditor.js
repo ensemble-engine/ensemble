@@ -90,6 +90,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 	//if optSkipBackpu is true, it won't create a backup file.
 	var save = function(optSkipBackup) {
+		console.log("beginning saving process...");
 		if(activeFile === ""){
 			return; // don't save if we aren't working with an actual file.
 		}
@@ -477,7 +478,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 		activeRule.origin = newFileName;
 		activeFile = newFileName;
+
 		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+		activeFileRefByRuleType[activeRuleType] = activeFile;
 		ruleOrigins.push(newFileName);
 		$("#ruleOriginSelect").replaceWith(generateRuleOriginsMenu());
 
@@ -499,6 +502,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				"Create File": function() {
 					makeNewRulesFile($("#newRulesFile").val());
 					$(this).dialog("destroy");
+					$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
 				},
 				Cancel: function() {
 					$(this).dialog("destroy");
