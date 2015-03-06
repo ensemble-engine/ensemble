@@ -180,7 +180,7 @@ Depending on your game, you also may want to put in a call to advance CiF's curr
 
 <h3>Key Terms and Properties</h3>
 
-<h4>Schema</h4>
+<a name="schema"><h4>Schema</h4></a>
 <p>
 The social schema is the social 'stuff' of your world, the raw material that your characters will keep track of and reason about to determine what actions to take. Let's take a moment to talk about the possible values of the various attributes of your schema. A schema in the wild might look like this:
 
@@ -283,7 +283,7 @@ If duration is unspecified, then changes to the social state are permament until
 <p>
 This special case is essentially allowing CiF, and the social facts database, to dabble in some mixing of metaphor. In general, the database holds state information. However, by specifying a class as having a duration of 0, you essentially mark it as not being <i>state</i> information, but rather an <i>event.</i> This can be very useful if you want to reason over things such as "did a character do something embarrassing" (as opposed to the subtly different "was a character ever embarrassed"). 
 
-<h4>Actions</h4>
+<a name="actions"><h4>Actions</h4></a>
 
 At a high level, you'll be defining an action graph (or, in many cases, multiple action graphs). The graph will look a little bit like a tree, with a starting 'root' node that will specify which intent the action graph is associated with. The graph is made up of 'non-terminal' and 'terminal' nodes -- the non terminal nodes will be used to determine whether or not this branch of the graph is appropriate (though conditions), and if it is appropriate, how desirable a path it is to take and for which characters (through influence rules). Eventually, the graph will end at a 'terminal node' which will have effects defined which will alter the social state.
 
@@ -342,12 +342,12 @@ intentDirection, is the least intuitive. What it's trying to get at is whether t
 <p>
 This is an array of predicates specifying what NEEDS to be true in order for this action to be considered for this particular set of characters. In general, predicates take the form of looking like this:
 
-<pre class="prettyprint">
+<a name="predicate"><pre class="prettyprint">
 "class" : "trait",
 "type"	: "lucky",
 "first" : "luckyGuy",
 "value" : true
-</pre>
+</pre></a>
 
 <p>
 Once again, class and type are things defined in your schema. Depending on the class, there may or may not be two people involved. In this example, there is only one person involved, so the 'first' field is filled in, but there is no 'second' field -- this is because we defined in our schema that "trait" is something that only applies to a single person. If we were dealing with something like, say, "relationship", then we would want there to be a "second" field in this predicate as well.  Value is what we are actually looking for in the sfdb, so in this case, we are checking to see if there exists an instance where there is a character who DOES have the trait lucky (i.e., a character with lucky = true in the sfdb).

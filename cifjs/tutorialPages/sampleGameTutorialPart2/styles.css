@@ -1,0 +1,37 @@
+body {
+	background-color: black;
+	color: white;
+}
+
+.field {
+	position: relative;
+	overflow: hidden;
+	width: 530px;
+	height: 30px;
+	border: 3px solid #FFF;
+}
+
+.character {
+	position: absolute;
+	background-color: black;
+	width: 30px;
+	height: 20px;
+	padding-top: 10px;
+	text-align: center;
+	color: #fff;
+	font-size: 10px;
+	white-space: nowrap;
+}
+
+#titleDiv{
+	float : left;
+}
+
+#statusDiv{
+	margin-left : 75px;
+	clear : both;
+}
+
+#actionList_hero_rival{
+	visibility : hidden;
+}

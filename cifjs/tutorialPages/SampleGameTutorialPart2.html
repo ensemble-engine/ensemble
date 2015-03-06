@@ -10,13 +10,13 @@
 <p>
 
 <p>
-Welcome to Part 2 of the CiF Sample Game Tutorial! Now, I'm sure that you're itching to dive into CiF specifics (CiFpifics? SpeCiFics! There we go.), but before we get started on that, we're going to be setting up the files we'll be using to just get something appearing on the screen. If you're already comfortabe making your own CSS files for styles and javascript files for storing all of your functions, then you may want to just jump on to part 3.
+Welcome to Part 2 of the CiF Sample Game Tutorial! Now, I'm sure that you're itching to dive into CiF specifics (CiFpifics? SpeCiFics! There we go.), but before we get started on that, we're going to be setting up the files we'll be using to just get something appearing on the screen. If you're already comfortabe making your own CSS files for styles and javascript files for storing all of your functions, then you may want to just jump ahead to <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>.
 
 <p>
 
 <h2>A Vision of The Future</h2>
 
-<p>Okay, sitll with us? Great! If you haven't tried playing Lovers And Rivals yet on your own, I encourage you to do so--it should be in the folder called sampleGame that came with CiF. If nothing else, it should help contextualize a lot of what we'll be building in the tutorial. If for whatever reason you'd rather not play it, here's a screenshot to give us all an idea of the technological marvel we'll be building together looks like:
+<p>Okay, still with us? Great! If you haven't tried playing Lovers And Rivals yet on your own, I encourage you to do so--it should be in the folder called sampleGame that came with CiF. If nothing else, it should help contextualize a lot of what we'll be building in the tutorial. If for whatever reason you'd rather not play it, here's a screenshot to give us all an idea of the technological marvel we'll be building together looks like:
 
 <p>
 <img src="images/LoversAndRivalsFinal.png" width="50%" height="50%">
@@ -55,7 +55,7 @@ Not too bad, right? Next up, we'll be creating the 'field' which is what we'll b
 </pre>
 
 <p>
-Inside the field are the three characters whose fates are ensnared in this viscous game of love and rivalry. Let's give our characters some style, shall we?
+Inside the field are the three characters whose fates are ensnared in this vicious game of love and rivalry. Let's give our characters some style, shall we?
 </p>
 
 <pre class="prettyprint">
@@ -326,7 +326,9 @@ var stateInformation = {
 var gameVariables = {
 	"gameOver" : false,
 	"endingText" : "NA",
-	"turnNumber" : 0
+	"turnNumber" : 0,
+	"numIntents" : 2,
+	"numActionsPerIntent" : 5
 };
 </pre>
 
@@ -381,7 +383,9 @@ var stateInformation = {
 var gameVariables = {
 	"gameOver" : false,
 	"endingText" : "NA",
-	"turnNumber" : 0
+	"turnNumber" : 0,
+	"numIntents" : 2,
+	"numActionsPerIntent" : 5
 };
 
 var move = function(){
@@ -416,7 +420,7 @@ Okay, if you've been following along, opening up your loversAndRivals.html file 
 </p>
 
 <p>
-Feeling good? Good! Time to move on to Part 3!
+Feeling good? Good! Time to move on to <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>!
 </p>
 
 

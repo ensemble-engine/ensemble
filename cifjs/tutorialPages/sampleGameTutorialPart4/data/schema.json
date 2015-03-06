@@ -1,0 +1,60 @@
+{
+	"schema": [
+		{
+			"class": "feeling",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["closeness", "attraction"],
+			"defaultValue": 0,
+			"minValue": 0,
+			"maxValue": 100,
+			"allowIntent": true
+		},
+		{
+			"class" : "mood",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types": ["confident", "unsure"],
+			"allowIntent" : false,
+			"defaultValue" : false,
+			"duration" : 3
+		},
+		{
+			"class" : "attribute",
+			"types" : ["strength", "intelligence"],
+			"isBoolean" : false,
+			"directionType" : "undirected",
+			"allowIntent" : true,
+			"defaultValue" : 0,
+			"maxValue" : 100,
+			"minValue" : 0
+		},
+		{
+			"class" : "trait",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types" : ["hero", "love", "rival", "anyone"],
+			"allowIntent" : false,
+			"defaultValue" : false
+		},
+		{
+			"class": "SFDBLabel",
+			"types": ["romantic-failure", "romantic-advance"],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		},
+		{
+			"class": "SFDBLabelUndirected",
+			"types": ["embarrassing", "self-involved"],
+			"isBoolean": true,
+			"directionType": "undirected",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		}
+	]
+}
+
