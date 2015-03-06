@@ -8,7 +8,7 @@
 <body>
 
 <p>
-Welcome to part 4 guys! Where it all comes together! The intricate puzzle pieces we've carefully jigsawed will finally snap into place, revealing the glorious picture which is your very first CiF-based game. So, let's get started!
+Welcome to part 4 guys! Where it all comes together! The intricate puzzle pieces we've carefully jigsawed will finally snap into place, revealing the glorious picture which is your very first CiF-based game. Let's get started!
 <p>
 
 <h3>Loading In Our Social Schema</h3>
@@ -113,7 +113,7 @@ In the above example, we have our predicate, "heroToLoveClosenessPred" -- as wit
 </p>
 
 <p>
-So, here, by passing in this predicate, it will return an array of all predicates that pertain to the love's closeness feelings for the hero, regardless of the value. Fortunately for us, there should only be one such predicate, for as this value changes through gameplay, CiF doesn't create new entries in the social record, it simply updates exsisting ones. Thus, we check with confidence the first entry in the array, and since we are interested in the value, that is the field that we check. Finally, we store it in the appropriate field of our stateInformation variable which we created way back when in section 2.
+So, here, by passing in this predicate, it will return an array of all predicates that pertain to the love's closeness feelings for the hero, regardless of the value. Fortunately for us, there should only be one such predicate, for as this value changes through gameplay, CiF doesn't create new entries in the social record, it simply updates existing ones. Thus, we check with confidence the first entry in the array, and since we are interested in the value, that is the field that we check. Finally, we store it in the appropriate field of our stateInformation variable which we created way back when in section 2.
 </p>
 
 <p>Phew! A lot of information for a small function, but now you know that much more about how CiF works. The above was just a piece of the updateLocalStateInformation() function, but now that you understand that one part the rest should hopefully be fairly easy to piece together! Here's the whole thing!
@@ -236,7 +236,7 @@ var displayStateInformation = function(){
 </p>
 
 <p>
-That is to say, not altogether too different from how we last saw it. Next, let's get our three characters to take their proper positions on the field. We'll start by adding a line to our html file just under our call to initializing the game state.
+That is to say, not altogether too different from how we last saw it beyond those lovely, georgeous 0s taking the place of the NAs of yesteryear. Next, let's get our three characters to take their proper positions on the field. We'll start by adding a line to our html file just under our call to initializing the game state.
 </p>
 
 <pre class="prettyprint">
@@ -244,7 +244,7 @@ setupCharacterPositions(500);
 </pre>
 
 <p>
-<i>setupCharacterPositions</i> will place our three characters at different places in the field, so they are't all standing on top of each other. The 500 we pass in is just a parameter that makes it look nice with the width of the field being what it is. You can adjust it if you like, it doesn't really matter.
+<i>setupCharacterPositions</i> will place our three characters at different places in the field, so they aren't all standing on top of each other. The 500 we pass in is just a parameter that makes it look nice with the width of the field being what it is. You can adjust it if you like, it doesn't really matter.
 </p>
 
 <p>
@@ -326,11 +326,11 @@ So, first things first, lets calculate us up some volitions! In your html file, 
 </pre>
 
 <p>
-This tiny little line is actually doing quite a bit of heavy lifting. It's taking the current social state and social history (at present, only what you've defined in your history file), and running it against all of the volition rules you wrote back in part 3 to determine what the characters want to do with each other. At this point though, the volitions are *solely* in the form of volitions, such as 'raise strength' and 'increase closeness.' If we want to translate these volitions into actual actions (such as "do pushups" or "invite to movies")
+This tiny little line is actually doing quite a bit of heavy lifting. It's taking the current social state and social history (at present, only what you've defined in your history file), and running it against all of the volition rules you wrote back in part 3 to determine what the characters want to do with each other. At this point though, the volitions are *solely* in the form of volitions, such as 'raise strength' and 'increase closeness.' If we want to translate these volitions into actual actions (such as "do pushups" or "invite to movies"), we're gonna have to do a tiny bit more work.
 </p>
 
 <p>
-To get us actions, we're gonna call a function tailored specifically for Lovers and Rivals.
+Namely, to get our actions we'll call a function tailored specifically for Lovers and Rivals.
 </p>
 
 <pre class="prettyprint">
@@ -487,7 +487,7 @@ Okay, we're doing well! Moving right along, we'll add this line...
 </pre>
 
 <p>
-So now that we've updated the social state, its time to run our trigger rules! You remember trigger rules, right? They're the guys that check the social record to see if something new should be enacted, like, automatically lowering the closeness of people who engaged in self-indulgent activity. Well, running them as simple as the above line!
+So now that we've updated the social state, its time to run our trigger rules! You remember trigger rules, right? They're the guys that check the social record to see if something new should be enacted, like, automatically lowering the closeness of people who engaged in self-involved activity. Well, running them as simple as the above line!
 </p>
 
 <p>
@@ -541,7 +541,7 @@ var moveAllCharacters = function() {
 </pre>
 
 <p>
-Okay okay fine, you caught us. We've got another wrapper function here that makes a couple calls to <i>moveByCharacterName()</i>, which I suppose is the real star here. We also do a little bit of math to figure out where the love wants to move, as a function of their current feelings for the hero an for the rival. Diving deeper into moveByCharacterName...
+Okay okay fine, you caught us. We've got another wrapper function here that makes a couple calls to <i>moveByCharacterName()</i>, which I suppose is the real star here. We also do a little bit of math to figure out where the love wants to move, as a function of their current feelings for the hero and for the rival. Diving deeper into moveByCharacterName...
 </p>
 
 <pre class="prettyprint">
@@ -572,7 +572,7 @@ var moveByCharacterName = function(name, destination){
 </pre>
 
 <p>
-The basic premise here is very similar to that temporary move function we wrote together back in Part 2. We get the html element representing the character we care about through their name, and figure out their starting position by looking at that element's "left" value. At the bottom of the function, we set up an interval, specifying a function to be called every 10 milleseconds, the "frame" function. The frame function is defined just the call to setInterval. It essentially chcks to see if the character's destination is less than or greater than their current position, and increments or decrements their current position accordingly, ultimately assigning it to their left attribute. Finally, if the currentPos is equal to the destination (i.e., they have reached their destination), then we clear the interval, ending the every-10ms-call to the frame function.
+The basic premise here is very similar to that temporary move function we wrote together back in Part 2. We get the html element representing the character we care about through their name, and figure out their starting position by looking at that element's "left" value. At the bottom of the function, we set up an interval, specifying a function to be called every 10 milleseconds, the "frame" function. The frame function is defined just above the call to setInterval. It essentially checks to see if the character's destination is less than or greater than their current position, and increments or decrements their current position accordingly, ultimately assigning it to their left attribute. Finally, if the currentPos is equal to the destination (i.e., they have reached their destination), then we clear the interval, ending the every-10ms-call to the frame function.
 </p>
 
 <p>
@@ -604,12 +604,12 @@ When you first load up the game, it should look like the above, with a collectio
 </p>
 
 <p>
-The hero should stay in place because they holed up in their room studying math, and the love, disapointed by the hero's self-indulgent behavior, will have moved closer to the rival (thanks to one of our trigger rules!). The status area should also have updated, letting us know that our attempts to study math were a rousing success! Good for us! Plus, if you scroll down your game a little, you'll see that all that studying has really paid off, increasing our hero's intelligence!
+The hero should stay in place because they holed up in their room studying math, and the love, disappointed by the hero's self-involved behavior, will have moved closer to the rival (thanks to one of our trigger rules!). The status area should also have updated, letting us know that our attempts to study math were a rousing success! Good for us! Plus, if you scroll down your game a little, you'll see that all that studying has really paid off, increasing our hero's intelligence!
 </p>
 
 <p>
 
-We've made great progress, but we're not done yet! For one thing, after selecting that single action, no more actions pop up for us to pick! This means that the hero's quest to win the affections is all for naught, unless.... unless... we ve the hero the ability to take additional turns! And this is where that event we launched back in actionButtonClicked comes into play!
+We've made great progress, but we're not done yet! For one thing, after selecting that single action, no more actions pop up for us to pick! This means that the hero's quest to win the affections is all for naught, unless.... unless... we give the hero the ability to take additional turns! And this is where that event we launched back in actionButtonClicked comes into play!
 </p>
 
 <p>
@@ -672,7 +672,7 @@ We return to your regularly scheduled nextTurn(), already in progress.
 </pre>
 
 <p>
-We get inside of this else block if the game's ending conditions have not yet been met. The first thing we do is make a call to cif.setupNextTimeStep() -- this let's CiF know that we're moving forward in time by movig a step forward in the social record. This current time step is up for modification through future actions and trigger rules, but the results of the previous turn (namely that the hero's intelligence went up a little, and that the love's closeness for the rival increased) are etched into the social record as having happened at time step 0. Those same values can (and likely will) change at time step 1, 2, 3, etc., but turn 0 is in the past and untouchable!
+We get inside of this else block if the game's ending conditions have not yet been met. The first thing we do is make a call to cif.setupNextTimeStep() -- this let's CiF know that we're moving forward in time by advancing a step forward in the social record. This current time step is up for modification through future actions and trigger rules, but the results of the previous turn (namely that the hero's intelligence went up a little, and that the love's closeness for the rival increased) are etched into the social record as having happened at time step 0. Those same values can (and likely will) change at time step 1, 2, 3, etc., but turn 0 is in the past and untouchable!
 </p>
 
 <p>
@@ -705,10 +705,10 @@ And with that, we're done! Try playing the game you just created and see if you 
 <img src="images/LoversAndRivalsTutorialPart4-5.png" width="90%" height="90%">
 </p>
 
-<h3>Closing Words</h3>
+<h2>Closing Words</h2>
 
 <p>
-We hope you enjoyed this tutorial! You should now have everything you need to start making CiF games of your very own! We admit, it took a little bit of work to set everything up for this simple (though no less awesome for its simplicity) game. BUT, now that you have everything in place, adding new rules, actions, and social considerations is a snap! Lovers and Rivals already has smidges of procedural rhetoric embedded in it (studying anatomy is purely better than studying math in this game, for example! People want to be kissed after you write them a few love notes!), but you could alter it to purport a world view that you actually believe in!
+We hope you enjoyed this tutorial! You should now have everything you need to start making CiF games of your very own! We admit, it took a little bit of work to set everything up for this simple (though no less awesome for its simplicity) game. BUT, now that you have everything in place, adding new rules, actions, and social considerations is a snap! Lovers and Rivals already has smidges of procedural rhetoric embedded in it (studying anatomy is purely better than studying math in this game, for example! People want to be kissed after you write them a few love notes!), but you could alter it to purport a world view that you actually believe in.
 </p>
 
 <p>

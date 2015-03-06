@@ -16,7 +16,7 @@ Welcome to Part 2 of the CiF Sample Game Tutorial! Now, I'm sure that you're itc
 
 <h2>A Vision of The Future</h2>
 
-<p>Okay, still with us? Great! If you haven't tried playing Lovers And Rivals yet on your own, I encourage you to do so--it should be in the folder called sampleGame that came with CiF. If nothing else, it should help contextualize a lot of what we'll be building in the tutorial. If for whatever reason you'd rather not play it, here's a screenshot to give us all an idea of the technological marvel we'll be building together looks like:
+<p>Okay, still with us? Great! If you haven't tried playing Lovers And Rivals yet on your own, I encourage you to do so--it should be in the folder called sampleGame that came with CiF. If nothing else, it should help contextualize a lot of what we'll be building in the tutorial. If for whatever reason you'd rather not play it, here's a screenshot to give us all an idea of what the technological marvel we'll be building together looks like:
 
 <p>
 <img src="images/LoversAndRivalsFinal.png" width="50%" height="50%">
@@ -226,7 +226,7 @@ Up next we have a div that displays relevant state information to the player. In
 </pre>
 
 <p>
-And that's the basic structure of your html file! Will come back to it later once we start actually using CiF, but by this point you should be able to load up your html file and have something that is beginning to resemble that screenshot at the top of the page appear on your very own screen. For reference, this is what your html file should look like now (complete with what you already created in part 1).
+And that's the basic structure of your html file! We will come back to it later once we start actually using CiF, but by this point you should be able to load up your html file and have something that is beginning to resemble that screenshot at the top of the page appear on your very own screen. For reference, this is what your html file should look like now (complete with what you already created in part 1).
 </p>
 
 <h3>Complete HTML File </h3>
@@ -337,11 +337,11 @@ You may notice that most of that data doesn't look too terribly interesting -- d
 </p>
 
 <p>
-	Now would be a good time to point out that there are better ways to work with javascript, such as the module pattern , than what we're using here. What we're doing here is the quickest, dirtiest way to get something up and running.
+	Now would be a good time to point out that there are better ways to work with javascript, such as the module pattern, than what we're using here. What we're doing here is the quickest, dirtiest way to get something up and running. You are more than welcome to fix the code up as much as you like, on your own time!
 </p>
 
 <p>
-And lastly, we'll create that move function we referenced when defining the field. This should move the hero character, by first grabbing a reference to the hero object through a call with document.getElementById("hero"), setting up an interval that will call the defined frame function every ten millesconds, which itself will update the hero's position by incrementing its <i>left</i> property. This continues until left reaches 100, at which point the interval is removed, ceasing the hero's movement. All this should happen when the player clicks on the field.
+And lastly, we'll create that move function we referenced when defining the field. This should move the hero character, by first grabbing a reference to the html hero element through a call with document.getElementById("hero"), setting up an interval that will call the defined frame function every ten millesconds, which itself will update the hero's position by incrementing its <i>left</i> property. This continues until left reaches 100, at which point the interval is removed, ceasing the hero's movement. All this should happen when the player clicks on the field.
 </p>
 
 <pre class="prettyprint">

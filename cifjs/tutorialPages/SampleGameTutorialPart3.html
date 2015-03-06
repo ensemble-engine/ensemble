@@ -28,7 +28,7 @@ As a CiF author, it'll be up to you to define these things! It might seem like a
 
 <h2>Define Your Cast of Characters</h2>
 
-Let's start off with an easy one to get our blood flowing: defining the characters that make up our world. As we already know from <a href="tutorial-SampleGameTutorialPart2.html">Part 2</a> of the tutorial, Lovers and Rivals is going to have three characters: The Hero, the Love, and the Rival. Defining these characters is as easy to whipping up a teeny tiny .json file that we'll call <i>cast.json</i>
+Let's start off with an easy one to get our blood flowing: defining the characters that make up our world. As we already know from <a href="tutorial-SampleGameTutorialPart2.html">Part 2</a> of the tutorial, Lovers and Rivals is going to have three characters: The Hero, the Love, and the Rival. Defining these characters is as easy as whipping up a teeny tiny .json file that we'll call <i>cast.json</i>
 
 <h3>Complete Cast File</h3>
 <pre class="prettyprint">
@@ -48,7 +48,7 @@ Let's start off with an easy one to get our blood flowing: defining the characte
 </pre>
 
 <p>
-And that's all we need! For those of you not super familiar with json, even though it looks a little weird with all those colons and curly braces, it isn't that scary! Essentially, we're creating a "cast" object, that in turn has three objects inside of it, hero, love, and rival. And each of those sub-objects (hero, love, and rival) each has a name property. The 'hero' and 'love' and 'rival' objects in the cast will be used interally by CiF. The name property is something that can be used in your game; you can think of it as the 'display name' for the character. If you want, you can add additional properties for each of the characters underneath their name property, but for the purposes of this tutorial we'll just assume you've only defined their names.
+And that's all we need! For those of you not super familiar with json, even though it looks a little weird with all those colons and curly braces, it isn't that scary! Essentially, we're creating a "cast" object, that in turn has three objects inside of it, hero, love, and rival. And each of those sub-objects (hero, love, and rival) each has a name property. The 'hero' and 'love' and 'rival' objects in the cast will be used internally by CiF. The name property is something that can be used in your game; you can think of it as the 'display name' for the character. If you want, you can add additional properties for each of the characters underneath their name property, but for the purposes of this tutorial we'll just assume you've only defined their names.
 </p>
 
 <p>
@@ -105,7 +105,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 </p>
 
 <p>
-	We define moods to be boolean as opposed to numeric; either characters have a mood or they do not--they can't be "60" confident or "20" unsure. Their directionType is undirected, which means they only apply to an individual character (i.e., they are confident or unsure in themselves, independant of anyone else in the social world), their moods will naturally fade away after three turns (thanks to the line <i>"duration": 3</i>) and characters can <i> not </i> take actions to specifically give themselves (or take away) moods.
+	We define moods to be boolean as opposed to numeric; either characters have a mood or they do not--they can't be "60" confident or "20" unsure. Their directionType is undirected, which means they only apply to an individual character (i.e., they are confident or unsure in themselves, independent of anyone else in the social world), their moods will naturally fade away after three turns (thanks to the line <i>"duration": 3</i>) and characters can <i> not </i> take actions to specifically give themselves (or take away) moods.
 </p>
 
 <p>
@@ -187,7 +187,7 @@ Ok, I lied, here's a little bit of additional commentary. The 'trait' class you'
 </p>
 
 <p>
-The SFDBLabels are boolenas with a duration of 0 -- that's an important sign to CiF that these are classes that refer not so much as to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel classes.
+The SFDBLabels are booleans with a duration of 0 -- that's an important sign to CiF that these are classes that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel classes.
 </p>
 
 <h2>Define the Backstory of the World</h2>
@@ -228,11 +228,11 @@ We can see at the top level we have an array called "history" that will be full 
 </p>
 
 <p>
-So far, we've added three bits of state -- we've given the character "love" the trait "anyone", we've given the character "hero" a strength value of 0, but we've also given the hero an intelligence of 5. Each of these atomic bits of state are what we refer to when we say predicate, and you'll see that they are intimately connected to the social schema you defined above. You specify the <i>class</i> and the </i>type</i> of the social state you are referring to, both of which must be defined in your social schema. As you may recall, our schema did indeed define the class "trait" of which one of its types is "anyone" just as it has the class "attribute" with the types "strength" and "intelligence." The "first" property is referring to the name of the character that the state applies to, and these should be names that were defined in your cast file (just as "hero" and "love" were). The value is what the starting state should actually be -- a strength of 0, intelligence of 5, and a confirmation that the love has the trait anyone in this case.
+So far, we've added three bits of state -- we've given the character "love" the trait "anyone", we've given the character "hero" a strength value of 0, but we've also given the hero an intelligence of 5. Each of these atomic bits of state are what we refer to when we say predicate, and you'll see that they are intimately connected to the social schema you defined above. You specify the <i>class</i> and the <i>type</i> of the social state you are referring to, both of which must be defined in your social schema. As you may recall, our schema did indeed define the class "trait" of which one of its types was "anyone." Our schema also has the class "attribute" with the types "strength" and "intelligence." The "first" property is referring to the name of the character that the state applies to, and these should be names that were defined in your cast file (just as "hero" and "love" were). The value is what the starting state should actually be -- a strength of 0, intelligence of 5, and a confirmation that the love has the trait anyone in this case.
 </p>
 
 <p>
-Any predicate that has the direction type "directed" or "recipricol" will need to have an additional property, "second", defined, which specifies the second character involved. (for example, the target of a character's attraction).
+Any predicate that has the direction type "directed" or "reciprocal" will need to have an additional property, "second", defined, which specifies the second character involved. (for example, the target of a character's attraction).
 </p>
 
 <p>
@@ -301,11 +301,11 @@ Now that we've walked through the basic structure of the history file, it won't 
 </p>
 
 <p>
-	<b>Volition Rules</b> on the other hand are rules that help determine the types of actions that the characters want to take. Volition rules are tied to an intent; the concept of the intent you may recall from when we were defining the "allowIntent" property for each class in our schema file, above. Example intents could be thought of as "raise closeness" or "loser attraction". Eventually, every character in your world will have some amount (which could potentially be negative) of desire to do every possible intent towards every other possible character. And, as we'll see, these intents are then tied to actions which can be performed to ultimately change the social state.
+	<b>Volition Rules</b> on the other hand are rules that help determine the types of actions that the characters want to take. Volition rules are tied to an intent; the concept of the intent you may recall from when we were defining the "allowIntent" property for each class in our schema file, above. Example intents could be thought of as "raise closeness" or "lose attraction". Eventually, every character in your world will have some amount (which could potentially be negative) of desire to do every possible intent towards every other possible character. And, as we'll see, these intents are then tied to actions which can be performed to ultimately change the social state.
 </p>
 
 <p>
-	To author both types of these rules, you'll probably going to want to use the authoring tool that came packaged with CiF. We'll look at the raw json of a rule (which is ultimately what the output of the authoring tool is), just so that we feel comfortable knowing what the different parts of a rule are.
+	To author both types of these rules, you're probably going to want to use the authoring tool that came packaged with CiF. We'll look at the raw json of a rule (which is ultimately what the output of the authoring tool is), just so that we feel comfortable knowing what the different parts of a rule are.
 </p>
 
 <pre class="prettyprint">
@@ -491,7 +491,7 @@ Volition rules look very similar to trigger rules, with a single major differenc
 </pre>
 
 <p>
-This should largely look similar to the trigger rule introduced above. The difference is in the effects array. One thing to note is that this is a predicate that involves two people, and so both "first" and "second" is defined and are filled with the "x" and "y" that were bound when evaluating the conditions of the rule; namely that 'x' represents some character whose closeness for another character "y" is less than -10. As you may recall from the schema that we defined together, the minimum value of feelings is 0, which means that every pair of characters x and y are guaranteed to have a closeness value greater than 10.
+This should largely look similar to the trigger rule introduced above. The difference is in the effects array. One thing to note is that this is a predicate that involves two people, and so both "first" and "second" is defined and are filled with the "x" and "y" that were bound when evaluating the conditions of the rule; namely that 'x' represents some character whose closeness for another character "y" is greater than -10. As you may recall from the schema that we defined together, the minimum value of feelings is 0, which means that every pair of characters x and y are guaranteed to have a closeness value greater than 10.
 </p>
 
 <p>
@@ -503,9 +503,14 @@ So we dive into the effects of this rule, and we see a couple of properties here
 <tr><td><b>Negative Weight, Negative intentDirection</b>:<BR> Character DOESN'T WANT to DECREASE closeness</td><td><b>Negative Weight, Positive intentDirection</b>:<BR> Character DOESN'T WANT to INCREASE closeness.</td></tr>
 </table></a>
 
+<p>
 So, see, not too crazy, right? And of course, ultimately you'll have lots of rules in your system, with everything kind of competing with each other to determine what your characters want to do. Some rules might have a character want to increase their volition to do something towards a character, while another rule might decrease that same volition towards that same character. In the end, the character's volition is the sum of all of the weights from rules that held true for a given intentDirection. Depending on how you author your system, this means that it would be possible for characters to both simultaneously want to increase and decrease closeness towards the same person--a conflict not alltogether dissimilar from the contradictions of real life.
+</p>
 
+<p>
 Now that we're clearly all experts on volition rules, we'll present to you the remainder of the volition rules used in Lovers and Rivals (which we suggest storing in a file called volitionRules.json). Again, in real life you'd be authoring these rules using the authoring tool, but for tutorial purposes we'll just hand you over the code.
+</p>
+
 
 <h3>Complete Volition Rules</h3>
 <pre class="prettyprint">
@@ -822,7 +827,7 @@ We see that we have defined a name, an array of conditions and an array of influ
 </p>
 
 <p>
-As you may recall, we want to define actions such as "write love letter" or "study math" -- the former involving two people (the writer and the recipient of the note) and the latter only one. In CiF, characters always want to take actions *towards* another character (or in the case of individual actions, *towards themselves* if you will). In the love letter case, for instance, the writer is the <b> initiator </b> and the recipient is the <b> responder. </b> Your actions can involve more than 2 people as well, but every action will have an initiator, and any action that involves a second person will have a responder.
+As you may recall, we want to define actions such as "write love letter" or "study math" -- the former involving two people (the writer and the recipient of the note) and the latter only one. In CiF, characters always want to take actions *towards* another character (or in the case of individual actions, *towards themselves* if you will). In the love letter case, for instance, the writer is the <b> initiator </b> and the recipient is the <b> responder. </b> Your actions can involve more than 2 people as well (imagine approaching someone to whisper rumours about a third party), but every action will have an initiator, and any action that involves a second person will have a responder.
 </p>
 
 <p>
@@ -839,43 +844,43 @@ And finally, we have the "leadsTo" property, an array of strings. These strings 
 </pre>
 
 <p>
-We see that this action is even simpler than the first! It has the name "STUDY" (nicely matching the name we wrote in the "leadsTo' property of the RAISEINTELLIGENCE" action), and has a leadsTo of its own, filled only with "studyMath" and "studyAnatomy". Here we can see an authoring convention of using all uppercase letters when naming "non-terminal" actions, and lowercase letters for "terminal" actions; this clues us in that, in the structure for actions used in Lovers and Rivals, we're nearing an end point. So, lets finish up this rabbit hole, and take a look at what one of these terminal actions looks like:
+We see that this action is even simpler than the first! It has the name "STUDY" (nicely matching the name we wrote in the "leadsTo' property of the RAISEINTELLIGENCE" action), and has a leadsTo of its own, filled only with "studyMath" and "studyAnatomy". Here we can see an authoring convention of using all uppercase letters when naming "non-terminal" actions, and lowercase letters for "terminal" actions; this clues us in that, in the structure for actions used in Lovers and Rivals, we're nearing an end point. Also note that we *could* ahve defined conditions and influence rules here, but chose not to. So, let's leave this placeholder action and finish up this journey down the RAISEINTELLIGENCE rabbit hole, by taking a look at what one of these terminal actions looks like:
 </p>
 
 
 <pre class="prettyprint">
 {
-			"name" : "studyMath",
-			"conditions" : [],
-			"displayName" : "Study Math",
-			"influenceRules" : [
+	"name" : "studyMath",
+	"conditions" : [],
+	"displayName" : "Study Math",
+	"influenceRules" : [
+		{
+			"name": "People in this world are inclined to study math.",
+			"conditions": [
 				{
-					"name": "People in this world are inclined to study math.",
-					"conditions": [
-						{
-							"class" : "trait",
-							"type" : "anyone",
-							"first" : "initiator",
-							"value" : true
-						}
-					],
-					"weight" : 10
+					"class" : "trait",
+					"type" : "anyone",
+					"first" : "initiator",
+					"value" : true
 				}
 			],
-			"effects" : [{
-				"class" : "attribute",
-				"type" : "intelligence",
-				"first" : "initiator",
-				"operator" : "+",
-				"value" : 10		
-			},
-			{
-				"class" : "SFDBLabelUndirected",
-				"type" : "self-involved",
-				"first" : "initiator",
-				"value" : true
-			}]
-		},
+			"weight" : 10
+		}
+	],
+	"effects" : [{
+		"class" : "attribute",
+		"type" : "intelligence",
+		"first" : "initiator",
+		"operator" : "+",
+		"value" : 10		
+	},
+	{
+		"class" : "SFDBLabelUndirected",
+		"type" : "self-involved",
+		"first" : "initiator",
+		"value" : true
+	}]
+},
 </pre>
 
 <p>
@@ -899,47 +904,47 @@ And ta-da! We've completed a single potential pass through the actions. But befo
 
 <pre class="prettyprint">
 {
-			"name" : "studyAnatomy",
-			"conditions" : [],
-			"displayName" : "Study Anatomy",
-			"influenceRules" : [
+	"name" : "studyAnatomy",
+	"conditions" : [],
+	"displayName" : "Study Anatomy",
+	"influenceRules" : [
+		{
+			"name": "Strong people in this world are inclined to study anatomy.",
+			"conditions": [
 				{
-					"name": "Strong people in this world are inclined to study anatomy.",
-					"conditions": [
-						{
-							"class" : "attribute",
-							"type" : "strength",
-							"first" : "initiator",
-							"operator" : ">",
-							"value" : 10
-						}
-					],
-					"weight" : 30
-				}
-			],
-			"effects" : [{
 					"class" : "attribute",
 					"type" : "strength",
 					"first" : "initiator",
-					"operator" : "+",
+					"operator" : ">",
 					"value" : 10
-				},
-				{
-					"class" : "attribute",
-					"type" : "intelligence",
-					"first" : "initiator",
-					"operator" : "+",
-					"value" : 10
-				},
-				{
-					"class" : "SFDBLabelUndirected",
-					"type" : "self-involved",
-					"first" : "initiator",
-					"value" : true
 				}
-			]
-
+			],
+			"weight" : 30
+		}
+	],
+	"effects" : [{
+			"class" : "attribute",
+			"type" : "strength",
+			"first" : "initiator",
+			"operator" : "+",
+			"value" : 10
 		},
+		{
+			"class" : "attribute",
+			"type" : "intelligence",
+			"first" : "initiator",
+			"operator" : "+",
+			"value" : 10
+		},
+		{
+			"class" : "SFDBLabelUndirected",
+			"type" : "self-involved",
+			"first" : "initiator",
+			"value" : true
+		}
+	]
+
+},
 </pre>
 
 <p>
