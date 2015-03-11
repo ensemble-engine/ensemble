@@ -299,7 +299,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	};
 
 	var loadAllFilesFromFolder = function(allFilesInFolder) {
-		var files = allFilesInFolder.split(";");
+		//var files = allFilesInFolder.split(";"); -- fix for when node.js broke, but they seem to have fixed it.
+		var files = allFilesInFolder;
 		return new Promise(function(resolve, reject) {
 			var fileContents;
 			try {
@@ -314,7 +315,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					}
 
 					// Ignore files that don't appear to BE json.
+					console.log("About to get to this content line...");
 					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
+					console.log("I did the content line! Here is the contents of content ", content);
 
 					// Ignore files that appear to be backup files.
 					if(filename.indexOf("_bak_") > -1){
@@ -348,13 +351,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			// Due to annoying bug noted at link below, we have to do string-munging to get the folder selected. Also complicated by forward vs backslashes in paths on Mac vs Windows.
 			// https://github.com/nwjs/nw.js/issues/2961
+			// Based on the above URL, it would appear that they have now fixed this issue.
+		/*
 			var listOfAllFiles = this.value;
+			console.log("Here is listOfAllFiles: ", listOfAllFiles);
 			var firstFile = listOfAllFiles.split(";")[0];
 			var posOfLastSlash = firstFile.lastIndexOf("/");
 			if (posOfLastSlash < 0) {
 				posOfLastSlash = firstFile.lastIndexOf("\\");
 			}
-			var schemaDir = firstFile.substr(0,posOfLastSlash);
+			*/
+			//var schemaDir = firstFile.substr(0,posOfLastSlash);
+			var schemaDir = this.value;
 			// Finally! Now we can save:
 			lastPath = schemaDir;
 			cif.reset();
@@ -363,9 +371,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			historyViewer.reset();
 			rulesViewer.show();
 
+			var arrayOfAllFiles = fs.readdirSync(schemaDir);
+			for(var i = 0; i < arrayOfAllFiles.length; i+=1){
+				var nameOfFile = arrayOfAllFiles[i];
+				arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
+			}
+			console.log("here is the arrayOfAllFiles" , arrayOfAllFiles);
+
 			// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
 			// http://www.html5rocks.com/en/tutorials/es6/promises/		
-			loadAllFilesFromFolder(listOfAllFiles).then(function(files) {
+			loadAllFilesFromFolder(arrayOfAllFiles).then(function(files) {
 				// "files" is now an array of objects, the parsed contents of the files. First find the schema definition.
 
 				var schemaPos = -1;
@@ -382,6 +397,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					loadSchema(files[schemaPos]);
 				} else {
 					cmdLog("No schema file found.");
+					console.log("here are the values of files: ", files);
 					return;
 				}
 

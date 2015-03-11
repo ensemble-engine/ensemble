@@ -30,6 +30,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		ruleOriginsVolition = _ruleOriginsVolition;
 		saveRules = _saveRules;
 		buildIntentOptions();
+		activeFileRefByRuleType = {};
 	}
 
 	// A dictionary assigning each key (a unique character binding in this rule) to a number (between 1 and 8). These numbers are used to color the background of the character field a distinct color for each binding.
@@ -505,7 +506,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 					$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
 				},
 				Cancel: function() {
-					$(this).dialog("destroy");
+					//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
+					//I believe the rule to remove should be in "activeRule" variable.
+					$(this).dialog("destroy"); //remove the dialog box
+					activeFileRefByRuleType[activeRuleType] = undefined;
+					cif.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
+					$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
 				}
 			},
 		});
