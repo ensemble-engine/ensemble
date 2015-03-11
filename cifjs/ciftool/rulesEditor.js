@@ -491,7 +491,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		return newFileName;
 	}
 
-	var getNewRulesFile = function() {
+	var getNewRulesFile = function(placeCalled) {
+		console.log("Called from: ", placeCalled);
 		$("#dialogBox")
 		.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
 		var dialog = $("#dialogBox").dialog({
@@ -509,9 +510,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 					//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
 					//I believe the rule to remove should be in "activeRule" variable.
 					$(this).dialog("destroy"); //remove the dialog box
-					activeFileRefByRuleType[activeRuleType] = undefined;
-					cif.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
-					$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+					//The temporary rule really only exists when you are starting a new file from the 'rules viewer' screen. If starting a new file from the rule editor window, we don't want to do the following.
+					if(placeCalled !== "fromMenu"){
+						activeFileRefByRuleType[activeRuleType] = undefined;
+						cif.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
+						$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+					}
 				}
 			},
 		});
@@ -535,7 +539,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				var selInd = $(this)[0].selectedIndex;
 				var selection = $(this).context[selInd].value;
 				if (selection === "__NEW__") {
-					getNewRulesFile();
+					getNewRulesFile("fromMenu");
 				} else {
 					console.log("changing activeFile to ", activeFile);
 					activeFile = selection;
