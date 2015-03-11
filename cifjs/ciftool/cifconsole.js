@@ -93,7 +93,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("#cmdVolitions").tooltip({content: "<p>Use <b>volitions</b> to see the current ranked volitions from the first character to the second.</p><ul><li>volitions(al, bob)</b> :: <i>shows what changes in the social state Al most wants towards Bob</i></li><li>volitions(Carla)</b> :: <i>Shows Carla's volitions towards everyone else.</i></li></ul>"});
 	$("#cmdNext").tooltip({content: "<p>Use <b>next</b> to advance the timestep.</p><ul><li><b>next()</b></li></ul>"});
 	$("#cmdShow").tooltip({content: "<p>Use <b>show</b> to see all currently true info about a character.</p><ul><li><b>show(diane)</b></li></ul>"});
-	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second, max of three.</p><ul><li><b>actions(al, diane, 3)</b> :: <i>shows the top three actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
+	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second. You can specify how many different intents you want your actions to span, and how many actions within each intent. Defaults to 1.</p><ul><li><b>actions(al, diane, 3, 1)</b> :: <i>shows the top action of three different intents that Al wants to take towards Diane</i></li><li><b>actions(al, diane, 2, 2)</b> :: <i>shows the top two actions of two different intents that Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
 	$("#cmdDoAction").tooltip({content: "<p>Use <b>doAction</b> to perform an action from the first character to second. The social state will be updated to reflect the results of the actions. Use the <b>actions</b> command to get the numbers of potential actions.</p><ul><li><b>doAction(al, diane, 0)</b> :: <i>performs 'action 0' from Al to Diane</i></li><li><b>doAction(bob, jane, reminisce)</b> :: <i> Make Bob reminisce with Jane.</i></li></ul>"});
 
 	// Setup interface buttons.
@@ -706,8 +706,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	// Handle the "actions" console command (show the current actions that the first character wants to take towards the second.)
-	var doActions = function(char1, char2, numberOfActions){
-		console.log("Doing actions for " + char1 + " and " + char2 + " with this number of actions: " + numberOfActions);
+	var doActions = function(char1, char2, numIntents, numActionsPerIntent, numActionsPerGroup){
+		console.log("Doing actions for " + char1 + " and " + char2 + " with numIntents: " + numIntents + " actionsPerIntent: " + numActionsPerIntent + " numActionsPerGroup " + numActionsPerGroup);
 		var i;
 		var logMsg = "<table>";
 		var actions = [];
@@ -715,7 +715,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
-		actions = getActionList(char1, char2, storedVolitions, numberOfActions);
+		actions = getActionList(char1, char2, storedVolitions, numIntents, numActionsPerIntent, numActionsPerGroup);
 
 /*
 		//If we only want 1 action, we'll return the BEST action, right?
@@ -930,31 +930,102 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		if (command === "actions") {
 			var validNumbers = [];
-			var numberOfActions;
+
+
+			//STILL NEED TO ADD 'self involved' actions (i.e. actions that only involve yourself like studying for math!)
+
+			//Okay, I think that 'extract' doesn't play nicely when you expect there to be a lot of
+			//numbers in the query. So, to that end, I think we're going to not do a lot of hand holding,
+			//and instead just force the very particular structure of
+			//actions(fromPerson, toPerson, numIntents, numActionsPerIntent, numActionsPerGroup)
+			
+			//I think we can (and should) still extract the characters in the same way.
+			chars = charExtract(fullCharacters, "characters", 1, 2);
+
+			//But now we're just going to dive into params array directly.
+			//Default values.
+			var numIntents = 1;
+			var numActionsPerIntent = 1;
+			var numActionsPerGroup = 1;
+
+			if(params.length > 0){
+				numIntents = params[0];
+			}
+			if(params.length > 1){
+				numActionsPerIntent = params[1];
+			}
+			if(params.length > 2){
+				numActionsPerIntent = params[2];
+			}
+			if(params.length > 3){
+				cmdLog("too many parameters passed in to actions command, only looking at first three numbers.");
+			}
+			/*
+
+			//The 'arrays' that will be filled from extract.
+			var numberOfIntents;
+			var numberOfActionsPerIntent;
+			var numberOfActionsPerGroup;
+
+			//The variables that will hold the single value derived from the above arrays.
+			var numActionsPerIntent;
+			var numActionsPerGroup;
 			var numActions;
+			var numIntents;
+			*/
+		/*
 			for(var i = 0; i < maxValidNumberOfActions; i += 1){
 				validNumbers[i] = (i + 1).toString();
 			}
-			chars = charExtract(fullCharacters, "characters", 1, 2);
-			numberOfActions = extract(validNumbers, "numberOfActions", 0, 1);
+			*/
+			console.log("params? " , params);
+			
+			/*
+			numberOfIntents = extract(validNumbers, "numberOfIntents", 0, 1);
+			numberOfActionsPerIntent = extract(validNumbers, "numActionsPerIntent", 0, 1);
+			numActionsPerGroup = extract(validNumbers, "numActionsPerGroup", 0, 1);
 			// console.log("Umm... ok... what is vlaue of numberOfActions right after the extract? ", numberOfActions);
-			if(numberOfActions === undefined || numberOfActions.length <= 0){
-				numActions = 1;
+			
+			//Okay, check to see if the numberOfIntents array is defined; and from there assign our numIntents variable.
+			if(numberOfIntents === undefined || numberOfIntents.length <= 0){
+				numIntents = 1;
 			}
 			else{
-				numActions = parseInt(numberOfActions[0]);
+				numIntents = parseInt(numberOfIntents[0]);
 			}
-			// console.log("Ok, let's see, did I manage to parse the number of actions successfully?", numActions);
+			
+			//do the same for numActionsPerIntent
+			if(numberOfActionsPerIntent === undefined || numberOfActionsPerIntent.length <= 0){
+				numActionsPerIntent = 1;
+			}
+			else{
+				numActionsPerIntent = parseInt(numberOfActionsPerIntent[0]);
+			}
+
+			//And once more, for numActionsPerGroup
+			if(numberOfActionsPerGroup === undefined || numberOfActionsPerGroup.length <= 0){
+				numActionsPerGroup = 1;
+			}
+			else{
+				numActionsPerGroup = parseInt(numberOfActionsPerGroup[0]);
+			}
+
+
+			console.log("Ok, let's see, did I manage to parse the number of intents successfully?", numIntents);
+			console.log("Action per intent: ?", numActionsPerIntent);
+			console.log("numActions per group", numActionsPerGroup);
+			*/
+
 			if(chars.length === 1){
 				//run for every other character.
 				for (var j = 0; j < characters.length; j++){
 					if (characters[j] === chars[0]) continue;
-					processCommand("actions(" + chars[0] + "," + characters[j] + ", " + numActions + ")");
+					processCommand("actions(" + chars[0] + "," + characters[j] + "," + numIntents + "," + numActionsPerIntent + "," + numActionsPerGroup +")");
 				}
 				return;
 			}
 			if (!chars) return;
-			return doActions(chars[0], chars[1], numActions);
+			return doActions(chars[0], chars[1], numIntents, numActionsPerIntent, numActionsPerGroup);
 			/*
 			chars = extract(characters, "characters", 1, 2);
 			if (chars.length === 1) {
@@ -1239,14 +1310,22 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 	};
 
-	var getActionList = function(char1, char2, storedVolitions, numberOfActions){
+	var getActionList = function(char1, char2, storedVolitions, numberOfIntents, numActionPerIntent, numActionsPerGroup){
 		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
 		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
 		//the 'first' entry in the list of best actions. Perfect, right?
-		var actions = [];
-		var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+		//var actions = [];
+		//var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+
+
+		var bestActions = cif.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
+
+
+		/*
 		if(numberOfActions > 1){
-			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
+			//I think it makes the most sense to just get a *slew* of actions, and then pair it down based on score.
+			//UGH, does it? No, of course not. It makes more sense to let the user specify each attribute, if they want.
+			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
 			if(actions[0].name !== bestAction.name){
 				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
 				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
@@ -1259,10 +1338,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				}
 			}
 		}
+		
 		else{ // ok, we are dealing with an easy case. Thank goodness.
 			actions[0] = bestAction;
 		}
-		return actions;
+		*/
+		return bestActions;
 	}
 	
 	// Handle a keypress on the console, which might be a letter, enter (to submit) or up/down arrow (to scroll through command history).
