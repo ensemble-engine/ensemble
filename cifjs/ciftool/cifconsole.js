@@ -93,7 +93,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("#cmdVolitions").tooltip({content: "<p>Use <b>volitions</b> to see the current ranked volitions from the first character to the second.</p><ul><li>volitions(al, bob)</b> :: <i>shows what changes in the social state Al most wants towards Bob</i></li><li>volitions(Carla)</b> :: <i>Shows Carla's volitions towards everyone else.</i></li></ul>"});
 	$("#cmdNext").tooltip({content: "<p>Use <b>next</b> to advance the timestep.</p><ul><li><b>next()</b></li></ul>"});
 	$("#cmdShow").tooltip({content: "<p>Use <b>show</b> to see all currently true info about a character.</p><ul><li><b>show(diane)</b></li></ul>"});
-	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second. You can specify how many different intents you want your actions to span, and how many actions within each intent. Defaults to 1.</p><ul><li><b>actions(al, diane, 3, 1)</b> :: <i>shows the top action of three different intents that Al wants to take towards Diane</i></li><li><b>actions(al, diane, 2, 2)</b> :: <i>shows the top two actions of two different intents that Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
+	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second.</p><ul><li><b>actions(al, diane)</b> :: <i>shows the actions Al wants to take towards Diane</i></li><li><b>actions(al)</b> :: <i>shows the actions Al wants to take towards everyone.</i></li></ul>"});
 	$("#cmdDoAction").tooltip({content: "<p>Use <b>doAction</b> to perform an action from the first character to second. The social state will be updated to reflect the results of the actions. Use the <b>actions</b> command to get the numbers of potential actions.</p><ul><li><b>doAction(al, diane, 0)</b> :: <i>performs 'action 0' from Al to Diane</i></li><li><b>doAction(bob, jane, reminisce)</b> :: <i> Make Bob reminisce with Jane.</i></li></ul>"});
 
 	// Setup interface buttons.
@@ -706,8 +706,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	// Handle the "actions" console command (show the current actions that the first character wants to take towards the second.)
-	var doActions = function(char1, char2, numIntents, numActionsPerIntent, numActionsPerGroup){
-		console.log("Doing actions for " + char1 + " and " + char2 + " with numIntents: " + numIntents + " actionsPerIntent: " + numActionsPerIntent + " numActionsPerGroup " + numActionsPerGroup);
+	var doActions = function(char1, char2){
+		//console.log("Doing actions for " + char1 + " and " + char2 + " with numIntents: " + numIntents + " actionsPerIntent: " + numActionsPerIntent + " numActionsPerGroup " + numActionsPerGroup);
 		var i;
 		var logMsg = "<table>";
 		var actions = [];
@@ -715,7 +715,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
-		actions = getActionList(char1, char2, storedVolitions, numIntents, numActionsPerIntent, numActionsPerGroup);
+		actions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions, maxValidNumberOfActions, 1);
 
 /*
 		//If we only want 1 action, we'll return the BEST action, right?
@@ -777,14 +777,20 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			//Helper string; if the value of the effect is false, say that the character does NOT have this state anymore.
 			var notString;
 			notString = "is now";
-			if(effects[i].value === false){
+			if(effects[i].value === false && d.isBoolean){
 				notString = "is no longer";
 			}
+
+			//Present the new value (will be a little different based on if we are dealing with a boolean or a scalar)
+
 
 			//Tack on a helpful note at the end of the console message if 
 			//the 'effect' we are setting isn't actually a change from the current social state.
 			var origValue = cif.get(effects[i]);
-			var alreadyTrue = origValue.length > 0;
+			var alreadyTrue;
+			if(d.isBoolean){
+				var alreadyTrue = origValue.length > 0;
+			}
 			var alreadyTrueString = "";
 			if(alreadyTrue){
 				alreadyTrueString = "(FYI, this was already true)";
@@ -792,15 +798,26 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			//Actually update the sfdb!
 			cif.set(effects[i]);
+			var newValue = cif.get(effects[i]);
+			var newNumber;
+			if(!d.isBoolean){
+				newNumber = newValue[0].value;
+			}
+
+			//Adding a little thing if we are dealing with a number.
+			var newValueString = "";
+			if(!d.isBoolean){
+				newValueString = newNumber;
+			}
 
 			//Print out a message to the console letting the user know what changed.
 			if(directionType === "undirected"){
 				//only involves one person
-				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + alreadyTrueString, true);
+				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + newValueString + " " + alreadyTrueString, true);
 			}
 			else if(directionType === "directed" || directionType === "reciprocal"){
 				// it is directed or recipricol; involves two people
-				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> <b>" +effects[i].second + "</b> " + alreadyTrueString, true);
+				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + newValueString + " <b> " +effects[i].second + "</b> " + alreadyTrueString, true);
 			}
 		}
 
@@ -933,7 +950,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 
 			//STILL NEED TO ADD 'self involved' actions (i.e. actions that only involve yourself like studying for math!)
-
+			//And number of actions showing up seems incorrect?
+			
 			//Okay, I think that 'extract' doesn't play nicely when you expect there to be a lot of
 			//numbers in the query. So, to that end, I think we're going to not do a lot of hand holding,
 			//and instead just force the very particular structure of
@@ -949,13 +967,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			var numActionsPerGroup = 1;
 
 			if(params.length > 0){
-				numIntents = params[0];
+				numIntents = parseInt(params[0]);
 			}
 			if(params.length > 1){
-				numActionsPerIntent = params[1];
+				numActionsPerIntent = parseInt(params[1]);
 			}
 			if(params.length > 2){
-				numActionsPerIntent = params[2];
+				numActionsPerGroup = parseInt(params[2]);
 			}
 			if(params.length > 3){
 				cmdLog("too many parameters passed in to actions command, only looking at first three numbers.");
@@ -1019,13 +1037,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			if(chars.length === 1){
 				//run for every other character.
 				for (var j = 0; j < characters.length; j++){
-					if (characters[j] === chars[0]) continue;
-					processCommand("actions(" + chars[0] + "," + characters[j] + "," + numIntents + "," + numActionsPerIntent + "," + numActionsPerGroup +")");
+					if (characters[j] === chars[0]) {} //continue; -- we actually WANT people to form actions towards each other!
+					processCommand("actions(" + chars[0] + "," + characters[j] + ")");
 				}
 				return;
 			}
 			if (!chars) return;
-			return doActions(chars[0], chars[1], numIntents, numActionsPerIntent, numActionsPerGroup);
+			return doActions(chars[0], chars[1]);
 			/*
 			chars = extract(characters, "characters", 1, 2);
 			if (chars.length === 1) {
@@ -1050,15 +1068,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			var char2 = chars[1];
 
 			// Reject commands with the same character multiple times.
+			/*
 			if (chars.length === 2 && chars[0] === chars[1]) {
 				return cmdLog("Can't reference the same character twice.");
 			}
+			*/
 
 			if (storedVolitions === undefined) {
 				storedVolitions = cif.calculateVolition(chars);
 			}
 
-			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions)
+			//just get ALL the potential actions, by passing in the maximum possible values of everything.
+			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions, maxValidNumberOfActions, maxValidNumberOfActions)
 
 			//Let's get all of the actions that a character can do towards another...
 			//var potentialActions = cif.getActions(char1, char2, storedVolitions, chars, maxValidNumbers, 1, 1);
@@ -1320,6 +1341,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		var bestActions = cif.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
 
+
+		//I think we might need to reverse sort these guys.
 
 		/*
 		if(numberOfActions > 1){
