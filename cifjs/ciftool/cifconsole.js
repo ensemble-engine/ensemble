@@ -59,6 +59,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	var maxBackupFiles = 10;
 	var maxValidNumberOfActions = 10; // The maximum number of actions that are printed between pairs of characters.
+	var maxValidNumberOfIntents = 10;
+	var maxValidNumberOfActionsPerIntent = 10;
+	var maxActionsPerGroup = 1;
 
 	// stores the origins of all loaded rules.
 	// For now, we assume that the fileName field within the rule matches the filename of the file it came from. TODO: possible to do this automatically?
@@ -715,19 +718,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
-		actions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions, maxValidNumberOfActions, 1);
+		//Right now, we specify a large number for maximum intents, and maximum actions per intent.
+		actions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup);
 
-/*
-		//If we only want 1 action, we'll return the BEST action, right?
-		if(numberOfActions === 1){
-			actions[0] = cif.getAction(char1, char2, storedVolitions, characters);
-		}
-		else{
-			//If we want more than 1 action, we'll do that for them too!
-			//We are going to default to '1 action per volition' for 'numberOfActions' worth of volitions
-			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
-		}
-*/
 		//Go through each action, and add a row in a table to display to the user saying the name of the action
 		//the effects that would transpire if they were to do it.
 		for(i = 0; i < actions.length; i += 1){
@@ -749,23 +742,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// Handle the "doAction" console command, performing the given action from the first character to the second.
 	var doDoAction = function(char1, char2, action, isAccepted){
 		//Print out some nice things to the console letting the user know what action is taking place
+		console.log("****** action: " , action);
+		isAccepted = false;
+		if(action.isAccept === undefined || action.isAccepted === true){
+			isAccepted = true;
+		}
 		cmdLog("<b>" + char1 + "</b> is doing action <b>" + action.name + "</b> with <b>" +char2+ "</b> accepted: <b>" + isAccepted + "</b>", true);
 		cmdLog("<b> CHANGED SOCIAL STATE: </b><BR>-----------------", true);
 	
-		//Right now the action is unbounded; we should do the binding!
-		//(i.e. fill in the 'roles' of the effect with actual character names)
-		//action = actionLibrary.bindActionEffects(char1, char2, action);
 
 		//Let's grab the appropriate set of effects.
-		/*
-		var effects;
-		if(isAccepted){
-			effects = action.acceptEffects;
-		}
-		else{
-			effects = action.rejectEffects;
-		}
-		*/
 		var effects = action.effects;
 
 		for(var i = 0; i < effects.length; i += 1){
@@ -781,9 +767,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				notString = "is no longer";
 			}
 
-			//Present the new value (will be a little different based on if we are dealing with a boolean or a scalar)
-
-
 			//Tack on a helpful note at the end of the console message if 
 			//the 'effect' we are setting isn't actually a change from the current social state.
 			var origValue = cif.get(effects[i]);
@@ -798,6 +781,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			//Actually update the sfdb!
 			cif.set(effects[i]);
+
+			//Grab a reference to the new value, whatever it is
+			//(i.e., we are letting cif to the adding/subtrating from the previous value for us.)
 			var newValue = cif.get(effects[i]);
 			var newNumber;
 			if(!d.isBoolean){
@@ -947,93 +933,15 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		if (command === "actions") {
 			var validNumbers = [];
-
-
-			//STILL NEED TO ADD 'self involved' actions (i.e. actions that only involve yourself like studying for math!)
-			//And number of actions showing up seems incorrect?
 			
-			//Okay, I think that 'extract' doesn't play nicely when you expect there to be a lot of
-			//numbers in the query. So, to that end, I think we're going to not do a lot of hand holding,
-			//and instead just force the very particular structure of
-			//actions(fromPerson, toPerson, numIntents, numActionsPerIntent, numActionsPerGroup)
+			//This currently doesn't allow the user to specify 'numIntents' and 'numActionsPerIntent'
+			//It makes the 'sorting' of actions a lot easier, and it also is less parameters for the user to keep track of.
+			//Still, this might be something we'll want to revisit someday.
 			
 			//I think we can (and should) still extract the characters in the same way.
 			chars = charExtract(fullCharacters, "characters", 1, 2);
 
-			//But now we're just going to dive into params array directly.
-			//Default values.
-			var numIntents = 1;
-			var numActionsPerIntent = 1;
-			var numActionsPerGroup = 1;
-
-			if(params.length > 0){
-				numIntents = parseInt(params[0]);
-			}
-			if(params.length > 1){
-				numActionsPerIntent = parseInt(params[1]);
-			}
-			if(params.length > 2){
-				numActionsPerGroup = parseInt(params[2]);
-			}
-			if(params.length > 3){
-				cmdLog("too many parameters passed in to actions command, only looking at first three numbers.");
-			}
-			/*
-
-			//The 'arrays' that will be filled from extract.
-			var numberOfIntents;
-			var numberOfActionsPerIntent;
-			var numberOfActionsPerGroup;
-
-			//The variables that will hold the single value derived from the above arrays.
-			var numActionsPerIntent;
-			var numActionsPerGroup;
-			var numActions;
-			var numIntents;
-			*/
-		/*
-			for(var i = 0; i < maxValidNumberOfActions; i += 1){
-				validNumbers[i] = (i + 1).toString();
-			}
-			*/
-			console.log("params? " , params);
-			
-			/*
-			numberOfIntents = extract(validNumbers, "numberOfIntents", 0, 1);
-			numberOfActionsPerIntent = extract(validNumbers, "numActionsPerIntent", 0, 1);
-			numActionsPerGroup = extract(validNumbers, "numActionsPerGroup", 0, 1);
-			// console.log("Umm... ok... what is vlaue of numberOfActions right after the extract? ", numberOfActions);
-			
-			//Okay, check to see if the numberOfIntents array is defined; and from there assign our numIntents variable.
-			if(numberOfIntents === undefined || numberOfIntents.length <= 0){
-				numIntents = 1;
-			}
-			else{
-				numIntents = parseInt(numberOfIntents[0]);
-			}
-			
-			//do the same for numActionsPerIntent
-			if(numberOfActionsPerIntent === undefined || numberOfActionsPerIntent.length <= 0){
-				numActionsPerIntent = 1;
-			}
-			else{
-				numActionsPerIntent = parseInt(numberOfActionsPerIntent[0]);
-			}
-
-			//And once more, for numActionsPerGroup
-			if(numberOfActionsPerGroup === undefined || numberOfActionsPerGroup.length <= 0){
-				numActionsPerGroup = 1;
-			}
-			else{
-				numActionsPerGroup = parseInt(numberOfActionsPerGroup[0]);
-			}
-
-
-			console.log("Ok, let's see, did I manage to parse the number of intents successfully?", numIntents);
-			console.log("Action per intent: ?", numActionsPerIntent);
-			console.log("numActions per group", numActionsPerGroup);
-			*/
-
+			//And if only one character was specified, we'll re-run the command for every possible set of characters.
 			if(chars.length === 1){
 				//run for every other character.
 				for (var j = 0; j < characters.length; j++){
@@ -1044,46 +952,29 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			}
 			if (!chars) return;
 			return doActions(chars[0], chars[1]);
-			/*
-			chars = extract(characters, "characters", 1, 2);
-			if (chars.length === 1) {
-				// Run for every other character.
-				for (var j = 0; j < characters.length; j++) {
-					if (characters[j] === chars[0]) continue;
-					processCommand("volitions(" + chars[0] + "," + characters[j] + ")"); 
-				}
-				return;
-			}
-			if (!chars) return;
-			return doVolitions(chars[0], chars[1]);
-			*/
 		}
 
 		if (command === "doaction"){
 
 			//Grab the characters from the string.
-			chars = charExtract(fullCharacters, "characters", 2, 2);
+			chars = charExtract(fullCharacters, "characters", 1, 2);
 			if (!chars) return;
 			var char1 = chars[0];
-			var char2 = chars[1];
-
-			// Reject commands with the same character multiple times.
-			/*
-			if (chars.length === 2 && chars[0] === chars[1]) {
-				return cmdLog("Can't reference the same character twice.");
+			var char2;
+			if(chars.length < 2){
+				//they only specified one character, assume they are referring to a 'self' action
+				char2 = chars[0];
 			}
-			*/
+			else{
+				char2 = chars[1];
+			}
 
 			if (storedVolitions === undefined) {
 				storedVolitions = cif.calculateVolition(chars);
 			}
 
 			//just get ALL the potential actions, by passing in the maximum possible values of everything.
-			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions, maxValidNumberOfActions, maxValidNumberOfActions)
-
-			//Let's get all of the actions that a character can do towards another...
-			//var potentialActions = cif.getActions(char1, char2, storedVolitions, chars, maxValidNumbers, 1, 1);
-
+			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup)
 			console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
 
 			//Get the list of all possible action names that exist.
@@ -1097,47 +988,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			}
 
 			console.log("Here are the valid entries someone can type in!", validEntries);
-
-			//allCandidates will be used by 'extract' to make sure that they typed a valid action reference
-			//The action reference can either be the 'name' of an action, or a 'number' (which can be seen
-			//by using the 'actions' command in the interface)
-			//var allCandidates = util.clone(actionNames);
-
-			/*
-			var vol = storedVolitions.getFirst(char1, char2);
-			var acceptableActions = []; // actions the character actually wants to take
-			var acceptableIndexes = []; // indeces that map to actions the character actually wants to take.
-			var actionList = []; // Actual action object (stored in the same index as the previous two arrays)
-			var currentActionIndex = 0; //Just a counter, used to track "good' action indexes."
-			var desiredAction = undefined;
-			var foundDesiredAction = false;
-			var acceptedArray = [];
-			var isAccepted;
-			*/
-
-			/*
-			while (vol !== undefined){
-				var possibleActionsForThisVolition = actionLibrary.getActionsFromVolition(vol);
-				for(var i = 0; i < possibleActionsForThisVolition.length; i +=1){
-					//Each volition might have multiple actions attached to it.
-					//This is us testing that! The only "acceptable" actions are actions that should show up
-					//in this list!
-					acceptableActions.push(possibleActionsForThisVolition[i].name.toLowerCase());
-					acceptableIndexes.push(currentActionIndex.toString());
-					actionList.push(possibleActionsForThisVolition[i]);
-					allCandidates.push(currentActionIndex.toString());
-					if(storedVolitions.isAccepted(char1, char2, possibleActionsForThisVolition[i].intent)){
-						acceptedArray.push(true);
-					}
-					else{
-						acceptedArray.push(false);
-					}
-					currentActionIndex += 1;
-				}
-				// Retrieve the next volition and continue the while loop if it's not undefined.
-				vol = storedVolitions.getNext(char1, char2);
-			}
-			*/
 
 			//So, this will catch two things:
 			//1.) If they typed in a nonsense action that doesn't exist
@@ -1162,39 +1012,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					break; // if we got it, we got it! Get outta here!
 				}
 			}
-
-			/*
-			if( nameIndex !== -1){
-				//console.log(" found it in the action names!");
-				foundDesiredAction = true;
-				desiredAction = actionList[nameIndex];
-				isAccepted = acceptedArray[nameIndex];
-			}
-			else{
-				//uh oh, it wasn't there, we must be dealing with an index!
-				desiredAction = potentialActions[actionSearch];
-			}
-			*/
-
-			/*
-			var indexIndex = $.inArray(actionSearch, acceptableIndexes);
-			if( indexIndex !== -1){
-				//console.log("found it in the index list!");
-				foundDesiredAction = true;
-				desiredAction = actionList[indexIndex];
-				isAccepted = acceptedArray[indexIndex];
-			}
-			*/
-
-			/*
-			//Print out an error message if they typed in an action name that characters don't have volition to perform.
-			if(foundDesiredAction){
-				;//console.log("You wanted to " + desiredAction.name + " and the characters wanted to do that too!")
-			}
-			else{
-				return cmdLog(char1 + " does not have sufficient volition to " + actionSearch + " " + char2);
-			}
-			*/
 
 			//And now we can actually hope to do the action!
 			return doDoAction(char1, char2, desiredAction);
