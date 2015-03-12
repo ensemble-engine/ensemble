@@ -183,10 +183,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 */
 	var sortActionsByVolitionScore = function(actions){
 		var descSortedActions = _.sortBy(actions, "weight");
-		console.log("******We did the descSortedActions thing by haven't reversed it ", descSortedActions);
 		actions = descSortedActions.reverse(); // now all of our actions are sorted, sweet!
 		//Sadly, the above messes up ties, a little bit. The initial sort by screws up the order of ties, and the reverse then 'respects' the messed up order from underscore.
-		console.log("*******And now this should be 'the same' as the end, I think...", actions);
 
 		//And, uh, I guess now we want to do the same as we drill downwards?
 		for(var i = 0; i < actions.length; i += 1){
@@ -943,9 +941,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 
 		var allTerminals = grabAllTerminals(returnList);
-		console.log("******** ALL TERMINALS (not sorted yet!" , allTerminals);
 		var boundActions = sortAndBindTerminals(allTerminals);
-		console.log("*******BOUND ACTIONS (they are sorted) " , boundActions);
 		//var boundActions = extractAndSortTerminalsFromActionList(returnList);
 		return boundActions;
 	};

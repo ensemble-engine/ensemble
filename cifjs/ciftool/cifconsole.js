@@ -318,9 +318,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					}
 
 					// Ignore files that don't appear to BE json.
-					console.log("About to get to this content line...");
 					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
-					console.log("I did the content line! Here is the contents of content ", content);
 
 					// Ignore files that appear to be backup files.
 					if(filename.indexOf("_bak_") > -1){
@@ -379,7 +377,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				var nameOfFile = arrayOfAllFiles[i];
 				arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
 			}
-			console.log("here is the arrayOfAllFiles" , arrayOfAllFiles);
 
 			// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
 			// http://www.html5rocks.com/en/tutorials/es6/promises/		
@@ -742,7 +739,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// Handle the "doAction" console command, performing the given action from the first character to the second.
 	var doDoAction = function(char1, char2, action, isAccepted){
 		//Print out some nice things to the console letting the user know what action is taking place
-		console.log("****** action: " , action);
 		isAccepted = false;
 		if(action.isAccept === undefined || action.isAccepted === true){
 			isAccepted = true;
@@ -975,7 +971,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			//just get ALL the potential actions, by passing in the maximum possible values of everything.
 			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup)
-			console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
+			//console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
 
 			//Get the list of all possible action names that exist.
 			//var actionNames = [];
@@ -987,7 +983,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				validEntries.push(i.toString());
 			}
 
-			console.log("Here are the valid entries someone can type in!", validEntries);
+			//console.log("Here are the valid entries someone can type in!", validEntries);
 
 			//So, this will catch two things:
 			//1.) If they typed in a nonsense action that doesn't exist
