@@ -914,7 +914,6 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 	 * @return {[type]}
 	 */
 	var predicateToEnglish = function(pred) {
-
 		var result = [];
 		var addPhrase = function(text, label, optMeta) {
 			var ph = {};
@@ -1021,11 +1020,12 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		}
 
 		// Assemble the result object. Generate the single string of text by turning our array of objects into an array of texts, then filtering any empty texts from the array, then putting a space between each element to make a string.
-		var resultObj = {}
+		var resultObj = {};
 		resultObj.diagram = result;
 		resultObj.text = result.map(function(r){return r.text;})
-			.filter(function(n){ return n != "" })
+			.filter(function(n){ return n !== ""; })
 			.join(" ");
+
 		return resultObj;
 
 	};

@@ -7,7 +7,7 @@
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "rival",
+					"type": "named rival",
 					"first": "someone",
 					"value": true
 				}
@@ -28,7 +28,7 @@
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "love",
+					"type": "named love",
 					"first": "theLove",
 					"value": true
 				},

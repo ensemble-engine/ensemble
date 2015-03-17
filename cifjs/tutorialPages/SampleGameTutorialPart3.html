@@ -152,7 +152,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"class" : "trait",
 			"isBoolean" : true,
 			"directionType" : "undirected",
-			"types" : ["hero", "love", "rival", "anyone"],
+			"types" : ["named hero", "named love", "named rival", "anyone"],
 			"allowIntent" : false,
 			"defaultValue" : false
 		},
@@ -182,7 +182,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 
 <p>
 
-Ok, I lied, here's a little bit of additional commentary. The 'trait' class you'll see has four types: "hero", "love", "rival", and "anyone." You might find that its useful to have something akin to this in your future endeavors to have a way to reference specific characters in your system, by giving every character the trait of their own name. It can also be useful to have an 'anyone' trait that you'll apply to every character, in instances where it doesn't matter who the character is interacting with.
+Ok, I lied, here's a little bit of additional commentary. The 'trait' class you'll see has four types: "named hero", "named love", "named rival", and "anyone." You might find that its useful to have something akin to this in your future endeavors to have a way to reference specific characters in your system, by giving every character the trait of their own name. It can also be useful to have an 'anyone' trait that you'll apply to every character, in instances where it doesn't matter who the character is interacting with.
 
 </p>
 
@@ -246,17 +246,17 @@ Now that we've walked through the basic structure of the history file, it won't 
 		"pos": 0,
 		"data": [{
 			"class" : "trait",
-			"type" : "hero",
+			"type" : "named hero",
 			"first" : "hero",
 			"value" : true
 				},{
 			"class" : "trait",
-			"type" : "love",
+			"type" : "named love",
 			"first" : "love",
 			"value" : true
 				},{
 			"class" : "trait",
-			"type" : "rival",
+			"type" : "named rival",
 			"first" : "rival",
 			"value" : true
 				},{
@@ -318,7 +318,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "rival",
+					"type": "named rival",
 					"first": "someone",
 					"value": true
 				}
@@ -365,7 +365,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "rival",
+					"type": "named rival",
 					"first": "someone",
 					"value": true
 				}
@@ -386,7 +386,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "love",
+					"type": "named love",
 					"first": "theLove",
 					"value": true
 				},
@@ -549,13 +549,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "hero",
+					"type": "named hero",
 					"first": "x",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "love",
+					"type": "named love",
 					"first": "y",
 					"value": true
 				}
@@ -578,13 +578,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "love",
+					"type": "named love",
 					"first": "love",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "hero",
+					"type": "named hero",
 					"first": "hero",
 					"value": true
 				}
@@ -631,13 +631,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "hero",
+					"type": "named hero",
 					"first": "hero",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "rival",
+					"type": "named rival",
 					"first": "rival",
 					"value": true
 				}

@@ -52,7 +52,30 @@
 				}
 			],
 			"origin": "aaronsVolition",
-			"id": "volitionRules_9"
+			"id": "volitionRules_2"
+		},
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "aaronsVolition",
+			"id": "volitionRules_5"
 		}
 	]
 }
