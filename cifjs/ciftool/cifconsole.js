@@ -863,7 +863,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				for (var i = 0; i < charKeys.length; i++) {
 					//we want either their printed name OR their id name to be acceptable...
 					if (charDict[charKeys[i]].name.toLowerCase() === params[pos]
-						|| charKeys[i] === params[pos]) {
+						|| charKeys[i].toLowerCase() === params[pos]) {
 						found.push(charKeys[i]);
 						params.splice(pos, 1);
 						foundThisTime += 1;
@@ -918,7 +918,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			if (chars.length === 1) {
 				// Run for every other character.
 				for (var j = 0; j < characters.length; j++) {
-					if (characters[j] === chars[0]) continue;
+					if (characters[j] === chars[0]){} // continue; // actually characters can have actions towarsd themselves now.
 					processCommand("volitions(" + chars[0] + "," + characters[j] + ")"); 
 				}
 				return;
