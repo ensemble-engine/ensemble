@@ -151,17 +151,10 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		util.resetIterator("rulesEdCharBindings");
 		util.resetIterator("rulesEdNewChars");
 		undoHistory = [];
-		undoPosition = -1;	
-		activeRule = util.clone(rule);
+		undoPosition = -1;
+		var origin;
 		activeRuleType = type;
-		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
-			newPredicate("conditions");
-		}
-		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
-			newPredicate("effects");
-		}
-		addCurrentToUndoHistory();
-
+		
 		// Close the bindings window if open.
 		ruleTester.hide(0);
 
@@ -171,17 +164,25 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
 				if (ruleOrigins.length > 0) {
 					activeFile = ruleOrigins[0];
-					activeRule.origin = activeFile;
 				} else {
 					getNewRulesFile();
-					activeRule.origin = activeFile;
 				}
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
 				activeFile = activeFileRefByRuleType[rule.type];
-				activeRule.origin = activeFile;
 			}
 		}
+
+		activeRule = util.clone(rule);
+		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
+			newPredicate("conditions");
+		}
+		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
+			newPredicate("effects");
+		}
+		activeRule.origin = activeFile;
+		addCurrentToUndoHistory();
+
 		activeFile = activeRule.origin;
 		origActiveFile = activeFile;
 		activeFileRefByRuleType[rule.type] = activeFile;
