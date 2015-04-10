@@ -3,22 +3,48 @@
 <head>
 	<title>Getting Started</title>
 	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 </head>
 <body>
 
 <h3>Where to Download</h3>
 
-CiF.js is not actually available for download currently. Sorry! We're just handing it out to our friends for the time being.
+CiF.js is not actually available for download currently. Sorry! We're just handing it out to our friends for the time being. But if you're reading this, odds are quite high that you must be one of said friends. Hi there! Hope you are well.
 
 <h3>What you Get</h3>
 
-In addition to documentation, such as what you're reading now, and an amazing CiF Tool, invaluable for both authoring and testing, you'll find a little file called <b>cif.js</b>. This file is everything that you'll need to make use of all of the wonders of CiF in your game!
+<p>
+Inside of the zip file we're distributing, you should see the following folders and files:
+
+<p>
+<b>authoringToolBuilds</b> -- This folder contains builds of the CiF Console (otherwise known as the authoring tool) for a variety of operating systems (32 and 64 bit versions for both Windows and osx). The authoring tool is a great way to create and test rules for your CiF world. When you first boot up the authoring tool, it is going to unceremoniously ask you to select a folder. What it is looking for is a 'schemata' folder. Try directing it to one of the folders inside of exampleSchemata, and you should see the tool fill up with information specific to that schemata!
+
+<p>
+<b>doc</b> -- This folder contains documentation for using CiF. The best file to start with just so happens to be the file you are currently reading, tutorial-CiFUserREADME.html. This file contains information about how to get started with using CiF, some key terms you'll want to know when authoring rules and actions for CiF, and the basic game loop you'll likely want to employ for your first CiF game. 
+
+<p>
+CiF.html is an API of the various functions you can call from CiF. If you need a reminder of the functions you have available, or what parameters those functions require, this is the place to check out!
+
+<p>
+And, for what it's worth, all of the files in this folder can be accessed from the others. So, files such as RuleLibrary.js.html, SFDB.js.html, Validate.js.html, ActionLibrary.js.html, and Volition.js.html (which let you look at the actual code to CiF itself if you are curious) can be found by clicking on line numbers associated with functions from within CiF.html.
+
+<p>
+<b>exampleSchemata</b> -- Contains two examples ("rpg" and "yarn") of social schemata to build off of. See "Using CiF: Basic Setup" for a description of what a schemata is. When first opening the authoring tool, it is going to want you to select a social schema folder. Try giving it either rpg or yarn, or alternatively just direct it to the sampleEmptyProject folder, and the tool should be nice and happy!
+
+<p>
+<b>sampleEmptyProject</b> -- This is meant to be a starting place for you to start building a project of your own. The test.html file loads up CiF and populates it with a simple social schema. You can then continue building off of test.html, and edit the social schema files (actions.json, cast.json, schema.json, etc.) to make your own project.
+
+<p>
+<b>sampleGame</b> -- This is an example of a simple game that uses CiF. If you open up loversAndRivals.html in a browser you'll be able to play the game. If you open up that same file (and the .js file of the same name) in a text editor, you'll be able to see the various calls to CiF that power it. The data folder here is the social schemata of the project (cast.json, history.json, schema.json, etc.). Try editing loversAndRivals.{html, json} to make it your own! Try opening the data folder inside of the CiF Console to browse through the rules! Edit the rules to make it even more your own!
+
+<p>
+And you should also just see a free-floating <b>cif.js</b> file. If you don't want to use any of our starter code in the above files, feel free to just copy cif.js to wherever you want it to be and work with it from there!
 
 <h3>How to Include CiF in a Project Of Your Own </h3>
 
 Right now we are expecting cif.js to be used in web-based projects. To start using CiF, simply make a new .html file (let's call it test.html) in the same directory that you downloaded cif.js to, and fill it with the following lines
 
-<pre> 
+<pre class="prettyprint">
 &lt;html&gt;
 &lt;head&gt;
 	&lt;title&gt;My great CiF powered project!&lt;/title&gt;
@@ -30,19 +56,21 @@ Right now we are expecting cif.js to be used in web-based projects. To start usi
 &lt;/html&gt;
 </pre>
 
-If you're going to be working with files from your local machine, you'll going to have to set up a local server first. If you do not do this, javascript will complain about cross domain compatability, which is a security issue. To resolve this, open up a console and navigate to the directory that you have downloaded cif.js to, and type the following line:
+<a name="localhostSetup"><h3>Setting up a Localhost </h3></a>
 
-<pre>
+If you're going to be working with files from your local machine, you'll going to have to set up a local server first. If you do not do this, javascript will complain about cross domain compatability, which is a security issue. To resolve this using Python, open up a terminal window, navigate to the directory that you'll be working in, and type in the following (assuming you have Python installed):
+
+<pre class="prettyprint">
 	python -m SimpleHTTPServer
 </pre>
 
 After doing this, you'll want to open up your favorite web browser, such as Chrome or Firefox, and navigate to this URL:
 
-<pre>
-	http://localhost:8000/test.html
+<pre class="prettyprint">
+	http://localhost:8000/NAME_OF_YOUR_FILE.html
 </pre>
 
-This is where your super fun game will be, once you make it!
+This is where your super fun game will be! All you have to do now is make it!
 
 <h3>Using CiF: Basic Setup</h3>
 
@@ -50,7 +78,7 @@ The very first thing you'll want to do is to initialize cif. Thanks to the scrip
 
 So, to initialize CiF, you'll want to write the following:
 
-<pre>
+<pre class="prettyprint">
 &lt;script&gt;
 	document.addEventListener('cifLoaded', function (e) {
 		var loadResult = cif.init();
@@ -66,7 +94,7 @@ Congratulations, you have officially initialized CiF!
 However, in order to really get mileage out of CiF, you'll have to give it some material to work with. You'll want to specify a <b>social schema</b> that defines the <i>stuff</i> that makes up your characters and their connections to each other (things like character traits, or types of relationships). You'll have to specify some <b>characters</b> to live in your social world. It might be good to give CiF a few <b>volition rules</b> and <b>trigger rules</b> to help characters form volitions for how to they want to change the social state. And then, finally, specifying some <b>actions</b> will give your characters a way to actually enact the changes they hope for on the social state.
 
 You'll want each of these things, your <b>schema, characters, volition rules, trigger rules, and actions</b> to each be stored in their own json file. You'll load them up into CiF in a very similar manner to how we initialized the system. Expand the above script tag so that it looks like this:
-<pre> 
+<pre class="prettyprint">
 &lt;script&gt;
 	document.addEventListener('cifLoaded', function (e) {
 		var loadResult = cif.init();
@@ -100,19 +128,19 @@ You'll want each of these things, your <b>schema, characters, volition rules, tr
 
 So, great! You've fleshed out CiF with characters and volition rules. Now you want to see what the characters want to do with each other! The way you would do that is with a call like this:
 
-<pre>
+<pre class="prettyprint">
 	var storedVolitions = cif.calculateVolition(cast);
 </pre>
 
 This will calculate all of the volitions between all possible pairs of characters specified in the cast array you pass in to the calculateVolitions function. So, if your cast consisted of the characters "Abe", "Bill", and "Cassie", stored volitions would have information about what Abe wants to do towards Bill, what Abe wants to do towards Cassie, what Bill wants to do towards Abe, what Bill wants to do towards Cassie, and so on. To actually see what those volitions are, you would call:
 
-<pre>
+<pre class="prettyprint">
 	var firstVolition = storedVolitions.getFirst("Bill", "Abe");
 </pre>
 
 This returns the highest scored volition that Bill has for Abe. But depending on how you've authored your system, it is quite possible that Bill has more than just one volition. You can see the second-most highest rated volition with a call to "getNext" like so:
 
-<pre>
+<pre class="prettyprint">
 	var volition = storedVolitions.getNext("Bill", "Abe");
 </pre>
 
@@ -120,13 +148,13 @@ This returns the highest scored volition that Bill has for Abe. But depending on
 
 Knowing the volitions of the characters is a good first step, but wouldn't it be nice if the characters had the ability to change the world around them? This is where actions come into play! To see the actions a character wants to take towards another, you can use the following command:
 
-<pre>
+<pre class="prettyprint">
 	var action = cif.getAction("bill", "abe", storedVolitions, cast);
 </pre>
 
 This will get you an action object, filled with interesting information, such as the name of the action. Another useful field to know is action.effects -- this contains information describing how the world should change when this action is performed. In order to actually enact those changes, you'll want to have something like this:
 
-<pre>
+<pre class="prettyprint">
 	for(var i = 0; i < action.effects.length; i += 1){
 		cif.set(action.effects[i]);
 	}
@@ -138,7 +166,7 @@ This will either add, remove, or edit an entry from the Social Facts Database (S
 
 Just because the SFDB has been changed, the character's still have their lingering volitions from the previous state of the world. However, to fix that, all you need is a simple call to calculate volitions once again!
 
-<pre>
+<pre class="prettyprint">
 	storedActions = cif.calculateVolitions(cast);
 </pre>
 
@@ -146,18 +174,18 @@ And Ta-Da! Whatever effects the previous action had on the state of the world is
 
 Depending on your game, you also may want to put in a call to advance CiF's current time step. You can do this by simply calling:
 
-<pre>
+<pre class="prettyprint">
 	cif.setupNextTimeStep();
 </pre>
 
 <h3>Key Terms and Properties</h3>
 
-<h4>Schema</h4>
+<a name="schema"><h4>Schema</h4></a>
 <p>
 The social schema is the social 'stuff' of your world, the raw material that your characters will keep track of and reason about to determine what actions to take. Let's take a moment to talk about the possible values of the various attributes of your schema. A schema in the wild might look like this:
 
 <p>
-	<pre>
+	<pre class="prettyprint">
 "class": "feeling",
 "isBoolean": false,
 "directionType": "directed",
@@ -255,7 +283,7 @@ If duration is unspecified, then changes to the social state are permament until
 <p>
 This special case is essentially allowing CiF, and the social facts database, to dabble in some mixing of metaphor. In general, the database holds state information. However, by specifying a class as having a duration of 0, you essentially mark it as not being <i>state</i> information, but rather an <i>event.</i> This can be very useful if you want to reason over things such as "did a character do something embarrassing" (as opposed to the subtly different "was a character ever embarrassed"). 
 
-<h4>Actions</h4>
+<a name="actions"><h4>Actions</h4></a>
 
 At a high level, you'll be defining an action graph (or, in many cases, multiple action graphs). The graph will look a little bit like a tree, with a starting 'root' node that will specify which intent the action graph is associated with. The graph is made up of 'non-terminal' and 'terminal' nodes -- the non terminal nodes will be used to determine whether or not this branch of the graph is appropriate (though conditions), and if it is appropriate, how desirable a path it is to take and for which characters (through influence rules). Eventually, the graph will end at a 'terminal node' which will have effects defined which will alter the social state.
 
@@ -264,7 +292,7 @@ The rest of this section goes into more detail of the above process, starting wi
 <p>
 
 	When defining an action graph, it'll look something like this:
-	<pre>
+	<pre class="prettyprint">
 	"actions" : [
 		{
 			"name" : "",
@@ -292,7 +320,7 @@ Every action is tied to one intent, and intents are defined in the schema file. 
 <p>
 
 An example intent would be:
-<pre>
+<pre class="prettyprint">
 "class" : "relationship",
 "type"  : "involved with",
 "intentDirection" : true,
@@ -314,12 +342,12 @@ intentDirection, is the least intuitive. What it's trying to get at is whether t
 <p>
 This is an array of predicates specifying what NEEDS to be true in order for this action to be considered for this particular set of characters. In general, predicates take the form of looking like this:
 
-<pre>
+<a name="predicate"><pre class="prettyprint">
 "class" : "trait",
 "type"	: "lucky",
 "first" : "luckyGuy",
 "value" : true
-</pre>
+</pre></a>
 
 <p>
 Once again, class and type are things defined in your schema. Depending on the class, there may or may not be two people involved. In this example, there is only one person involved, so the 'first' field is filled in, but there is no 'second' field -- this is because we defined in our schema that "trait" is something that only applies to a single person. If we were dealing with something like, say, "relationship", then we would want there to be a "second" field in this predicate as well.  Value is what we are actually looking for in the sfdb, so in this case, we are checking to see if there exists an instance where there is a character who DOES have the trait lucky (i.e., a character with lucky = true in the sfdb).
@@ -338,7 +366,7 @@ These influence rules serve two functions: one -- they help us determine if one 
 
 <p>
 The structure of an influence rule would look like this:
-<pre>
+<pre class="prettyprint">
 {
   "name": "Happy people are more inclined to do pickuplines.",
   "conditions": [

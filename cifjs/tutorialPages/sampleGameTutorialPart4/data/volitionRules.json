@@ -33,13 +33,13 @@
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "named hero",
+					"type": "hero",
 					"first": "x",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "named love",
+					"type": "love",
 					"first": "y",
 					"value": true
 				}
@@ -62,13 +62,13 @@
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "named love",
+					"type": "love",
 					"first": "love",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "named hero",
+					"type": "hero",
 					"first": "hero",
 					"value": true
 				}
@@ -115,13 +115,13 @@
 			"conditions": [
 				{
 					"class": "trait",
-					"type": "named hero",
+					"type": "hero",
 					"first": "hero",
 					"value": true
 				},
 				{
 					"class": "trait",
-					"type": "named rival",
+					"type": "rival",
 					"first": "rival",
 					"value": true
 				}

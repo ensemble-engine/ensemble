@@ -12,7 +12,9 @@ var stateInformation = {
 var gameVariables = {
 	"gameOver" : false,
 	"endingText" : "NA",
-	"turnNumber" : 0
+	"turnNumber" : 0,
+	"numIntents" : 2,
+	"numActionsPerIntent" : 5
 };
 
 var move = function(){
@@ -44,7 +46,6 @@ var moveByCharacterName = function(name, destination){
 	console.log("moveByCharacterName name: " , name);
 	console.log("moveByCharacterName destination: " , destination);
 	var elem = document.getElementById(name);
-	console.log("This is what the left thing is: ", elem.style.left);
 	var startPos = parseInt(elem.style.left, 10); // start off with their current left position.
 	var currentPos = startPos;
 	console.log("startPos " , startPos);
@@ -76,44 +77,6 @@ var positionCharacter = function(id, pos){
 };
 
 var setUpLoversAndRivalsInitialState = function(){
-
-	//Give every character a name.
-	/*
-	var heroTrait = {
-		"class" : "trait",
-		"type" : "hero",
-		"first" : "hero",
-		"value" : true
-	};
-	var loveTrait = {
-		"class" : "trait",
-		"type" : "love",
-		"first" : "love",
-		"value" : true
-	};
-	var rivalTrait = {
-		"class" : "trait",
-		"type" : "rival",
-		"first" : "rival",
-		"value" : true
-	};
-
-	//don't need to establish initial closeness values, because they default to 0 in the schema!
-	// But keep it around for testing purposes.
-	var tempCloseness = {
-		"class" : "feeling",
-		"type" : "closeness",
-		"first" : "love",
-		"second" : "hero",
-		"value" : 10
-	};
-	
-	//Actually insert this state into CiF's social facts database.
-	cif.set(heroTrait);
-	cif.set(loveTrait);
-	cif.set(rivalTrait);
-	cif.set(tempCloseness);
-*/
 	//update our local copies of these variables, and display them.
 	updateLocalStateInformation();
 	displayStateInformation();
@@ -162,10 +125,10 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 	var char1 = initiator;
 	var char2 = responder;
 	
-	//Num intents to look at: 2
-	//Num actions per intent: 3 (for now!)
+	//Num intents to look at: 5
+	//Num actions per intent: 2 (for now!)
 	//console.log("storedVolitions before getting possible actions... " , storedVolitions.dump());
-	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 5, 2);
+	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, gameVariables.numIntents, gameVariables.numActionsPerIntent);
 	//console.log("Possible Actions From " + char1 + " to " + char2 + ": ", possibleActions);
 
 	var divName = "actionList_" + char1 + "_" + char2;
@@ -173,8 +136,7 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 
 	//Let's make a button for each action the hero wants to take!
 	for(var i = 0; i < possibleActions.length; i += 1){
-		//somehow make a new button? Through the DOM I suppose?
-		//And we'll have to clean it up when we're done I guess!
+		//Make a new button
 		var action = possibleActions[i];
 
 		//If the character doesn't have a strong volition to do this action,
@@ -203,13 +165,6 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 };
 
 var actionButtonClicked = function(){
-	console.log("No way that actually worked did it...? " , this.actionToPerform);
-	console.log("Action button clicked! Maybe I have access to it's name? " , this.name);
-	console.log("And even better, maybe this will give me EVERYTHING about the action " , this.value);
-	//moveAllCharacters();
-
-	//What do we want to have happen when an action is clicked?
-	
 	//Clean away all of the other actions -- they made their choice!
 	clearActionList();
 
@@ -232,10 +187,6 @@ var actionButtonClicked = function(){
 		acceptMessage = this.actionToPerform.displayName + " failed!";
 	}
 	statusArea.innerHTML = acceptMessage;
-
-	//cif wants to now go through these effects and use them to update the social state.
-
-	//CHECK OUT THAT KICK A@@ this.actionToPerform variable baby -- nothing is stopping me now!
 
 	//Re-draw the people (maybe even by having them MOVE to their new positions...)
 	//Also re-draw any debug/state informaton we want.
@@ -270,7 +221,7 @@ var checkForEndConditions = function(){
 	if(stateInformation.loveToRivalCloseness >= 90){
 		//uh oh, we lose!
 		gameVariables.gameOver = true;
-		gameVariables.endingText = "Game Over! Your Love is in the arms of your rival!";
+		gameVariables.endingText = "Game Over! Your Love is in the arms of your Rival!";
 	}
 	if(stateInformation.loveToHeroCloseness >= 90 && stateInformation.heroToLoveCloseness >= 90){
 		gameVariables.gameOver = true;

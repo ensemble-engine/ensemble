@@ -30,6 +30,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		ruleOriginsVolition = _ruleOriginsVolition;
 		saveRules = _saveRules;
 		buildIntentOptions();
+		activeFileRefByRuleType = {};
 	}
 
 	// A dictionary assigning each key (a unique character binding in this rule) to a number (between 1 and 8). These numbers are used to color the background of the character field a distinct color for each binding.
@@ -88,8 +89,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		}
 	}
 
-
-	var save = function() {
+	//if optSkipBackpu is true, it won't create a backup file.
+	var save = function(optSkipBackup) {
+		console.log("beginning saving process...");
+		if(activeFile === ""){
+			return; // don't save if we aren't working with an actual file.
+		}
 		var results = cif.setRuleById(activeRule.id, activeRule);
 		if (!results) {
 			messages.showAlert("Unable to save rule.");
@@ -98,7 +103,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			rulesViewer.show();
 			messages.showAlert("Updated Rule " + activeRule.id + ".");
 			var ruleType = activeRule.id.split("_")[0];
-			saveRules(ruleType, activeRule.origin, origActiveFile); // Note: we passed in a ref to this function in cifconsole.js on init.
+			saveRules(ruleType, activeRule.origin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in cifconsole.js on init.
 		}
 	}
 
@@ -154,7 +159,6 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		undoPosition = -1;
 		var origin;
 		activeRuleType = type;
-		
 		// Close the bindings window if open.
 		ruleTester.hide(0);
 
@@ -170,6 +174,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
 				activeFile = activeFileRefByRuleType[rule.type];
+
+				activeRule.origin = activeFile;
 			}
 		}
 
@@ -469,14 +475,20 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 		activeRule.origin = newFileName;
 		activeFile = newFileName;
+
 		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+		activeFileRefByRuleType[activeRuleType] = activeFile;
 		ruleOrigins.push(newFileName);
 		$("#ruleOriginSelect").replaceWith(generateRuleOriginsMenu());
+
+		//We're going to save the new file automatically once it is created.
+		save();
 
 		return newFileName;
 	}
 
-	var getNewRulesFile = function() {
+	var getNewRulesFile = function(placeCalled) {
+		console.log("Called from: ", placeCalled);
 		$("#dialogBox")
 		.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
 		var dialog = $("#dialogBox").dialog({
@@ -488,9 +500,18 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				"Create File": function() {
 					makeNewRulesFile($("#newRulesFile").val());
 					$(this).dialog("destroy");
+					$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
 				},
 				Cancel: function() {
-					$(this).dialog("destroy");
+					//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
+					//I believe the rule to remove should be in "activeRule" variable.
+					$(this).dialog("destroy"); //remove the dialog box
+					//The temporary rule really only exists when you are starting a new file from the 'rules viewer' screen. If starting a new file from the rule editor window, we don't want to do the following.
+					if(placeCalled !== "fromMenu"){
+						activeFileRefByRuleType[activeRuleType] = undefined;
+						cif.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
+						$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+					}
 				}
 			},
 		});
@@ -514,7 +535,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				var selInd = $(this)[0].selectedIndex;
 				var selection = $(this).context[selInd].value;
 				if (selection === "__NEW__") {
-					getNewRulesFile();
+					getNewRulesFile("fromMenu");
 				} else {
 					console.log("changing activeFile to ", activeFile);
 					activeFile = selection;
@@ -891,7 +912,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 	return {
 		init: init,
-		loadRule: loadRule
+		loadRule: loadRule,
+		save : save
 	}
 
 });

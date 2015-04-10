@@ -3,17 +3,17 @@
 		"pos": 0,
 		"data": [{
 			"class" : "trait",
-			"type" : "named hero",
+			"type" : "hero",
 			"first" : "hero",
 			"value" : true
 				},{
 			"class" : "trait",
-			"type" : "named love",
+			"type" : "love",
 			"first" : "love",
 			"value" : true
 				},{
 			"class" : "trait",
-			"type" : "named rival",
+			"type" : "rival",
 			"first" : "rival",
 			"value" : true
 				},{

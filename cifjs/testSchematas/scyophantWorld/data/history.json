@@ -1,0 +1,17 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"class" : "trait",
+			"type" : "humble",
+			"first" : "humbleGuy",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "proud",
+			"first" : "proudGuy",
+			"value" : true
+				}
+		]}
+	]
+}

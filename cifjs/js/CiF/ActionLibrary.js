@@ -184,6 +184,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var sortActionsByVolitionScore = function(actions){
 		var descSortedActions = _.sortBy(actions, "weight");
 		actions = descSortedActions.reverse(); // now all of our actions are sorted, sweet!
+		//Sadly, the above messes up ties, a little bit. The initial sort by screws up the order of ties, and the reverse then 'respects' the messed up order from underscore.
 
 		//And, uh, I guess now we want to do the same as we drill downwards?
 		for(var i = 0; i < actions.length; i += 1){
@@ -938,7 +939,10 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			}
 		}
 
-		var boundActions = extractAndSortTerminalsFromActionList(returnList);
+
+		var allTerminals = grabAllTerminals(returnList);
+		var boundActions = sortAndBindTerminals(allTerminals);
+		//var boundActions = extractAndSortTerminalsFromActionList(returnList);
 		return boundActions;
 	};
 
@@ -977,6 +981,49 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			sortedTerminals[k] = bindActionEffects2(sortedTerminals[k], bestBindings);
 		}
 
+		return sortedTerminals;
+	};
+
+	var grabAllTerminals = function(actionList){
+		var terminalsFoundHere = [];
+		var terminalsFoundDeeper;
+		var deeperTerminalRecord;
+		for(var i =0; i < actionList.length; i += 1){
+			if(actionList[i].actions !== undefined){
+				//Drill down further.
+				terminalsFoundDeeper = grabAllTerminals(actionList[i].actions);
+				if(terminalsFoundDeeper !== undefined){
+					if(deeperTerminalRecord === undefined){
+						deeperTerminalRecord = terminalsFoundDeeper;
+					}
+					else{
+						deeperTerminalRecord = deeperTerminalRecord.concat(terminalsFoundDeeper);
+					}
+					//clear out our 'terminals found deeper' array
+					terminalsFoundDeeper = [];
+				}
+			}
+			else{
+				//end of the road, actionList[i] is a terminal.
+				terminalsFoundHere.push(actionList[i]);
+			}
+		}
+		var allTerminals;
+		if(deeperTerminalRecord !== undefined){
+			allTerminals = terminalsFoundHere.concat(deeperTerminalRecord);
+		}
+		else{
+			allTerminals = terminalsFoundHere;
+		}
+		return allTerminals;
+	};
+
+	var sortAndBindTerminals = function(terminalArray){
+		var sortedTerminals = sortActionsByVolitionScore(terminalArray);
+		for(var k = 0; k < sortedTerminals.length; k += 1){
+			var bestBindings = getBestBindingFromTerminal(sortedTerminals[k]);
+			sortedTerminals[k] = bindActionEffects2(sortedTerminals[k], bestBindings);
+		}
 		return sortedTerminals;
 	};
 

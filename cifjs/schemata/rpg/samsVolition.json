@@ -10,7 +10,7 @@
 					"first": "x",
 					"second": "y",
 					"operator": ">",
-					"value": 66
+					"value": 60
 				},
 				{
 					"class": "attribute",
@@ -24,7 +24,7 @@
 					"type": "intelligence",
 					"first": "y",
 					"operator": ">",
-					"value": 15
+					"value": 10
 				}
 			],
 			"effects": [

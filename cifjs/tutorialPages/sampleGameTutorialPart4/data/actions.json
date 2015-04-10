@@ -1,0 +1,330 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISECLOSENESS",
+			"intent" : {
+				"class" : "feeling",
+				"type"  : "closeness",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WRITELOVENOTE", "KISS"]
+		},
+		{
+			"name" : "RAISESTRENGTH",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "strength",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WEIGHTLIFT", "PUSHUP"]
+		},
+		{
+			"name" : "RAISEINTELLIGENCE",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "intelligence",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["STUDY"]
+		},
+		{
+			"name" : "STUDY",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["studyMath", "studyAnatomy"]
+		},
+		{
+			"name" : "studyMath",
+			"conditions" : [],
+			"displayName" : "Study Math",
+			"influenceRules" : [
+				{
+					"name": "People in this world are inclined to study math.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type" : "anyone",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 10
+				}
+			],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10		
+			},
+			{
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
+					"first" : "initiator",
+					"value" : true
+				}]
+		},
+		{
+			"name" : "studyAnatomy",
+			"conditions" : [],
+			"displayName" : "Study Anatomy",
+			"influenceRules" : [
+				{
+					"name": "Strong people in this world are inclined to study anatomy.",
+					"conditions": [
+						{
+							"class" : "attribute",
+							"type" : "strength",
+							"first" : "initiator",
+							"operator" : ">",
+							"value" : 10
+						}
+					],
+					"weight" : 30
+				}
+			],
+			"effects" : [{
+					"class" : "attribute",
+					"type" : "strength",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				},
+				{
+					"class" : "attribute",
+					"type" : "intelligence",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				},
+				{
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
+					"first" : "initiator",
+					"value" : true
+				}
+			]
+
+		},
+		{
+			"name" : "WEIGHTLIFT",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["weightLiftSuccess", "weightLiftFail"]
+		},
+		{
+			"name" : "weightLiftSuccess",
+			"conditions" : [],
+			"displayName" : "Weightlift",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 5
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}]
+		},
+		{
+			"name" : "weightLiftFail",
+			"displayName" : "Weight Lift <FAIL>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "-",
+				"value" : 10
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}]
+		},
+		{
+			"name" : "PUSHUP",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["pushup1"]
+		},
+		{
+			"name" : "pushup1",
+			"conditions" : [],
+			"displayName" : "Do Pushups",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}
+			]
+		},
+		{
+			"name" : "WRITELOVENOTE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["writeLoveNoteAccept", "writeLoveNoteReject"]
+		},
+		{
+			"name" : "KISS",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["kissSuccess", "kissFail"]
+		},
+		{
+			"name" : "kissSuccess",
+			"displayName" : "Kiss <SUCCESS>",
+			"conditions" : [{
+				"class" : "feeling",
+				"type"  : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : 40,
+				"operator" : ">"
+				},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "trait",
+				"type" : "rival",
+				"first" : "evilPerson",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "evilPerson",
+				"operator" : "=",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "evilPerson",
+				"operator" : "=",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "kissFail",
+			"displayName" : "Kiss <FAIL>",
+			"isAccept" : false,
+			"conditions" : [{
+				"class" : "feeling",
+				"type"  : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : -10,
+				"operator" : ">"
+				}],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "-",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "writeLoveNoteAccept",
+			"displayName" : "Write Love Note <ACCEPT>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "writeLoveNoteReject",
+			"displayName" : "Write Love Note <REJECT>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "SFDBLabel",
+				"type" : "romantic-failure",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : true
+			}]
+		}
+	]
+}

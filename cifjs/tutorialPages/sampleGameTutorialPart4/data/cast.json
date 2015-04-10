@@ -1,0 +1,13 @@
+{
+	"cast": {
+		"hero": {
+			"name": "You"
+		},
+		"love": {
+			"name": "Love"
+		},
+		"rival": {
+			"name": "Rival"
+		}
+	}
+}

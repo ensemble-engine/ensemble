@@ -71,6 +71,10 @@ section
     display: none;
 }
 
+table, tr, td {
+	border: 1px solid black;
+}
+
 .optional:after {
 	content: "opt";
 	font-size: 60%;

@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-
 <html>
 <head>
-	<title>CiF Test</title>
+	<title>My Fun Game!</title>
 	<script src="cif.js"></script>
 	<script src="loversAndRivals.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -38,8 +36,6 @@
 		<div id="actionList_hero_rival"></div>
 	</div>
 
-	<div id="chatBubble"></div>
-
 	<div id="stateArea">
 		<h1>Social State</h1>
 		<div id="closenessStateDisplay">
@@ -60,27 +56,22 @@
 			<div id="heroIntelligence">Intelligence: <span id="heroIntelligenceNumber">NA</span></div>
 		</div>
 	</div>
-
 	<script type="text/javascript">
 
 		document.addEventListener('cifLoaded', function (e) {
-
 			//Init CiF
 			var loadResult = cif.init();
 			console.log(loadResult);
 
-			//Load in our schema, cast, triggerRules and volitionRules, and actions.
 			var rawSchema = cif.loadFile("data/schema.json");
 			var schema = cif.loadSocialStructure(rawSchema);
 
 			var rawCast = cif.loadFile("data/cast.json");
 			var cast = cif.addCharacters(rawCast);
 
-			console.log("Here is our cast! " , cast);
-
 			var rawTriggerRules = cif.loadFile("data/triggerRules.json");
 			var triggerRules = cif.addRules(rawTriggerRules);
-			
+
 			var rawVolitionRules = cif.loadFile("data/volitionRules.json");
 			var volitionRules = cif.addRules(rawVolitionRules);
 
@@ -90,12 +81,9 @@
 			var rawHistory = cif.loadFile("data/history.json");
 			var history = cif.addHistory(rawHistory);
 
-			//cif.dumpSFDB();
 
-			//Set up our initial state
 			setUpLoversAndRivalsInitialState();
 			setupCharacterPositions(500);
-
 
 			//MAIN GAME LOOP
 			//1.) Calculate Volitions
@@ -105,18 +93,7 @@
 			//Give the player options for what they can click on!
 			populateActionLists(storedVolitions, cast);
 
-			//Test
-			console.log("The starting volitions: " , storedVolitions.dump());
 
-			//Test
-			//var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
-
-			var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 100);
-			console.log("This is what love wants to do towards hero: ", testActions);
-			//cif.dumpSFDB();
-			
-			var testHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 100);
-			console.log("This is what hero wants to do towards hero: " , testHeroActions);
 
 			var nextTurn = function(){
 				console.log("We have achieved A NEW TURN!");
@@ -140,26 +117,9 @@
 
 			document.addEventListener("nextTurn", nextTurn);
 
-
-
-/*
-
-			chatBubble = document.getElementById("chatBubble");
-			chatBubble.innerHTML = drawChatBubble();
-
-*/
-
-/*
-			var vol = storedVolitions.getFirst("hero", "love");
-			console.log("here is the first volition from hero to love: " , vol);
-			vol = storedVolitions.getNext(char1, char2);
-			console.log("Here is the second volition from hero to love: ", vol);
-*/
-
-			//console.log("Actions: ", actions);
+			
 
 		}, false);
 	</script>
-
 </body>
 </html>

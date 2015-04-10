@@ -33,7 +33,7 @@
 			"class" : "trait",
 			"isBoolean" : true,
 			"directionType" : "undirected",
-			"types" : ["named hero", "named love", "named rival", "anyone"],
+			"types" : ["hero", "love", "rival", "anyone"],
 			"allowIntent" : false,
 			"defaultValue" : false
 		},

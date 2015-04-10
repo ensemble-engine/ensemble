@@ -1,0 +1,718 @@
+
+<html>
+<head>
+	<title>Making a Sample Game. Part 4.</title>
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<p>
+Welcome to part 4 guys! Where it all comes together! The intricate puzzle pieces we've carefully jigsawed will finally snap into place, revealing the glorious picture which is your very first CiF-based game. Let's get started!
+<p>
+
+<h3>Loading In Our Social Schema</h3>
+
+<p>
+
+First things first -- let's load up that social schema we worked so hard on in <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>! We'll be doing this with a series of calls to CiF functions that take the .json files of your schema as parameters. First, you'll want to load in your schema itself (that defines your classes and types), as CiF will use it to help with the validation of your other files. This should all be in your html file, right after your call to cif.init() (reprinted here for convenience). So, something like this:
+
+</p>
+
+
+<pre class="prettyprint">
+//Init CiF
+var loadResult = cif.init();
+console.log(loadResult);
+
+var rawSchema = cif.loadFile("data/schema.json");
+var schema = cif.loadSocialStructure(rawSchema);
+</pre>
+
+<p>
+And there you go, your schema is loaded! The path provided to schema.json should be relative to the location of the html file your game lives in. CiF now understands all of the classes and types that compose the social structure of your game, and consequently will express concern if you load up rules or history that are not aligned with the structure you've defined. And don't worry: even though we're storing the schema in the <i>schema</i> variable, we won't need to use it directly as CiF now has everything it needs internally, at least with regards to social structure.
+</p>
+
+<p>
+	What CiF *doesn't* have is understanding of the cast, rules, actions, and history of your game. Let's take care of that, pronto!
+</p>
+
+<pre class="prettyprint">
+var rawCast = cif.loadFile("data/cast.json");
+var cast = cif.addCharacters(rawCast);
+
+var rawTriggerRules = cif.loadFile("data/triggerRules.json");
+var triggerRules = cif.addRules(rawTriggerRules);
+
+var rawVolitionRules = cif.loadFile("data/volitionRules.json");
+var volitionRules = cif.addRules(rawVolitionRules);
+
+var rawActions = cif.loadFile("data/actions.json");
+var actions = cif.addActions(rawActions);
+
+var rawHistory = cif.loadFile("data/history.json");
+var history = cif.addHistory(rawHistory);
+</pre>
+
+<p>
+We'll actually be using the cast variable later on, so holding on to that is a good idea!
+</p>
+
+<p>
+Next, we'll be setting up some initial game state with a couple of calls to functions that we'll soon be writing in loversAndRivals.js
+</p>
+
+<pre class="prettyprint">
+//Set up our initial state
+setUpLoversAndRivalsInitialState();
+</pre>
+
+<p>
+As you may recall, most of our initial state is actually defined in our history file, so we don't have too much 'assigning' of state to do right here. Instead, <i>setUpLoversAndRivalsInitialState</i> will simply take that initial state we've specified in the history file and use it to fill in all those NA values we currently have in our game. 
+</p>
+
+<!--h3>setUpLoversAndRivalsInitialState (loversAndRivals.js)</h3-->
+
+<pre class="prettyprint">
+var setUpLoversAndRivalsInitialState = function(){
+	//update our local copies of these variables, and display them.
+	updateLocalStateInformation();
+	displayStateInformation();
+};
+</pre>
+
+<p>
+We see here that this function is just a wrapper for two other functions, <i>updateLocalStateInformation()</i> and <i>displayStateInformation()</i>. Let's take the time to talk about both of these guys for a little bit.
+</p>
+
+<p>
+<i>updateLocalStateInformation()</i> asks CiF several questions about the current social state, and then stores the answers in a local variable for ease of access. The questions it asks are along the lines of "what is the current attraction value from the hero to the love" or "what is the hero's current intelligence value?" The way it asks these questions is by passing in predicate variables into CiF's "get" function, like so:
+</p>
+
+<pre class="prettyprint">
+var updateLocalStateInformation = function(){
+	//First, let's grab the data we'll want to display.
+	var loveToHeroClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "love",
+		"second" : "hero"
+	};
+
+	//Get love to hero closeness.
+	var results = cif.get(loveToHeroClosenessPred);
+	stateInformation.loveToHeroCloseness = results[0].value;
+</pre>
+
+<p>
+In the above example, we have our predicate, "heroToLoveClosenessPred" -- as with other predicates that we've seen before, it specifies a class ("feeling"), and the specific type within that class ("closeness"), as well as a first and a second. In english, this predicate could be thought to express "what is the value of the love's closeness feeling for the hero?" Once we've formed the predicate, we pass it into <i>cif.get</i>. You may be asking "well, wait a second. We've defined other predicates in the past, say inside of history.json, that also had to specify a value. Why is that missing here?" That is an astute observaton, dear reader, and it all ties in with how cif.get works.
+</p>
+
+<p>
+<i>cif.get</i> takes in a predicate, and returns an array of predicates. The predicate it takes in can be a fully specified predicate (i.e., it has class, type, first, second, and value defined), or it can be missing any of those fields. Regardless of how well specified it is, the passed in predicate is checked against the <b>social record</b> (i.e., the current social state, as well as the complete social history of the game) and the function returns a copy of all social record predicates that match the specified fields of the passed in predicate. By default it only looks at the current time step of the social record (i.e., it doesn't look at the history, only the present moment), but additional parameters can be passed in to expres how far back into the history you'd like your search to encompass.
+</p>
+
+<p>
+So, here, by passing in this predicate, it will return an array of all predicates that pertain to the love's closeness feelings for the hero, regardless of the value. Fortunately for us, there should only be one such predicate, for as this value changes through gameplay, CiF doesn't create new entries in the social record, it simply updates existing ones. Thus, we check with confidence the first entry in the array, and since we are interested in the value, that is the field that we check. Finally, we store it in the appropriate field of our stateInformation variable which we created way back when in section 2.
+</p>
+
+<p>Phew! A lot of information for a small function, but now you know that much more about how CiF works. The above was just a piece of the updateLocalStateInformation() function, but now that you understand that one part the rest should hopefully be fairly easy to piece together! Here's the whole thing!
+</p>
+
+<pre class="prettyprint">
+var updateLocalStateInformation = function(){
+	//First, let's grab the data we'll want to display.
+	var loveToHeroClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "love",
+		"second" : "hero"
+	};
+	var loveToRivalClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "love",
+		"second" : "rival"
+	};
+	var heroToLoveClosenessPred = {
+		"class" : "feeling",
+		"type" : "closeness",
+		"first" : "hero",
+		"second" : "love"
+	};
+	var loveToHeroAttractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "love",
+		"second" : "hero"
+	};
+	var heroToLoveattractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "hero",
+		"second" : "love"
+	};
+	var loveToRivalAttractionPred = {
+		"class" : "feeling",
+		"type" : "attraction",
+		"first" : "love",
+		"second" : "rival"
+	};
+	var heroIntelligencePred = {
+		"class" : "attribute",
+		"type" : "intelligence",
+		"first" : "hero"
+	};
+	var heroStrengthPred = {
+		"class" : "attribute",
+		"type" : "strength",
+		"first" : "hero"
+	};
+
+	//Get love to hero closeness.
+	var results = cif.get(loveToHeroClosenessPred);
+	stateInformation.loveToHeroCloseness = results[0].value;
+
+	//Get love to rival closeness
+	results = cif.get(loveToRivalClosenessPred);
+	stateInformation.loveToRivalCloseness= results[0].value;
+
+	//Get hero to Love closeness
+	results = cif.get(heroToLoveClosenessPred);
+	stateInformation.heroToLoveCloseness = results[0].value;
+
+	//get love to hero attraction
+	results = cif.get(loveToHeroAttractionPred);
+	stateInformation.loveToHeroAttraction = results[0].value;
+
+	//get love to rival attraction
+	results = cif.get(loveToRivalAttractionPred);
+	stateInformation.loveToRivalAttraction = results[0].value;
+
+	//get hero to love attraction
+	results = cif.get(heroToLoveattractionPred);
+	stateInformation.heroToLoveAttraction = results[0].value;
+
+	//get hero intelligence.
+	results = cif.get(heroIntelligencePred);
+	stateInformation.heroIntelligence = results[0].value;
+
+	//get hero strength.
+	results = cif.get(heroStrengthPred);
+	stateInformation.heroStrength = results[0].value;
+};
+</pre>
+
+<p>
+Now that we have all this great information, what are we going to do with it? Well, this is where <i>displayStateInformation()</i> comes into play! Essentially, what this function does is find html elements defined in the html file, and changes their value to whatever was stored inside of CiF's social record. This funciton is fairly short, so we'll give it to you all at once:
+</p>
+
+<pre class="prettyprint">
+var displayStateInformation = function(){
+	document.getElementById("closenessHeroToLoverNumber").innerHTML = stateInformation.heroToLoveCloseness;
+	document.getElementById("closenessLoverToHeroNumber").innerHTML = stateInformation.loveToHeroCloseness;
+	document.getElementById("closenessLoverToRivalNumber").innerHTML = stateInformation.loveToRivalCloseness;
+	document.getElementById("attractionHeroToLoverNumber").innerHTML = stateInformation.heroToLoveAttraction;
+	document.getElementById("attractionLoverToHeroNumber").innerHTML = stateInformation.loveToHeroAttraction;
+	document.getElementById("attractionLoverToRivalNumber").innerHTML = stateInformation.loveToRivalAttraction;
+	document.getElementById("heroStrengthNumber").innerHTML = stateInformation.heroStrength;
+	document.getElementById("heroIntelligenceNumber").innerHTML = stateInformation.heroIntelligence;
+};
+</pre>
+
+<p>
+	So, you remember in our html file, we had all of those "NAs"? Well, no more! Now that we have this in place, those place holder values should now be filled in with actual data from CiF! How exciting! 
+</p>
+
+<p>
+	As a brief aside, we have a small bit of irony here worth pointing out. We're using document.getElementById(ID_OF_ELEMENT) to find our html components here. However, if you haven't heard about <a href="http://jquery.com/">jQuery</a> then you should check it our right away (as soon as you'll done with this tutorial, of course!). We're not using it in this project to keep you from only having to learn one new javascript library, BUT as anyone whose used jQuery will testify, using jQuery is actually <i>much</i> simpler than not using it!
+</p>
+
+<p>But back to CiF!</p> If you've been following along at home, then your version of Lovers And Rivals should look a little something like this...
+</p>
+
+<p>
+<img src="images/LoversAndRivalsTutorialPart4-1.png" width="90%" height="90%">
+</p>
+
+<p>
+That is to say, not altogether too different from how we last saw it beyond those lovely, georgeous 0s taking the place of the NAs of yesteryear. Next, let's get our three characters to take their proper positions on the field. We'll start by adding a line to our html file just under our call to initializing the game state.
+</p>
+
+<pre class="prettyprint">
+setupCharacterPositions(500);
+</pre>
+
+<p>
+<i>setupCharacterPositions</i> will place our three characters at different places in the field, so they aren't all standing on top of each other. The 500 we pass in is just a parameter that makes it look nice with the width of the field being what it is. You can adjust it if you like, it doesn't really matter.
+</p>
+
+<p>
+The function itself gets defined in the javascript file. We'll break it down here piece by piece.
+</p>
+
+<pre class="prettyprint">
+var setupCharacterPositions = function(widthOfField){
+	var hero = document.getElementById("hero");
+	var love = document.getElementById("love");
+	var rival = document.getElementById("rival");
+</pre>
+
+<p>
+First thing we do is grab the html component that represents the three characters (i.e., the div tags that house our 0\ and @.o people).
+</p>
+
+<pre class="prettyprint">
+	//Get love to hero closeness.
+	var loveToHeroCloseness = stateInformation.loveToHeroCloseness;
+
+	//Get love to rival closeness
+	var loveToRivalCloseness = stateInformation.loveToRivalCloseness;
+
+	//Get hero to Love closeness
+	var heroToLoveCloseness = stateInformation.heroToLoveCloseness;
+
+	//store the width of field information
+	stateInformation.widthOfField = widthOfField;
+</pre>
+
+<p>
+	We then grab some pertinent information from our local stateInformation variable that we've set up, as well as store the passed in 'width of field' parameter for future calculations.
+</p>
+
+<pre class="prettyprint">
+	//Actually reposition the characters based on their closeness values.
+	//The love's position is an amalgamation of things.
+	var lovePosition = (widthOfField/2) + loveToRivalCloseness - loveToHeroCloseness; // starts in middle, pulled in both directions.
+</pre>
+
+<p>
+This game is all about the affections of the love drawing them closer to the rival and the hero, using physical distance to represent the leanings of the love's heart. But to start, we want the love to be right in the middle of the two suitors, thus, we do a little bit of math to find where the love should be standing.
+</p>
+	
+<pre class="prettyprint">
+	hero.style.left = heroToLoveCloseness + 'px';
+	love.style.left = lovePosition + "px";
+	rival.style.left = widthOfField + "px"; // rival never moves.
+};
+</pre>
+
+<p>
+Finally, we actually position the characters based on the values we determined; the hero is positioned based solely on their closeness to the love, the love is positioned based on what we just calculated above, and the rival is just plopped on the far right hand side of the field, never moving. If you're totally offput by setting these positions by setting an int and the string 'px' to the left field, well, I'm sorry. You are more than welcome to switch over to using jQuery on your own time.
+</p>
+
+<p>Ok, great! With that in place, your characters should finally stop standing on top of each other!</p>
+
+<p>
+<img src="images/LoversAndRivalsTutorialPart4-2.png" width="90%" height="90%">
+</p>
+
+<p>
+
+Now we're finally ready to get into the main game loop. The main game loop is going to look something like this:
+
+<ul>
+	<li>Calculate volitions of the characters</li>
+	<li>Populate the action list</li>
+	<li>Handle action selection.</li>
+</ul>
+
+So, first things first, lets calculate us up some volitions! In your html file, just underneath the call to setupCharacterPositions, we'll add this line:
+
+</p>
+
+<pre class="prettyprint">
+	var storedVolitions = cif.calculateVolition(cast);
+</pre>
+
+<p>
+This tiny little line is actually doing quite a bit of heavy lifting. It's taking the current social state and social history (at present, only what you've defined in your history file), and running it against all of the volition rules you wrote back in part 3 to determine what the characters want to do with each other. At this point though, the volitions are *solely* in the form of volitions, such as 'raise strength' and 'increase closeness.' If we want to translate these volitions into actual actions (such as "do pushups" or "invite to movies"), we're gonna have to do a tiny bit more work.
+</p>
+
+<p>
+Namely, to get our actions we'll call a function tailored specifically for Lovers and Rivals.
+</p>
+
+<pre class="prettyprint">
+	populateActionLists(storedVolitions, cast);
+</pre>
+
+<i>populateActionLists</i>, defined in the js file, is actually pretty straightforward, as its just a wrapper function for a few calls to <i>populateActionList</i> (singular)
+
+<pre class="prettyprint">
+//Fills in all of the actionList divs with buttons corresponding to the actions the player can take
+//by calling individual instances of populateActionList
+var populateActionLists = function(storedVolitions, cast){
+	//populate the action list of hero to love:
+	populateActionList("hero", "love", storedVolitions, cast);
+	populateActionList("hero", "rival", storedVolitions, cast);
+	populateActionList("hero", "hero", storedVolitions, cast);
+};
+</pre>
+
+<p>
+As you can see, for each one of these calls, we pass in two characters, the volitions we calculated, and the cast. We always pass in the hero as the first character because in Lovers and Rivals, all of the actions are done through the hero's perspective (though you could easily make a game where the love or the rival could take actions as well!)
+
+Lets take a look at the function that actually populates the action list!
+
+<pre class="prettyprint">
+//Fills the actionList div with buttons corresponding to the actions the player can take.
+var populateActionList = function(initiator, responder, storedVolitions, cast){
+	var char1 = initiator;
+	var char2 = responder;
+	
+	var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, gameVariables.numIntents, gameVariables.numActionsPerIntent);
+
+</pre>
+
+<p>
+	We see from the parameters of this function that the first character passed in will be the initiator (stored in the local variable char1), and the second character will be the responder. We then figure out the actions that the initiator wants to take towards the responder with a call to cif.getActions, the two chars, storedVolitions, and cast arguments should be pretty familiar, but what about those last two parameters? Well, gameVariables is referring to a variable defined at the top of the javascript file. numIntents is refers to the number of distinct intents we want to see actions for, and numActionsPerIntent is the maximum number of actions to return for any given intent.
+</p>
+
+<p>
+	But just like the seemingly innocent looking cif.calculateVolitions, cif.getActions has returned an array of everything that the initiator wants to towards the responder, given the constraints of the parameters passed in to the function.
+</p>
+
+<pre class="prettyprint">
+	var divName = "actionList_" + char1 + "_" + char2;
+	var actionList = document.getElementById(divName);
+</pre>
+
+
+<p>
+Because this function is used for different pairs of characters, we need to do a smidgen of string manipulation in order to get the html element that refers to the proper action list (i.e., is this the div where the hero's actions towards the love will go? Or the hero towards themselves?).
+</p>
+
+
+<pre class="prettyprint">
+	//Let's make a button for each action the hero wants to take!
+	for(var i = 0; i < possibleActions.length; i += 1){
+		//Make a new button
+		var action = possibleActions[i];
+
+		//If the character doesn't have a strong volition to do this action,
+		//don't include it in the action list.
+		if(action.weight < 0){
+			continue;
+		}
+		var buttonnode= document.createElement('input');
+		buttonnode.setAttribute('type','button');
+		buttonnode.setAttribute('name',action);
+		buttonnode.setAttribute('value',action.displayName);
+		buttonnode.actionToPerform = action;
+		buttonnode.cast = cast;
+		buttonnode.onclick = actionButtonClicked;
+
+		actionList.appendChild(buttonnode);
+	}
+</pre>
+
+<p>
+	So we've figured out our array of actions. Now all that we need do is loop through them and create buttons for them that the user can click on. For each action in possibleActions, we store it in a temporary variable, do a quick check on its weight to make sure that it is positive (and, thus, something that the character actually wants to do towards the responder), and then we actually create the button! The calls to buttonnode.setAttribute is just doing things like identifying it *as* a button, and setting the text of the button itself. But we can also add whatever additional properties we want. As we'll find, it'll actually be pretty convenient for us to add both the cast and the action to the button itself.
+</p>
+
+<p>
+	We'll also give the button a function for its onclick event: <i>actionButtonClicked</i>. We'll discuss it in depth as soon as we're done with this function, but suffice it to say, its the function that gets called whenever this button gets clicked on. And finally, we add the button that we just made to the actionList div through the call to actionList.appendChild.
+</p>
+
+
+<pre class="prettyprint">
+	//Write a little message if there were no possible actions.
+	if(actionList.innerHTML === ""){
+		actionList.innerHTML = "<i>No Actions Available</i>";
+	}
+
+};
+</pre>
+
+<p>
+After the for loop, if there weren't any actions available, we'll add a little note saying that there were no available actions for that specific initiator-responder pair.
+</p>
+
+<p>
+Okay, I said we'd be taking a look at <i>actionButtonClicked</i> and I wasn't lying to you! This function gets called whenever, surprise surprise, an action button is clicked, and is defined in the javascript file. This function is a bit of a doozy, and makes several calls to other functions, which we'll describe AS we see them.
+</p>
+
+<pre class="prettyprint">
+var actionButtonClicked = function(){
+	//Clean away all of the other actions -- they made their choice!
+	clearActionList();
+</pre>
+
+<p>
+We start by cleaning out the action list. Don't worry, it'll come back eventually! Essentially, all this function is doing is making the whole area of the screen where actions are presented hidden (i.e., making them not show up), and then removing their contents by setting the property of their innerHTML field to the empty string.
+</p>
+
+<pre class="prettyprint">
+var clearActionList = function(){
+	//We're first going to make the entire action list disappear
+	var actionArea = document.getElementById("actionArea");
+	actionArea.style.visibility = "hidden";
+
+	//Now we're actually going to remove the actions from the actionLists, because with the new socialState,
+	//characters will likely want to take new actions towards each other.
+	var heroToLoveActionList = document.getElementById("actionList_hero_love");
+	heroToLoveActionList.innerHTML = "";
+	var heroToRivalActionList = document.getElementById("actionList_hero_rival");
+	heroToRivalActionList.innerHTML = "";
+	var heroToHeroActionList = document.getElementById("actionList_hero_hero");
+	heroToHeroActionList.innerHTML = "";
+};
+</pre>
+
+<p>
+Jumping back to actionButtonClicked -- We also want to change the social state basic on the action that the player selected. This is why we wanted to attach the action to the button itself; for the action has all of the effects (bound with the correct characters) that need to be added to the social record!
+</p>
+
+<pre class="prettyprint">
+	//CHANGE THE SOCIAL STATE -- social physics baby!!!
+	var effects = this.actionToPerform.effects; // should be an array of effects.
+	for(var i = 0; i < effects.length; i += 1){
+		cif.set(effects[i]);
+	}
+</pre>
+
+<p>
+Above, we're simply looping through the effects array (which will be an array of predicates) of the action that was stored in the button ("this", in this context, refers to the button pressed), and passing each effect into <i>cif.set</i>. cif.set is kind of the sister function of cif.get. While cif.get returns predicates that represent the current state of the social record, cif.set takes a predicate and either adds it to the record as a new social fact, or uses it to update an existing one, as appropriate.
+</p>
+
+<p>
+Okay, we're doing well! Moving right along, we'll add this line...
+</p>
+
+
+<pre class="prettyprint">
+	//RUN SOME TRIGGER RULES based on the new state!
+	cif.runTriggerRules(this.cast);
+</pre>
+
+<p>
+So now that we've updated the social state, its time to run our trigger rules! You remember trigger rules, right? They're the guys that check the social record to see if something new should be enacted, like, automatically lowering the closeness of people who engaged in self-involved activity. Well, running them as simple as the above line!
+</p>
+
+<p>
+You may be asking yourself, "why do we have to pass the entire cast in each time?" Well, the reason is that you might not *want* to use the entire cast all the time. You can imagine a game that has multiple levels, and only a subset of your entire cast appears on each level. It might not make sense to have characters that are "off stage" forming volition and being affected by trigger rules, so CiF gives you the ability to specify the cast of characters to use.
+</p>
+
+<p>
+Moving on! Let's add a note letting the player know if the action was accepted or rejected.
+</p>
+
+
+<pre class="prettyprint">
+	//Print out if the action was 'accepted' or rejected!
+	var statusArea = document.getElementById("statusMessage");
+	var acceptMessage = this.actionToPerform.displayName + " successful!";
+	if(this.actionToPerform.isAccept !== undefined && this.actionToPerform.isAccept === false){
+		acceptMessage = this.actionToPerform.displayName + " failed!";
+	}
+	statusArea.innerHTML = acceptMessage;
+</pre>
+
+<p>
+We find ourselves once again wielding our mastery over grabbing html elements by id, here the statusMessage div. Each action has the field "isAccept" defined -- a boolean which if true means that the spirit of the action was accepted by the responder, and false if otherwise. Whether the responder accepts or rejects is determined by the volition rules written, plus any action specific influence rules that might be present. Also, though every action *should* have isAccept defined for clarity, if it is left unspecified cif assumes the action to be an 'isAccept' action.
+</p>
+
+<p>
+Next, we'll be updating some local state information, as well as moving the characters to their new positions.
+</p
+
+<pre class="prettyprint">
+	//Re-draw the people (maybe even by having them MOVE to their new positions...)
+	//Also re-draw any debug/state informaton we want.
+	updateLocalStateInformation();
+	displayStateInformation();
+	moveAllCharacters();
+</pre>
+
+<p>
+Our old friends, <i>updateLocalStateInformation()</i> and <i>displayStateInformation()</i> need no introduction. However, the new addition to the party, <i>moveAllCharacters()</i> deserves a warm welcome. This function is going to handle the totally sweet (if somewhat minimal) animation we have in our game.
+</p>
+
+<pre class="prettyprint">
+var moveAllCharacters = function() {
+	console.log("inside of moveAllCharacters");
+
+	//Takes a little bit of computation!
+	var loveDestination = (stateInformation.widthOfField/2 - stateInformation.loveToHeroCloseness*1.5 + stateInformation.loveToRivalCloseness*2.5);
+	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
+	moveByCharacterName("love", loveDestination);
+};
+</pre>
+
+<p>
+Okay okay fine, you caught us. We've got another wrapper function here that makes a couple calls to <i>moveByCharacterName()</i>, which I suppose is the real star here. We also do a little bit of math to figure out where the love wants to move, as a function of their current feelings for the hero and for the rival. Diving deeper into moveByCharacterName...
+</p>
+
+<pre class="prettyprint">
+var moveByCharacterName = function(name, destination){
+	var elem = document.getElementById(name);
+	var startPos = parseInt(elem.style.left, 10); // start off with their current left position.
+	var currentPos = startPos;
+
+	function frame() {
+		if(startPos > destination){ // we are moving backwards.
+			console.log("decrementing...");
+			currentPos -= 1;
+		}
+		else if (startPos < destination){ // we are moving forwards.
+			currentPos += 1;
+			console.log("incrementing...");
+		}
+		elem.style.left = currentPos + 'px';
+		if (currentPos == destination) {
+			clearInterval(id);
+		}
+	}
+
+	var id = setInterval(frame, 10); // draw every 10ms
+
+};
+
+</pre>
+
+<p>
+The basic premise here is very similar to that temporary move function we wrote together back in Part 2. We get the html element representing the character we care about through their name, and figure out their starting position by looking at that element's "left" value. At the bottom of the function, we set up an interval, specifying a function to be called every 10 milleseconds, the "frame" function. The frame function is defined just above the call to setInterval. It essentially checks to see if the character's destination is less than or greater than their current position, and increments or decrements their current position accordingly, ultimately assigning it to their left attribute. Finally, if the currentPos is equal to the destination (i.e., they have reached their destination), then we clear the interval, ending the every-10ms-call to the frame function.
+</p>
+
+<p>
+How you holding up? We're gonna jump back to actionButtonClicked() to finish it up, and then we'll be able to come back up for air, I promise.
+</p>
+
+<pre class="prettyprint">
+	//set up next turn.
+	var event = document.createEvent('Event');
+	event.initEvent('nextTurn', true, true);
+	document.dispatchEvent(event);
+};
+</pre>
+
+<p>
+The final thing we do in this function is create a new event object, which we call 'nextTurn', and dispatch it. This will allow other parts of the html document to understand that CiF has finished updating the social record, running trigger rules, and animating the characters. We'll take a look at this in just a minute, but first, lets check out a couple of screen shots of how your game should be looking.
+</p>
+
+<p>
+<img src="images/LoversAndRivalsTutorialPart4-3.png" width="90%" height="90%">
+</p>
+
+<p>
+When you first load up the game, it should look like the above, with a collection of lovely actions for you to select from! And if you were to, say, select "study math" then you should be greeted by something that looks like this...
+</p>
+
+<p>
+<img src="images/LoversAndRivalsTutorialPart4-4.png" width="90%" height="90%">
+</p>
+
+<p>
+The hero should stay in place because they holed up in their room studying math, and the love, disappointed by the hero's self-involved behavior, will have moved closer to the rival (thanks to one of our trigger rules!). The status area should also have updated, letting us know that our attempts to study math were a rousing success! Good for us! Plus, if you scroll down your game a little, you'll see that all that studying has really paid off, increasing our hero's intelligence!
+</p>
+
+<p>
+
+We've made great progress, but we're not done yet! For one thing, after selecting that single action, no more actions pop up for us to pick! This means that the hero's quest to win the affections is all for naught, unless.... unless... we give the hero the ability to take additional turns! And this is where that event we launched back in actionButtonClicked comes into play!
+</p>
+
+<p>
+To take advantage of the dispatched event, add this line to your html file under your call to populateActionLists():
+</p>
+
+<pre class="prettyprint">
+document.addEventListener("nextTurn", nextTurn);
+</pre>
+
+<p>
+Pretty easy, huh! All this is saying is that when we hear the "nextTurn" event (which you'll remember is the name we gave the custom event we dispatched), then we should call the <i>nextTurn()</i> function, which we haven't actually defined yet. So let's define it now! And let us define this function in our html file, just <b>above</b> our added event listener.
+</p>
+
+<pre class="prettyprint">
+var nextTurn = function(){
+	gameVariables.turnNumber += 1;
+	checkForEndConditions();
+	if(gameVariables.gameOver === true){
+		var endMessageArea = document.getElementById("statusMessage");
+		endMessageArea.innerHTML = gameVariables.endingText;
+	}
+</pre>
+
+<p>
+The first thing we do is increment the turnNumber stored in our gameVariables array. We then call checkForEndConditions(), which checks to see if the game should be over; if so, we update the statusMessage to have the appropriate game over text (either "you win!" or "you lose!" as appropriate) Taking a brief aside to look at what is inside of checkForEndConditions, we see we have...
+</p>
+
+<pre class="prettyprint">
+//Checks to see if the game is over!
+var checkForEndConditions = function(){
+	if(stateInformation.loveToRivalCloseness >= 90){
+		//uh oh, we lose!
+		gameVariables.gameOver = true;
+		gameVariables.endingText = "Game Over! Your Love is in the arms of your Rival!";
+	}
+	if(stateInformation.loveToHeroCloseness >= 90 && stateInformation.heroToLoveCloseness >= 90){
+		gameVariables.gameOver = true;
+		gameVariables.endingText = "Game Over! Your Love is sufficiently interested in you for you to feel good about yourself!";
+	}
+};
+</pre>
+
+<p>
+All this function does is checks to see the love's closeness value to the rival -- if 90 or greater, then you lose, the love loves the rival too much for you to ever have a chance! Conversely, if the love's closeness to the hero is 90 or more, AND the hero's closeness to the love is ALSO 90 or more, well, that's a whole 'nother story--in that case you win! Hooray!
+</p>
+
+<p>
+We return to your regularly scheduled nextTurn(), already in progress.
+</p>
+
+<pre class="prettyprint">
+	else{
+		cif.setupNextTimeStep();
+		storedVolitions = cif.calculateVolition(cast);
+		populateActionLists(storedVolitions, cast);
+		cleanUpUIForNewTurn();
+	}
+};
+</pre>
+
+<p>
+We get inside of this else block if the game's ending conditions have not yet been met. The first thing we do is make a call to cif.setupNextTimeStep() -- this let's CiF know that we're moving forward in time by advancing a step forward in the social record. This current time step is up for modification through future actions and trigger rules, but the results of the previous turn (namely that the hero's intelligence went up a little, and that the love's closeness for the rival increased) are etched into the social record as having happened at time step 0. Those same values can (and likely will) change at time step 1, 2, 3, etc., but turn 0 is in the past and untouchable!
+</p>
+
+<p>
+cif.calculateVolition and populateActionLists are more old friends come back again; We re-calculate the volitions of the characters now that the social state has changed (e.g., now that the hero is more intelligent, maybe there are new, different things that they want to do!). Once the new volitions are formed, populateActionLists takes those volitions and translates them into the buttons that the player can click on to perform an action! 
+</p>
+
+<p>
+And last, but certainly not least, we call <i>cleanUpUIForNewTurn()</i> We'll define this bad boy back in our javascript file.
+</p>
+
+<pre class="prettyprint">
+var cleanUpUIForNewTurn = function(){
+	var actionArea = document.getElementById("actionArea");
+	actionArea.style.visibility = "visible";
+
+	var turnNumberArea = document.getElementById("turnNumberPlace");
+	turnNumberArea.innerHTML = gameVariables.turnNumber;
+};
+</pre>
+
+<p>
+All we're doing here is making the action buttons visible again (we hid them earlier), and updating the turn number in the UI.
+</p>
+
+<p>
+And with that, we're done! Try playing the game you just created and see if you can win the heart of your love!
+</p>
+
+<p>
+<img src="images/LoversAndRivalsTutorialPart4-5.png" width="90%" height="90%">
+</p>
+
+<h2>Closing Words</h2>
+
+<p>
+We hope you enjoyed this tutorial! You should now have everything you need to start making CiF games of your very own! We admit, it took a little bit of work to set everything up for this simple (though no less awesome for its simplicity) game. BUT, now that you have everything in place, adding new rules, actions, and social considerations is a snap! Lovers and Rivals already has smidges of procedural rhetoric embedded in it (studying anatomy is purely better than studying math in this game, for example! People want to be kissed after you write them a few love notes!), but you could alter it to purport a world view that you actually believe in.
+</p>
+
+<p>
+In short, though using CiF takes a bit of ramping up, we believe that it facilitates the creation of gameplay experiences untenable to create through other means. So please, let your imagination run rampant and create works of social-based gameplay hithertofore unseen! We know you can do it!
+</p>
+<p>
+I mean, heck, if a \o/ can find true love, then anything is possible!

@@ -1,0 +1,56 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISERESPECT",
+			"intent" : {
+				"class" : "networks",
+				"type"  : "respect",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["MIDDLE"]
+		},
+		{
+			"name" : "MIDDLE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["compliment-accept", "compliment-reject"]
+		},
+		{
+			"name" : "compliment-accept",
+			"conditions" : [],
+			"isAccept" : true,
+			"displayName" : "Compliment",
+			"influenceRules" : [
+			],
+			"effects" : [{
+				"class" : "networks",
+				"type" : "respect",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10		
+			}]
+		},
+		{
+			"name" : "compliment-reject",
+			"conditions" : [],
+			"displayName" : "Compliment",
+			"isAccept" : false,
+			"influenceRules" : [
+			],
+			"effects" : [{
+				"class" : "networks",
+				"type" : "respect",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10		
+			}]
+		}
+	]
+}

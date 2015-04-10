@@ -294,7 +294,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	/**
-	* @description  Search the SFDB for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. cif.get() should be called by public, this should only be used internally.
+	* @description  Search the SFDB for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. 
 	*
 	* @method get
 	* @memberof CiF
@@ -304,6 +304,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	* @param {Bool} useDefaultValue - If true, then if the searchPredicate is not explicitly found in the sfdb it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
 	* @return {Array} matchedResults	the array holding the found predicates which match the query
 	*/
+	//cif.get() should be called by public, this should only be used internally.
 	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue) {
 
 		var searchValue = searchPredicate.value;

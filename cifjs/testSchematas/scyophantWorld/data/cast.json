@@ -1,0 +1,10 @@
+{
+	"cast": {
+		"proudGuy": {
+			"name": "MrProud"
+		},
+		"humbleGuy": {
+			"name": "MrHumble"
+		}
+	}
+}

@@ -55,9 +55,13 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	var socialStructure;
 	var characters;
 	var fullCharacters;
+	var skipBackup = "skip"; // helper variable to skip backuping up files when creating a new rule.
 
 	var maxBackupFiles = 10;
 	var maxValidNumberOfActions = 10; // The maximum number of actions that are printed between pairs of characters.
+	var maxValidNumberOfIntents = 10;
+	var maxValidNumberOfActionsPerIntent = 10;
+	var maxActionsPerGroup = 1;
 
 	// stores the origins of all loaded rules.
 	// For now, we assume that the fileName field within the rule matches the filename of the file it came from. TODO: possible to do this automatically?
@@ -80,7 +84,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 	// Activate tabs to switch between rulesets in Rules pane.
 	$("#rulesTabs").tabs({
-		activate: function(event, ui) { 
+		activate: function(event, ui) {
 			var tabName = ui.newTab[0].innerText;
 			$("#newRuleButton").html("New " + tabName + " Rule");
 		}
@@ -92,7 +96,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	$("#cmdVolitions").tooltip({content: "<p>Use <b>volitions</b> to see the current ranked volitions from the first character to the second.</p><ul><li>volitions(al, bob)</b> :: <i>shows what changes in the social state Al most wants towards Bob</i></li><li>volitions(Carla)</b> :: <i>Shows Carla's volitions towards everyone else.</i></li></ul>"});
 	$("#cmdNext").tooltip({content: "<p>Use <b>next</b> to advance the timestep.</p><ul><li><b>next()</b></li></ul>"});
 	$("#cmdShow").tooltip({content: "<p>Use <b>show</b> to see all currently true info about a character.</p><ul><li><b>show(diane)</b></li></ul>"});
-	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second, max of three.</p><ul><li><b>actions(al, diane, 3)</b> :: <i>shows the top three actions Al wants to take towards Diane</i></li><li><b>actions(bob)</b> :: <i> Shows the top action Bob wants to take towards everyone else.</i></li></ul>"});
+	$("#cmdActions").tooltip({content: "<p>Use <b>actions</b> to see an ordrered list of actions the first character wants to take towards the second.</p><ul><li><b>actions(al, diane)</b> :: <i>shows the actions Al wants to take towards Diane</i></li><li><b>actions(al)</b> :: <i>shows the actions Al wants to take towards everyone.</i></li></ul>"});
 	$("#cmdDoAction").tooltip({content: "<p>Use <b>doAction</b> to perform an action from the first character to second. The social state will be updated to reflect the results of the actions. Use the <b>actions</b> command to get the numbers of potential actions.</p><ul><li><b>doAction(al, diane, 0)</b> :: <i>performs 'action 0' from Al to Diane</i></li><li><b>doAction(bob, jane, reminisce)</b> :: <i> Make Bob reminisce with Jane.</i></li></ul>"});
 
 	// Setup interface buttons.
@@ -121,11 +125,24 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		ruleWrapper.rules = [newRule];
 		ruleWrapper.type = type;
 		
+		//BEN START HERE
 		var newIds = cif.addRules(ruleWrapper);
+		var cifRule = cif.getRuleById(newIds[0]);
+		if(cifRule === false){
+			//Something bad happened where the rule apparantly wasn't added correctly. Abort and show an error.
+			messages.showError("Canceling New Rule: Error adding empty new rule to CiF");
+			return;
+		}
 		var newLoadedRule = cif.getRuleById(newIds[0]);
 		rulesEditor.loadRule(newLoadedRule, type);
+		
+
+		//BEN ALSO START HERE!
+		//Try to programmatically click the 'update rule eset button' here...
+		//pass in 'true' to signify we should opt out of making a backup file.
+		rulesEditor.save(skipBackup);
 		$("#tabLiRulesEditor a").click();
-	}
+	};
 
 	$("#newRuleButton").click(newRule);
 
@@ -161,7 +178,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		var min = d.getMinutes();
 		stamp += (min < 10 ? ("0" + min) : min);
 		return stamp;
-	}
+	};
 
 
 	// ****************************************************************
@@ -213,7 +230,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		// Only consider files in this directory as counting towards the maximum if they start with the master filename and end with .json
 		backupFiles = backupFiles.filter(function(f) {
 			return f.split("_")[0] === ruleFile && f.substr(f.length - 5) === ".json";
-		})
+		});
 		if (backupFiles.length > maxBackupFiles) {
 			// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
 			backupFiles.sort();
@@ -227,7 +244,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		// console.log("copying '" + origFilePath + "' to '" + backupFilePath);		
 		var f = fs.readFileSync(origFilePath);
 		fs.writeFileSync(backupFilePath, f);
-	}
+	};
 
 
 	// Take a rules type (like "volition" etc.) and a filename, and write out all the rules CiF has of that type and matching that filename origin to the file in question.
@@ -256,14 +273,16 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			fs.writeFileSync(path, serializedRules);
 			// console.log("writing to '" + path + "':");
 		}
-	}
+	};
 
 
 	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
 	// NOTE: must be defined before we call rulesEditor.init()
-	var saveRules = function(ruleType, ruleFile, optOrigActiveFile) {
+	var saveRules = function(ruleType, ruleFile, optOrigActiveFile, optSkipBackup) {
 
-		backupRulesFile(ruleFile);
+		if(optSkipBackup !== skipBackup){
+			backupRulesFile(ruleFile);
+		}
 
 		var ruleTypeShort;
 		if (ruleType === "triggerRules" || ruleType === "trigger") {
@@ -280,10 +299,11 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			backupRulesFile(optOrigActiveFile);
 			writeRulesForFileToDisk(ruleTypeShort, optOrigActiveFile);
 		}
-	}
+	};
 
 	var loadAllFilesFromFolder = function(allFilesInFolder) {
-		var files = allFilesInFolder.split(";");
+		//var files = allFilesInFolder.split(";"); -- fix for when node.js broke, but they seem to have fixed it.
+		var files = allFilesInFolder;
 		return new Promise(function(resolve, reject) {
 			var fileContents;
 			try {
@@ -299,6 +319,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 					// Ignore files that don't appear to BE json.
 					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
+
+					// Ignore files that appear to be backup files.
+					if(filename.indexOf("_bak_") > -1){
+						console.log("Skipping '" + filename + "' because it appears to be a backup file.");
+						continue;
+					}
 
 					content.source_file = filename;
 					fileContents.push(content);
@@ -326,13 +352,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 			// Due to annoying bug noted at link below, we have to do string-munging to get the folder selected. Also complicated by forward vs backslashes in paths on Mac vs Windows.
 			// https://github.com/nwjs/nw.js/issues/2961
+			// Based on the above URL, it would appear that they have now fixed this issue.
+		/*
 			var listOfAllFiles = this.value;
+			console.log("Here is listOfAllFiles: ", listOfAllFiles);
 			var firstFile = listOfAllFiles.split(";")[0];
 			var posOfLastSlash = firstFile.lastIndexOf("/");
 			if (posOfLastSlash < 0) {
 				posOfLastSlash = firstFile.lastIndexOf("\\");
 			}
-			var schemaDir = firstFile.substr(0,posOfLastSlash);
+			*/
+			//var schemaDir = firstFile.substr(0,posOfLastSlash);
+			var schemaDir = this.value;
 			// Finally! Now we can save:
 			lastPath = schemaDir;
 			cif.reset();
@@ -341,9 +372,15 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			historyViewer.reset();
 			rulesViewer.show();
 
+			var arrayOfAllFiles = fs.readdirSync(schemaDir);
+			for(var i = 0; i < arrayOfAllFiles.length; i+=1){
+				var nameOfFile = arrayOfAllFiles[i];
+				arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
+			}
+
 			// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
 			// http://www.html5rocks.com/en/tutorials/es6/promises/		
-			loadAllFilesFromFolder(listOfAllFiles).then(function(files) {
+			loadAllFilesFromFolder(arrayOfAllFiles).then(function(files) {
 				// "files" is now an array of objects, the parsed contents of the files. First find the schema definition.
 
 				var schemaPos = -1;
@@ -360,6 +397,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					loadSchema(files[schemaPos]);
 				} else {
 					cmdLog("No schema file found.");
+					console.log("here are the values of files: ", files);
 					return;
 				}
 
@@ -668,8 +706,8 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	// Handle the "actions" console command (show the current actions that the first character wants to take towards the second.)
-	var doActions = function(char1, char2, numberOfActions){
-		console.log("Doing actions for " + char1 + " and " + char2 + " with this number of actions: " + numberOfActions);
+	var doActions = function(char1, char2){
+		//console.log("Doing actions for " + char1 + " and " + char2 + " with numIntents: " + numIntents + " actionsPerIntent: " + numActionsPerIntent + " numActionsPerGroup " + numActionsPerGroup);
 		var i;
 		var logMsg = "<table>";
 		var actions = [];
@@ -677,19 +715,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			storedVolitions = cif.calculateVolition(characters);
 		}
 
-		actions = getActionList(char1, char2, storedVolitions, numberOfActions);
+		//Right now, we specify a large number for maximum intents, and maximum actions per intent.
+		actions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup);
 
-/*
-		//If we only want 1 action, we'll return the BEST action, right?
-		if(numberOfActions === 1){
-			actions[0] = cif.getAction(char1, char2, storedVolitions, characters);
-		}
-		else{
-			//If we want more than 1 action, we'll do that for them too!
-			//We are going to default to '1 action per volition' for 'numberOfActions' worth of volitions
-			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
-		}
-*/
 		//Go through each action, and add a row in a table to display to the user saying the name of the action
 		//the effects that would transpire if they were to do it.
 		for(i = 0; i < actions.length; i += 1){
@@ -711,23 +739,15 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	// Handle the "doAction" console command, performing the given action from the first character to the second.
 	var doDoAction = function(char1, char2, action, isAccepted){
 		//Print out some nice things to the console letting the user know what action is taking place
+		isAccepted = false;
+		if(action.isAccept === undefined || action.isAccepted === true){
+			isAccepted = true;
+		}
 		cmdLog("<b>" + char1 + "</b> is doing action <b>" + action.name + "</b> with <b>" +char2+ "</b> accepted: <b>" + isAccepted + "</b>", true);
 		cmdLog("<b> CHANGED SOCIAL STATE: </b><BR>-----------------", true);
 	
-		//Right now the action is unbounded; we should do the binding!
-		//(i.e. fill in the 'roles' of the effect with actual character names)
-		//action = actionLibrary.bindActionEffects(char1, char2, action);
 
 		//Let's grab the appropriate set of effects.
-		/*
-		var effects;
-		if(isAccepted){
-			effects = action.acceptEffects;
-		}
-		else{
-			effects = action.rejectEffects;
-		}
-		*/
 		var effects = action.effects;
 
 		for(var i = 0; i < effects.length; i += 1){
@@ -739,14 +759,17 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			//Helper string; if the value of the effect is false, say that the character does NOT have this state anymore.
 			var notString;
 			notString = "is now";
-			if(effects[i].value === false){
+			if(effects[i].value === false && d.isBoolean){
 				notString = "is no longer";
 			}
 
 			//Tack on a helpful note at the end of the console message if 
 			//the 'effect' we are setting isn't actually a change from the current social state.
 			var origValue = cif.get(effects[i]);
-			var alreadyTrue = origValue.length > 0;
+			var alreadyTrue;
+			if(d.isBoolean){
+				var alreadyTrue = origValue.length > 0;
+			}
 			var alreadyTrueString = "";
 			if(alreadyTrue){
 				alreadyTrueString = "(FYI, this was already true)";
@@ -755,14 +778,28 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			//Actually update the sfdb!
 			cif.set(effects[i]);
 
+			//Grab a reference to the new value, whatever it is
+			//(i.e., we are letting cif to the adding/subtrating from the previous value for us.)
+			var newValue = cif.get(effects[i]);
+			var newNumber;
+			if(!d.isBoolean){
+				newNumber = newValue[0].value;
+			}
+
+			//Adding a little thing if we are dealing with a number.
+			var newValueString = "";
+			if(!d.isBoolean){
+				newValueString = newNumber;
+			}
+
 			//Print out a message to the console letting the user know what changed.
 			if(directionType === "undirected"){
 				//only involves one person
-				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + alreadyTrueString, true);
+				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + newValueString + " " + alreadyTrueString, true);
 			}
 			else if(directionType === "directed" || directionType === "reciprocal"){
 				// it is directed or recipricol; involves two people
-				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> <b>" +effects[i].second + "</b> " + alreadyTrueString, true);
+				cmdLog("<b>" + effects[i].first + "</b> " + notString + " <b>" + effects[i].type + "</b> " + newValueString + " <b> " +effects[i].second + "</b> " + alreadyTrueString, true);
 			}
 		}
 
@@ -824,7 +861,9 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			while (pos < params.length) {
 				var foundThisTime = 0;
 				for (var i = 0; i < charKeys.length; i++) {
-					if (charDict[charKeys[i]].name.toLowerCase() === params[pos]) {
+					//we want either their printed name OR their id name to be acceptable...
+					if (charDict[charKeys[i]].name.toLowerCase() === params[pos]
+						|| charKeys[i].toLowerCase() === params[pos]) {
 						found.push(charKeys[i]);
 						params.splice(pos, 1);
 						foundThisTime += 1;
@@ -879,7 +918,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			if (chars.length === 1) {
 				// Run for every other character.
 				for (var j = 0; j < characters.length; j++) {
-					if (characters[j] === chars[0]) continue;
+					if (characters[j] === chars[0]){} // continue; // actually characters can have actions towarsd themselves now.
 					processCommand("volitions(" + chars[0] + "," + characters[j] + ")"); 
 				}
 				return;
@@ -890,69 +929,49 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 
 		if (command === "actions") {
 			var validNumbers = [];
-			var numberOfActions;
-			var numActions;
-			for(var i = 0; i < maxValidNumberOfActions; i += 1){
-				validNumbers[i] = (i + 1).toString();
-			}
+			
+			//This currently doesn't allow the user to specify 'numIntents' and 'numActionsPerIntent'
+			//It makes the 'sorting' of actions a lot easier, and it also is less parameters for the user to keep track of.
+			//Still, this might be something we'll want to revisit someday.
+			
+			//I think we can (and should) still extract the characters in the same way.
 			chars = charExtract(fullCharacters, "characters", 1, 2);
-			numberOfActions = extract(validNumbers, "numberOfActions", 0, 1);
-			// console.log("Umm... ok... what is vlaue of numberOfActions right after the extract? ", numberOfActions);
-			if(numberOfActions === undefined || numberOfActions.length <= 0){
-				numActions = 1;
-			}
-			else{
-				numActions = parseInt(numberOfActions[0]);
-			}
-			// console.log("Ok, let's see, did I manage to parse the number of actions successfully?", numActions);
+
+			//And if only one character was specified, we'll re-run the command for every possible set of characters.
 			if(chars.length === 1){
 				//run for every other character.
 				for (var j = 0; j < characters.length; j++){
-					if (characters[j] === chars[0]) continue;
-					processCommand("actions(" + chars[0] + "," + characters[j] + ", " + numActions + ")");
+					if (characters[j] === chars[0]) {} //continue; -- we actually WANT people to form actions towards each other!
+					processCommand("actions(" + chars[0] + "," + characters[j] + ")");
 				}
 				return;
 			}
 			if (!chars) return;
-			return doActions(chars[0], chars[1], numActions);
-			/*
-			chars = extract(characters, "characters", 1, 2);
-			if (chars.length === 1) {
-				// Run for every other character.
-				for (var j = 0; j < characters.length; j++) {
-					if (characters[j] === chars[0]) continue;
-					processCommand("volitions(" + chars[0] + "," + characters[j] + ")"); 
-				}
-				return;
-			}
-			if (!chars) return;
-			return doVolitions(chars[0], chars[1]);
-			*/
+			return doActions(chars[0], chars[1]);
 		}
 
 		if (command === "doaction"){
 
 			//Grab the characters from the string.
-			chars = charExtract(fullCharacters, "characters", 2, 2);
+			chars = charExtract(fullCharacters, "characters", 1, 2);
 			if (!chars) return;
 			var char1 = chars[0];
-			var char2 = chars[1];
-
-			// Reject commands with the same character multiple times.
-			if (chars.length === 2 && chars[0] === chars[1]) {
-				return cmdLog("Can't reference the same character twice.");
+			var char2;
+			if(chars.length < 2){
+				//they only specified one character, assume they are referring to a 'self' action
+				char2 = chars[0];
+			}
+			else{
+				char2 = chars[1];
 			}
 
 			if (storedVolitions === undefined) {
 				storedVolitions = cif.calculateVolition(chars);
 			}
 
-			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfActions)
-
-			//Let's get all of the actions that a character can do towards another...
-			//var potentialActions = cif.getActions(char1, char2, storedVolitions, chars, maxValidNumbers, 1, 1);
-
-			console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
+			//just get ALL the potential actions, by passing in the maximum possible values of everything.
+			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup)
+			//console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
 
 			//Get the list of all possible action names that exist.
 			//var actionNames = [];
@@ -964,48 +983,7 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				validEntries.push(i.toString());
 			}
 
-			console.log("Here are the valid entries someone can type in!", validEntries);
-
-			//allCandidates will be used by 'extract' to make sure that they typed a valid action reference
-			//The action reference can either be the 'name' of an action, or a 'number' (which can be seen
-			//by using the 'actions' command in the interface)
-			//var allCandidates = util.clone(actionNames);
-
-			/*
-			var vol = storedVolitions.getFirst(char1, char2);
-			var acceptableActions = []; // actions the character actually wants to take
-			var acceptableIndexes = []; // indeces that map to actions the character actually wants to take.
-			var actionList = []; // Actual action object (stored in the same index as the previous two arrays)
-			var currentActionIndex = 0; //Just a counter, used to track "good' action indexes."
-			var desiredAction = undefined;
-			var foundDesiredAction = false;
-			var acceptedArray = [];
-			var isAccepted;
-			*/
-
-			/*
-			while (vol !== undefined){
-				var possibleActionsForThisVolition = actionLibrary.getActionsFromVolition(vol);
-				for(var i = 0; i < possibleActionsForThisVolition.length; i +=1){
-					//Each volition might have multiple actions attached to it.
-					//This is us testing that! The only "acceptable" actions are actions that should show up
-					//in this list!
-					acceptableActions.push(possibleActionsForThisVolition[i].name.toLowerCase());
-					acceptableIndexes.push(currentActionIndex.toString());
-					actionList.push(possibleActionsForThisVolition[i]);
-					allCandidates.push(currentActionIndex.toString());
-					if(storedVolitions.isAccepted(char1, char2, possibleActionsForThisVolition[i].intent)){
-						acceptedArray.push(true);
-					}
-					else{
-						acceptedArray.push(false);
-					}
-					currentActionIndex += 1;
-				}
-				// Retrieve the next volition and continue the while loop if it's not undefined.
-				vol = storedVolitions.getNext(char1, char2);
-			}
-			*/
+			//console.log("Here are the valid entries someone can type in!", validEntries);
 
 			//So, this will catch two things:
 			//1.) If they typed in a nonsense action that doesn't exist
@@ -1030,39 +1008,6 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 					break; // if we got it, we got it! Get outta here!
 				}
 			}
-
-			/*
-			if( nameIndex !== -1){
-				//console.log(" found it in the action names!");
-				foundDesiredAction = true;
-				desiredAction = actionList[nameIndex];
-				isAccepted = acceptedArray[nameIndex];
-			}
-			else{
-				//uh oh, it wasn't there, we must be dealing with an index!
-				desiredAction = potentialActions[actionSearch];
-			}
-			*/
-
-			/*
-			var indexIndex = $.inArray(actionSearch, acceptableIndexes);
-			if( indexIndex !== -1){
-				//console.log("found it in the index list!");
-				foundDesiredAction = true;
-				desiredAction = actionList[indexIndex];
-				isAccepted = acceptedArray[indexIndex];
-			}
-			*/
-
-			/*
-			//Print out an error message if they typed in an action name that characters don't have volition to perform.
-			if(foundDesiredAction){
-				;//console.log("You wanted to " + desiredAction.name + " and the characters wanted to do that too!")
-			}
-			else{
-				return cmdLog(char1 + " does not have sufficient volition to " + actionSearch + " " + char2);
-			}
-			*/
 
 			//And now we can actually hope to do the action!
 			return doDoAction(char1, char2, desiredAction);
@@ -1199,14 +1144,24 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 	};
 
-	var getActionList = function(char1, char2, storedVolitions, numberOfActions){
+	var getActionList = function(char1, char2, storedVolitions, numberOfIntents, numActionPerIntent, numActionsPerGroup){
 		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
 		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
 		//the 'first' entry in the list of best actions. Perfect, right?
-		var actions = [];
-		var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+		//var actions = [];
+		//var bestAction = cif.getAction(char1, char2, storedVolitions, characters);
+
+
+		var bestActions = cif.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
+
+
+		//I think we might need to reverse sort these guys.
+
+		/*
 		if(numberOfActions > 1){
-			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfActions, 1, 1);
+			//I think it makes the most sense to just get a *slew* of actions, and then pair it down based on score.
+			//UGH, does it? No, of course not. It makes more sense to let the user specify each attribute, if they want.
+			actions = cif.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
 			if(actions[0].name !== bestAction.name){
 				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
 				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
@@ -1219,10 +1174,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 				}
 			}
 		}
+		
 		else{ // ok, we are dealing with an easy case. Thank goodness.
 			actions[0] = bestAction;
 		}
-		return actions;
+		*/
+		return bestActions;
 	}
 	
 	// Handle a keypress on the console, which might be a letter, enter (to submit) or up/down arrow (to scroll through command history).
