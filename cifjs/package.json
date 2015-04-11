@@ -10,8 +10,8 @@
     "grunt-jsdoc": "~0.5.8",
     "grunt-node-webkit-builder": "~1.0.2",
     "grunt-require": "~1.1.2",
+    "grunt-shell": "^1.1.2",
     "grunt-strip-code": "~0.1.2",
-    "node-webkit-builder": "^1.0.6",
-    "grunt-shell": "~1.1.2"
+    "node-webkit-builder": "^1.0.6"
   }
 }

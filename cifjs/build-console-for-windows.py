@@ -2,7 +2,8 @@ import zipfile
 import os
 import shutil
 import subprocess
-print ('Hello')
+import platform
+print ('Hello, let me make a windows executable of the authoring tool for you today!')
 
 #Create a zip file of an entire directory (src) and save the zip file to dst.
 def zip(src, dst):
@@ -55,7 +56,7 @@ def zipNodeWebkitFiles(dst):
 def makeEmptyZipFile(zipName):
 	zf = zipfile.ZipFile("%s.zip" % (zipName), "w", zipfile.ZIP_DEFLATED)
 
-zipFileName = "pythonOutput2"
+zipFileName = "pythonOutput"
 releaseName = "authoringTool-Windows"
 
 #Python doesn't like creating zip files with the same names as things that already exist.
@@ -72,11 +73,7 @@ except OSError:
 
 #This is the function that has some things hard coded...
 #zipNodeWebkitFiles(zipFileName)
-
-print("correct file")
-
-
-
+#print(os.name)
 
 zipf = zipfile.ZipFile(zipFileName + '.zip', 'w')
 zipdir("ciftool", zipf)
@@ -116,7 +113,13 @@ shutil.move("../" + zipFileName + ".nw", zipFileName +".nw")
 
 
 #copy command magic!
-os.system("copy /b nw.exe+" + zipFileName + ".nw " + zipFileName + ".exe")
+#This command changes depending on the operating system we are running
+#this script on.
+currentOperatingSystem = platform.system()
+if(currentOperatingSystem == "Windows"):
+  os.system("copy /b nw.exe+" + zipFileName + ".nw " + zipFileName + ".exe")
+else:
+  os.system("cat nw.exe " + zipFileName + ".nw > " + zipFileName + ".exe")
 
 
 
