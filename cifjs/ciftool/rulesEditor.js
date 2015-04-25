@@ -604,6 +604,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
 			// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
+			activeRule[source[0]][source[1]].value = oldVal;
 			$(this).val(oldVal)
 				.focus();
 		} else {
