@@ -91,10 +91,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 	//if optSkipBackpu is true, it won't create a backup file.
 	var save = function(optSkipBackup) {
-		console.log("beginning saving process...");
-		if(activeFile === ""){
-			return; // don't save if we aren't working with an actual file.
-		}
+		console.log("beginning saving process...", activeFile);
 		var results = cif.setRuleById(activeRule.id, activeRule);
 		if (!results) {
 			messages.showAlert("Unable to save rule.");
@@ -102,6 +99,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			$("#tabLiRulesViewer a").click();
 			rulesViewer.show();
 			messages.showAlert("Updated Rule " + activeRule.id + ".");
+			if(activeFile === ""){
+				return; // don't save if we aren't working with an actual file.
+			}
 			var ruleType = activeRule.id.split("_")[0];
 			saveRules(ruleType, activeRule.origin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in cifconsole.js on init.
 		}
