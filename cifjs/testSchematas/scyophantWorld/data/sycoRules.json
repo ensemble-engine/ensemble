@@ -3,31 +3,7 @@
 	"type": "volition",
 	"rules": [
 		{
-			"name": "Proud guys don't like increasing respect towards others",
-			"conditions": [
-				{
-					"class": "trait",
-					"type": "proud",
-					"first": "someone",
-					"value": true
-				}
-			],
-			"effects": [
-				{
-					"class": "networks",
-					"type": "respect",
-					"first": "someone",
-					"second": "other",
-					"weight": -5,
-					"intentDirection": true,
-					"value": true
-				}
-			],
-			"origin": "sycoRules",
-			"id": "volitionRules_1"
-		},
-		{
-			"name": "Humble guys like increasing respect for others",
+			"name": "New Volition Rule",
 			"conditions": [
 				{
 					"class": "trait",
@@ -48,7 +24,7 @@
 				}
 			],
 			"origin": "sycoRules",
-			"id": "volitionRules_2"
+			"id": "volitionRules_5"
 		}
 	]
 }

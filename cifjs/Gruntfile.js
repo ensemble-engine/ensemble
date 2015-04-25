@@ -27,6 +27,21 @@ module.exports = function(grunt) {
         ],
       }
     },
+    shell: {
+        options: {
+            stderr: false
+        },
+        target: {
+            command: 'python build-console-for-windows.py'
+        },
+        chdir: {
+            command: "cd manualWebkitTest"
+        },
+        dirList: {
+          command: "ls"
+        }
+
+    },
     jsdoc : {
         dist : {
             src: 'js/CiF/*.js',
@@ -48,7 +63,7 @@ module.exports = function(grunt) {
       dist: {
         options: {
            downloadUrl: "http://dl.nwjs.io/",
-           platforms: ['win','osx'],
+           platforms: ['osx'],
             buildDir: './build', // Where the build version of my node-webkit app is saved
        },
        src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
@@ -165,6 +180,9 @@ module.exports = function(grunt) {
   //Load the plugin that provides the 'jsdoc' task
   grunt.loadNpmTasks('grunt-jsdoc');
 
+  //Load the plugin that provides the 'shell' task
+  grunt.loadNpmTasks('grunt-shell');
+
   // Load the plugin to wrap CiF Console as a standalone app.
   grunt.loadNpmTasks('grunt-node-webkit-builder');
 
@@ -200,5 +218,5 @@ module.exports = function(grunt) {
   //There is some problem going on where the console seems to not WORK when copied :( -- maybe build a new version from the webkit version?)
   //grunt.registerTask("techRelease", ["copy:techRelease"]);
 
-
+  grunt.registerTask('python', ['shell:target']);
 };
