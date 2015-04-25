@@ -360,6 +360,10 @@ margin-left: 6em;
 	position: relative;
 	top: -4px;
 }
+.edvalue input {
+	width: 2em;
+	text-align: center;
+}
 select optgroup { font-weight:bold; }
 
 .ruleTypeLabel {

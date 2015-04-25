@@ -292,10 +292,20 @@ function(util, _, $, sfdb) {
 				if (!isBool && typeof pred.value !== "number") {
 					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean false";
 				}
+				if (!isBool && isNaN(pred.value)) {
+					return "'value' was '" + pred.value + "' which is not a number: class '" + predicate.class + "' specifies numeric value";
+				}
 				if (isBool && typeof pred.value !== "boolean" && pred.value !== undefined) {
 					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean true";
 				}
-				// If numeric, could check against min and max here.
+				if (!isBool) {
+					if (typeof descriptors.max === "number" && pred.value > descriptors.max) {
+						return "'value' was '" + pred.value + "' but that exceeds max of '" + descriptors.max + "' for class '" + predicate.class + "'";
+					}
+					if (typeof descriptors.min === "number" && pred.value < descriptors.min) {
+						return "'value' was '" + pred.value + "' but that's below min of '" + descriptors.min + "' for class '" + predicate.class + "'";
+					}
+				}
 				delete pred.value;
 			}
 

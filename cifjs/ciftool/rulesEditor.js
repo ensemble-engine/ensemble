@@ -398,7 +398,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		replaceWithSimpleMenu(".edeffectsP .eddirection", dirArray, changeDirection, "direction");
 		replaceWithLinkedText(".edfirst, .edsecond");
 		replaceWithSimpleMenu(".edweight", ["+10", "+5", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-5", "-10"], changeWeight, "weight");
-		replaceWithSimpleMenu(".edvalue", ["100", "90", "80", "70", "60", "50", "40", "30", "20", "10", "0"], changeValue, "value");
+		replaceWithTextEntry(".edvalue", "value");
 
 		replaceWithClickable(".newPredicate span", newPredicate);
 		replaceWithClickable(".remove", removePred);
@@ -572,6 +572,46 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			$("#"+id).val(origVal);
 		})
 	}
+
+	// Replace all matching components with a text-entry field.
+	var replaceWithTextEntry = function(selector, type) {
+		console.log("calling replaceWithTextEntry");
+		$(selector).each(function() {
+			var that = $(this);
+			var id = type + that.data("rule-source");
+			var inputEl = $("<input>", {
+				type: "text",
+				id: id,
+				name: id,
+				val: that.html()
+			});
+
+			that.html(inputEl);
+			inputEl.on("blur", onValueChangeConfirm);
+		});
+	}
+
+	var onValueChangeConfirm = function() {
+		var val = $(this).val().trim();
+		if (val === "") { 
+			return;
+		}
+
+		var source = $(this).parent().data("rule-source").split("_");
+		var oldVal = activeRule[source[0]][source[1]].value;
+		changeValue(source[0], source[1], val);
+
+		var result = validate.rule(activeRule);
+		if (typeof result === "string") {
+			// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
+			$(this).val(oldVal)
+				.focus();
+		} else {
+			addCurrentToUndoHistory()
+			showRule();
+		}
+	}
+
 
 	// Replace all matching components with a drop down menu for selecting a social type, categorizing by class.
 	var replaceWithTypeMenu = function(selector, options, func) {
