@@ -373,7 +373,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		effectsArea.append(effectArrow);
 		var thisShouldHappen = $("<p>", {
 			class: "effectsLabel",
-			html: activeRuleType === "volition" ? "Character motivations should change like so:" : "Make this true:"
+			html: activeRuleType === "volition" ? "These character volitions are altered:" : "Make this true:"
 		});
 		effectsArea.append(thisShouldHappen);
 		// effectsArea.append("<br clear='all'>")
