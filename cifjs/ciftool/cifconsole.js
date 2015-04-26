@@ -47,10 +47,11 @@ requirejs.config({
 	}
 });
 
-requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "text!../data/Schema80K.json", "text!../data/Volition80K.json", "text!../data/SFDB80K.json", "text!../data/Chars80K.json", "messages", "jqueryUI", "domReady!"], 
+function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
 
 	var autoLoad = false;	// Load sample schema on launch.
+	var is80KTest = true;
 
 	var socialStructure;
 	var characters;
@@ -565,11 +566,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	if (autoLoad) {
-		loadSchema(JSON.parse(sampleData));
-		loadCast(JSON.parse(sampleChars));
-		loadHistory(JSON.parse(testSfdbData));
-		loadRules(JSON.parse(testTriggerRules));
-		loadRules(JSON.parse(testVolitionRules));
+		if (is80KTest) {
+			loadSchema(JSON.parse(Schema80K));
+			loadRules(JSON.parse(Volition80K));
+			loadHistory(JSON.parse(SFDB80K));
+			loadCast(JSON.parse(Chars80K));
+		} else {
+			loadSchema(JSON.parse(sampleData));
+			loadRules(JSON.parse(testVolitionRules));
+			loadRules(JSON.parse(testTriggerRules));
+			loadHistory(JSON.parse(testSfdbData));
+			loadCast(JSON.parse(sampleChars));
+		}
 		loadActions(JSON.parse(testActions));
 		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
 		cmdLog("Autoloaded default schema.", true);
