@@ -81,6 +81,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			undoPosition -= 1;
 			activeRule = util.clone(undoHistory[undoPosition]);
 			showRule();
+			updateRuleTester();
 		}
 	}
 	var redo = function() {
@@ -88,6 +89,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			undoPosition += 1;
 			activeRule = util.clone(undoHistory[undoPosition]);
 			showRule();
+			updateRuleTester();
 		}
 	}
 
@@ -613,8 +615,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			$(this).val(oldVal)
 				.focus();
 		} else {
-			addCurrentToUndoHistory()
 			showRule();
+			addCurrentToUndoHistory()
 		}
 	}
 
@@ -696,8 +698,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				.css({"background-color": "white"})
 				.focus();
 		} else {
-			addCurrentToUndoHistory()
 			showRule();
+			addCurrentToUndoHistory()
 		}
 	}
 
@@ -765,8 +767,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var predType = ruleSource[0];
 		var predNum = parseInt(ruleSource[1]);
 		func(predType, predNum, optSelection);
-		addCurrentToUndoHistory()
 		showRule();
+		addCurrentToUndoHistory()
 	}
 
 	// Return a character binding for a newly created predicate or binding slot that will 
@@ -858,24 +860,6 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var newIsBoolean = descriptors.isBoolean;
 		var newDirType = descriptors.directionType;
 		var oldDirType = cif.getClassDescriptors(oldClass).directionType;
-
-		//TODO: Try and intelligently populate the ranges of number changes based on min and and max value.
-		/*
-		var newMaxValue = descriptors.maxValue;
-		var newMinvalue = descriptors.minValue;
-		if(newMaxValue === undefined){
-			newMaxValue = 100;
-		}
-		if(newMinvalue === undefined){
-			newMinvalue = 0;
-		}
-		var interval = Math.floor((newMaxValue - newMinvalue) / 10);
-		var valueArray = [];
-		for(var i = 0; i < 8; i += 1){
-			valueArray[i] = i*interval;
-		}
-		*/
-
 
 		if (activeRuleType === "volition" && predType === "effects") {
 			activeRule[predType][predNum].value = true;
