@@ -1,3 +1,4 @@
+// This code deals with the "Test Bindings" feature of the CiF authoring tool.
 /*global console, define */
 
 define(["cif", "jquery", "util"], function(cif, $, util){
@@ -68,7 +69,7 @@ define(["cif", "jquery", "util"], function(cif, $, util){
 			char = characters[i]
 			if (castToBindings.get(char) === undefined) {
 				castToBindings.set(char, role);
-				console.log("castToBindings", castToBindings.show());
+				// console.log("castToBindings", castToBindings.show());
 				return char;
 			}
 		}
@@ -140,7 +141,6 @@ define(["cif", "jquery", "util"], function(cif, $, util){
 		var anyFailed = false;
 		for (var i = 0; i < rule.conditions.length; i++) {
 			var c = rule.conditions[i];
-			console.log("c", c);
 			var pred = util.clone(c);
 			pred.first = castToBindings.getRev(pred.first);
 			if (pred.second) {
@@ -148,9 +148,7 @@ define(["cif", "jquery", "util"], function(cif, $, util){
 			}
 			var result = cif.get(pred);
 			var predIsTrue = result.length > 0;
-			console.log("pred", pred);
 			var desc = cif.predicateToEnglish(pred);
-			console.log("desc", desc);
 			if (!predIsTrue) {
 				anyFailed = true;
 			}
@@ -182,7 +180,6 @@ define(["cif", "jquery", "util"], function(cif, $, util){
 
 		$("#bindTest").append(bindConditions)
 		var didSucceed = $("#bindConditions").hasClass("bindSucceeded");
-		console.log("didSucceed", didSucceed);
 		var effectsWord = rule.effects.length > 1 ? "Effects" : "Effect"
 		var resultText = didSucceed ? effectsWord+" would happen" : effectsWord+" would NOT happen";
 		$("#bindTest").append($("<p>", {

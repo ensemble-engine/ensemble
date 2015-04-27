@@ -3,6 +3,35 @@
 	"type" : "volition",
 	"rules": [
 		{
+			"name": "Low affinity suggests ending friendship.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 20
+				},{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "x",
+					"second": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": false
+				}
+			]
+		},
+		{
 			"name": "Attraction makes people want to start dating.",
 			"comment" : "BUG -- one role is labeled soneone cackle cackle",
 			"conditions": [
@@ -251,37 +280,6 @@
 		},
 
 		{
-			"name": "Low affinity suggests ending friendship.",
-			"conditions": [
-				{
-					"class": "network",
-					"type": "affinity",
-					"first": "x",
-					"second": "y",
-					"operator": "<",
-					"value": 33
-				},
-				{
-					"class": "directedStatus",
-					"type": "angry at",
-					"first": "x",
-					"second": "y",
-					"value": false
-				}
-			],
-			"effects": [
-				{
-					"class": "relationship",
-					"type": "friends with",
-					"first": "x",
-					"second": "y",
-					"weight": 5,
-					"intentDirection": true
-				}
-			]
-		},
-
-		{
 			"name": "Similar interest suggests affinity up.",
 			"conditions": [
 				{
@@ -432,29 +430,6 @@
 					"weight": 20,
 					"first": "x",
 					"second": "y"
-				}
-			]
-		},
-		{
-			"name": "Low affinity suggests rejecting friendship.",
-			"conditions": [
-				{
-					"class": "network",
-					"type": "affinity",
-					"first": "x",
-					"second": "y",
-					"operator": "<",
-					"value": 33
-				}
-			],
-			"effects": [
-				{
-					"class": "relationship",
-					"type": "friends with",
-					"first": "x",
-					"second": "y",
-					"weight": 5,
-					"intentDirection": false
 				}
 			]
 		},

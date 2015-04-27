@@ -2,6 +2,8 @@
 
 define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester", "jquery"], function(util, _, sfdb, cif, validate, messages, ruleTester, $){
 
+	var showTestBindingsButton = true;
+
 	var activeRule = {};
 	var activeRuleType = "";
 
@@ -145,6 +147,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 
 	var activateTestBindings = function() {
+		if (!showTestBindingsButton) return;
 		ruleTester.toggle();
 		updateRuleTester();
 	}
@@ -323,10 +326,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			text: "Redo"
 		}));
 
-		ruleControls.append($("<button/>", {
-			id: "testBindings",
-			text: "Test Bindings"
-		}));
+		if (showTestBindingsButton) {
+			ruleControls.append($("<button/>", {
+				id: "testBindings",
+				text: "Test Rule"
+			}));
+		}
 
 
 		area.append(ruleControls);
@@ -686,7 +691,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
-			// New rule is invalid, possibly because the same character name appeared twice: reset the input field.
+			// New rule is invalid.
 			$(this).val("")
 				.css({"background-color": "white"})
 				.focus();

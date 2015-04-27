@@ -91,6 +91,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
+	// Only show Volition rules for 80K experiment.
+	if (is80KTest) {
+		$( "#rulesTabs" ).tabs( "option", "disabled", [0] ); 
+		$( "#rulesTabs" ).tabs( "option", "active", 1 ); 
+	}
+
 	// Set up console command tooltips.
 	$("#cmdSet").tooltip({content: "<p>Use <b>set</b> to change any social fact. Parameter order doesn't matter except for character order in directed facts:</p><ul><li><b>set(Bob, Al, friends)</b></li><li><b>set(bob, trust, al, 75)</b></li><li><b>set(happy, al)</b></li><li><b>set(carla, attracted to, bob, false)</b></li></ul>"});
 	$("#cmdUnset").tooltip({content: "<p>Use <b>unset</b> to make a boolean value false:</p><ul><li><b>unset(al, happy)</b></li><li><b>unset(al, involved with, veronica)</b></li></ul>"});

@@ -280,7 +280,7 @@ margin-left: 6em;
 	width: 70%;
 }
 .edCharName { 
-	width: 8em;
+	width: 6em;
 	padding-left: 26px;
 	left: -26px;
 	margin-right: -26px;
@@ -384,7 +384,7 @@ select optgroup { font-weight:bold; }
 	/*background-color: white;*/
 	left: -2px;
 	position: relative;
-	top: 1px;
+	top: -1px;
 }
 .personBody {
 	width: 20px;
@@ -460,6 +460,10 @@ select optgroup { font-weight:bold; }
 }
 #testBindings {
 	margin-right: 1em;
+	background-color: rgb(210, 255, 209);
+	font-size: 120%;
+	height: 26px;
+	margin-top: 0px !important;
 }
 #ruleOrigin {
 	font-size: 90%;
