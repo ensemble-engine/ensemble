@@ -460,6 +460,10 @@ select optgroup { font-weight:bold; }
 }
 #testBindings {
 	margin-right: 1em;
+	background-color: rgb(210, 255, 209);
+	font-size: 120%;
+	height: 26px;
+	margin-top: 0px !important;
 }
 #ruleOrigin {
 	font-size: 90%;
