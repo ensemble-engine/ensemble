@@ -276,9 +276,10 @@ function(util, _, $, sfdb) {
 			if (pred.second !== undefined && dir === "undirected") {
 				return "key second: '" + pred.second + "' found but class '" + predicate.class + "' is undirected";
 			}
-			if (pred.second !== undefined && pred.second === pred.first) {
-				return "key second: '" + pred.second + "' found but this is the same as key first; this is not allowed.";
-			}
+			// Temporarily relaxing the below constraint, because it makes it hard to swap roles in the Rule Editor. (Currently, the editor validates any change by verifying the changed rule is valid with this code; however, to swap two roles, you must first change one role to the other, which makes the rule invalid. In some ways this is a sort of higher-level validity check which we don't conceptually account for now: a rule with the same person in both roles is technically valid, it just can't ever be true.)
+			// if (pred.second !== undefined && pred.second === pred.first) {
+			// 	return "key second: '" + pred.second + "' found but this is the same as key first; this is not allowed.";
+			// }
 			if (dir !== "undirected" && pred.second === undefined) {
 				return "no 'second' found but type '" + pred.type + "' is " + dir + ".";
 			}

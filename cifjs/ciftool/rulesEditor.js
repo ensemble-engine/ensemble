@@ -686,7 +686,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
-			// New rule is invalid, possibly because the same character name appeared twice: reset the input field.
+			// New rule is invalid.
 			$(this).val("")
 				.css({"background-color": "white"})
 				.focus();
