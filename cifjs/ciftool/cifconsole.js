@@ -47,10 +47,11 @@ requirejs.config({
 	}
 });
 
-requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/cif-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "text!../data/Schema80K.json", "text!../data/Volition80K.json", "text!../data/SFDB80K.json", "text!../data/Chars80K.json", "messages", "jqueryUI", "domReady!"], 
+function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
 
 	var autoLoad = false;	// Load sample schema on launch.
+	var is80KTest = false; //in April 2015, Ben and Aaron ran an experiment for CMPS80K that hid some things (e.g. trigger rules).
 
 	var socialStructure;
 	var characters;
@@ -89,6 +90,12 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 			$("#newRuleButton").html("New " + tabName + " Rule");
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
+
+	// Only show Volition rules for 80K experiment.
+	if (is80KTest) {
+		$( "#rulesTabs" ).tabs( "option", "disabled", [0] ); 
+		$( "#rulesTabs" ).tabs( "option", "active", 1 ); 
+	}
 
 	// Set up console command tooltips.
 	$("#cmdSet").tooltip({content: "<p>Use <b>set</b> to change any social fact. Parameter order doesn't matter except for character order in directed facts:</p><ul><li><b>set(Bob, Al, friends)</b></li><li><b>set(bob, trust, al, 75)</b></li><li><b>set(happy, al)</b></li><li><b>set(carla, attracted to, bob, false)</b></li></ul>"});
@@ -565,11 +572,18 @@ function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, rule
 	}
 
 	if (autoLoad) {
-		loadSchema(JSON.parse(sampleData));
-		loadCast(JSON.parse(sampleChars));
-		loadHistory(JSON.parse(testSfdbData));
-		loadRules(JSON.parse(testTriggerRules));
-		loadRules(JSON.parse(testVolitionRules));
+		if (is80KTest) {
+			loadSchema(JSON.parse(Schema80K));
+			loadRules(JSON.parse(Volition80K));
+			loadHistory(JSON.parse(SFDB80K));
+			loadCast(JSON.parse(Chars80K));
+		} else {
+			loadSchema(JSON.parse(sampleData));
+			loadRules(JSON.parse(testVolitionRules));
+			loadRules(JSON.parse(testTriggerRules));
+			loadHistory(JSON.parse(testSfdbData));
+			loadCast(JSON.parse(sampleChars));
+		}
 		loadActions(JSON.parse(testActions));
 		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
 		cmdLog("Autoloaded default schema.", true);

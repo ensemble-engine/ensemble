@@ -2,6 +2,8 @@
 
 define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester", "jquery"], function(util, _, sfdb, cif, validate, messages, ruleTester, $){
 
+	var showTestBindingsButton = true;
+
 	var activeRule = {};
 	var activeRuleType = "";
 
@@ -79,6 +81,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			undoPosition -= 1;
 			activeRule = util.clone(undoHistory[undoPosition]);
 			showRule();
+			updateRuleTester();
 		}
 	}
 	var redo = function() {
@@ -86,15 +89,13 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			undoPosition += 1;
 			activeRule = util.clone(undoHistory[undoPosition]);
 			showRule();
+			updateRuleTester();
 		}
 	}
 
 	//if optSkipBackpu is true, it won't create a backup file.
 	var save = function(optSkipBackup) {
-		console.log("beginning saving process...");
-		if(activeFile === ""){
-			return; // don't save if we aren't working with an actual file.
-		}
+		console.log("beginning saving process...", activeFile);
 		var results = cif.setRuleById(activeRule.id, activeRule);
 		if (!results) {
 			messages.showAlert("Unable to save rule.");
@@ -102,6 +103,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			$("#tabLiRulesViewer a").click();
 			rulesViewer.show();
 			messages.showAlert("Updated Rule " + activeRule.id + ".");
+			if(activeFile === ""){
+				return; // don't save if we aren't working with an actual file.
+			}
 			var ruleType = activeRule.id.split("_")[0];
 			saveRules(ruleType, activeRule.origin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in cifconsole.js on init.
 		}
@@ -145,6 +149,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 
 	var activateTestBindings = function() {
+		if (!showTestBindingsButton) return;
 		ruleTester.toggle();
 		updateRuleTester();
 	}
@@ -156,18 +161,9 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		util.resetIterator("rulesEdCharBindings");
 		util.resetIterator("rulesEdNewChars");
 		undoHistory = [];
-		undoPosition = -1;	
-		activeRule = util.clone(rule);
+		undoPosition = -1;
+		var origin;
 		activeRuleType = type;
-		rule.type = type;
-		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
-			newPredicate("conditions");
-		}
-		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
-			newPredicate("effects");
-		}
-		addCurrentToUndoHistory();
-
 		// Close the bindings window if open.
 		ruleTester.hide(0);
 
@@ -177,22 +173,27 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
 				if (ruleOrigins.length > 0) {
 					activeFile = ruleOrigins[0];
-					activeRule.origin = activeFile;
 				} else {
 					getNewRulesFile();
-					activeRule.origin = activeFile;
 				}
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
 				activeFile = activeFileRefByRuleType[rule.type];
-				//BEN START HERE: This assumes that the user selected a file from a list. 
-				//If they created a new file, they won't have actually created it by this point; 
-				//and thus it returns an empty string! Maybe make it so that when they actually push 
-				//the button (the call back I believe is in ruleEditor line 499) and have as part of 
-				//that process changing the value of 'active rule' that might help us out?
+
 				activeRule.origin = activeFile;
 			}
 		}
+
+		activeRule = util.clone(rule);
+		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
+			newPredicate("conditions");
+		}
+		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
+			newPredicate("effects");
+		}
+		activeRule.origin = activeFile;
+		addCurrentToUndoHistory();
+
 		activeFile = activeRule.origin;
 		origActiveFile = activeFile;
 		activeFileRefByRuleType[rule.type] = activeFile;
@@ -327,10 +328,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 			text: "Redo"
 		}));
 
-		ruleControls.append($("<button/>", {
-			id: "testBindings",
-			text: "Test Bindings"
-		}));
+		if (showTestBindingsButton) {
+			ruleControls.append($("<button/>", {
+				id: "testBindings",
+				text: "Test Rule"
+			}));
+		}
 
 
 		area.append(ruleControls);
@@ -377,7 +380,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		effectsArea.append(effectArrow);
 		var thisShouldHappen = $("<p>", {
 			class: "effectsLabel",
-			html: activeRuleType === "volition" ? "Character motivations should change like so:" : "Make this true:"
+			html: activeRuleType === "volition" ? "These character volitions are altered:" : "Make this true:"
 		});
 		effectsArea.append(thisShouldHappen);
 		// effectsArea.append("<br clear='all'>")
@@ -402,7 +405,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		replaceWithSimpleMenu(".edeffectsP .eddirection", dirArray, changeDirection, "direction");
 		replaceWithLinkedText(".edfirst, .edsecond");
 		replaceWithSimpleMenu(".edweight", ["+10", "+5", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-5", "-10"], changeWeight, "weight");
-		replaceWithSimpleMenu(".edvalue", ["100", "90", "80", "70", "60", "50", "40", "30", "20", "10", "0"], changeValue, "value");
+		replaceWithTextEntry(".edvalue", "value");
 
 		replaceWithClickable(".newPredicate span", newPredicate);
 		replaceWithClickable(".remove", removePred);
@@ -577,6 +580,47 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		})
 	}
 
+	// Replace all matching components with a text-entry field.
+	var replaceWithTextEntry = function(selector, type) {
+		console.log("calling replaceWithTextEntry");
+		$(selector).each(function() {
+			var that = $(this);
+			var id = type + that.data("rule-source");
+			var inputEl = $("<input>", {
+				type: "text",
+				id: id,
+				name: id,
+				val: that.html()
+			});
+
+			that.html(inputEl);
+			inputEl.on("blur", onValueChangeConfirm);
+		});
+	}
+
+	var onValueChangeConfirm = function() {
+		var val = $(this).val().trim();
+		if (val === "") { 
+			return;
+		}
+
+		var source = $(this).parent().data("rule-source").split("_");
+		var oldVal = activeRule[source[0]][source[1]].value;
+		changeValue(source[0], source[1], val);
+
+		var result = validate.rule(activeRule);
+		if (typeof result === "string") {
+			// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
+			activeRule[source[0]][source[1]].value = oldVal;
+			$(this).val(oldVal)
+				.focus();
+		} else {
+			showRule();
+			addCurrentToUndoHistory()
+		}
+	}
+
+
 	// Replace all matching components with a drop down menu for selecting a social type, categorizing by class.
 	var replaceWithTypeMenu = function(selector, options, func) {
 		$(selector).each(function() {
@@ -649,13 +693,13 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
-			// New rule is invalid, possibly because the same character name appeared twice: reset the input field.
+			// New rule is invalid.
 			$(this).val("")
 				.css({"background-color": "white"})
 				.focus();
 		} else {
-			addCurrentToUndoHistory()
 			showRule();
+			addCurrentToUndoHistory()
 		}
 	}
 
@@ -723,8 +767,8 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var predType = ruleSource[0];
 		var predNum = parseInt(ruleSource[1]);
 		func(predType, predNum, optSelection);
-		addCurrentToUndoHistory()
 		showRule();
+		addCurrentToUndoHistory()
 	}
 
 	// Return a character binding for a newly created predicate or binding slot that will 
@@ -816,24 +860,6 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var newIsBoolean = descriptors.isBoolean;
 		var newDirType = descriptors.directionType;
 		var oldDirType = cif.getClassDescriptors(oldClass).directionType;
-
-		//TODO: Try and intelligently populate the ranges of number changes based on min and and max value.
-		/*
-		var newMaxValue = descriptors.maxValue;
-		var newMinvalue = descriptors.minValue;
-		if(newMaxValue === undefined){
-			newMaxValue = 100;
-		}
-		if(newMinvalue === undefined){
-			newMinvalue = 0;
-		}
-		var interval = Math.floor((newMaxValue - newMinvalue) / 10);
-		var valueArray = [];
-		for(var i = 0; i < 8; i += 1){
-			valueArray[i] = i*interval;
-		}
-		*/
-
 
 		if (activeRuleType === "volition" && predType === "effects") {
 			activeRule[predType][predNum].value = true;

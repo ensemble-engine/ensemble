@@ -1,0 +1,513 @@
+{
+	"fileName" : "testVolitionRules",
+	"type" : "volition",
+	"rules": [
+		{
+			"name": "Low affinity suggests ending friendship.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 20
+				},{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "x",
+					"second": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": false
+				}
+			]
+		},
+		{
+			"name": "Attraction makes people want to start dating.",
+			"comment" : "BUG -- one role is labeled soneone cackle cackle",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "attracted to",
+					"first": "hero",
+					"second": "someone"
+				},{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "soneone",
+					"second": "hero",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "hero",
+					"second": "someone",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+
+		},
+		{
+			"name": "Pessimistic people are less interested in romance.",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "pessimistic",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": -5,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "People are very inclined to trust someone they are dating.",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone is very unlikely to trust someone they're angry at.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "angry at",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentDirection": false
+				},{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": -10,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone doesn't want be involved with someone they're angry at.",
+			"comment": "BUG: Condition is negated.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "angry at",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": -5,
+					"intentDirection": true
+				},
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": false
+				}
+			]
+		},
+
+		{
+			"name": "Someone stylish is likeable.",
+			"comment": "BUG: extra condition",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "stylish",
+					"first": "x"
+				},
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"value": 75,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "y",
+					"second": "x",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "A trusting person is more likely to give trust.",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "trusting",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone with high affinity for a friend wants to increase trust.",
+			"comment": "BUG: Roles in first condition are swapped",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "other",
+					"second": "someone",
+					"value": 75,
+					"operator": ">"
+				},{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "someone",
+					"second": "other",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "High affinity suggests friendship.",
+			"comment": "BUG: Contradictory second condition.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 66
+				},
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 66
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "Similar interest suggests affinity up.",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "a sports fan",
+					"first": "x"
+				},
+				{
+					"class": "trait",
+					"type": "a sports fan",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentDirection": true
+				}
+			]
+		},
+
+		{
+			"name": "If you're angry with someone, you don't want to trust them.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "angry at",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"intentDirection": true,
+					"weight": -20,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"class": "network",
+					"type": "trust",
+					"intentDirection": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		{
+			"name": "Low affinity makes friendship less tenable.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 25
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"intentDirection": true,
+					"weight": -10,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"class": "network",
+					"type": "affinity",
+					"intentDirection": false,
+					"weight": 10,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"intentDirection": true,
+					"weight": -15,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"intentDirection": false,
+					"weight": 10,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		
+		{
+			"name": "If you're angry with someone, you don't want to be friends with them.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "angry at",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"intentDirection": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		
+		{
+			"name": "If you're angry with someone, you will not be friends with them.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "angry at",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"intentDirection": true,
+					"weight": -20,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"class": "network",
+					"type": "affinity",
+					"intentDirection": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		{
+			"name": "I want to trust a friend of my friend.",
+			"comment": "BUG: First condition should be friend relationship",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "affinity",
+					"first": "me",
+					"second": "buddy",
+					"operator": ">",
+					"value": 75
+				},
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "buddy",
+					"second": "mutual friend",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "me",
+					"second": "mutual friend",
+					"weight": 5,
+					"intentDirection": true
+				}
+			]
+		},
+		{
+			"name": "Pessimistic, jealous people want to decrease trust.",
+			"comment": "BUG: Missing jealous condition",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "pessimistic",
+					"first": "x",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentDirection": false
+				}
+			]
+		},
+		{
+			"name": "Pessimists want to stop being friends.",
+			"comment": "BUG: Not restricting to pessimists!",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "pessimist",
+					"second": "friend",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "pessimist",
+					"second": "friend",
+					"weight": 5,
+					"intentDirection": false
+				}
+			]
+		}
+	]
+}

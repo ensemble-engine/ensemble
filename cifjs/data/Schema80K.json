@@ -1,0 +1,40 @@
+{
+	"schema": [
+		{
+			"class": "network",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["affinity", "trust"],
+			"defaultValue": 50,
+			"minValue": 0,
+			"maxValue": 100,
+			"allowIntent": true
+		},
+		{
+			"class": "relationship",
+			"isBoolean": true,
+			"directionType": "reciprocal",
+			"types": ["friends with", "involved with"],
+			"defaultValue": false,
+			"allowIntent": true
+		},
+		{
+			"class": "directedStatus",
+			"isBoolean": true,
+			"directionType": "directed",
+			"types": ["attracted to", "worried about", "angry at"],
+			"duration": 20,
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "trait",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["jealous", "trusting", "pessimistic", "stylish", "a sports fan", "clever"],
+			"defaultValue": false,
+			"allowIntent": false
+		}
+	]
+}
+

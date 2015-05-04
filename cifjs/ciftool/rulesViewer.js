@@ -39,7 +39,7 @@ define(["cif", "util", "rulesEditor", "messages", "jquery"], function(cif, util,
 
 		var makeRow = function(origRule, name, origin, desc, id) {
 			var row = $("<tr/>", {
-				html: "<td><p class='ruleOrigin'>" + origin + "</p><span title=\"" + origRule + "\" class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
+				html: "<td><p class='ruleOrigin'>" + origin + "</p><span class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
 			});
 			row.click(function() {
 				console.log("calling loadRule(" + id + ", " + ruleSet + ")");

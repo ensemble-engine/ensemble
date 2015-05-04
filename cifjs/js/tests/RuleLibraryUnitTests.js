@@ -2910,7 +2910,7 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 			"second": "al",
 			"weight": "5",
 			"intentDirection": true
-		}).text, "bob is more likely ( +5 ) to become involved with al", "Directed/reciprocal boolean, positive intent.");
+		}).text, "bob has more volition ( +5 ) to become involved with al", "Directed/reciprocal boolean, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "relationship",
 			"type": "involved with",
@@ -2918,7 +2918,7 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 			"second": "al",
 			"weight": "-5",
 			"intentDirection": false
-		}).text, "bob is less likely ( -5 ) to stop being involved with al", "Directed/reciprocal boolean, negative intent");
+		}).text, "bob has less volition ( -5 ) to stop being involved with al", "Directed/reciprocal boolean, negative intent");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "network",
 			"type": "affinity",
@@ -2926,7 +2926,7 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 			"second": "al",
 			"weight": "7",
 			"intentDirection": true
-		}).text, "bob is more likely ( +7 ) to increase affinity for al", "Directed/reciprocal numeric, positive intent.");
+		}).text, "bob has more volition ( +7 ) to increase affinity for al", "Directed/reciprocal numeric, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "network",
 			"type": "affinity",
@@ -2934,14 +2934,14 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 			"second": "al",
 			"weight": "7",
 			"intentDirection": false
-		}).text, "bob is more likely ( +7 ) to decrease affinity for al", "Directed/reciprocal numeric, negative intent.");
+		}).text, "bob has more volition ( +7 ) to decrease affinity for al", "Directed/reciprocal numeric, negative intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "status",
 			"type": "lonely",
 			"first": "bob",
 			"weight": "2",
 			"intentDirection": true
-		}).text, "bob is more likely ( +2 ) to become lonely", "Undirected boolean, positive intent.");
+		}).text, "bob has more volition ( +2 ) to become lonely", "Undirected boolean, positive intent.");
 
 		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "SFDBLabel",

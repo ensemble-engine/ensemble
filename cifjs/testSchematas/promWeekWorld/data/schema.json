@@ -1,0 +1,45 @@
+{
+	"schema": [
+		{
+			"class": "trait",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["humble", "proud"],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "networks",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["buddy", "romance", "cool"],
+			"defaultValue": 0,
+			"allowIntent": true
+		},
+		{
+			"class": "undirectedStatus",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["popular"],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "directedStatus",
+			"isBoolean": true,
+			"directionType": "directed",
+			"types": ["crushing on"],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "relationship",
+			"isBoolean": true,
+			"directionType": "reciprocal",
+			"types": ["friends with", "dating", "enemies with"],
+			"defaultValue": false,
+			"allowIntent": true
+		}
+	]
+}
+

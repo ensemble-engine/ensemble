@@ -1,0 +1,128 @@
+{
+	"fileName": "sycoRules",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "networks",
+					"type": "buddy",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_1"
+		},
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "networks",
+					"type": "buddy",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_3"
+		},
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "networks",
+					"type": "buddy",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_4"
+		},
+		{
+			"name": "People Want to Date Their Crush",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "crushing on",
+					"first": "Chloe",
+					"value": true,
+					"second": "Doug"
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "dating",
+					"first": "Chloe",
+					"second": "Doug",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_5"
+		},
+		{
+			"name": "Friend Zone",
+			"conditions": [
+				{
+					"class": "relationship",
+					"type": "friends with",
+					"first": "Doug",
+					"value": true,
+					"second": "Chloe"
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "dating",
+					"first": "Doug",
+					"second": "Chloe",
+					"weight": -5,
+					"intentDirection": false,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_6"
+		}
+	]
+}

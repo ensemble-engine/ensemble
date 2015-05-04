@@ -995,9 +995,9 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 				intentWord = pred.intentDirection === true ? "increase" : "decrease";
 			}
 			addPhrase(nameFirst, "first");
-			addPhrase(isWord, "beVerb");
+			addPhrase(hasWord, "beVerb");
 			addPhrase(directionWord, "..");
-			addPhrase("likely");
+			addPhrase("volition");
 			var sign = pred.weight >= 0 ? "+" : "";
 			addPhrase("(");
 			addPhrase(sign+pred.weight, "weight");

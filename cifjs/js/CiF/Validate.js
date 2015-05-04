@@ -276,9 +276,10 @@ function(util, _, $, sfdb) {
 			if (pred.second !== undefined && dir === "undirected") {
 				return "key second: '" + pred.second + "' found but class '" + predicate.class + "' is undirected";
 			}
-			if (pred.second !== undefined && pred.second === pred.first) {
-				return "key second: '" + pred.second + "' found but this is the same as key first; this is not allowed.";
-			}
+			// Temporarily relaxing the below constraint, because it makes it hard to swap roles in the Rule Editor. (Currently, the editor validates any change by verifying the changed rule is valid with this code; however, to swap two roles, you must first change one role to the other, which makes the rule invalid. In some ways this is a sort of higher-level validity check which we don't conceptually account for now: a rule with the same person in both roles is technically valid, it just can't ever be true.)
+			// if (pred.second !== undefined && pred.second === pred.first) {
+			// 	return "key second: '" + pred.second + "' found but this is the same as key first; this is not allowed.";
+			// }
 			if (dir !== "undirected" && pred.second === undefined) {
 				return "no 'second' found but type '" + pred.type + "' is " + dir + ".";
 			}
@@ -292,10 +293,20 @@ function(util, _, $, sfdb) {
 				if (!isBool && typeof pred.value !== "number") {
 					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean false";
 				}
+				if (!isBool && isNaN(pred.value)) {
+					return "'value' was '" + pred.value + "' which is not a number: class '" + predicate.class + "' specifies numeric value";
+				}
 				if (isBool && typeof pred.value !== "boolean" && pred.value !== undefined) {
 					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean true";
 				}
-				// If numeric, could check against min and max here.
+				if (!isBool) {
+					if (typeof descriptors.max === "number" && pred.value > descriptors.max) {
+						return "'value' was '" + pred.value + "' but that exceeds max of '" + descriptors.max + "' for class '" + predicate.class + "'";
+					}
+					if (typeof descriptors.min === "number" && pred.value < descriptors.min) {
+						return "'value' was '" + pred.value + "' but that's below min of '" + descriptors.min + "' for class '" + predicate.class + "'";
+					}
+				}
 				delete pred.value;
 			}
 
