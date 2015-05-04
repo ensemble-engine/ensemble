@@ -1,0 +1,19 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"class" : "directedStatus",
+			"type" : "crushing on",
+			"first" : "doug",
+			"second" : "chloe",
+			"value" : true
+			}, {
+			"class" : "relationship",
+			"type" : "friends with",
+			"first" : "doug",
+			"second" : "chloe",
+			"value" : true
+			}
+		]}
+	]
+}
