@@ -51,7 +51,7 @@ requirejs(["cif", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rule
 function(cif, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
 
 	var autoLoad = false;	// Load sample schema on launch.
-	var is80KTest = true;
+	var is80KTest = false; //in April 2015, Ben and Aaron ran an experiment for CMPS80K that hid some things (e.g. trigger rules).
 
 	var socialStructure;
 	var characters;
