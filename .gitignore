@@ -3,6 +3,8 @@ cifjs-EVERYTHING-not-for-distribution.zip
 cifjs/.DS_Store
 cifjs/build
 cifjs/cache
+cifjs/doc
+cifjs/nwjs-v0.12.0-win-x64/pythonOutput.nw
 .DS_Store
 cifjs/NotesToSelf
 cifjs/manualWebkitTest
