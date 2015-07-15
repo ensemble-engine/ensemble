@@ -25,7 +25,7 @@
 			"types": ["duty", "kinship", "vengeance", "magicka link"],
 			"defaultValue": 1,
 			"minValue": 0,
-			"maxValue": 10,
+			"maxValue": 100,
 			"allowIntent": true
 		}
 	]
