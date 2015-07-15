@@ -2,7 +2,7 @@
 
 define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester", "jquery"], function(util, _, sfdb, cif, validate, messages, ruleTester, $){
 
-	var showTestBindingsButton = true;
+	var showTestBindingsButton = false;
 
 	var activeRule = {};
 	var activeRuleType = "";
@@ -222,15 +222,21 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		var phrase;
 		var desc = cif.predicateToEnglish(pred).diagram;
 		var msg = "";
+		var usedTimeOrderBit = false;
 
 		for (j = 0; j < desc.length; j++) {
 			phrase = desc[j];
 			var classList = "ed" + phrase.label;
+			if (phrase.label === "timeOrderStart") {
+				msg += "<div>.</div>";
+				msg += "<div class='timeOrderControls' id='timeControls_" + type + "_" + ruleNum + "'><div>↪</div>";
+				usedTimeOrderBit = true;
+			}
 			if (phrase.label === "first" || phrase.label === "second") {
 				classList += " edchar_" + phrase.text;
 			}
 			if (phrase.label === "beVerb" || phrase.label === "intentDirection") {
-				if (["is", "was", "has", "did", "increase", "become", "more"].indexOf(phrase.text) >= 0) {
+				if (["is", "was", "has", "has been", "did", "increase", "become", "more"].indexOf(phrase.text) >= 0) {
 					classList += " edBePos";
 				} else {
 					classList += " edBeNeg";
@@ -247,9 +253,20 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				}
 				msg += ">" + phrase.text + "</div>";
 			}
+			if (phrase.label === "timeOrderEnd") {
+				msg += "</div>";
+			}
 		}
 
-		msg += "<div>.</div>";
+		if (!usedTimeOrderBit) {
+			msg += "<div>.</div>";
+		}
+
+		// Add the control for time-ordered rules, if appropriate.
+		if (type === "conditions") {
+			var clockClass = pred.turnsAgoBetween ? "clockOn" : "clockOff";
+			msg += "<div class='clock " + clockClass + "' id='clock_" + type + "_" + ruleNum + "'><div></div></div>";
+		}
 
 		return msg;
 	}
@@ -407,8 +424,16 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		replaceWithSimpleMenu(".edweight", ["+10", "+5", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-5", "-10"], changeWeight, "weight");
 		replaceWithTextEntry(".edvalue", "value");
 
+		replaceWithTextEntry(".edmoreRecent", "moreRecent"); 
+		appendWithTimeButtons(".edmoreRecent", "moreRecent");
+		replaceWithTextEntry(".edlessRecent", "lessRecent");
+		appendWithTimeButtons(".edlessRecent", "lessRecent");
+
 		replaceWithClickable(".newPredicate span", newPredicate);
 		replaceWithClickable(".remove", removePred);
+
+		// Add time-ordered rule toggle.
+		addTimeOrderedToggle(".clock");
 
 		$("#undoButton").click(undo);
 		$("#redoButton").click(redo);
@@ -418,6 +443,37 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		$("#testBindings").click(activateTestBindings);
 
 		$(".edRuleName").on("input", changeRuleName);
+	}
+
+	// If the predicate is a time ordered rule, the clock should delete it and hide the order area. Otherwise, it should add a timeOrdered predicate and show the order area.
+	var addTimeOrderedToggle = function(selector) {
+		$(selector).each(function() {
+			var predId = $(this).attr('id').split("_"); // clock_conditions_0
+			var connectedControlBlock = $("#timeControls_"+predId[1]+"_"+predId[2]);
+			if (connectedControlBlock.length > 0) {
+				console.log("click should delete and hide control block.");
+				$(this).on("click", {"type": predId[1], "num": predId[2]}, deleteTimeAndHideControl);
+			} else {
+				console.log("click should add and show control block.");
+				$(this).on("click", {"type": predId[1], "num": predId[2]}, addTimeAndShowControl);
+			}
+		});
+	}
+
+	var deleteTimeAndHideControl = function(event) {
+		var type = event.data.type;
+		var num = event.data.num;
+		deleteField("turnsAgoBetween", type, num);
+		showRule();
+		addCurrentToUndoHistory();
+	}
+
+	var addTimeAndShowControl = function(event) {
+		var type = event.data.type;
+		var num = event.data.num;
+		changeField("turnsAgoBetween", type, num, [1, 2]);		
+		showRule();
+		addCurrentToUndoHistory();
 	}
 
 	// Replace all matching components with a clickable toggle button.
@@ -580,17 +636,37 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 		})
 	}
 
-	// Replace all matching components with a text-entry field.
-	var replaceWithTextEntry = function(selector, type) {
-		console.log("calling replaceWithTextEntry");
+	var appendWithTimeButtons = function(selector, whichField) {
 		$(selector).each(function() {
 			var that = $(this);
+			var id = whichField + that.data("rule-source");
+			// var id = type + that.data("rule-source");
+			var buttons = "<span class='timeButtons'><span class='timeNowButton' id='" + id + "NOW'>NOW</span><span class='timeStartButton' id='" + id + "START'>START</span></span>";
+			that.append(buttons);
+			$("#"+id+"START").click(function() {
+				$("#" + whichField + that.data("rule-source")).val("START").trigger("blur");
+			});
+			$("#"+id+"NOW").click(function() {
+				$("#" + whichField + that.data("rule-source")).val("NOW").trigger("blur");
+			});
+		});
+	}
+
+
+	// Replace all matching components with a text-entry field.
+	var replaceWithTextEntry = function(selector, type) {
+		$(selector).each(function() {
+			var that = $(this);
+			var val = that.html();
+			if ((type === "moreRecent" || type === "lessRecent") && val === "0") {
+				val = "NOW";
+			}
 			var id = type + that.data("rule-source");
 			var inputEl = $("<input>", {
 				type: "text",
 				id: id,
 				name: id,
-				val: that.html()
+				val: val
 			});
 
 			that.html(inputEl);
@@ -600,13 +676,58 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 
 	var onValueChangeConfirm = function() {
 		var val = $(this).val().trim();
-		if (val === "") { 
+		var $parent = $(this).parent();
+		var source = $parent.data("rule-source").split("_");
+		var isMoreRecent = $parent.hasClass("edmoreRecent");
+		var isLessRecent = $parent.hasClass("edlessRecent");
+		if (val === "" && !isMoreRecent) { 
 			return;
 		}
 
-		var source = $(this).parent().data("rule-source").split("_");
-		var oldVal = activeRule[source[0]][source[1]].value;
-		changeValue(source[0], source[1], val);
+		var field = "value";
+		var oldVal = activeRule[source[0]][source[1]][field];		
+		if (isMoreRecent || isLessRecent) {
+			var valOfOther;
+			field = "turnsAgoBetween";
+			if (isMoreRecent) {
+				valOfOther = $parent.parent().find(".edlessRecent").children("input").val();
+				val = [val, valOfOther];
+			} else {
+				valOfOther = $parent.parent().find(".edmoreRecent").children("input").val();
+				val = [valOfOther, val];
+			}
+			val[0] = val[0].toUpperCase();	
+			val[1] = val[1].toUpperCase();	
+			if (val[0] !== "NOW" && val[0] !== "START") {
+				val[0] = parseInt(val[0]);
+			}
+			if (val[1] !== "NOW" && val[1] !== "START") {
+				val[1] = parseInt(val[1]);
+			}
+			if (isNaN(val[0]) || isNaN(val[1])) {
+				activeRule[source[0]][source[1]].value = oldVal;
+				$(this).val(oldVal)
+					.focus();
+			}
+			// Need to swap into proper order?
+			var tMoreRecent = val[0];
+			var tLessRecent = val[1];
+			if (tMoreRecent === "NOW") tMoreRecent = 0;
+			if (tLessRecent === "NOW") tLessRecent = 0;
+			if (tMoreRecent === "START") tMoreRecent = Infinity;
+			if (tLessRecent === "START") tLessRecent = Infinity;
+			// TODO: It's awkward visually to have these values swap in the editor, but predicateToEnglish expects them to be in the proper order. 
+			if (tMoreRecent > tLessRecent) {
+				var t;
+				t = val[0];
+				val[0] = val[1];
+				val[1] = t;
+			}
+
+		} else {
+			val = parseInt(val);		
+		}
+		changeField(field, source[0], source[1], val);
 
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
@@ -616,7 +737,7 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 				.focus();
 		} else {
 			showRule();
-			addCurrentToUndoHistory()
+			addCurrentToUndoHistory();
 		}
 	}
 
@@ -911,9 +1032,12 @@ define(["util", "underscore", "sfdb", "cif", "validate", "messages", "ruleTester
 	}
 
 	// Update the value field of a predicate in activeRule.
-	var changeValue = function(predType, predNum, selection) {
-		var sel = parseInt(selection)
-		activeRule[predType][predNum].value = sel;
+	var changeField = function(field, predType, predNum, selection) {
+		activeRule[predType][predNum][field] = selection;
+	}
+
+	var deleteField = function(field, predType, predNum) {
+		delete activeRule[predType][predNum][field];
 	}
 
 	// Update a boolean field of a predicate in activeRule.
