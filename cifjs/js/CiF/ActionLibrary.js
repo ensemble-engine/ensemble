@@ -852,16 +852,12 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 		var actionList;
 		var volitionInstance = volition.getFirst(initiator, responder);
-		while(actionList === undefined || actionList.length === 0){
+		while((actionList === undefined || actionList.length === 0) && volitionInstance !== undefined){
 			var acceptedObject = volition.isAccepted(initiator, responder, volitionInstance);
 			var isAccepted = acceptedObject.accepted;
 			var weight = volitionInstance.weight;
 			actionList = getSortedActionsFromVolition(initiator, responder, volitionInstance, isAccepted, weight, numActionsPerGroup, cast);
 			volitionInstance = volition.getNext(initiator, responder);
-			//#CODEREVIEW -- move this if check into the while condition.
-			if(volitionInstance === undefined){
-				break;
-			}
 		}
 		var boundAction = getBestTerminalFromActionList(actionList);
 		return boundAction;
