@@ -253,6 +253,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//#CODEREVIEW: Maybe just return goodTerminals right here.
 					
 					returnTerminalList = goodTerminals; //Ok, so, it said temp temp temp, but actually I think this is pretty much exactly what we want!
+					break;
 			}
 		}
 
