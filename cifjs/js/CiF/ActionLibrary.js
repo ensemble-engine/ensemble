@@ -577,22 +577,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * @method getTerminalActionFromName
-	 * @private
-	 * @description Given the name of an action, searches through the terminal action array to find the corresponding action object and returns it.
-	 * @param  {string} actionName [The name of the action we are hunting for in the actions array.]
-	 * @return {object}            [An object representing all relevant information pertaining to the requested action. Returns undefined if no such action exists.]
-	 */
-	var getTerminalActionFromName = function(actionName){
-		for(var i = 0; i < terminalActions.length; i += 1){
-			if(terminalActions[i].name === actionName){
-				return util.clone(actions[i]);
-			}
-		}
-		return undefined;
-	};
-
-	/**
 	 * @method getActionFromName
 	 * @private
 	 * @description Given the name of an action, searches through the action array to find the corresponding action object and returns it.
