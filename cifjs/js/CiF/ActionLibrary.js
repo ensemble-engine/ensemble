@@ -592,8 +592,9 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return undefined;
 	};
 
-	//#CODEREVIEW: Give this a better name so that we know this is the 'real' bindActionEffects
-	var bindActionEffects2 = function(actionObject, bindingsToUse){
+	//Given an action and a set of bindings to use, goes through all of the roles in the action and
+	//replaces them with character names
+	var bindActionEffects = function(actionObject, bindingsToUse){
 		for(var i = 0; i < actionObject.effects.length; i += 1){
 			actionObject.effects[i].first = bindingsToUse[actionObject.effects[i].first];
 			actionObject.effects[i].second = bindingsToUse[actionObject.effects[i].second];
@@ -826,7 +827,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			var goodBindingIndex = _.random(0, potentialBestBindings.length-1);
 			var bindingsToUse = potentialBestBindings[goodBindingIndex];
 			//and NOW what we want to do is 'fill in' the action with this good binding!
-			return bindActionEffects2(terminal, bindingsToUse);
+			return bindActionEffects(terminal, bindingsToUse);
 		}
 	};
 
@@ -964,7 +965,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		var sortedTerminals = sortActionsByVolitionScore(allTerminals);
 		for(var k = 0; k < sortedTerminals.length; k += 1){
 			var bestBindings = getBestBindingFromTerminal(sortedTerminals[k]);
-			sortedTerminals[k] = bindActionEffects2(sortedTerminals[k], bestBindings);
+			sortedTerminals[k] = bindActionEffects(sortedTerminals[k], bestBindings);
 		}
 
 		return sortedTerminals;
@@ -1018,7 +1019,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		var sortedTerminals = sortActionsByVolitionScore(terminalArray);
 		for(var k = 0; k < sortedTerminals.length; k += 1){
 			var bestBindings = getBestBindingFromTerminal(sortedTerminals[k]);
-			sortedTerminals[k] = bindActionEffects2(sortedTerminals[k], bestBindings);
+			sortedTerminals[k] = bindActionEffects(sortedTerminals[k], bestBindings);
 		}
 		return sortedTerminals;
 	};
@@ -1050,8 +1051,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		parseActions : parseActions,
 		getAllActions : getAllActions,
 		getActionFromName : getActionFromName,
-		//bindActionEffects : bindActionEffects,
-		bindActionEffects2 : bindActionEffects2,
+		bindActionEffects : bindActionEffects,
 		categorizeActionGrammar : categorizeActionGrammar,
 		getStartSymbols : getStartSymbols,
 		getNonTerminals : getNonTerminals,
