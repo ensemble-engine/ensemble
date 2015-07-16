@@ -933,44 +933,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundActions;
 	};
 
-	//TODO: Does this work if you ahve more than two layers worth of actions?
-	//TODO: Or for ANY non-standard structure for that matter?
-	/**
-	 * @method extractAndSortTerminalsFromActionList 
-	 * @description Given an actionList, gets the terminals out of them, finds the best binding for each one, sorts them, and returns them in sorted order. 
-	 * @param  {[Array]} actionList [An array of actions -- many of these will likely have their own arrays of actions to lead to]
-	 * @return {[Array]}            [A sorted list of all terminals.]
-	 */
-	var extractAndSortTerminalsFromActionList = function(actionList){
-		//console.log("inside of extractAndSortTerminalsFromActionList!");
-		var allTerminals = [];
-		for(var i = 0; i < actionList.length; i += 1){
-			//Any given 'entry' in this list might have multiple actions, if 'numActionsPerGroup was > 1' in previous calls.
-			var currentAction = actionList[i];
-			if(actionList[i].actions !== undefined){
-				for(var j = 0; j < actionList[i].actions.length; j += 1){
-					//Umm... are the actions bound at this point? I'm not sure if they are. We might have to 
-					//do something special here.
-					//These are now bound at this point yet -- we will have to do that eventually!
-					allTerminals.push(actionList[i].actions[j]);
-				}
-			}
-			else{
-				//if actionList[i].actions is undefined, that must mean that we are DEALING with a terminal already!
-				allTerminals.push(actionList[i]);
-			}
-		}
-
-		//Sort them based on their score.
-		var sortedTerminals = sortActionsByVolitionScore(allTerminals);
-		for(var k = 0; k < sortedTerminals.length; k += 1){
-			var bestBindings = getBestBindingFromTerminal(sortedTerminals[k]);
-			sortedTerminals[k] = bindActionEffects(sortedTerminals[k], bestBindings);
-		}
-
-		return sortedTerminals;
-	};
-
 	//This function takes an action list. That is, an array (or something) of actions.
 	//Some of these actions are terminals. They should be grabbed!
 	//However, some of these are, in fact, not terminals, but might LEAD to other

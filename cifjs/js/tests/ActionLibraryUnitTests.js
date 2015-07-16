@@ -534,10 +534,6 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var isAccepted = v.isAccepted("MisterInit", "MadamRespond", firstVolition);
 		var weight = firstVolition.weight;
 
-
-		
-
-
 		test.start("ActionLibrary", "testActionsWithConditions" );
 
 		//TEST 1 -- Using testActionsGrammar2 
