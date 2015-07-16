@@ -315,7 +315,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//actually construct something that kept track of this structure... using associative arrays 
 			//I suppose? Maybe pointers? Hmmmm..
 			//#CODEREVIEW -- fix the name of this fuction/remove extraneous functions with similar names.
-			var terminalAction = getTerminalActionFromNameGeneric(actionName, terminalActions);
+			var terminalAction = getActionFromNameInArray(actionName, terminalActions);
 
 
 			if(terminalAction !== undefined){
@@ -410,7 +410,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			else{ // Ah, we must be dealing with another non-terminal! let's DIG DEEPER!
 			
 				//#CODEREVIEW: This code is pretty much exactly repeated elsewhere in this function. Make it it's own function, maybe passing in special parametrs as needed.
-				var nonTerminalAction = getTerminalActionFromNameGeneric(actionName, nonTerminals);
+				var nonTerminalAction = getActionFromNameInArray(actionName, nonTerminals);
 				nonTerminalAction.goodBindings = nonTerminal.goodBindings;
 				nonTerminalAction.weight = nonTerminal.weight;
 
@@ -561,13 +561,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 	//#CODEREVIEW: Consolodate these three functions. Maybe create a separate 'isTerminal' function that returns a boolean?
 	/**
-	 * @method getActionFromNameGeneric
+	 * @method getActionFromNameInArray
 	 * @private
 	 * @description Given the name of an action, searches through a provided array to find the corresponding action object and returns it.
 	 * @param  {string} actionName [The name of the action we are hunting for in the provided array.]
 	 * @return {object}            [An object representing all relevant information pertaining to the requested action. Returns undefined if no such action exists.]
 	 */
-	var getTerminalActionFromNameGeneric = function(actionName, actionArray){
+	var getActionFromNameInArray = function(actionName, actionArray){
 		for(var i = 0; i < actionArray.length; i += 1){
 			if(actionArray[i].name === actionName){
 				return util.clone(actionArray[i]);
