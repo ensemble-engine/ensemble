@@ -167,7 +167,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var getSortedActionsFromVolition = function(initiator, responder, registeredVolition, isAccepted, weight, numActionsPerGroup, cast){
 		//console.log("Inside of getSortedactionsFromVolition");
 
-		var actions = getTerminalActionsFromVolition(initiator, responder, registeredVolition, isAccepted, weight, numActionsPerGroup, cast);
+		var actions = getActionHierarchyFromVolition(initiator, responder, registeredVolition, isAccepted, weight, numActionsPerGroup, cast);
 		var sortedActions = sortActionsByVolitionScore(actions);
 		return sortedActions;
 
@@ -204,7 +204,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * @method getTerminalActionsFromVolition
+	 * @method getActionHierarchyFromVolition
 	 * @description This method takes the names of the initiator and responder of an action and a registered volition 
 	 * between them, and will go through the entire grammar for the intnet specified in the volition and return all 
 	 * terminal actions that are appropriate (are of the correct accept/reject polarity, have all conditions met, etc.)
@@ -217,7 +217,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @param  {[Array]} cast               [The characters to be used in the role binding process]
 	 * @return {[Array]}                    [An Array of potential actions that can be carried out from the initiator to the responder]
 	 */
-	var getTerminalActionsFromVolition = function(initiator, responder, volition, isAccepted, weight, numActionsPerGroup, cast){
+	var getActionHierarchyFromVolition = function(initiator, responder, volition, isAccepted, weight, numActionsPerGroup, cast){
 		var actionIntent;
 		var goodTerminals = [];
 		var returnTerminalList = [];
@@ -244,7 +244,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					rootAction.goodBindings = [];
 					rootAction.goodBindings.push(initialGoodBindings);
 					rootAction.weight = weight; // This is the 'base' score that came from our microtheories equivalent.
-					goodTerminals = getTerminalActionsFromNonTerminal(rootAction, isAccepted, numActionsPerGroup, uniqueBindings, cast);
+					goodTerminals = getActionHierarchyFromNonTerminal(rootAction, isAccepted, numActionsPerGroup, uniqueBindings, cast);
 					if(goodTerminals === undefined){ // this means we didn't find any good actions!
 						console.log("found no valid actions for init: " + initiator + ", respond: " + responder + ", for volition " , volition);
 						return;
@@ -260,12 +260,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 	/**
-	 * @method getTerminalActionsFromNonTerminal
-	 * @description Returns an array that contains all of the terminal actions that you can reach from a given nonTerminal action.
+	 * 
+	 * @method getActionHierarchyFromNonTerminal
+	 * @description Returns an array that represents an 'action hierarchy' i.e. each element in the array will either be a terminal, or will be a non-terminal with fully fleshed out "leads to" information that will ultimately lead to a terminal (with potentally many non terminals 'in the way' with their own leads to information.)
 	 * @param  {[Object]} nonTerminal [A 'non-terminal object that theoretically has a "leadsTo" field defined. This leadsTo field may lead to terminals or nonTerminals. If nonTerminals, this function is called recursively until terminals are reached.']
 	 * @return {[Array]}             [An Array of all of the non-terminals you can reach from the provided nonTerminal]
 	 */
-	var getTerminalActionsFromNonTerminal = function(nonTerminal, isAccepted, actionsPerGroup, uniqueBindings, cast){
+	var getActionHierarchyFromNonTerminal = function(nonTerminal, isAccepted, actionsPerGroup, uniqueBindings, cast){
 		var returnList = [];
 		var terminalsAtThisLevel = false;
 		var currentUniqueBindings = uniqueBindings;
@@ -430,7 +431,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				}
 
 				//RECURSIVE CALL! Using the non-terminal we're on as the starting point for the next level down the tree.
-				var diggingDeeperActions = getTerminalActionsFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
+				var diggingDeeperActions = getActionHierarchyFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
 				if(diggingDeeperActions === undefined || diggingDeeperActions.length <= 0){
 					continue; // oops! This 'leads to' led to something that had no valid bindings! Better move on!
 				}
@@ -940,6 +941,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		}
 
 
+		//is grabAllTerminals needed here? Maybe not, since getSortedActionsFromVolition appears to only return terminals itself?
 		var allTerminals = grabAllTerminals(returnList);
 		var boundActions = sortAndBindTerminals(allTerminals);
 		//var boundActions = extractAndSortTerminalsFromActionList(returnList);
@@ -984,6 +986,11 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return sortedTerminals;
 	};
 
+	//This function takes an action list. That is, an array (or something) of actions.
+	//Some of these actions are terminals. They should be grabbed!
+	//However, some of these are, in fact, not terminals, but might LEAD to other
+	//terminals. This function will also drill down into those non-terminals, and get
+	//the terminals that are buried within.
 	var grabAllTerminals = function(actionList){
 		var terminalsFoundHere = [];
 		var terminalsFoundDeeper;
@@ -1018,6 +1025,11 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return allTerminals;
 	};
 
+	//sortAndBindTerminals expects that a 'list' of actions be passed in
+	//and that eeach of these actions should be terminals.
+	//This function sorts them based on their volition score, finds the
+	//best binding for them, and then updates the sorted array based on those bindings.
+	//It returns an array of terminals which have been sorted and who have good bindings.
 	var sortAndBindTerminals = function(terminalArray){
 		var sortedTerminals = sortActionsByVolitionScore(terminalArray);
 		for(var k = 0; k < sortedTerminals.length; k += 1){
@@ -1060,9 +1072,9 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		getStartSymbols : getStartSymbols,
 		getNonTerminals : getNonTerminals,
 		getTerminalActions : getTerminalActions,
-		getTerminalActionsFromNonTerminal : getTerminalActionsFromNonTerminal,
+		getActionHierarchyFromNonTerminal : getActionHierarchyFromNonTerminal,
 		clearActionLibrary : clearActionLibrary,
-		getTerminalActionsFromVolition : getTerminalActionsFromVolition,
+		getActionHierarchyFromVolition : getActionHierarchyFromVolition,
 		getSortedActionsFromVolition : getSortedActionsFromVolition,
 		getBestTerminalFromActionList : getBestTerminalFromActionList,
 

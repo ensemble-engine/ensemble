@@ -16,7 +16,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		cif.reset();
 		sfdb.clearEverything();
 		actionLibrary.clearActionLibrary();
-		console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
+		//console.log("&&&&&&& HERE ^^^^^^ YES !!!!!!!!!");
 		
 		originalTest();
 		cif.reset();
@@ -54,9 +54,11 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var rawActions = cif.loadFile("externalApplicationFiles/actions.json");
 		var actions = cif.addActions(rawActions);
 
+/*
 		console.log("schema", schema);
 		console.log("cast", cast);
 		console.log("actions", actions);
+*/
 
 		cif.dumpSFDB();
 
@@ -77,13 +79,13 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var char1 = "brax";
 		var char2 = "grunt";
 		var vol = storedVolitions.getFirst(char1, char2);
-		console.log(vol);
+		//console.log(vol);
 
 		var bestActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 1);
-		console.log("Actions: ", bestActions);
+		//console.log("Actions: ", bestActions);
 
 		var bestSelfActions = cif.getActions(char1, char1, storedVolitions, cast, 2, 1);
-		console.log("Self Actions: ", bestSelfActions);
+		//console.log("Self Actions: ", bestSelfActions);
 
 		for(var i = 0; i < bestSelfActions[0].effects.length; i += 1){
 			cif.set(bestSelfActions[0].effects[i]);
@@ -98,9 +100,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 	};
 
 	var loversAndRivalsTest = function() {
-		console.log("testing loversAndRivals data...");
+		//console.log("testing loversAndRivals data...");
 		var loadResult = cif.init();
-		console.log(loadResult);
+		//console.log(loadResult);
 
 		var rawSchema = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/schema.json");
 		//var schema = cif.loadSocialStructure(rawSchema);
@@ -110,11 +112,11 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var cast = cif.addCharacters(rawCast);
 
 		var rawRules = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/triggerRules.json");
-		console.log(rawRules);
+		//console.log(rawRules);
 		var ids = cif.addRules(rawRules);
-		console.log("ids", ids);
+		//console.log("ids", ids);
 		ids = cif.addRules(cif.loadFile("externalApplicationFiles/dataLoversAndRivals/volitionRules.json"));
-		console.log("ids2", ids);
+		//console.log("ids2", ids);
 
 		var rawActions = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/actions.json");
 		var actions = cif.addActions(rawActions);
@@ -122,10 +124,12 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var rawHistory = cif.loadFile("externalApplicationFiles/dataLoversAndRivals/history.json");
 		var history = cif.addHistory(rawHistory);
 
+/*
 		console.log("schema", schema);
 		console.log("cast", cast);
 		console.log("actions", actions);
 		console.log("history: " , history);
+*/
 
 		cif.dumpSFDB();
 
@@ -135,8 +139,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var storedVolitions = cif.calculateVolition(cast);
 		var possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 3);
 		var possibleActionsLoveToHero = cif.getActions(char2, char1, storedVolitions, cast, 2, 3);
-		console.log("possible actions from hero to love: " , possibleActions);
-		console.log("possible actions from love to hero: " , possibleActionsLoveToHero);
+		//console.log("possible actions from hero to love: " , possibleActions);
+		//console.log("possible actions from love to hero: " , possibleActionsLoveToHero);
 
 		//now let's set the hero's closeness to love to 10, to test the odd behavior we're experiencing.
 		/*
@@ -153,14 +157,14 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		storedVolitions = cif.calculateVolition(cast);
 		possibleActions = cif.getActions(char1, char2, storedVolitions, cast, 2, 2);
 
-		console.log("stored volitions: " , storedVolitions.dump());
+		//console.log("stored volitions: " , storedVolitions.dump());
 		var testActions = cif.getActions("love", "hero", storedVolitions, cast, 2, 2);
-		console.log("This is what love wants to do towards hero: ", testActions);
+		//console.log("This is what love wants to do towards hero: ", testActions);
 
-		console.log("new possible actions: " , possibleActions);
+		//console.log("new possible actions: " , possibleActions);
 
 		var heroToHeroActions = cif.getActions("hero", "hero", storedVolitions, cast, 2, 2);
-		console.log("actions from hero to hero!" , heroToHeroActions);
+		//console.log("actions from hero to hero!" , heroToHeroActions);
 
 		cif.dumpSFDB();
 		cif.runTriggerRules(cast);

@@ -29,7 +29,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		sfdb.clearEverything();
 		testGetTerminalsFromNonTerminal();
 		sfdb.clearEverything();
-		testGetTerminalActionsFromVolition();
+		testGetActionHierarchyFromVolition();
 		sfdb.clearEverything();
 		testActionsWithConditions();
 		sfdb.clearEverything();
@@ -235,7 +235,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 		//Let's see what happens when we try to grab all of the terminalActions!
 		//TEST 1 -- starting from the root (accept)
-		var acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], true, 100, uniqueBindings, cast);
+		var acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], true, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , acceptTerminalActions);
 		test.assert(acceptTerminalActions.length, 3, "Incorrect number of top level actions (TEST 1)");
 		test.assert(acceptTerminalActions[0].name, "ASKOUT", "Wrong name for first terminal action (TEST 1)");
@@ -245,20 +245,20 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(acceptTerminalActions[1].actions.length, 1, "Incorrect number of PICKUPLINE actions found when starting from startSymbol");
 	
 		//TEST 2 -- starting from "ASKOUT" (accept)
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], true, 100, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], true, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , acceptTerminalActions);
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of ASKOUT actions actions (TEST 2)");
 		test.assert(acceptTerminalActions[0].name, "askout1-genericAccept", "Wrong name for first terminal action (TEST 2)");
 
 
 		//TEST 2.5-- starting from "PICKUPLINE" (technically the same as TEST 2, but just being thorough) (accept)
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], true, 100, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], true, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , acceptTerminalActions);
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of PICKUPLINE actions actions (TEST 2.5)");
 		test.assert(acceptTerminalActions[0].name, "pickupline1", "Wrong name for first terminal action (TEST 2.5)");
 
 		//TEST 3 -- Starting at STARTSYMBOL, but for reject.
-		var rejectTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], false, 100, uniqueBindings, cast);
+		var rejectTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], false, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , rejectTerminalActions);
 		test.assert(rejectTerminalActions.length, 2, "Incorrect number of top level actions (TEST 3)");
 		test.assert(rejectTerminalActions[0].name, "ASKOUT", "Wrong name for first terminal action (TEST 3)");
@@ -270,7 +270,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(rejectTerminalActions[1].actions.length, 2, "Incorrect number of REJECTED PICKUPLINE actions found when starting from startSymbol");
 	
 		//TEST 4 -- Starting at "ASKOUT" but for reject
-		rejectTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], false, 100, uniqueBindings, cast);
+		rejectTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], false, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , rejectTerminalActions);
 		test.assert(rejectTerminalActions.length, 2, "Incorrect number of top level actions (TEST 4)");
 		test.assert(rejectTerminalActions[0].name, "askout2-genericReject", "Wrong name for first terminal action (TEST 4)");
@@ -278,7 +278,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(rejectTerminalActions.length, 2, "Incorrect number of REJECT ASKOUT actions found when starting from ASKOUT");
 
 		//TEST 4.5 -- Starting at PICKUPLINE but for reject
-		rejectTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], false, 100, uniqueBindings, cast);
+		rejectTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], false, 100, uniqueBindings, cast);
 		//console.log("Did I get the terminal actions okay? " , rejectTerminalActions);
 		test.assert(rejectTerminalActions.length, 2, "Incorrect number of top level actions (TEST 4.5)");
 		test.assert(rejectTerminalActions[0].name, "pickupline3", "Wrong name for first terminal action (TEST 4.5)");
@@ -291,38 +291,38 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		//TODO: I can already envision a world where if you ask for the most saient "start dating" it actually drills down 
 		//all possible branches and gets you only ONE action (i.e. the cream of the crop from pickupline, askout, and startDating)
 		//TEST 5 -- get the most salient STARTDATING ACCEPT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], true, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], true, 1, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 3, "Incorrect number of top level actions (TEST 5)");
 		test.assert(acceptTerminalActions[2].name, "topTerminal", "Wrong name for top terminal action (TEST 5)");
 		//test.assert(acceptTerminalActions[2].length, 1, "When asking for most salient accept START DATING (i.e. top terminal), length was wrong");
 		test.assert(acceptTerminalActions[2].salience, 10, "When asking for most salient accept START DATING (i.e. top terminal), salience was wrong");
 	
 		//TEST 5.5 -- get the most salience STARTDATING REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], false, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], false, 1, uniqueBindings, cast);
 		//test.assert(acceptTerminalActions[2].length, 0, "When asking for most salient reject START DATING (i.e. top terminal), length was wrong");
 
 		//TEST 6 -- get the most salient ASKOUT ACCEPT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], true, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], true, 1, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of top level actions (TEST 6)");
 		test.assert(acceptTerminalActions[0].name, "askout1-genericAccept", "Wrong name for first terminal action (TEST 6)");
 		test.assert(acceptTerminalActions[0].salience, 0, "When asking for most salient accept ASKOUT, salience was wrong");
 		
 		//TEST 6.5 -- get the most salient ASKOUT REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], false, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], false, 1, uniqueBindings, cast);
 
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of top level actions (TEST 6.5)");
 		test.assert(acceptTerminalActions[0].salience, 50, "When asking for most salient reject ASKOUT, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "askout2-genericReject", "When asking for most salient reject ASKOUT, name was wrong");
 
 		//TEST 7 -- get the most salient PICKUPLINE ACCEPT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], true, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], true, 1, uniqueBindings, cast);
 
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of top level actions (TEST 7)");
 		test.assert(acceptTerminalActions[0].salience, 0, "When asking for most salient accept PICKUPLINE, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "pickupline1", "When asking for most salient accept PICKUPLINE, name was wrong");
 
 		//TEST 7.5 -- get the most salient PICKUPLINE REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], false, 1, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], false, 1, uniqueBindings, cast);
 
 		test.assert(acceptTerminalActions.length, 1, "Incorrect number of top level actions (TEST 7.5)");
 		test.assert(acceptTerminalActions[0].salience, 70, "When asking for most salient reject PICKUPLINE, salience was wrong");
@@ -330,36 +330,36 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 		//TEST 8B -- we want to make sure that even when we are looking for multiple actions, the ordering of the salience is correct.
 		//We can do that by just using the above tests again, but by passing in '2' for the action group.
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], true, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], true, 2, uniqueBindings, cast);
 
 		test.assert(acceptTerminalActions.length, 3, "Incorrect number of top level actions (TEST 8B)");
 		test.assert(acceptTerminalActions[2].salience, 10, "(B) When asking for most salient accept START DATING, salience was wrong");
 		test.assert(acceptTerminalActions[2].name, "topTerminal", "(B) When asking for most salient accept START DATING, name was wrong");
 	
 		//TEST 5.5B -- get the most salience STARTDATING REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[0], false, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[0], false, 2, uniqueBindings, cast);
 		//test.assert(acceptTerminalActions[2].length, 0, "(B) When asking for most salient reject START DATING, length was wrong");
 
 		//TEST 6B -- get the most salient ASKOUT ACCEPT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], true, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], true, 2, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 1, "(B) When asking for most salient accept ASKOUT, length was wrong");
 		test.assert(acceptTerminalActions[0].salience, 0, "(B) When asking for most salient accept ASKOUT, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "askout1-genericAccept", "(B) When asking for most salient accept ASKOUT, name was wrong");
 
 		//TEST 6.5B -- get the most salient ASKOUT REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1], false, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1], false, 2, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 2, "(B) When asking for most salient reject ASKOUT, length was wrong");
 		test.assert(acceptTerminalActions[0].salience, 50, "(B) When asking for most salient reject ASKOUT, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "askout2-genericReject", "(B) When asking for most salient reject ASKOUT, name was wrong");
 
 		//TEST 7B -- get the most salient PICKUPLINE ACCEPT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], true, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], true, 2, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 1, "(B) When asking for most salient accept PICKUPLINE, length was wrong");
 		test.assert(acceptTerminalActions[0].salience, 0, "(B) When asking for most salient accept PICKUPLINE, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "pickupline1", "(B) When asking for most salient accept PICKUPLINE, name was wrong");
 
 		//TEST 7.5B -- get the most salient PICKUPLINE REJECT
-		acceptTerminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2], false, 2, uniqueBindings, cast);
+		acceptTerminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2], false, 2, uniqueBindings, cast);
 		test.assert(acceptTerminalActions.length, 2, "(B) When asking for most salient reject PICKUPLINE, length was wrong");
 		test.assert(acceptTerminalActions[0].salience, 70, "(B) When asking for most salient reject PICKUPLINE, salience was wrong");
 		test.assert(acceptTerminalActions[0].name, "pickupline3", "(B) When asking for most salient reject PICKUPLINE, name was wrong");
@@ -368,11 +368,11 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 /*
 		test.assert(terminalActions.length, 5, "Using the top level non-terminal action returned the incorrect number of terminal actions");
 
-		terminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[1]);
+		terminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[1]);
 		console.log("Did I get the terminal actions okay (askout)? " , terminalActions);
 		test.assert(terminalActions.length, 2, "Using the 'askout' nonterminal returned the incorrect number of terminal actions");
 	
-		terminalActions = actionLibrary.getTerminalActionsFromNonTerminal(nonTerminals[2]);
+		terminalActions = actionLibrary.getActionHierarchyFromNonTerminal(nonTerminals[2]);
 		console.log("Did I get the terminal actions okay? (pickupline)" , terminalActions);
 		test.assert(terminalActions.length, 2, "Using the 'pickup line' nonterminal returned the incorrect number of terminal actions");
 */
@@ -382,7 +382,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 
 	};
 
-	var testGetTerminalActionsFromVolition = function(){
+	var testGetActionHierarchyFromVolition = function(){
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar);
 		var actions = actionLibrary.getAllActions();
@@ -408,8 +408,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var firstVolition = v.getFirst("simon", "monica");
 		var isAccepted = v.isAccepted("simon", "monica", firstVolition);
 		var weight = firstVolition.weight;
-		//var potentialActions = actionLibrary.getTerminalActionsFromVolition(firstVolition, isAccepted, 1);
-		var potentialActions = actionLibrary.getTerminalActionsFromVolition("simon", "monica", firstVolition, isAccepted.accepted, weight, 1);
+		//var potentialActions = actionLibrary.getActionHierarchyFromVolition(firstVolition, isAccepted, 1);
+		var potentialActions = actionLibrary.getActionHierarchyFromVolition("simon", "monica", firstVolition, isAccepted.accepted, weight, 1);
 
 
 		//console.log("So, how are our potential actions looking? " , potentialActions);
@@ -545,7 +545,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		//This means that generic accept should be returened.
 		
 		actionLibrary.parseActions(testActionsGrammar2);
-		var potentialActions = actionLibrary.getTerminalActionsFromVolition("MisterInit", "MadamRespond", firstVolition, isAccepted.accept, weight, 1, cast);
+		var potentialActions = actionLibrary.getActionHierarchyFromVolition("MisterInit", "MadamRespond", firstVolition, isAccepted.accept, weight, 1, cast);
 		var reminisceActions = potentialActions[0].actions;
 		var jokeActions = potentialActions[1].actions;
 
@@ -577,7 +577,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		var volitionInstance = v.getFirst("MisterInit", "MadamRespond");
 		var acceptedObject = v.isAccepted("MisterInit", "MadamRespond", volitionInstance);
 		var volitionWeight = volitionInstance.weight;
-		potentialActions = actionLibrary.getTerminalActionsFromVolition("MisterInit", "MadamRespond", volitionInstance, acceptedObject.accepted, volitionWeight, 1, cast);
+		potentialActions = actionLibrary.getActionHierarchyFromVolition("MisterInit", "MadamRespond", volitionInstance, acceptedObject.accepted, volitionWeight, 1, cast);
 		test.assert(_.keys(potentialActions).length, 1, "Wrong number of action groups (TEST 2)");
 		
 		//var affinityUpActions = potentialActions[0].actions;
@@ -613,7 +613,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		acceptedObject = v.isAccepted("MisterInit", "MadamRespond", volitionInstance);
 		volitionWeight = volitionInstance.weight;
 
-		potentialActions = actionLibrary.getTerminalActionsFromVolition("MisterInit", "MadamRespond", volitionInstance, acceptedObject.accepted, volitionWeight, 1, cast);
+		potentialActions = actionLibrary.getActionHierarchyFromVolition("MisterInit", "MadamRespond", volitionInstance, acceptedObject.accepted, volitionWeight, 1, cast);
 		test.assert(_.keys(potentialActions).length, 1, "Wrong number of action groups (TEST 3)");
 		
 		affinityUpActions = potentialActions[0].actions;
@@ -638,7 +638,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		//see what happens (and use this to help me firm up what I think SHOULD happen.)
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar7);
-		potentialActions = actionLibrary.getTerminalActionsFromVolition("MisterInit", "MadamRespond", v, 1, cast);
+		potentialActions = actionLibrary.getActionHierarchyFromVolition("MisterInit", "MadamRespond", v, 1, cast);
 		//console.log("******** There should be no terminals here!" , potentialActions);
 		test.assert(potentialActions.length, 0, "No valid terminals should have led to a length of 0.");
 
@@ -1304,8 +1304,7 @@ var testGetAction = function(){
 		test.finish();
 	};
 
-
-	/***************************************************************/
+/***************************************************************/
 	/* INTERFACE */
 	/***************************************************************/
 
