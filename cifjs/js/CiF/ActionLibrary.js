@@ -15,6 +15,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	var nonTerminals = [];
 	var terminalActions = [];
 
+
 	/**
 	 * @method getAllActions 
 	 * @private
@@ -130,6 +131,32 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		}
 	};
 
+	//Checks to see if a passed in action matches an action that has already
+	//been categorized as a start symbol. Returns true if it does (i.e. it is a duplicate),
+	//false otherwise.
+	var startSymbolAlreadyExists = function(potentialNewAction){
+		
+		//One thing that we'll do is double check that there aren't two identical start symbols.
+		if(potentialNewAction.intent !== undefined){
+			var newStartSymbolIntent = potentialNewAction.intent;
+			//alright, we're dealing with a 'start symbol' apparantly! Let's make sure it isn't a duplicate of 
+			//any other start symbols that already exist!
+			for(var i = 0; i < startSymbols.length; i += 1){
+				var existingStartSymbol = startSymbols[i];
+				if(existingStartSymbol.class === newStartSymbolIntent.class &&
+					existingStartSymbol.type === newStartSymbolIntent.type &&
+					existingStartSymbol.intentDirection === newStartSymbolIntent.intentDirection &&
+					existingStartSymbol.first === newStartSymbolIntent.first &&
+					existingStartSymbol.second === newStartSymbolIntent.second){
+						return true;
+						//oops, they are the same! We have a problem!
+						//console.log("ERROR! WE DON'T WANT TO ADD THIS TO THE LIBRARY BECAUSE IT WAS DEFINED ALREADY!");
+				}
+			}
+		}
+		return false; // they are not the same! we are okay!
+	}
+
 	/**
 	 * @method categorizeActionGrammar
 	 * @description This method takes in an unsorted list of actions (in the style returned from the parseActions method) and, based on the properties of these actions, determines if they are 'start', 'terminal' or 'non-terminal' actions and stores them in teh appropriate array of actionLibrary
@@ -140,7 +167,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		for(var i = 0; i < actionPool.length; i += 1){
 			currentAction = util.clone(actionPool[i]);
 			if(actionPool[i].intent !== undefined){
-				startSymbols.push(currentAction);
+				if(startSymbolAlreadyExists(currentAction)){
+					//we only want there to be one action per intent, i.e. each start symbol
+					//should be unuqie. If that's not the case, then, er, don't push it I guess!
+					console.log("ERROR! WE DON'T WANT TO ADD THIS TO THE LIBRARY BECAUSE IT WAS DEFINED ALREADY!");
+
+				}
+				else{
+					startSymbols.push(currentAction);
+				}
+
 			}
 			if(actionPool[i].leadsTo !== undefined){
 				nonTerminals.push(currentAction); // so start terminals ALSO end up here. Maybe that's good? Can change into an else-if if not!
@@ -250,8 +286,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 						return;
 					}
 
-					//#CODEREVIEW: Maybe just return goodTerminals right here.
-					
 					returnTerminalList = goodTerminals; //Ok, so, it said temp temp temp, but actually I think this is pretty much exactly what we want!
 					break;
 			}
@@ -315,7 +349,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//TODO: Intead of having to recompute this every time, it would be cool to 
 			//actually construct something that kept track of this structure... using associative arrays 
 			//I suppose? Maybe pointers? Hmmmm..
-			//#CODEREVIEW -- fix the name of this fuction/remove extraneous functions with similar names.
 			var terminalAction = getActionFromNameInArray(actionName, terminalActions);
 
 
@@ -559,8 +592,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	};
 
 
-
-	//#CODEREVIEW: Consolodate these three functions. Maybe create a separate 'isTerminal' function that returns a boolean?
 	/**
 	 * @method getActionFromNameInArray
 	 * @private
@@ -655,11 +686,6 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		//NOTE: This should only be > 1 when called from the outside. When called recursively, combinationsToUse should only consist of a single combination.	
 		for(var workingCombinationIndex = 0; workingCombinationIndex < combinationsToUse.length; workingCombinationIndex += 1){
 		
-			//#CODEREVIEW - get rid of this test.
-			if(action.name === "BOND" && workingCombinationIndex === 1){
-				//console.log("At our problem child...");
-			}
-
 			newCombinationsToUse = []; // kinda weird, but we want to zero it out each time, because we only ever want it to have one entry.
 			newCombinationsToUse.push(util.clone(combinationsToUse[workingCombinationIndex]));
 			availableCastMembers = util.clone(allCastMembers);
