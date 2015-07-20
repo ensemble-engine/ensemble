@@ -53,6 +53,35 @@
 
 		},
 		{
+			"name": "(Recent) Attraction makes people REALLY want to start dating.",
+			"conditions": [
+				{
+					"class": "directedStatus",
+					"type": "attracted to",
+					"first": "x",
+					"second": "y",
+					"turnsAgoBetween": ["NOW", 4]
+				},{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentDirection": true
+				}
+			]
+
+		},
+		{
 			"name": "Injured people are less interested in romance.",
 			"conditions": [
 				{

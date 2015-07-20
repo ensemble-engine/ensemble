@@ -313,7 +313,7 @@ margin-left: 6em;
 }
 .edeffectsP div, .edconditionsP div, .newPredicate div {
 	float: left;
-	padding: 0px !important;
+	/*padding: 0px !important;*/
 	height: 30px;
 	margin: 3px;
 	font-size: 100%;
@@ -360,11 +360,49 @@ margin-left: 6em;
 	position: relative;
 	top: -4px;
 }
-.edvalue input {
+.edvalue input, {
 	width: 2em;
 	text-align: center;
 }
+.edmoreRecent, .edlessRecent {
+	margin-top: -4px !important;
+}
+.edmoreRecent input, .edlessRecent input {
+	width: 4em;
+	text-align: center;	
+}
 select optgroup { font-weight:bold; }
+.timeButtons {
+  display: inline-block;
+  /*outline: thin solid purple;*/
+  font-size: 50%;
+  position: relative;
+  top: 4px;
+  line-height: 1.2em;
+  padding-left: 0.33em;
+}
+.timeButtons span {
+	display: block;
+	font-weight: bold;
+  color: #47694C;
+  cursor: pointer;
+    outline: thin solid rgb(195, 195, 195);
+  margin-bottom: 3px;
+  text-align:center;
+}
+.timeOrderControls {
+	font-size:85% !important;
+	padding-top: 6px !important;
+  background-color: rgb(234, 231, 255);
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.timeStartButton {
+	background-color: rgb(255, 227, 199);
+}
+.timeNowButton {
+	background-color: rgb(165, 255, 190);
+}
 
 .ruleTypeLabel {
 	float: left;
@@ -378,6 +416,9 @@ select optgroup { font-weight:bold; }
 	font-size: 75%;
 }
 
+/* PURE CSS ICONS */
+
+/* Person */
 .personIcon {
 	width: 20px;
 	height: 20px !important;
@@ -441,6 +482,77 @@ select optgroup { font-weight:bold; }
 .charHighlight6Dark {
 	background-color: rgb(179, 33, 68)
 }
+
+/* Clock */
+/* Courtesy Nicolas Gallagher, http://nicolasgallagher.com/pure-css-gui-icons/ */
+
+.clock {
+    position:absolute;
+    right: 9%;
+    z-index:1;
+    overflow:hidden;
+    list-style:none;
+    padding:0;
+    margin:0 0 0.25em;
+    width: 20px;
+}
+
+.clock:before,
+.clock:after,
+.clock div:before,
+.clock div:after {
+    content:"";
+    position:absolute;
+    top:50%;
+    left:0;
+}
+
+.clock div:before,
+.clock div:after {
+    margin:-8px 0 0;
+    left:4px;
+    width:10px;
+    height:10px;
+    margin-top:-6px;
+    background:transparent;
+}
+
+.clockOn {
+	background-color: rgb(234, 231, 255);
+}
+.clockOff div:before,
+.clockOff div:after {
+    border:1px solid #ABB9DB;
+}
+
+.clockOn div:before,
+.clockOn div:after {
+    border:1px solid rgb(7, 14, 42);
+}
+
+
+/* Makes clock spherical */
+.clock div:before {
+    /* css3 */
+    -webkit-border-radius:14px;
+    -moz-border-radius:14px;
+    border-radius:14px;
+}
+
+/* clock interior */
+.clock div:after {
+    left:8px;
+    width:3px;
+    height:4px;
+    border-width:0 0 1px 1px;
+    margin-top:-4px;
+    background:transparent;
+}
+
+
+
+
+
 
 #saveRule {
 	font-size: 115%;

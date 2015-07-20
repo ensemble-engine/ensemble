@@ -951,9 +951,30 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			predType = "volition"
 		}
 
-		var isWord = (pred.turnsAgoBetween !== undefined) ? "was" : "is";
+		var isWord = "is";
+		var hasWord = "has";
+		var moreRecent, lessRecent;
+		if (pred.turnsAgoBetween !== undefined) {
+			moreRecent = pred.turnsAgoBetween[0];
+			lessRecent = pred.turnsAgoBetween[1];
+			if (moreRecent === "NOW") moreRecent = 0;
+			if (lessRecent === "NOW") lessRecent = 0;
+			if (moreRecent === "START") moreRecent = Infinity;
+			if (lessRecent === "START") lessRecent = Infinity;
+			if (moreRecent === 0 && lessRecent === 0) {
+				// Leave as is; skip further custom text.
+				moreRecent = undefined;
+				lessRecent = undefined;
+			}
+			else if (moreRecent === 0) {
+				isWord = "has been";
+				hasWord = "has had";
+			} else {
+				isWord = "was";
+				hasWord = "had";
+			}
+		}
 		var notWord = (pred.value === false ? " not" : "")
-		var hasWord = (pred.timeLatest !== undefined && pred.timeLatest > 0) ? "had" : "has";
 		var directionWord;
 		switch(pred.operator) {
 			case "+": directionWord = "more"; break;
@@ -1017,6 +1038,42 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			}
 			addPhrase(helper);
 			addPhrase(nameSecond, "second");
+		}
+
+		// Explanation of past tense parameters.
+		if (moreRecent !== undefined) {
+			addPhrase("", "timeOrderStart");
+			var printedMoreRecent = pred.turnsAgoBetween[0];
+			if (printedMoreRecent === "NOW") {
+				printedMoreRecent = 0;
+			}
+			var printedLessRecent = pred.turnsAgoBetween[1];
+			if (printedLessRecent === "NOW") {
+				printedLessRecent = 0;
+			}
+			if (lessRecent === Infinity) {
+				if (moreRecent === 0) {
+					addPhrase("at any point");
+				} else if (moreRecent === Infinity) {
+					addPhrase("at the very beginning");
+				} else {
+					addPhrase("sometime up until");
+					addPhrase(printedMoreRecent);
+					addPhrase("turns ago");
+				}
+				addPhrase("[");
+				addPhrase(printedMoreRecent, "moreRecent");
+				addPhrase(",");
+				addPhrase(printedLessRecent, "lessRecent");
+				addPhrase("]");
+			} else {
+				addPhrase("sometime between");
+				addPhrase(printedMoreRecent, "moreRecent");
+				addPhrase("and");
+				addPhrase(printedLessRecent, "lessRecent");
+				addPhrase("turns ago");
+			}
+			addPhrase("", "timeOrderEnd");
 		}
 
 		// Assemble the result object. Generate the single string of text by turning our array of objects into an array of texts, then filtering any empty texts from the array, then putting a space between each element to make a string.

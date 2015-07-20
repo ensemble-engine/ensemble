@@ -2842,13 +2842,6 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 			"second": "al"
 		}).text, "bob is involved with al", "Directed/reciprocal boolean.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "relationship",
-			"type": "involved with",
-			"first": "bob",
-			"second": "al",
-			"turnsAgoBetween": [2, 7]
-		}).text, "bob was involved with al", "Directed/reciprocal boolean (past).");
-		test.assert(ruleLibrary.predicateToEnglish({
 			"class": "network",
 			"type": "affinity",
 			"first": "bob",
@@ -2953,95 +2946,104 @@ function(util, _, util, ruleLibrary, sfdb, cif, volition, test, validate, testSo
 
 		// Past tense!
 		// We assume predicateToEnglish will only be called with correctly preloaded predicates, where turnsAgoBetween has been auto-sorted low to high (i.e. smaller number always first).
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": [0, 0]
-		// }).text, "bob is happy", "turnsAgoBetween 0-->0");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": ["NOW", "NOW"]
-		// }).text, "bob is happy", "turnsAgoBetween NOW-->NOW");		
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": ["NOW", 1]
-		// }).text, "bob has been happy ( between 0 and 1 turns ago )", "turnsAgoBetween NOW-->1");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": ["NOW", 3]
-		// }).text, "bob has been happy ( between 0 and 3 turns ago )", "turnsAgoBetween NOW-->3");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": [1, 4]
-		// }).text, "bob had been happy ( between 1 and 4 turns ago )", "turnsAgoBetween 1-->4");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": [5, "START"]
-		// }).text, "bob had been happy ( up until 5 turns ago )", "turnsAgoBetween 5-->START");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": ["NOW", "START"]
-		// }).text, "bob has been happy ( at any point )", "turnsAgoBetween NOW-->START");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": true,
-		// 	"turnsAgoBetween": ["START", "START"]
-		// }).text, "bob had been happy ( at the very beginning )", "turnsAgoBetween NOW-->START");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": [0, 0]
+		}).text, "bob is happy", "turnsAgoBetween 0-->0");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": ["NOW", "NOW"]
+		}).text, "bob is happy", "turnsAgoBetween NOW-->NOW");		
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": ["NOW", 1]
+		}).text, "bob has been happy sometime between 0 and 1 turns ago", "turnsAgoBetween NOW-->1");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": ["NOW", 3]
+		}).text, "bob has been happy sometime between 0 and 3 turns ago", "turnsAgoBetween NOW-->3");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": [1, 4]
+		}).text, "bob was happy sometime between 1 and 4 turns ago", "turnsAgoBetween 1-->4");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": [5, "START"]
+		}).text, "bob was happy sometime up until 5 turns ago [ 5 , START ]", "turnsAgoBetween 5-->START");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": ["NOW", "START"]
+		}).text, "bob has been happy at any point [ 0 , START ]", "turnsAgoBetween NOW-->START");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": true,
+			"turnsAgoBetween": ["START", "START"]
+		}).text, "bob was happy at the very beginning [ START , START ]", "turnsAgoBetween NOW-->START");
 
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "status",
-		// 	"type": "happy",
-		// 	"first": "bob",
-		// 	"value": false,
-		// 	"turnsAgoBetween": ["NOW", 1]
-		// }).text, "bob has been not happy ( between 0 and 1 turns ago )", "turnsAgoBetween with false NOW-->1");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "network",
-		// 	"type": "affinity",
-		// 	"first": "bob",
-		// 	"second": "carl",
-		// 	"value": "50",
-		// 	"operator": "<",
-		// 	"turnsAgoBetween": ["NOW", "START"]
-		// }).text, "bob has had less than 50 affinity for Carl ( at any point )", "turns ago between with directed numeric.");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "SFDBLabel",
-		// 	"type": "romanticFailure",
-		// 	"first": "bob",
-		// 	"second": "al",
-		// 	"value": true,
-		// 	"turnsAgoBetween": [2, 4]
-		// }).text, "bob did something romanticFailure to al ( between 2 and 4 turns ago )", "sfdblabel turnsAgoBetween, 2-->4");
-		// test.assert(ruleLibrary.predicateToEnglish({
-		// 	"class": "SFDBLabel",
-		// 	"type": "romanticFailure",
-		// 	"first": "bob",
-		// 	"second": "al",
-		// 	"value": false,
-		// 	"turnsAgoBetween": [2, "START"]
-		// }).text, "bob did not do something romanticFailure to al ( up until 2 turns ago )", "sfdblabel turnsAgoBetween, 2-->4");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "status",
+			"type": "happy",
+			"first": "bob",
+			"value": false,
+			"turnsAgoBetween": ["NOW", 1]
+		}).text, "bob has been not happy sometime between 0 and 1 turns ago", "turnsAgoBetween with false NOW-->1");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "network",
+			"type": "affinity",
+			"first": "bob",
+			"second": "carl",
+			"value": "50",
+			"operator": "<",
+			"turnsAgoBetween": ["NOW", "START"]
+		}).text, "bob has had less than 50 affinity for carl at any point [ 0 , START ]", "turns ago between with directed numeric.");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "network",
+			"type": "affinity",
+			"first": "bob",
+			"second": "carl",
+			"value": "50",
+			"operator": "<",
+			"turnsAgoBetween": [5, 10]
+		}).text, "bob had less than 50 affinity for carl sometime between 5 and 10 turns ago", "turns ago between in past with directed numeric.");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "SFDBLabel",
+			"type": "romanticFailure",
+			"first": "bob",
+			"second": "al",
+			"value": true,
+			"turnsAgoBetween": [2, 4]
+		}).text, "bob did something romanticFailure to al sometime between 2 and 4 turns ago", "sfdblabel turnsAgoBetween, 2-->4");
+		test.assert(ruleLibrary.predicateToEnglish({
+			"class": "SFDBLabel",
+			"type": "romanticFailure",
+			"first": "bob",
+			"second": "al",
+			"value": false,
+			"turnsAgoBetween": [2, "START"]
+		}).text, "bob did not do something romanticFailure to al sometime up until 2 turns ago [ 2 , START ]", "sfdblabel turnsAgoBetween, 2-->4");
 
 		test.finish();
 	};
