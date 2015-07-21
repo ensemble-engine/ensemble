@@ -261,7 +261,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		uniqueBindings["initiator"] = initiator;
 		uniqueBindings["responder"] = responder;
 
-
 		//first, we need to find the 'start' action based on the volition
 		for(var i = 0; i < startSymbols.length; i += 1){
 			actionIntent = startSymbols[i].intent;
@@ -307,8 +306,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		}
 
 		currentUniqueBindings = getUniqueActionBindings(nonTerminal, uniqueBindings);
-		//#CODEREVIEW -- why is cast passed in twice here? Ah, because one is available and one is all. But "all" never changes, so insead of passing in a clone, how about just a reference.
-		var nonTerminalWorkingBindingCombinations = getWorkingBindingCombinations(nonTerminal, util.clone(uniqueBindings), util.clone(cast), util.clone(nonTerminal.goodBindings), util.clone(cast));
+		var nonTerminalWorkingBindingCombinations = getWorkingBindingCombinations(nonTerminal, util.clone(uniqueBindings), util.clone(cast), util.clone(nonTerminal.goodBindings), cast);
 		if(nonTerminalWorkingBindingCombinations.length <= 0){
 			//Oops, there is no possible combination of cast members that make this work! 
 			//So no point in going down this path anymore!
