@@ -1,5 +1,5 @@
 {
-	"fileName" : "actions.json",
+	"fileName" : "rpgActions.json",
 	"actions" : [
 		{
 			"name" : "INTUP",
@@ -12,19 +12,7 @@
 			},
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["read", "train"]
-		},
-		{
-			"name" : "read",
-			"conditions" : [],
-			"influenceRules" : [],
-			"effects" : [{
-				"class" : "attribute",
-				"type" : "intelligence",
-				"first" : "initiator",
-				"operator" : "+",
-				"value" : 1
-			}]
+			"leadsTo" : ["train", "read"]
 		},
 		{
 			"name" : "train",
@@ -36,6 +24,18 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 2
+			}]
+		},
+		{
+			"name" : "read",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 1
 			}]
 		},
 		{

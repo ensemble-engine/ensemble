@@ -286,6 +286,60 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return returnTerminalList;
 	};
 
+
+	//terminalFoundInRecursiveSearch is meant to be called only when we enter the
+	//"terminal found" branch of getActionHierarchyFromNonTerminal. It grabs the
+	//relavant terminal information, including checking for new role bindings, 
+	//and returns it for use by getActionHierarchyFromNonTerminal.
+	var terminalFoundInRecursiveSearch = function(terminalAction, nonTerminal, uniqueBindings, cast, isAccepted, terminalActionParentObject){
+		terminalsAtThisLevel = true;
+		terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
+		
+		//Store this terminal's lineage so we know how to 'reach it'.
+		if(nonTerminal.lineage === undefined){
+			terminalAction.lineage = nonTerminal.name;
+		}
+		else{
+			terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+		}
+
+		//This new terminal may introduce new roles to be bound, or may impose new preconditions on existing roles.
+		//In light of this, figure out what good bindings we have available and store them in the terminal.
+		currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
+		var workingBindingCombinations = getWorkingBindingCombinations(terminalAction, util.clone(currentUniqueBindings), util.clone(cast), util.clone(terminalAction.goodBindings), util.clone(cast));
+		terminalAction.goodBindings = workingBindingCombinations;
+
+		//we found a terminal symbol! Great, let's add it to the list!
+		//Let's do some checks to make sure that the action that we're looking at is good.
+		//This means checking it's conditions, and checking if it's "isAccept" matches what we want.
+		if(!actionIsAppropriate(terminalAction, isAccepted, currentUniqueBindings)){
+			//oops, either the conditions or the isAccept didn't pass! Let's move along...
+			//console.log("how many times do you see me? inappropriate action: " , terminalAction);
+			var returnObject = {};
+			returnObject.terminalsAtThisLevel = true;
+			returnObject.boundTerminal = undefined;
+			return returnObject;
+		}
+
+		//Let's compute influence rules for this terminal action, too!
+		computeInfluenceRuleWeight(terminalAction);
+		if(terminalAction.salience === undefined ){
+			terminalAction.salience = 0;
+		}
+		if(terminalAction.weight === undefined){
+			terminalAction.weight = 0;
+		}
+
+		//Because salience may come back someday, use the weight as our salience.
+		terminalAction.salience = terminalAction.weight + terminalAction.salience; // if there is a hard-coded sailence, honor it.
+
+		//Return the terminal we found and other pertinent information.
+		var returnObject = {};
+		returnObject.terminalsAtThisLevel = true;
+		returnObject.boundTerminal = terminalAction;
+		return returnObject;
+	}
+
 	/**
 	 * 
 	 * @method getActionHierarchyFromNonTerminal
@@ -324,7 +378,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 		//console.log("$$$$$ Here is my terminal action before going into the 'I found a terminal action' thing!", nonTerminal);
 
-		//#CODEREVIEW -- do we need this terminalActionsParentObject? Why not just keep on using nonTerminal instead?
+		//#CODEREVIEW -- do we need this terminalActionParentObject? Why not just keep on using nonTerminal instead?
 		var terminalActionParentObject = {};
 		terminalActionParentObject.name = nonTerminal.name;
 		terminalActionParentObject.weight = nonTerminal.weight;
@@ -343,92 +397,33 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			var terminalAction = getActionFromNameInArray(actionName, terminalActions);
 
 
+			//Check to see if the action in the "leads to" leads to a terminal.
 			if(terminalAction !== undefined){
-				terminalsAtThisLevel = true;
-				terminalAction.goodBindings = util.clone(nonTerminal.goodBindings);
-				if(nonTerminal.lineage === undefined){
-					terminalAction.lineage = nonTerminal.name;
-				}
-				else{
-					terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
-				}
-				//terminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
-
-				currentUniqueBindings = getUniqueActionBindings(terminalAction, uniqueBindings);
-				var workingBindingCombinations = getWorkingBindingCombinations(terminalAction, util.clone(currentUniqueBindings), util.clone(cast), util.clone(terminalAction.goodBindings), util.clone(cast));
+				//Great, we found a terminal! Let's grab the important information from it!
+				var response = terminalFoundInRecursiveSearch(terminalAction, nonTerminal, uniqueBindings, cast, isAccepted, terminalActionParentObject);
+				terminalsAtThisLevel = response.terminalsAtThisLevel;
+				var foundTerminal = response.boundTerminal;
 				
-				terminalAction.goodBindings = workingBindingCombinations;
+				//Now, just because we found a terminal doesn't mean that it is a 'good' terminal
+				//for example, we may have found an 'accept' terminal but we are looking for a 
+				//reject terminal.
+				if(foundTerminal !== undefined){
+					//Alright, this is, in fact, a terminal that we are planning on keeping (at least for now!)
 
-				//we found a terminal symbol! Great, let's add it to the list!
-				//Let's do some checks to make sure that the action that we're looking at is good.
-				//This means checking it's conditions, and checking if it's "isAccept" matches what we want.
-				if(!actionIsAppropriate(terminalAction, isAccepted, currentUniqueBindings)){
-					//oops, either the conditions or the isAccept didn't pass! Let's move along...
-					//console.log("how many times do you see me? inappropriate action: " , terminalAction);
-					continue;
-				}
-
-				//In "traditional CiF" we would only want one of these things. The most salient.
-				//But here we have the power to take the X most salient, if we so desire.
-				//TODO: (Of course) there is a LOT of thinking that has to go into how conditions work with all of this stuff... I'm kind of dreading that a little big!
-				
-				//So, ok... here is what I'm going to do... I'm going to change all of this
-				//returnList manipulation, into creating a new 'action object' thingy, which will
-				//have an action array, and it is THAt array that will under go manipulation.
-
-				//AND FINE, I'm caving in! Let's compute influence rules for this terminal action, too!
-				computeInfluenceRuleWeight(terminalAction);
-				if(terminalAction.salience === undefined ){
-					terminalAction.salience = 0;
-				}
-				if(terminalAction.weight === undefined){
-					terminalAction.weight = 0;
-				}
-
-				terminalAction.salience = terminalAction.weight + terminalAction.salience; // if there is a hard-coded sailence, honor it.
-
-				//#CODEREVIEW: Get rid of salience code? Just comment it out maybe. We shouldn't have code executing that isn't doing anything.
-				//#CODEREVIEW: AH, ok! Change all of these things that are looking at salience to instead look at influence rule weight instead.
-				//#CODEREVIEW: Currently doing the above suggestion by just assigning the weight to the salience property.
-				if(terminalActionParentObject.actions === undefined || terminalActionParentObject.actions.length <= 0){
-					terminalActionParentObject.actions = [];
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-					terminalActionParentObject.actions.push(terminalAction);
-				}
-				else{
-					if(terminalAction.salience === undefined){
-						terminalAction.salience = computeActionSalience(terminalAction);
-					}
-					var actionListLength = terminalActionParentObject.actions.length; // want to store this, because we'll be adjusting the length inside of the loop
-					for(var salienceIndex = actionListLength; salienceIndex > 0; salienceIndex -= 1){
-						if(terminalActionParentObject.actions[salienceIndex-1].salience >= terminalAction.salience){
-							//it's time to stop. use the length to decide if we should even bother adding it or not, I guess.
-							if(salienceIndex === actionListLength && actionListLength >= actionsPerGroup){
-								//This new guy isn't even good enough to make the list, ignore it and stop going through the list!
-							}
-							else{
-								//ok, cool, our new guy is bigger. Let's put him in.
-								terminalActionParentObject.actions.splice(salienceIndex, 0, terminalAction);
-								//And now check to see if anything needs to be removed.
-								if(terminalActionParentObject.actions.length > actionsPerGroup){
-									terminalActionParentObject.actions.splice(actionsPerGroup, terminalActionParentObject.actions.length - actionsPerGroup);
-								}
-							}
-							break;
-						}
-						//If we've made it to here, that implies that we've found a new most salience thing
-						//but let's wrap it an if just in case.
-						if( (salienceIndex-1) === 0 && terminalAction.salience > terminalActionParentObject.actions[salienceIndex-1].salience){
-							//we found a new 'most salience' thing, so put it at the front of the list!
-							terminalActionParentObject.actions.splice(salienceIndex - 1, 0, terminalAction);
-							//And now check to see if anything needs to be removed.
-							if(terminalActionParentObject.actions.length > actionsPerGroup){
-								terminalActionParentObject.actions.splice(actionsPerGroup, terminalActionParentObject.actions.length - actionsPerGroup);
-							}
-							break; // We're at the end of the loop, but let's break anywya just because.
-						}
+					//We want to add this terminal to a running list of terminals we've found at this level
+					//in the hiearchy, and sort the list based on salience.
+					//Salience itself isn't particularly used right now, and instead the 'weight' computed
+					//from influence rules is essentially used to represent salience.
+					terminalActionParentObject.actions.push(foundTerminal);
+					var sortedActionsBySalienceAscending = _.sortBy(terminalActionParentObject.actions, "salience");
+					var sortedActionsBySalienceDescending = sortedActionsBySalienceAscending.reverse();
+					terminalActionParentObject.actions = sortedActionsBySalienceDescending;
+		
+					//The user may have selected a finite amount of actions per 'action group'
+					//This is where that cut off happens. Cut off the least salient actions if we have
+					//more actions than the actionsPerGroup allows.
+					if(terminalActionParentObject.actions.length > actionsPerGroup){
+						terminalActionParentObject.actions.splice(actionsPerGroup, terminalActionParentObject.actions.length - actionsPerGroup);
 					}
 				}
 			}
