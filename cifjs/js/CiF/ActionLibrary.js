@@ -257,16 +257,10 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		var goodTerminals = [];
 		var returnTerminalList = [];
 		var potentialTerminal;
-		//#CODEREVIEW -- probably only need uniqueBindings or initialGoodBindings
 		var uniqueBindings = {};
 		uniqueBindings["initiator"] = initiator;
 		uniqueBindings["responder"] = responder;
-		//This name is a little misleading, as we don't know yet if the binding is good or bad,
-		//but we DO know that this binding has to take place, so I think it works...
-		var initialGoodBindings = {
-			"initiator" : initiator,
-			"responder" : responder
-		};
+
 
 		//first, we need to find the 'start' action based on the volition
 		for(var i = 0; i < startSymbols.length; i += 1){
@@ -277,7 +271,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 					//it appears that this is an action pertaining to this volition!
 					var rootAction = util.clone(startSymbols[i]);
 					rootAction.goodBindings = [];
-					rootAction.goodBindings.push(initialGoodBindings);
+					rootAction.goodBindings.push(uniqueBindings);
 					rootAction.weight = weight; // This is the 'base' score that came from our microtheories equivalent.
 					goodTerminals = getActionHierarchyFromNonTerminal(rootAction, isAccepted, numActionsPerGroup, uniqueBindings, cast);
 					if(goodTerminals === undefined){ // this means we didn't find any good actions!
