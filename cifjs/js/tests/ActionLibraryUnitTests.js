@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ActionLibrary.js
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json"],
-function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json", "text!data/testActionsGrammar14.json"],
+function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions, testActionsGrammar14) {
 
 
 	/***************************************************************/
@@ -1217,6 +1217,16 @@ var testGetAction = function(){
 		test.assert(actions[2].name, "laughTerminal2", "Test 4 -- name of third action was incorrect.");
 		test.assert(actions[3].name, "bondTerminal", "Test 4 -- name of fourth action was incorrect.");
 		test.assert(actions[4].name, "laughTerminal1", "Test 4 -- name of fifth action was incorrect.");
+
+
+		//Alright, all of the above was done with a 'traditional' action structure (Intent->social game name->terminals)
+		//The following test have FOUR layers.
+		actionLibrary.clearActionLibrary();
+		actionLibrary.parseActions(testActionsGrammar14);
+		
+		//TEST 5 -- 2 intents, 1 action per intent, 1 action per action group (action grammar has four layers).
+		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
+		console.log("actions here are... " , actions);
 
 		test.finish();
 	};
