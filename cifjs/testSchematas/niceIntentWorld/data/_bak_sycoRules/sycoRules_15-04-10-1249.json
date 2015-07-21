@@ -1,0 +1,28 @@
+{
+	"fileName": "sycoRules",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "New Trigger Rule",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "networks",
+					"type": "respect",
+					"first": "someone",
+					"second": "other",
+					"value": 0
+				}
+			],
+			"origin": "sycoRules",
+			"id": "triggerRules_10"
+		}
+	]
+}
