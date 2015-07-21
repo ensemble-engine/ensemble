@@ -101,7 +101,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			action.fileName = fileName;
 
 			// Error Checking
-			// ////#CODEREVIEW: add validation that there can't be two different actions that have the same intent defined.
 			validate.action(action, "Examining action  #" + i);
 
 			if(actionAlreadyExists(action)){
@@ -258,7 +257,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		var goodTerminals = [];
 		var returnTerminalList = [];
 		var potentialTerminal;
-		//#CODREVIEW -- probably only need uniqueBindings or initialGoodBindings
+		//#CODEREVIEW -- probably only need uniqueBindings or initialGoodBindings
 		var uniqueBindings = {};
 		uniqueBindings["initiator"] = initiator;
 		uniqueBindings["responder"] = responder;
