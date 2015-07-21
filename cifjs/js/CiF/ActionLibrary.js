@@ -340,6 +340,51 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return returnObject;
 	}
 
+	//This function is meant to be called inside of getActionHierarchyFromNonTerminal when looking at a
+	//"leadsTo" array of actions and finding a non-terminal. This will recursively call getActionHierarchyFromNonTerminal.
+	//Ultimately, we return a single action, but that action will full 'leadsTo' information all filled out based on those
+	//recursive calls.
+	var nonTerminalFoundInRecursiveSearch = function(actionName, nonTerminal, uniqueBindings, isAccepted, actionsPerGroup, cast){
+		var returnList = [];
+
+		var nonTerminalAction = getActionFromNameInArray(actionName, nonTerminals);
+		nonTerminalAction.goodBindings = nonTerminal.goodBindings;
+		nonTerminalAction.weight = nonTerminal.weight;
+
+		//Figure out the 'lineage' of the action (i.e., keep track of the path we've taken down the tree.)
+		if(nonTerminal.lineage === undefined){
+			nonTerminalAction.lineage = nonTerminal.name;
+		}
+		else{
+			nonTerminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
+		}
+		
+		//Get the unique bindings that still work.
+		currentUniqueBindings = getUniqueActionBindings(nonTerminalAction, uniqueBindings);
+		if(!actionIsAppropriate(nonTerminalAction, isAccepted, currentUniqueBindings)){
+			//oops, either the conditions or the isAccept didn't pass! Let's move along...
+			//console.log("how many times do you see me? inappropriate action: " , terminalAction);
+			return;
+		}
+
+		//RECURSIVE CALL! Using the non-terminal we're on as the starting point for the next level down the tree.
+		var diggingDeeperActions = getActionHierarchyFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
+		if(diggingDeeperActions === undefined || diggingDeeperActions.length <= 0){
+			return; // oops! This 'leads to' led to something that had no valid bindings! Better move on!
+		}
+		
+		//Store the actions we found by 'digging deeper'
+		nonTerminalAction.actions = [];
+		for(var ddActionIndex = 0; ddActionIndex < diggingDeeperActions.length; ddActionIndex += 1){
+			var thingToAdd = diggingDeeperActions[ddActionIndex];
+			nonTerminalAction.actions.push(util.clone(thingToAdd));
+		}
+
+		//Altough this appears that we are returning a single action, it's "leads to" information should
+		//be all fleshed in at this point.
+		return nonTerminalAction;
+	}
+
 	/**
 	 * 
 	 * @method getActionHierarchyFromNonTerminal
@@ -375,9 +420,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		//oh, wait, it has it already I think, because we don't have any children yet. OK.
 		computeInfluenceRuleWeight(nonTerminal);
 
-
-		//console.log("$$$$$ Here is my terminal action before going into the 'I found a terminal action' thing!", nonTerminal);
-
 		//#CODEREVIEW -- do we need this terminalActionParentObject? Why not just keep on using nonTerminal instead?
 		var terminalActionParentObject = {};
 		terminalActionParentObject.name = nonTerminal.name;
@@ -388,14 +430,9 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		//#CODEREVIEW: Maybe think about breaking this for-loop into it's own function?
 		for(var i = 0; i < nonTerminal.leadsTo.length; i += 1){
 			var actionName = nonTerminal.leadsTo[i];
-			//We're going through each one of the 'leads to' thingies!
-			//If these lead-to things are terminals, then great, I guess we're done?
-			//
-			//TODO: Intead of having to recompute this every time, it would be cool to 
-			//actually construct something that kept track of this structure... using associative arrays 
-			//I suppose? Maybe pointers? Hmmmm..
-			var terminalAction = getActionFromNameInArray(actionName, terminalActions);
 
+			//optimistically check to see if the first action we are looping through is a terminal.
+			var terminalAction = getActionFromNameInArray(actionName, terminalActions);
 
 			//Check to see if the action in the "leads to" leads to a terminal.
 			if(terminalAction !== undefined){
@@ -428,43 +465,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				}
 			}
 			else{ // Ah, we must be dealing with another non-terminal! let's DIG DEEPER!
-			
-				//#CODEREVIEW: This code is pretty much exactly repeated elsewhere in this function. Make it it's own function, maybe passing in special parametrs as needed.
-				var nonTerminalAction = getActionFromNameInArray(actionName, nonTerminals);
-				nonTerminalAction.goodBindings = nonTerminal.goodBindings;
-				nonTerminalAction.weight = nonTerminal.weight;
-
-				//Figure out the 'lineage' of the action (i.e., keep track of the path we've taken down the tree.)
-				if(nonTerminal.lineage === undefined){
-					nonTerminalAction.lineage = nonTerminal.name;
-				}
-				else{
-					nonTerminalAction.lineage = nonTerminal.lineage + "-" + nonTerminal.name;
-				}
 				
-				//Get the unique bindings that still work.
-				currentUniqueBindings = getUniqueActionBindings(nonTerminalAction, uniqueBindings);
-				if(!actionIsAppropriate(nonTerminalAction, isAccepted, currentUniqueBindings)){
-					//oops, either the conditions or the isAccept didn't pass! Let's move along...
-					//console.log("how many times do you see me? inappropriate action: " , terminalAction);
-					continue;
+				//We know that we're looking at a non-terminal. It will probably lead to other actions.
+				//We'll ultimately use the poewr of recursion to help us get there!
+				var nonTerminalWithNewRoles = nonTerminalFoundInRecursiveSearch(actionName, nonTerminal, uniqueBindings, isAccepted, actionsPerGroup, cast);
+				if(nonTerminalWithNewRoles !== undefined){ // there's a chance we might get an undefined thing (like if the preconditions to the non-terminal don't hold). Don't add it if it is undefined!
+					returnList.push(nonTerminalWithNewRoles);
 				}
-
-				//RECURSIVE CALL! Using the non-terminal we're on as the starting point for the next level down the tree.
-				var diggingDeeperActions = getActionHierarchyFromNonTerminal(nonTerminalAction, isAccepted, actionsPerGroup, util.clone(currentUniqueBindings), util.clone(cast));
-				if(diggingDeeperActions === undefined || diggingDeeperActions.length <= 0){
-					continue; // oops! This 'leads to' led to something that had no valid bindings! Better move on!
-				}
-				
-				//Store the actions we found by 'digging deeper'
-				nonTerminalAction.actions = [];
-				for(var ddActionIndex = 0; ddActionIndex < diggingDeeperActions.length; ddActionIndex += 1){
-					var thingToAdd = diggingDeeperActions[ddActionIndex];
-					nonTerminalAction.actions.push(util.clone(thingToAdd));
-				}
-
-				//And return the nonTerminalAction we created, that has stored within it now all of the 'good actions' that it can lead to.
-				returnList.push(util.clone(nonTerminalAction));
 			}
 
 		}
