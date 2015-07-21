@@ -40,6 +40,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		testGetAction();
 		sfdb.clearEverything();
 		testGetActions();
+		sfdb.clearEverything();
 		testUndirectedActions();
 		sfdb.clearEverything();
 
@@ -1169,44 +1170,6 @@ var testGetAction = function(){
 
 
 		test.start("ActionLibrary", "testGetActions");
-		//Ok, so, um, what do we have to do here? We want to return the X "best" actions.
-		//And ideally, these actions would come from 'different paths'.
-		//And for everyone's happiness, it would be nice if it was deterministic.
-		//The "NORMAL CASE:"
-		//	Every path is approximately equally as good. you go down each path, never going down the same path twice.
-		//	until you've reached your quota, or you've gone down every path (in which case now it is OK to Re-visit old paths again.)
-		//ABNORMAL CASE #1
-		//  One path is overhwelmingly better than the others (and it leads to multiple actions)
-		//    It doesn't quite feel good to only go down that path once, and then fill up on lots of lame things?
-		//    WAAAAAAAAAAAAAAIT a second.
-		//    WAit a second.
-		//    Am I making this way harder than it needs to be?
-		//    Maybe it doesn't have to be the best actions within a single intent?
-		//    Maybe I could get away with just getting the top action for the top N intents?
-		//    But what if you have the situation where you want multiple actions?
-		
-		//OK, how original CiF did it:
-		//	Returned one 'instantiation' per SOCIAL GAME (and multiple social games per intent)
-		//		So, you'd get ONE ask out, ONE start dating, ONE reminisce, etc.
-		//And it's possible that all of your "Start Datings" would be at the top.
-		//	PROM WEEK was then responsible for filtering that list and making it "better" for gameplay purposes.
-		//	So, alright, great.
-		//In this situation, you potentially have many many branches.
-		//	And because of influence rules at lower levels, it's possible that one particular action way down the "Reminisce" tree,
-		//	actually has a super high weight, even though as a whole the "affinity up" actions has less influence in play than, say, "start dating"
-		//So, it almost sounds like what we want to do is:
-		//	Go through EVERY volition
-		//		For EVERY volition, get EVERY terminal that applies, and keep track of its lineage
-		//			Sort them based on weight AND LINEAGE (highest weighted things should go to the top, but there is something in place that also values objects of different lineages...)
-		//				Pick the top N actions, and return them.
-		//				MAN OH MAN -- how does the 'numPerActionGroup' equation fit into this!?!
-		//Ok. So, most of this, at least, is pretty straight forward, except for that "SOME FUNCTION" part, and maybe we'll be struck with inspiration by the time we get there.
-		
-
-		//BEN: START HERE! I think that there technically *should* be two actions returned in this list
-		//(and bear in mind -- this list isn't really doing a good job of sorting by action groups or anything).
-		//The fact that it isn't returning two actions, though, is alarming and unknown why.
-
 
 		//TEST 1 -- 2 intents, 1 action per intent, 1 action per action group.
 		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
