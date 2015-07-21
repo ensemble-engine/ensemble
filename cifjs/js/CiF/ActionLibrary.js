@@ -431,7 +431,9 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		terminalActionParentObject.goodBindings = nonTerminal.goodBindings;
 		terminalActionParentObject.actions = [];
 		var potentialActionsToReturn = [];
-		//#CODEREVIEW: Maybe think about breaking this for-loop into it's own function?
+		
+		//The big for-loop! We'll loop through each action in the 'leads to' list, and do 
+		//something different depending on if it is a terminal action or a non terminal actions.
 		for(var i = 0; i < nonTerminal.leadsTo.length; i += 1){
 			var actionName = nonTerminal.leadsTo[i];
 
@@ -441,8 +443,6 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//Check to see if the action in the "leads to" leads to a terminal.
 			if(terminalAction !== undefined){
 				//Great, we found a terminal! Let's grab the important information from it!
-				
-				terminalActionsParentObject.actions = coolNewFunction();
 
 				var response = terminalFoundInRecursiveSearch(terminalAction, nonTerminal, uniqueBindings, cast, isAccepted, terminalActionParentObject);
 				terminalsAtThisLevel = response.terminalsAtThisLevel;
