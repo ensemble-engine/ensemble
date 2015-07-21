@@ -404,6 +404,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			return;
 		}
 
+		//Find what the good current binding combinations are.
 		currentUniqueBindings = getUniqueActionBindings(nonTerminal, uniqueBindings);
 		var nonTerminalWorkingBindingCombinations = getWorkingBindingCombinations(nonTerminal, util.clone(uniqueBindings), util.clone(cast), util.clone(nonTerminal.goodBindings), cast);
 		if(nonTerminalWorkingBindingCombinations.length <= 0){
@@ -412,6 +413,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			return;
 		}
 
+		//Store the bindings that we know 'work' (i.e. there exist characters that satisfy the preconditions)
+		//inside of our nonTerminal action.
 		nonTerminal.goodBindings = nonTerminalWorkingBindingCombinations;
 
 		//So, now at this point, where I have all of the 'good bindings' at this level... I guess what I want to do
@@ -420,7 +423,8 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		//oh, wait, it has it already I think, because we don't have any children yet. OK.
 		computeInfluenceRuleWeight(nonTerminal);
 
-		//#CODEREVIEW -- do we need this terminalActionParentObject? Why not just keep on using nonTerminal instead?
+		//Used to help us have a nice 'wrapper' action object, for keeping track of the 
+		//heritage of an action as we ultimately drill down to find the terminals.
 		var terminalActionParentObject = {};
 		terminalActionParentObject.name = nonTerminal.name;
 		terminalActionParentObject.weight = nonTerminal.weight;
@@ -437,6 +441,9 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//Check to see if the action in the "leads to" leads to a terminal.
 			if(terminalAction !== undefined){
 				//Great, we found a terminal! Let's grab the important information from it!
+				
+				terminalActionsParentObject.actions = coolNewFunction();
+
 				var response = terminalFoundInRecursiveSearch(terminalAction, nonTerminal, uniqueBindings, cast, isAccepted, terminalActionParentObject);
 				terminalsAtThisLevel = response.terminalsAtThisLevel;
 				var foundTerminal = response.boundTerminal;
