@@ -141,7 +141,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//alright, we're dealing with a 'start symbol' apparantly! Let's make sure it isn't a duplicate of 
 			//any other start symbols that already exist!
 			for(var i = 0; i < startSymbols.length; i += 1){
-				var existingStartSymbol = startSymbols[i];
+				var existingStartSymbol = startSymbols[i].intent;
 				if(existingStartSymbol.class === newStartSymbolIntent.class &&
 					existingStartSymbol.type === newStartSymbolIntent.type &&
 					existingStartSymbol.intentDirection === newStartSymbolIntent.intentDirection &&
@@ -1100,6 +1100,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	/* test-code */
 	//actionLibraryInterface.bindActionEffects = bindActionEffects;
 	actionLibraryInterface.getWorkingBindingCombinations = getWorkingBindingCombinations;
+	actionLibraryInterface.startSymbolAlreadyExists = startSymbolAlreadyExists;
 	/* end-test-code */
 
 	return actionLibraryInterface;
