@@ -1013,7 +1013,7 @@ var testGetAction = function(){
 
 		test.start("ActionLibrary", "testGetAction");
 
-		//BEN START HERE
+		
 		//goal: simulate a "real situation" with characters with stuff specified in the sfdb.
 		//so, first we probably want to: populate the sfdb with some predicates.
 		//Then we want to "compute volitions" or whatever.
@@ -1072,16 +1072,16 @@ var testGetAction = function(){
 
 
 		var volitions = cif.calculateVolition(cast);
-		console.log("*VOLITION* -- volitions", volitions);
+		//console.log("*VOLITION* -- volitions", volitions);
 		//ok, it is a big thing. What does it look like if we are just getting mister init to madam respond?
 		//var firstVolition = volitions.getFirst("MisterInit", "MadamRespond");
 		//console.log("*VOLITION* -- firstVolition", firstVolition);
 
 		var allActions = actionLibrary.getAllActions();
-		console.log("*VOLITION* -- allActions" ,  allActions);
+		//console.log("*VOLITION* -- allActions" ,  allActions);
 
 		var action = cif.getAction("MisterInit", "MadamRespond", volitions, cast);
-		console.log("*VOLITION* -- here is what the action we got looks like...", action);
+		//console.log("*VOLITION* -- here is what the action we got looks like...", action);
 
 		//TEST 1 -- Basic test -- can we successfully get "the best action" action, when an action exists, and there
 		//are multiple choices for what the action might be.
@@ -1096,8 +1096,24 @@ var testGetAction = function(){
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar12);
 		action = cif.getAction("MisterInit", "MadamRespond", volitions, cast);
-		console.log("*VOLITION* -- what is the value of action now?" , action);
+		//console.log("*VOLITION* -- what is the value of action now?" , action);
 		test.assert(action, undefined, "There shouldn't have been any valid actions. The fact that it returned something is wrong!");
+
+		//TEST 3 -- Can we get the 'best action' when there is all sorts of wackiness to the action structure (multiple layers, fewer layers, multiple terminal levels, etc.)
+		actionLibrary.clearActionLibrary();
+		actionLibrary.parseActions(testActionsGrammar14); // a thing with a 4 layer
+		actionLibrary.parseActions(testActionsGrammar15); // a thing with a 2 layer
+		actionLibrary.parseActions(testActionsGrammar16); // thing with terminals at differing levels.
+		action = cif.getAction("MisterInit", "MadamRespond", volitions, cast);
+
+		test.assert(action.name, "nimblemakelovers", "cif.getAction returned the wrong action");
+		test.assert(action.effects.length, 1, "cif.getAction returned an action with the wrong number of effects");
+		test.assert(action.effects[0].first, "MadamRespond", "TEST 3 The 'first' role in the returned action's effects was incorrect.");
+		test.assert(action.effects[0].second, "MisterInit", "TEST 3 The 'second' role in the returned action's effects was incorrect.");
+		test.assert(action.effects[0].class, "network", "TEST 3 The class role in the returned action's effects was incorrect.");
+		test.assert(action.effects[0].type, "affinity", "TEST 3 The 'type' role in the returned action's effects was incorrect.");
+
+
 
 		test.finish();
 	};
