@@ -12,10 +12,10 @@
 			},
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["upperTerminal", "MIDDLELAYER"]
+			"leadsTo" : ["upperTerminalraiseTrust", "MIDDLELAYER"]
 		},
 		{
-			"name" : "upperTerminal",
+			"name" : "upperTerminalraiseTrust",
 			"conditions" : [],
 			"influenceRules" : [],
 			"isAccept" : true,
@@ -32,12 +32,64 @@
 			"name" : "MIDDLELAYER",
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["lowerTerminal"]
+			"leadsTo" : ["lowerTerminalraiseTrust1", "lowerTerminalraiseTrust2", "lowerTerminalraiseTrust3"]
 		},
 		{
-			"name" : "lowerTerminal",
+			"name" : "lowerTerminalraiseTrust1",
 			"conditions" : [],
 			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "lowerTerminalraiseTrust2",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are more likely to do this.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type" : "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 10
+				}],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "lowerTerminalraiseTrust3",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are more likely to do this.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type" : "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 5
+				}],
 			"isAccept" : true,
 			"effects" : [{
 				"class" : "network",

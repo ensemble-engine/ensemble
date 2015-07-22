@@ -12,10 +12,10 @@
 			},
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["nimblemakefriends"]
+			"leadsTo" : ["nimblemakelovers"]
 		},
 		{
-			"name" : "nimblemakefriends",
+			"name" : "nimblemakelovers",
 			"conditions" : [],
 			"influenceRules" : [],
 			"isAccept" : true,

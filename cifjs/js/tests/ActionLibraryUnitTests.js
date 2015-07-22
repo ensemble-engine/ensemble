@@ -1253,20 +1253,35 @@ var testGetAction = function(){
 		//TEST 5 -- 2 intents, 1 action per intent, 1 action per action group 
 		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
 		console.log("TEST 5 SOME ACTIONS", actions);
-		//test.assert(actions.length, 2, "Test 5 -- number of actions returned was incorrect.");
-		//test.assert(actions[0].name, "pickupLineTerminal", "Test 5 -- name of the first action was incorrect.");
-		
-		//557 = 542 from action library, + 5 from 'attraction makes people want to date' + 10 from 'recent attraction makes people really want to date.'
-		//test.assert(actions[0].weight, 557, "Test 5 -- weight of the first action was incorrect.");
+		test.assert(actions.length, 2, "Test 5 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "nimblemakelovers", "Test 5 -- name of the first action was incorrect.");
+		test.assert(actions[0].weight, 15, "Test 5 -- weight of the first action was incorrect.");
 		test.assert(actions[1].name, "neverGetHere", "Test 5 -- name of the second action was incorrect.");
-		//test.assert(actions[1].weight, 7, "Test 5 -- weight of the second action was incorrect.");
+		test.assert(actions[1].weight, 5, "Test 5 -- weight of the second action was incorrect.");
+
+
+		//TEST 6 -- 3 intents, 2 actions per volition, 1 actions per action group.
+		//We have three inents here (start dating, start friends, raise trust)
+		//start dating and start friends only have 1 valid action, so they'll return 1.
+		//raise trust does have action groups, so it will return the best action in two different action groups
+		//for a total of four actions.
+		actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 3, 2, 1);
+		test.assert(actions.length, 4, "Test 6 -- number of actions returned was incorrect.");
+		test.assert(actions[0].name, "nimblemakelovers", "Test 6 -- name of first action returned was incorrect.");
+		test.assert(actions[0].weight, 15, "Test 6 -- weight of first action returned was incorrect.");
+		test.assert(actions[1].name, "lowerTerminalraiseTrust2", "Test 6 -- name of second action returned was incorrect.");
+		test.assert(actions[1].weight, 14, "Test 6 -- weight of the second action returned was incorrect.");
+		test.assert(actions[2].name, "neverGetHere", "Test 6 -- name of the third action returned was incorrect.");
+		test.assert(actions[2].weight, 5, "Test 6 -- weight of the third action returned was incorrect.");
+		test.assert(actions[3].name, "upperTerminalraiseTrust", "Test 6 -- name of the fourth action returned was incorrect.");
+		test.assert(actions[3].weight, 4, "Test 6 -- weight of the fourth action returned was incorrect.");
 
 
 
 		var allActions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 100, 100, 100);
 
-
-		console.log("TEST 5 ALL ACTIONS actions here are... " , allActions);
+		console.log("TEST 6 SOME ACTIONS " , actions);
+		console.log("TEST 6 ALL ACTIONS actions here are... " , allActions);
 
 		test.finish();
 	};
