@@ -1,0 +1,52 @@
+{
+	"fileName" : "testActionsGrammar16.json",
+	"actions" : [
+		{
+			"name" : "RAISETRUST",
+			"intent" : {
+				"class" : "network",
+				"type"  : "trust",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["upperTerminal", "MIDDLELAYER"]
+		},
+		{
+			"name" : "upperTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "MIDDLELAYER",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["lowerTerminal"]
+		},
+		{
+			"name" : "lowerTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		}
+	]
+}

@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ActionLibrary.js
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json", "text!data/testActionsGrammar14.json"],
-function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions, testActionsGrammar14) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "cif", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json", "text!data/testActionsGrammar14.json", "text!data/testActionsGrammar15.json", "text!data/testActionsGrammar16.json"],
+function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions, testActionsGrammar14, testActionsGrammar15, testActionsGrammar16) {
 
 
 	/***************************************************************/
@@ -1113,6 +1113,16 @@ var testGetAction = function(){
 
 		var cast = ["Bob", "Alice", "Scott", "Biff", "MisterInit", "MadamRespond", "ThePrinceOfNothing"];
 
+		//MisterInit is attracted to MadamRespond
+		//MadamRespond is attracted to Mister Init
+		//Biff is lucky
+		//MisterInit is lucky
+		//MadamRespond has a kind face.
+		//Scott is nimble
+		//Alice is nimble
+		//MisterInit is happy
+		//MisterInit has the following volitions for MadamResponder: StartDating, StartFriends (and maybe raise trust)
+
 		var attractedToPred1 = {
 			"class" : "directedStatus",
 			"type" : "attracted to",
@@ -1125,6 +1135,18 @@ var testGetAction = function(){
 			"type" : "attracted to",
 			"first" : "MadamRespond",
 			"second" : "MisterInit",
+			"value" : true
+		};
+		var trustingPred1 = {
+			"class" : "trait",
+			"type" : "kind face",
+			"first" : "MadamRespond",
+			"value" : true
+		};
+		var kindFacePred1 = {
+			"class" : "trait",
+			"type" : "trusting",
+			"first" : "MisterInit",
 			"value" : true
 		};
 		var luckyPred1 = {
@@ -1160,6 +1182,8 @@ var testGetAction = function(){
 
 		cif.set(attractedToPred1);
 		cif.set(attractedToPred2);
+		cif.set(kindFacePred1);
+		cif.set(trustingPred1);
 		cif.set(luckyPred1);
 		cif.set(luckyPred2);
 		cif.set(nimblePred1);
@@ -1222,10 +1246,15 @@ var testGetAction = function(){
 		//Alright, all of the above was done with a 'traditional' action structure (Intent->social game name->terminals)
 		//The following test have FOUR layers.
 		actionLibrary.clearActionLibrary();
-		actionLibrary.parseActions(testActionsGrammar14);
+		actionLibrary.parseActions(testActionsGrammar14); // a thing with a 4 layer
+		actionLibrary.parseActions(testActionsGrammar15); // a thing with a 2 layer
+		actionLibrary.parseActions(testActionsGrammar16); // thing with terminals at differing levels.
 		
 		//TEST 5 -- 2 intents, 1 action per intent, 1 action per action group (action grammar has four layers).
-		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
+//		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
+		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 100, 100, 100);
+
+
 		console.log("actions here are... " , actions);
 
 		test.finish();
