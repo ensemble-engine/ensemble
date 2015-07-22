@@ -935,6 +935,13 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 			var acceptedObject = volition.isAccepted(initiator, responder, volitionInstance);
 			var isAccepted = acceptedObject.accepted;
 			var weight = volitionInstance.weight;
+
+			//This is a matter of philosophy that we may want to revisit someday.
+			//Currently determines "numActionsPerIntent" things based on the 'high level structures' but can potentially lead to
+			//LOTS of terminals.
+			//might be more intuitive to only return the specified number of terminals.
+			//i.e. The Question: is 'numActionsFromThisIntent' referring to terminals, or higher level structures?
+			//Current Answer: higher level structures.
 			actionList = getSortedActionsFromVolition(initiator, responder, volitionInstance, isAccepted, weight, numActionsPerGroup, cast);
 
 			for(var i = 0; i < actionList.length; i += 1){
@@ -944,6 +951,8 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 					intentsRepresented += 1;
 					thisIntentCountedYet = true;
 				}
+
+				//console.log("num actions we are actually adding... " , numActionsWeAreActuallyAdding);
 
 				//We've found an action from this intent, and have already added it to the return list.
 				numActionsFromThisIntent += 1;
@@ -965,6 +974,31 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		//var boundActions = extractAndSortTerminalsFromActionList(returnList);
 		return boundActions;
 	};
+
+	//for each action in the action list, go through and find how many total terminal actions we have.
+	var getNumberOfTerminalsReachablebyAnActionList = function(actionList){	
+		var sum = 0;
+		for(var i = 0; i < actionList.length; i += 1){
+			sum += getNumberOfTerminalsReachablebyAnAction(actionList[i]);
+		}
+		return sum;
+	}
+
+	//action could be either a terminal or a non terminal!
+	//we'll be calling this recursively!
+	var getNumberOfTerminalsReachablebyAnAction = function(action){
+		var sum = 0;
+		if(action.leadsTo === undefined){
+			//we are dealing with a terminal! return one!
+			return 1;
+		}
+		else{
+			for(var i = 0; i < action.leadsTo.length; i += 1){
+				sum += getNumberOfTerminalsReachablebyAnAction(action.leadsTo[i]);
+			}
+			return sum;
+		}
+	}
 
 	//This function takes an action list. That is, an array (or something) of actions.
 	//Some of these actions are terminals. They should be grabbed!
