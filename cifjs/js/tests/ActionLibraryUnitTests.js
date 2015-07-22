@@ -779,11 +779,11 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		//console.log("Here are the contnets of potentialActions:", potentialActions);
 
 		//TEST 1 -- Even though "reminisce" is defined before "tell joke", because tell joke has a higher influence rating, it should be sorted first.
-		test.assert(potentialActions.length, 2, "Length of potential actions is incorrect!");
+		test.assert(potentialActions.length, 2, "TEST 1 Length of potential actions is incorrect!");
 		test.assert(potentialActions[0].name, "TELLJOKE", "Name of first action is incorrect");
 		test.assert(potentialActions[1].name, "REMINISCE", "Name of second action is incorrect!");
 		test.assert(potentialActions[0].weight, 60, "Weight of first action is incorrect");
-		test.assert(potentialActions[1].weight, -77, "Weight of second action is incorrect!");
+		test.assert(potentialActions[1].weight, 50, "Weight of second action is incorrect!");
 
 		//TEST 2 -- A more complicated situation with multiple 'good bindings' -- this means we need to make sure that the weight of the 'parent' action is good.
 		//It also means that we want it to actually match the 'best binding.'
@@ -829,10 +829,10 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(layer1.name, "NIMBLEMAKEFRIENDS", "first layer name is incorrect");
 		test.assert(layer1.goodBindings.length, 2, "first layer good bindings length is incorrect");
 		test.assert(layer1.goodBindings[0].nimble1, "Alice", "Wrong person bound to nimble1 ins layer 1 (1st binding");
-		test.assert(layer1.goodBindings[0].weight$$, 602, "Wrong weight in layer 1 (1st binding)");
+		test.assert(layer1.goodBindings[0].weight$$, 75, "Wrong weight in layer 1 (1st binding)");
 		test.assert(layer1.goodBindings[1].nimble1, "Bob", "Wrong person bound to nimble1 in layer 1 (2nd binding)");
 		test.assert(layer1.goodBindings[1].weight$$, 60, "Wrong weight in layer 1 (1st binding)");
-		test.assert(layer1.weight, 602, "Wrong weight in 'layer 1  (top level weight)");
+		test.assert(layer1.weight, 75, "Wrong weight in 'layer 1  (top level weight)");
 
 		//In this layer, there is an influence rule which actually heavily disfavors
 		//Alice as nimble1 -- her binding should go way down. Bob's binding should remain the same.
@@ -844,19 +844,19 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, cif, test, volition, testVol
 		test.assert(layer2.goodBindings[0].nimble1, "Bob", "Wrong person bound to nimble 1 in layer 2 (binding 1)");
 		test.assert(layer2.goodBindings[1].nimble1, "Alice", "Wrong person bound to nimble 1 in layer 2 (binding 2)");
 		test.assert(layer2.goodBindings[0].weight$$, 60, "Wrong weight for binding 1 in layer 2");
-		test.assert(layer2.goodBindings[1].weight$$, -13940);
+		test.assert(layer2.goodBindings[1].weight$$, 55, "Wrong weight for binding 2 in layer 2");
 
 		//In this layer, we have reached a terminal! But here's the twist: ONLY happy people can be nimble1
 		//this should remove one of our good bindings, and update the weight of the action.
 		var layer3 = layer2.actions[0];
 		test.assert(layer3.name, "actualFriends4Degrees", "name of 3rd layer is incorrect");
-		test.assert(layer3.weight, -13903, "Layer 3 weight is incorrect");
+		test.assert(layer3.weight, 92, "Layer 3 weight is incorrect");
 		test.assert(layer3.conditions.length, 1, "Layer 3 number of conditions is incorrect");
 		test.assert(layer3.goodBindings.length, 1, "Third layer number of good bindings is wrong.");
 		test.assert(layer3.goodBindings[0].nimble1, "Alice", "Wrong person bound to nimble 1 in layer 3 (binding 1)");
 		//test.assert(layer3.goodBindings[1].nimble1, "Alice", "Wrong person bound to nimble 1 in layer 3 (binding 2)");
 		//test.assert(layer3.goodBindings[0].weight$$, 60, "Wrong weight for binding 1 in layer 3");
-		test.assert(layer3.goodBindings[0].weight$$, -13903, "Wrong weight for binding 1 in layer 3");
+		test.assert(layer3.goodBindings[0].weight$$, 92, "Wrong weight for binding 1 in layer 3");
 
 		test.finish();
 	};
@@ -1250,12 +1250,23 @@ var testGetAction = function(){
 		actionLibrary.parseActions(testActionsGrammar15); // a thing with a 2 layer
 		actionLibrary.parseActions(testActionsGrammar16); // thing with terminals at differing levels.
 		
-		//TEST 5 -- 2 intents, 1 action per intent, 1 action per action group (action grammar has four layers).
-//		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
-		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 100, 100, 100);
+		//TEST 5 -- 2 intents, 1 action per intent, 1 action per action group 
+		var actions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 2, 1, 1);
+		console.log("TEST 5 SOME ACTIONS", actions);
+		//test.assert(actions.length, 2, "Test 5 -- number of actions returned was incorrect.");
+		//test.assert(actions[0].name, "pickupLineTerminal", "Test 5 -- name of the first action was incorrect.");
+		
+		//557 = 542 from action library, + 5 from 'attraction makes people want to date' + 10 from 'recent attraction makes people really want to date.'
+		//test.assert(actions[0].weight, 557, "Test 5 -- weight of the first action was incorrect.");
+		test.assert(actions[1].name, "neverGetHere", "Test 5 -- name of the second action was incorrect.");
+		//test.assert(actions[1].weight, 7, "Test 5 -- weight of the second action was incorrect.");
 
 
-		console.log("actions here are... " , actions);
+
+		var allActions = cif.getActions("MisterInit", "MadamRespond", volitions, cast, 100, 100, 100);
+
+
+		console.log("TEST 5 ALL ACTIONS actions here are... " , allActions);
 
 		test.finish();
 	};

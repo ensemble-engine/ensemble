@@ -68,7 +68,7 @@
 							"value" : true
 						}
 					],
-					"weight" : 542
+					"weight" : 15
 				}
 			],
 			"leadsTo" : ["ONELASTSTEP"]
@@ -88,7 +88,7 @@
 							"value" : true
 						}
 					],
-					"weight" : -14542
+					"weight" : -20
 				}
 			]
 		},

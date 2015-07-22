@@ -323,6 +323,16 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 
 		//Let's compute influence rules for this terminal action, too!
 		computeInfluenceRuleWeight(terminalAction);
+
+		//and let's break out of here if the influence rule weight is less than 0...
+		//interpreting that as the initiator doesn't actually want to do this thing...
+		if(terminalAction.weight < 0){
+			var returnObject = {};
+			returnObject.terminalsAtThisLevel = true;
+			returnObject.boundTerminal = undefined;
+			return returnObject;		
+		}
+
 		if(terminalAction.salience === undefined ){
 			terminalAction.salience = 0;
 		}

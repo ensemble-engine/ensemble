@@ -28,7 +28,7 @@
 							"value" : true
 						}
 					],
-					"weight" : -137
+					"weight" : -10
 				}],
 			"leadsTo" : ["reminisce1", "reminisce2", "reminisce3"]
 		},
