@@ -1,7 +1,7 @@
 /**
 * This has all of the unit tests that test functions that are from SFDB.js
 */
-define(["underscore", "util", "jquery", "cif", "sfdb", "test", "validate", "text!data/testSocial.json"], function(_, util, $, cif, sfdb, test, validate, testSocial) {
+define(["underscore", "util", "jquery", "cif", "sfdb", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(_, util, $, cif, sfdb, test, validate, testSocial, testHistory) {
 
 
 /**
@@ -22,6 +22,8 @@ define(["underscore", "util", "jquery", "cif", "sfdb", "test", "validate", "text
 		testPutCharacterOnstage();
 		sfdb.clearEverything();
 		testEliminateCharacter();
+		sfdb.clearEverything();
+		testAddHistory();
 	};
 
 /**
@@ -1070,6 +1072,42 @@ define(["underscore", "util", "jquery", "cif", "sfdb", "test", "validate", "text
 
 		test.finish();
 	};
+
+	var testAddHistory = function(){
+		test.start("SFDB" , "testAddHistory");
+
+		cif.loadBaseBlueprints(testSocial);
+		cif.addHistory(testHistory);
+
+		var namedHeroPred =	{"class" : "trait",
+			"type" : "named hero",
+			"first" : "hero",
+			"value" : true
+				};
+		var namedLovePred ={
+			"class" : "trait",
+			"type" : "named love"
+		};
+		var namedDumbPred = {
+			"class" : "trait",
+			"type" : "named love",
+			"first" : "love",
+			"value" : false	
+		}
+
+		var results = cif.get(namedHeroPred);
+		//TEST 1 -- should have found a hero!
+		test.assert(results.length, 1, "TEST 1 - found hero");
+
+		//TEST 2 -- should have found love
+		var results = cif.get(namedLovePred);
+		test.assert(results.length, 1, "TEST 2 -- found love");
+
+		//TEST 3 -- should not have found NOT love
+		var results = cif.get(namedDumbPred);
+		test.assert(results.length, 0, "TEST 3 -- found dumb when we shouldn't have!");
+		test.finish();
+	}
 
 	var sfdbUnitTestInterface = {
 		runTests	: runTests

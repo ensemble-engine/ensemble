@@ -407,7 +407,20 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	 * @param  {object} content - A javascript object detailing the social history to populate the sfdb with.
 	 */
 	var addHistory = function(content) {
-		var history = content.history;
+		var history;
+		try {
+			if (typeof content === "string") {
+				history = (JSON.parse(content)).history;
+			} else if (typeof content === "object") {
+				history = content.history;
+			} else {
+				console.log("unexpected value:", content);
+				throw new Error("Error load social structure: unexpected data value: ", typeof content);
+			}
+		} catch (e) {
+			throw new Error("JSON Error load social structure (history): " + e);
+		}
+		
 		var lastPos = -9999999999;
 		for (var i = 0; i < history.length; i++) {
 			// TODO add more error checking to look for out-of-order history steps, etc.
