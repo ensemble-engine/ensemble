@@ -628,6 +628,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
 		addHistory				: sfdb.addHistory,
+		getSFDBCopyAtTimestep	: sfdb.getSFDBCopyAtTimestep,
+		getCurrentTimeStep		: sfdb.getCurrentTimeStep,
 		
 		addRules				: addRules,
 		getRules				: getRules,

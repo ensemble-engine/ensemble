@@ -62,7 +62,8 @@ module.exports = function(grunt) {
     nodewebkit: {
       dist: {
         options: {
-           downloadUrl: "http://dl.nwjs.io/",
+          downloadUrl: "http://dl.nwjs.io/",
+          version: "v0.12.2",
            platforms: ['osx'],
             buildDir: './build', // Where the build version of my node-webkit app is saved
        },
@@ -71,6 +72,7 @@ module.exports = function(grunt) {
       techRelease : {
         options: {
            platforms: ['win','osx'],
+           version: "v0.12.2",
             buildDir: './TechnicalAlphaRelease/authoringToolBuilds', // Where the build version of my node-webkit app is saved
          },
          src: ['./nwk-package.json', './ciftool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
