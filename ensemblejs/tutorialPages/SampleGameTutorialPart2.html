@@ -1,0 +1,428 @@
+
+<html>
+<head>
+	<title>Making a Sample Game. Part 2.</title>
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<p>
+
+<p>
+Welcome to Part 2 of the ensemble Sample Game Tutorial! Now, I'm sure that you're itching to dive into ensemble specifics, but before we get started on that, we're going to be setting up the files we'll be using to just get something appearing on the screen. If you're already comfortabe making your own CSS files for styles and javascript files for storing all of your functions, then you may want to just jump ahead to <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>.
+
+<p>
+
+<h2>A Vision of The Future</h2>
+
+<p>Okay, still with us? Great! If you haven't tried playing Lovers And Rivals yet on your own, I encourage you to do so--it should be in the folder called sampleGame that came with ensemble. If nothing else, it should help contextualize a lot of what we'll be building in the tutorial. If for whatever reason you'd rather not play it, here's a screenshot to give us all an idea of what the technological marvel we'll be building together looks like:
+
+<p>
+<img src="images/LoversAndRivalsFinal.png" width="50%" height="50%">
+</p>
+<p>Clearly, to make something *that* beautiful we're gonna have to get started right away!</p>
+
+<h2>Making Your CSS File</h2>
+
+We'll start by making our CSS file. Ultimately it will look like the css file that came packaged in the sampleGame folder, styles.css. As the above screenshot indicates, it isn't going to be anything too fancy, and I have no doubt that you reading along at home could easily make something far prettier on the eyes. But for the sake of getting started, let's just make something that works and we can pretty up later, eh?
+<p>
+
+<p>
+We'll start with this, which simply makes the background of the game black, and the text of the game white:
+</p>
+
+
+<pre class="prettyprint">
+body {
+	background-color: black;
+	color: white;
+}
+</pre>
+
+<p>
+Not too bad, right? Next up, we'll be creating the 'field' which is what we'll be calling that rectangle towards the top of the screen.
+<p>
+
+<pre class="prettyprint">
+.field {
+	position: relative;
+	overflow: hidden;
+	width: 530px;
+	height: 30px;
+	border: 3px solid #FFF;
+}
+</pre>
+
+<p>
+Inside the field are the three characters whose fates are ensnared in this vicious game of love and rivalry. Let's give our characters some style, shall we?
+</p>
+
+<pre class="prettyprint">
+.character {
+	position: absolute;
+	background-color: black;
+	width: 30px;
+	height: 20px;
+	padding-top: 10px;
+	text-align: center;
+	color: #fff;
+	font-size: 10px;
+	white-space: nowrap;
+}
+</pre>
+
+<p>
+And finally, we'll wrap up our CSS file with styles relating to how text should appear on screen.
+</p>
+
+<pre class="prettyprint">
+#titleDiv{
+	float : left;
+}
+
+#statusDiv{
+	margin-left : 75px;
+	clear : both;
+}
+
+#actionList_hero_rival{
+	visibility : hidden;
+}
+</pre>
+
+<p>
+	And that's all of the styling we have! All told, our CSS file should look a little something like this:
+<p>
+<h3>Final CSS File</h3>
+<pre class="prettyprint">
+body {
+	background-color: black;
+	color: white;
+}
+
+.field {
+	position: relative;
+	overflow: hidden;
+	width: 530px;
+	height: 30px;
+	border: 3px solid #FFF;
+}
+
+.character {
+	position: absolute;
+	background-color: black;
+	width: 30px;
+	height: 20px;
+	padding-top: 10px;
+	text-align: center;
+	color: #fff;
+	font-size: 10px;
+	white-space: nowrap;
+}
+
+#titleDiv{
+	float : left;
+}
+
+#statusDiv{
+	margin-left : 75px;
+	clear : both;
+}
+
+#actionList_hero_rival{
+	visibility : hidden;
+}
+</pre>
+
+<h2>Fleshing Out Your Game File</h2>
+
+<p>
+By this point you should have a lovely little CSS file, that sadly refers to classes and ids that don't yet exist in your game; let's fix that pronto. If you've been following the tutorial from part 1, you should have a file called loversAndRivals.html already at the ready--we'll define all of our html components here, and later on define the functions that operate on those components in a separate javascript file.
+</p>
+
+<p>
+	Before we forget, we'll quickly add in references to the CSS file we just made, and the javascript file we'll be making shortly that will house all of our game functions. This should go in the head tag at the top of your html file, right after the inclusion of ensemble.js (reprinted here for reference)
+<p>
+
+<pre class="prettyprint">
+&lt;head&gt;
+	&lt;title&gt;My Fun Game!&lt;/title&gt;
+	&lt;script src="ensemble.js"&gt;&lt;/script&gt;
+	&lt;script src="loversAndRivals.js"&gt;&lt;/script&gt;
+	&lt;link rel="stylesheet" type="text/css" href="styles.css"&gt;
+&lt;/head&gt;
+</pre>
+
+We'll start off by creating a div for the "title" (which will just say "Lovers and Rivals") and the "status" which will update as players take actions, letting them know if they were successful or not. Because the status will be updating dynamically, we'll give it an id as a hook to find it, and ultimately change it, later on in the code.  Both of these tags should go immedietely after the body tag you created in part 1 of the tutorial.
+</p>
+
+<pre class="prettyprint">
+	&lt;div id="titleDiv"&gt;
+		&lt;h1&gt;Lovers and Rivals!&lt;/h1&gt;
+	&lt;/div&gt;
+	&lt;div id="statusDiv"&gt;
+		&lt;h3 id="statusMessage"&gt;Click Buttons to win the heart of your love!&lt;/h3&gt;
+	&lt;/div&gt;
+</pre>
+
+<p>
+Now that we have that, we'll define the field (AKA the big ugly white rectangle) and the characters that are standing in it. The field has a function associated with the onclick event which is largely just for a sanity check we'll reach later on. Note how all three of our characters are associated with the "character" class, but have unique ids: hero, love, and rival. This is also where you can adjust the looks of the characters (but good luck finding something more heroic than \O/ or more evil than @.o).
+</p>
+
+<pre class="prettyprint">
+	&lt;div class = "field" onclick="move()"&gt;
+		&lt;div class = "character" id="hero"&gt;
+			\O/
+		&lt;/div&gt;
+		&lt;div class = "character" id="love"&gt;
+			0\
+		&lt;/div&gt;
+		&lt;div class = "character" id="rival"&gt;
+			@.o
+		&lt;/div&gt;
+	&lt;/div&gt;
+</pre>
+
+<p>Now that we're displaying our characters, it's time to display the potential actions the characters can take towards each other. This area won't be populated with data until we hook our game up with ensemble, but there's nothing stopping us from setting up the skeleton for now. It's also worth noting that in the version of the game for this tutorial, the Hero character is the only character who takes actions, and they can only take actions towards the Love character, or towards themselves. Making the hero capable of taking actions towards the Rival, or allowing the Love and Rival to take actions as well, are all excellent ways for you to make Lovers and Rivals truly your own! But, I digress... </p>
+
+<pre class="prettyprint">
+	&lt;div id="actionArea"&gt;
+		&lt;h1&gt; What to do on turn &lt;span id="turnNumberPlace"&gt;0&lt;/span&gt;:&lt;/h1&gt;
+		Towards Love:
+		&lt;div id="actionList_hero_love"&gt; &lt;/div&gt;
+		Towards Yourself:
+		&lt;div id="actionList_hero_hero"&gt;&lt;/div&gt;
+		&lt;!--Towards Rival:--&gt;
+		&lt;div id="actionList_hero_rival"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+</pre>
+
+<p>
+Up next we have a div that displays relevant state information to the player. In a game one might be so bold as to label "better" than Lovers and Rivals, this state information would be seamlessly and cleverly integrated into the game itself, instead of just being a bunch of numbers uncouthly shoved in the player's face. But for now, a big list is what you and your players are going to get. As with the action list, the actual values will be filled in later with the help of ensemble, using the placeholder NA to start.
+</p>
+
+<pre class="prettyprint">
+	&lt;div id="stateArea"&gt;
+		&lt;h1&gt;Social State&lt;/h1&gt;
+		&lt;div id="closenessStateDisplay"&gt;
+			&lt;h2&gt;Closeness&lt;/h2&gt;
+			&lt;div id="closenessHeroToLover"&gt;Hero to Lover: &lt;span id="closenessHeroToLoverNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="closenessLoverToHero"&gt;Lover to Hero: &lt;span id="closenessLoverToHeroNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="closenessLoverToHero"&gt;Lover to Rival: &lt;span id="closenessLoverToRivalNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div id="attractionStateDisplay"&gt;
+			&lt;h2&gt;Attraction&lt;/h2&gt;
+			&lt;div id="attractionHeroToLover"&gt;Hero to Lover: &lt;span id="attractionHeroToLoverNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="attractionLoverToHero"&gt;Lover to Hero: &lt;span id="attractionLoverToHeroNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="attractionLoverToRival"&gt;Lover to Rival: &lt;span id="attractionLoverToRivalNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div id="Hero Attributes"&gt;
+			&lt;h2&gt;Hero Attributes&lt;/h2&gt;
+			&lt;div id="heroStrength"&gt;Strength: &lt;span id="heroStrengthNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="heroIntelligence"&gt;Intelligence: &lt;span id="heroIntelligenceNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+</pre>
+
+<p>
+And that's the basic structure of your html file! We will come back to it later once we start actually using ensemble, but by this point you should be able to load up your html file and have something that is beginning to resemble that screenshot at the top of the page appear on your very own screen. For reference, this is what your html file should look like now (complete with what you already created in part 1).
+</p>
+
+<h3>Complete HTML File </h3>
+<pre class="prettyprint">
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My Fun Game!&lt;/title&gt;
+	&lt;script src="ensemble.js"&gt;&lt;/script&gt;
+	&lt;script src="loversAndRivals.js"&gt;&lt;/script&gt;
+	&lt;link rel="stylesheet" type="text/css" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+	&lt;div id="titleDiv"&gt;
+		&lt;h1&gt;Lovers and Rivals!&lt;/h1&gt;
+	&lt;/div&gt;
+	&lt;div id="statusDiv"&gt;
+		&lt;h3 id="statusMessage"&gt;Click Buttons to win the heart of your love!&lt;/h3&gt;
+	&lt;/div&gt;
+
+	&lt;div class = "field" onclick="move()"&gt;
+		&lt;div class = "character" id="hero"&gt;
+			\O/
+		&lt;/div&gt;
+		&lt;div class = "character" id="love"&gt;
+			0\
+		&lt;/div&gt;
+		&lt;div class = "character" id="rival"&gt;
+			@.o
+		&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;div id="actionArea"&gt;
+		&lt;h1&gt; What to do on turn &lt;span id="turnNumberPlace"&gt;0&lt;/span&gt;:&lt;/h1&gt;
+		Towards Love:
+		&lt;div id="actionList_hero_love"&gt; &lt;/div&gt;
+		Towards Yourself:
+		&lt;div id="actionList_hero_hero"&gt;&lt;/div&gt;
+		&lt;!--Towards Rival:--&gt;
+		&lt;div id="actionList_hero_rival"&gt;&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;div id="stateArea"&gt;
+		&lt;h1&gt;Social State&lt;/h1&gt;
+		&lt;div id="closenessStateDisplay"&gt;
+			&lt;h2&gt;Closeness&lt;/h2&gt;
+			&lt;div id="closenessHeroToLover"&gt;Hero to Lover: &lt;span id="closenessHeroToLoverNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="closenessLoverToHero"&gt;Lover to Hero: &lt;span id="closenessLoverToHeroNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="closenessLoverToHero"&gt;Lover to Rival: &lt;span id="closenessLoverToRivalNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div id="attractionStateDisplay"&gt;
+			&lt;h2&gt;Attraction&lt;/h2&gt;
+			&lt;div id="attractionHeroToLover"&gt;Hero to Lover: &lt;span id="attractionHeroToLoverNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="attractionLoverToHero"&gt;Lover to Hero: &lt;span id="attractionLoverToHeroNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="attractionLoverToRival"&gt;Lover to Rival: &lt;span id="attractionLoverToRivalNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div id="Hero Attributes"&gt;
+			&lt;h2&gt;Hero Attributes&lt;/h2&gt;
+			&lt;div id="heroStrength"&gt;Strength: &lt;span id="heroStrengthNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+			&lt;div id="heroIntelligence"&gt;Intelligence: &lt;span id="heroIntelligenceNumber"&gt;NA&lt;/span&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;script type="text/javascript"&gt;
+
+		document.addEventListener('ensembleLoaded', function (e) {
+			//Init ensemble
+			var loadResult = ensemble.init();
+			console.log(loadResult);
+		}, false);
+	&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<h2>Making A Javascript Library File</h2>
+
+<p>
+Although there's nothing stopping you from defining all of your functions inside of a script tag in your html file, I prefer to separate them out into a file of their own. This file is gonna have a lot of stuff in it, and Part 2 of this tutorial is already running a little long. To that end, for now we'll just do the minimum to ensure that all of our files are capable of talking to each other.
+</p>
+
+<p>
+Make yourself a new javascript file, lets call it <i>loversAndRivals.js</i>, and fill it up with a couple of objects that will store state and game data. 
+</p>
+
+<pre class="prettyprint">
+var stateInformation = {
+ "loveToHeroCloseness" : "NA",
+ "loveToHeroAttraction" : "NA",
+ "heroToLoveCloseness" : "NA",
+ "heroToLoveAttraction" : "NA",
+ "loveToRivalCloseness" : "NA",
+ "loveToRivalAttraction" :"NA",
+ "heroStrength" : "NA",
+ "heroIntelligence" : "NA"
+};
+
+var gameVariables = {
+	"gameOver" : false,
+	"endingText" : "NA",
+	"turnNumber" : 0,
+	"numIntents" : 2,
+	"numActionsPerIntent" : 5
+};
+</pre>
+
+<p>
+You may notice that most of that data doesn't look too terribly interesting -- don't worry! As we continue, this data will be updated with knowledge from ensemble.
+</p>
+
+<p>
+	Now would be a good time to point out that there are better ways to work with javascript, such as the module pattern, than what we're using here. What we're doing here is the quickest, dirtiest way to get something up and running. You are more than welcome to fix the code up as much as you like, on your own time!
+</p>
+
+<p>
+And lastly, we'll create that move function we referenced when defining the field. This should move the hero character, by first grabbing a reference to the html hero element through a call with document.getElementById("hero"), setting up an interval that will call the defined frame function every ten millesconds, which itself will update the hero's position by incrementing its <i>left</i> property. This continues until left reaches 100, at which point the interval is removed, ceasing the hero's movement. All this should happen when the player clicks on the field.
+</p>
+
+<pre class="prettyprint">
+var move = function(){
+	
+	var elem = document.getElementById("hero");
+	var left = 0;
+
+	function frame() {
+		left++; // update parameters
+		elem.style.left = left + 'px';
+		if (left == 100) {
+			clearInterval(id);
+		}
+	}
+
+	var id = setInterval(frame, 10); // draw every 10ms
+};
+</pre>
+
+<p>
+And that'll do it for now! Though we'll revisit it soon, our javascript file should look a little something like this:
+</p>
+
+<h3>Javascript File</h3>
+
+<pre class="prettyprint">
+var stateInformation = {
+ "loveToHeroCloseness" : "NA",
+ "loveToHeroAttraction" : "NA",
+ "heroToLoveCloseness" : "NA",
+ "heroToLoveAttraction" : "NA",
+ "loveToRivalCloseness" : "NA",
+ "loveToRivalAttraction" :"NA",
+ "heroStrength" : "NA",
+ "heroIntelligence" : "NA"
+};
+
+var gameVariables = {
+	"gameOver" : false,
+	"endingText" : "NA",
+	"turnNumber" : 0,
+	"numIntents" : 2,
+	"numActionsPerIntent" : 5
+};
+
+var move = function(){
+	
+	var elem = document.getElementById("hero");
+	var left = 0;
+
+	function frame() {
+		left++; // update parameters
+		elem.style.left = left + 'px';
+		if (left == 100) {
+			clearInterval(id);
+		}
+	}
+
+	var id = setInterval(frame, 10); // draw every 10ms
+};
+</pre>
+
+
+<h2>Sanity Check</h2>
+
+<p>
+Okay, if you've been following along, opening up your loversAndRivals.html file should display a screen that looks a little something like this:
+</p>
+<p>
+	<img src="images/LoversAndRivalsEndPart2.png" height="50%" width="50%" />
+</p>
+
+<p>
+	And clicking on the field should make your little hero ( \0/ ) appear and take a few steps forward. Right now they are kinda being covered up by the Love and the Rival, but don't worry. We'll make sure the hero has a nice personal bubble's worth of space in future parts of the tutorial. Congratulations! We've now gotten most of the grunt work out of the way, and are now ready to start defining the social parts of our social world!
+</p>
+
+<p>
+Feeling good? Good! Time to move on to <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>!
+</p>
+
+
+</body>
+</html>

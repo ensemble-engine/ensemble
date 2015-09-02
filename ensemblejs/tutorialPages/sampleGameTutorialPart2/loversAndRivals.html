@@ -1,0 +1,68 @@
+<html>
+<head>
+	<title>My Fun Game!</title>
+	<script src="ensemble.js"></script>
+	<script src="loversAndRivals.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+	<div id="titleDiv">
+		<h1>Lovers and Rivals!</h1>
+	</div>
+	<div id="statusDiv">
+		<h3 id="statusMessage">Click Buttons to win the heart of your love!</h3>
+	</div>
+
+	<div class = "field" onclick="move()">
+		<div class = "character" id="hero">
+			\O/
+		</div>
+		<div class = "character" id="love">
+			0\
+		</div>
+		<div class = "character" id="rival">
+			@.o
+		</div>
+	</div>
+
+	<div id="actionArea">
+		<h1> What to do on turn <span id="turnNumberPlace">0</span>:</h1>
+		Towards Love:
+		<div id="actionList_hero_love"> </div>
+		Towards Yourself:
+		<div id="actionList_hero_hero"></div>
+		<!--Towards Rival:-->
+		<div id="actionList_hero_rival"></div>
+	</div>
+
+	<div id="stateArea">
+		<h1>Social State</h1>
+		<div id="closenessStateDisplay">
+			<h2>Closeness</h2>
+			<div id="closenessHeroToLover">Hero to Lover: <span id="closenessHeroToLoverNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Hero: <span id="closenessLoverToHeroNumber">NA</span></div>
+			<div id="closenessLoverToHero">Lover to Rival: <span id="closenessLoverToRivalNumber">NA</span></div>
+		</div>
+		<div id="attractionStateDisplay">
+			<h2>Attraction</h2>
+			<div id="attractionHeroToLover">Hero to Lover: <span id="attractionHeroToLoverNumber">NA</span></div>
+			<div id="attractionLoverToHero">Lover to Hero: <span id="attractionLoverToHeroNumber">NA</span></div>
+			<div id="attractionLoverToRival">Lover to Rival: <span id="attractionLoverToRivalNumber">NA</span></div>
+		</div>
+		<div id="Hero Attributes">
+			<h2>Hero Attributes</h2>
+			<div id="heroStrength">Strength: <span id="heroStrengthNumber">NA</span></div>
+			<div id="heroIntelligence">Intelligence: <span id="heroIntelligenceNumber">NA</span></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+
+		document.addEventListener('ensembleLoaded', function (e) {
+			//Init ensemble
+			var loadResult = ensemble.init();
+			console.log(loadResult);
+		}, false);
+	</script>
+</body>
+</html>

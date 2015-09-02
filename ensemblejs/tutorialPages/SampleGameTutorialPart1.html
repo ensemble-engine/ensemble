@@ -1,0 +1,81 @@
+
+<html>
+<head>
+	<title>Making a sample game Part 1</title>
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<p>
+	<b><i>As of this time, ensemble applications seem to only work on Chrome. Apologies to Firefox and IE users!</i></b>
+
+<p>
+This tutorial will walk you through the process of using ensemble to make a sample game. The completed source code for the game we'll be making, Lovers and Rivals, is packaged with ensemble in the sampleGame folder. However, sometimes the best way to learn is to build something yourself from scratch.
+
+<p>
+So, let's start at the very beginning! Before you actually do any coding, <a href="tutorial-ensembleUserREADME.html#localhostSetup">you'll want to set up a localhost</a>. Once that's out of the way, it all starts with an html file, which we'll call <i>loversAndRivals.html</i>. You'll want to fill it up with your typical html friends, the html tag, the body tag, the title tag, you know the drill.
+
+<p>
+Once you have the basics in place, you'll want to add the following line inside your head tag:
+
+<pre class="prettyprint">
+	&lt;script src="ensemble.js"&gt; &lt;/script&gt;
+</pre>
+
+<p>
+And that should get you access to all of the wonders of ensemble! Simple as that!
+
+<p>
+
+You should also include the following lines:
+
+<pre class="prettyprint">
+&lt;script&gt;
+	document.addEventListener('ensembleLoaded', function (e) {
+		var loadResult = ensemble.init();
+		console.log(loadResult);
+	}, false);
+&lt;/script&gt;
+</pre>
+
+<p>
+This ensures that your page won't start up until all of ensemble has been successfully loaded. To double check that you have everything up and running, open up the <a href="https://developer.chrome.com/devtools">Chrome developer tools,</a> and verify that a success message was printed to the console. Congratulations, you're ready to rock and roll!
+
+<p>
+We'll start making some game specific code in the next tutorial. For now, go down this sanity-check-list!
+
+<ul>
+	<li>You're using Chrome as your browser</li>
+	<li>You've set up a localhost as outlined <a href="tutorial-ensembleUserREADME.html#localhostSetup">here</a>. </li>
+	<li>Your html file that you're working in looks a little something like this:
+
+<pre class="prettyprint">
+
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My Fun Game!&lt;/title&gt;
+	&lt;script src="ensemble.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;script type="text/javascript"&gt;
+
+		document.addEventListener('ensembleLoaded', function (e) {
+			//Init ensemble
+			var loadResult = ensemble.init();
+			console.log(loadResult);
+		}, false);
+	&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+	</li>
+</ul>
+
+<p>
+Once you've gotten all of that in place, you're ready to move on to <a href="tutorial-SampleGameTutorialPart2.html">Part 2!</a>
+
+
+
+</body>
+</html>

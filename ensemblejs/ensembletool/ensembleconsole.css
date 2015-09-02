@@ -1,0 +1,689 @@
+h1 {
+	font-family: Arial;
+	color: rgb(147, 117, 175);
+	margin: 10px 25px;
+}
+body {
+	font-size: 90%;
+}
+body, html {
+  height: 99%;
+  margin: 0;
+padding: 0;
+}
+#buttons {
+	position: fixed;
+	z-index: 99;
+	top: 10px;
+	right: 10px;
+}
+#buttons button {
+	font-size: 110%;			
+}
+#tabs {
+	width: 75%;
+	height: 90%;
+	float: left;
+}
+#tabsConsole {
+	height: 90%;
+	overflow-y: auto;
+}
+#reference, #characters {
+	width: 22%;
+	outline: 2px solid #C8C8C8;
+	float: left;
+	margin-left: 1%;
+	background: none repeat scroll 0% 0% rgba(255, 252, 234, 1);
+}
+#characters {
+	margin-top:0.5em;
+}
+#validChars {
+	color: rgba(28, 122, 42, 1);
+}
+#reference, #actions {
+	width: 22%;
+	outline: 2px solid #C8C8C8;
+	float: left;
+	margin-left: 1%;
+	background: none repeat scroll 0% 0% rgba(255, 252, 234, 1);
+}
+#actions {
+	margin-top:0.5em;
+}
+.ensemblelog {
+	color: green;
+}
+.ensemblelogerror {
+	color: red !important;
+}
+#sfdbtable {
+	left: 80px;
+	position: relative;
+}
+table, th, td {
+   border: 1px solid black;
+   border-collapse: collapse;
+   padding: 1px 6px;
+}
+tr:nth-child(even) {
+	background: #ddd
+}
+#timestep {
+	font-size: 700%;
+	margin: 0px;
+	padding: 0px;
+}
+#timestepDiv {
+	float: left;
+	background-color: rgba(207, 222, 207, 1);
+	padding: 6px 10px;
+}
+#labelTimestep {
+	margin-bottom: -14px;
+	font-size: 90%;
+}
+
+.newEntry {
+	color: green;
+}
+#sfdbhistorykey {
+	font-size: 60%;
+	width: 68px;
+}
+#resetSFDBHistory {
+	font-size:70%;
+}
+
+.ruleName {
+
+}
+.ruleDetails {
+	font-size:80%;
+}
+.accepted {
+	color: green;
+}
+.rejected {
+	color: red;
+}
+.effectsArrow {
+	float: left;
+	font-size: 500%;
+	margin-top: -32px;
+	margin-left: -8px;
+	height: 1px;
+	position: absolute;
+}
+
+#msgBlock {
+	display: none;
+	position: fixed;
+	text-align: right;
+	top: 6px;
+	right: 1%;
+	background-color: rgba(245, 231, 247, 0.95);
+	width: 60%;
+	font-size: 110%;
+	z-index: 99;
+	height: 20px;
+	color: black;
+	font-family: Arial;
+	padding: 10px 15px;
+	/* -webkit-box-shadow: gray 5px 5px 19px; */
+}
+#msgBlock .error {
+	color: red;
+}
+
+
+.ui-tabs-vertical { width: auto; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+
+#ruleFilter {
+margin-left: 6em;
+margin-bottom: 5px;
+}
+
+#tabsRules { padding: 0 !important;}
+
+#rulesTabs .ui-tabs-panel {
+padding: 0 !important;
+float: left;
+width: auto;
+outline: thin solid purple;
+margin-left: 6em;
+}
+
+/*		tabs-nested > .ui-tabs-panel { 
+    padding: 0em; 
+} */
+#tabsRules { 
+    position: relative; 
+    /*padding-left: 6.5em; */
+} 
+#tabsRules .ui-tabs-nav { 
+    position: absolute; 
+    left: 0.25em; 
+    top: 0.25em; 
+    bottom: 0.25em; 
+    width: 6em; 
+    font-size:80%;
+    padding: 0.2em 0 0.2em 0.2em; 
+} 
+#tabsRules .ui-tabs-nav li { 
+    right: 1px; 
+    width: 100%; 
+    border-right: none; 
+    border-bottom-width: 1px !important; 
+    -moz-border-radius: 4px 0px 0px 4px; 
+    -webkit-border-radius: 4px 0px 0px 4px; 
+    border-radius: 4px 0px 0px 4px; 
+    overflow: hidden; 
+} 
+#tabsRules .ui-tabs-nav li.ui-tabs-selected, 
+#tabsRules .ui-tabs-nav li.ui-state-active { 
+    border-right: 1px solid transparent; 
+} 
+#tabsRules .ui-tabs-nav li a { 
+    float: right; 
+    width: 100%; 
+    text-align: right; 
+} 
+#tabsRules > div { 
+    height: 100%; 
+    overflow: auto; 
+}
+#tabsRules .ruleOrigin {
+	margin: 0;
+	float: right;
+	font-size: 65%;
+	color: rgb(129, 129, 129);
+}
+.volitionType {
+	font-weight:bold;
+}
+.volitionExplanation {
+	font-size: 70%;
+}
+.actionType {
+	font-weight:bold;
+}
+#consoleTips {
+	position: absolute;
+	top: 37px;
+	background-color: white;
+	width: 92%;
+	padding: 5px;
+}
+#consoleTips span {
+	border-bottom: thin dotted blue;
+}
+
+.schemaHeader {
+	padding-bottom: 0;
+	margin-bottom: 0 !important;
+	margin-top: 0.5em;
+}
+.className {
+	font-weight: bold;
+	font-size: 120%;
+}
+.classInfo {
+	font-size: 80%;
+}
+.schemaTypes {
+	margin: 0;
+	padding-left: 1em;
+}
+.schemaType {
+
+}
+#referenceLabel {
+	text-align: center;
+	margin: 3px;
+	text-transform: uppercase;
+	 text-decoration: underline; 
+	font-size: 120%;
+	font-family: Arial;
+}
+
+
+
+/*editor*/
+.edRuleControls {
+	position: relative;
+	top: 0;
+	left: 0;
+	font-size: 85%;
+	width: 100%;
+	margin-top: -0.4em;
+	margin-bottom: -0.5em;
+	border-bottom: 1px dotted black;
+	padding-bottom: 0.5em;
+}
+.inactiveButton {
+	opacity: 0.4;
+}
+.effectsArea {
+	background-color: rgb(187, 218, 187);
+}
+.conditionsArea {
+	background-color: rgb(255, 240, 160);
+}
+.edRuleName {
+	width: 70%;
+}
+.edCharName { 
+	width: 6em;
+	padding-left: 26px;
+	left: -26px;
+	margin-right: -26px;
+	position: relative;
+	border: 1px solid gray;
+}
+.effectsLabel, .conditionsLabel {
+	font-weight: bold;
+	font-style: italic;
+	position: relative;
+	top: 7px;
+}
+.effectsLabel {
+	margin-left: 71px;
+}
+.conditionsLabel {
+	margin-left: 10px;
+}
+.edeffectsP, .edconditionsP {
+	background-color: rgba(255,255,255,0.5);
+	outline: thin solid gray;
+	width: 92.5%;
+	margin-left: 2.5%;
+}
+.edBePos button {
+	background-color: rgb(182, 255, 182);
+}
+.edBeNeg button {
+	background-color: rgb(255, 169, 169);
+}
+.edeffectsP div, .edconditionsP div, .newPredicate div {
+	float: left;
+	/*padding: 0px !important;*/
+	height: 30px;
+	margin: 3px;
+	font-size: 100%;
+}
+/*		.edweight {
+	background-color: rgb(198, 221, 193);
+	font-weight: bold;
+	font-size: 110%;
+	border: 2px outset white;
+}
+*/		.newPredicate button {
+	font-size:90%;
+	border: none;
+	background: #12591c;
+	background: -webkit-gradient(linear, left top, left bottom, from(#3e9c5f), to(#12591c));
+	background: -webkit-linear-gradient(top, #3e9c5f, #12591c);
+	background: -moz-linear-gradient(top, #3e9c5f, #12591c);
+	background: -ms-linear-gradient(top, #3e9c5f, #12591c);
+	background: -o-linear-gradient(top, #3e9c5f, #12591c);
+	padding: 5.5px 11px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+	-moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+	color: white;
+	text-decoration: none;
+	vertical-align: middle;	
+
+	margin-left: 2.5%;
+	margin-bottom: 1.5%;
+	margin-top: -0.5%;		
+}
+.remove {
+	position: absolute;
+	right: 3%;
+}
+.remove button {
+	font-size: 120%;
+	background-color: rgb(255, 155, 155);
+	border: 2px outset white;
+}
+.edintentDirection button {
+	position: relative;
+	top: -4px;
+}
+.edvalue input, {
+	width: 2em;
+	text-align: center;
+}
+.edmoreRecent, .edlessRecent {
+	margin-top: -4px !important;
+}
+.edmoreRecent input, .edlessRecent input {
+	width: 4em;
+	text-align: center;	
+}
+select optgroup { font-weight:bold; }
+.timeButtons {
+  display: inline-block;
+  /*outline: thin solid purple;*/
+  font-size: 50%;
+  position: relative;
+  top: 4px;
+  line-height: 1.2em;
+  padding-left: 0.33em;
+}
+.timeButtons span {
+	display: block;
+	font-weight: bold;
+  color: #47694C;
+  cursor: pointer;
+    outline: thin solid rgb(195, 195, 195);
+  margin-bottom: 3px;
+  text-align:center;
+}
+.timeOrderControls {
+	font-size:85% !important;
+	padding-top: 6px !important;
+  background-color: rgb(234, 231, 255);
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.timeStartButton {
+	background-color: rgb(255, 227, 199);
+}
+.timeNowButton {
+	background-color: rgb(165, 255, 190);
+}
+
+.ruleTypeLabel {
+	float: left;
+	text-transform: capitalize;
+	outline: thin dotted gray;
+	padding: 2px 4px;
+	margin-right: 10px;
+	margin-top: 6px;
+	color: rgb(22, 95, 31);
+	font-weight: bold;
+	font-size: 75%;
+}
+
+/* PURE CSS ICONS */
+
+/* Person */
+.personIcon {
+	width: 20px;
+	height: 20px !important;
+	/*background-color: white;*/
+	left: -2px;
+	position: relative;
+	top: -1px;
+}
+.personBody {
+	width: 20px;
+	background-color: black;
+	height: 10px !important;
+	position: relative;
+	top: 8px;
+	left: -3px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+.personHead {
+	background-color: black;
+	width: 12px;
+	height: 12px !important;
+	position: relative;
+	top: -18px;
+	left: 1px;
+	border-radius: 10px;
+}
+.charHighlight1Light {
+	background-color: rgb(216, 253, 255);
+}
+.charHighlight1Dark {
+	background-color: rgb(14, 168, 168);
+}
+.charHighlight2Light {
+	background-color: rgb(252, 216, 255);
+}
+.charHighlight2Dark {
+	background-color: rgb(121, 20, 134);
+}
+.charHighlight3Light {
+	background-color: rgb(178, 202, 255);
+}
+.charHighlight3Dark {
+	background-color: rgb(5, 70, 121);
+}
+.charHighlight4Light {
+	background-color: rgb(245, 210, 149);
+}
+.charHighlight4Dark {
+	background-color: rgb(153, 104, 0);
+}
+.charHighlight5Light {
+	background-color: rgb(145, 145, 145)
+}
+.charHighlight5Dark {
+	background-color: white;
+}
+.charHighlight6Light {
+	background-color: rgb(236, 176, 176);
+}
+.charHighlight6Dark {
+	background-color: rgb(179, 33, 68)
+}
+
+/* Clock */
+/* Courtesy Nicolas Gallagher, http://nicolasgallagher.com/pure-css-gui-icons/ */
+
+.clock {
+    position:absolute;
+    right: 9%;
+    z-index:1;
+    overflow:hidden;
+    list-style:none;
+    padding:0;
+    margin:0 0 0.25em;
+    width: 20px;
+}
+
+.clock:before,
+.clock:after,
+.clock div:before,
+.clock div:after {
+    content:"";
+    position:absolute;
+    top:50%;
+    left:0;
+}
+
+.clock div:before,
+.clock div:after {
+    margin:-8px 0 0;
+    left:4px;
+    width:10px;
+    height:10px;
+    margin-top:-6px;
+    background:transparent;
+}
+
+.clockOn {
+	background-color: rgb(234, 231, 255);
+}
+.clockOff div:before,
+.clockOff div:after {
+    border:1px solid #ABB9DB;
+}
+
+.clockOn div:before,
+.clockOn div:after {
+    border:1px solid rgb(7, 14, 42);
+}
+
+
+/* Makes clock spherical */
+.clock div:before {
+    /* css3 */
+    -webkit-border-radius:14px;
+    -moz-border-radius:14px;
+    border-radius:14px;
+}
+
+/* clock interior */
+.clock div:after {
+    left:8px;
+    width:3px;
+    height:4px;
+    border-width:0 0 1px 1px;
+    margin-top:-4px;
+    background:transparent;
+}
+
+
+
+
+
+
+#saveRule {
+	font-size: 115%;
+}
+#deleteRule {
+	margin-left: 13px;
+	margin-right: 2em;
+	background-color: rgb(255, 192, 192);
+}
+#deleteRule, #undoButton, #redoButton, #testBindings {
+	height: 20px;
+	font-size: 80%;			
+}
+#saveRule {
+	margin-left: 1em;
+	background-color: rgb(210, 255, 209);
+}
+#testBindings {
+	margin-right: 1em;
+	background-color: rgb(210, 255, 209);
+	font-size: 120%;
+	height: 26px;
+	margin-top: 0px !important;
+}
+#ruleOrigin {
+	font-size: 90%;
+	width: 220px;
+	display: inline;
+}
+#newRule {
+	position: absolute;
+	right: 3px;
+	top: 4px;
+}
+#deleteRule {
+	margin-left: 2em;
+	margin-right: 2em;
+	background-color: rgb(255, 192, 192);
+}
+#undoButton, #redoButton, #testBindings {
+	float: right;
+	margin-top: 4px;
+}
+#bindTest {
+	position: fixed;
+	top: 6%;
+	right: 1%;
+	width: 22.5%;
+	height: 100%;
+	background-color: rgb(252, 238, 140);
+	outline: 2px solid gray;
+	font-size: 110%;
+	display: none;
+}
+.bindCharName {
+	font-weight: bold;
+}
+.bindHeader {
+	margin-top: 0;
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	font-family: sans-serif;
+	font-size: 90%;
+}
+.bindRuleName {
+	color: gray;
+	font-style: italic;
+	font-size: 85%;
+}
+.bindIfHeader, .bindThenHeader {
+	font-weight: bold;
+	outline: thin dotted gray;
+	padding: 1em;
+	background-color: rgb(250, 244, 201);
+}
+.bindFailed {
+	/*background-color: red;*/
+}
+#bindConditions {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 1em;
+	padding-top: 1em;
+	padding-right: 1em;
+}
+#bindConditions li {
+	/*background-color: white;*/
+}
+.bindSucceeded {
+	/*background-color: green;*/
+
+}
+.bindTrueItem {
+	color: rgb(69, 167, 69);
+}
+.bindTrueItem:before {
+   content: '\2713 '; /* Checkmark */
+}
+.bindFalseItem {
+	color: red;
+}
+.bindFalseItem:before {
+	content: '\2297 '; /* circled x */
+}
+.bindResult {
+	font-weight: bold;
+	font-size: 80%;
+	font-family: sans-serif;
+	padding: 1em;
+}
+.bindResultTrue {
+	color: rgb(69, 167, 69);
+	background-color:rgb(210, 255, 219);
+}
+.bindResultFalse {
+	color: red;
+	background-color:rgb(255, 183, 183);
+}
+.bindClose {
+	text-align: center;
+	font-family: sans-serif;
+	text-transform: uppercase;
+	outline: thin dotted gray;
+	padding: 1em;
+	background-color: rgba(255, 10, 0, 0.14);
+	margin-top: 3em;
+	width: 33%;
+}
+#characterList ul li {
+	display: inline-block;
+	padding-right: 1em;
+}
+#characterList ul {
+	padding-left: 1em;
+}

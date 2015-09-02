@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Ensemble Tool</title>
+	<script src="../jslib/require.js" data-main="ensembleconsole.js"></script>
+	<link rel="stylesheet" href="../css/jquery-ui.structure.min.css">
+	<link rel="stylesheet" href="../css/jquery-ui.theme.min.css">
+	<link rel="stylesheet" href="ensembleconsole.css">
+
+</head>
+<body>
+
+
+<!-- 
+Console to set and change state.
+References: volition rules, trigger rules, social types, console commands.
+SFDB History viewer
+
+ -->
+
+
+<h1>Ensemble Tool</h1>
+
+<div id="tabs">
+  <ul>
+    <li id="tabLiConsole"><a href="#tabsConsole">Console</a></li>
+    <li id="tabLiSFDB"><a href="#tabsSfdb">SR Viewer</a></li>
+    <li id="tabLiRulesViewer"><a href="#tabsRules">Rules Viewer</a></li>
+    <li id="tabLiRulesEditor"><a href="#tabsEditor">Rules Editor</a></li>
+  </ul>
+  <div id="tabsConsole">
+  	<div id="consoleResults">
+  		<p id="consoleTips">Commands: <span title="" id="cmdSet">set</span> &bull; 
+	  		<span title="" id="cmdUnset">unset</span> &bull; 
+	  		<span title="" id="cmdVolitions">volitions</span> &bull; 
+	  		<span title="" id="cmdNext">next</span> &bull; 
+	  		<span title="" id="cmdShow">show</span> &bull; 
+	  		<span title="" id="cmdActions">actions</span> &bull; 
+			<span title="" id="cmdDoAction">doAction</span> 
+  		</p>
+
+  		<!-- <p><i>Type commands to change the ensemble state here.</i></p> -->
+  		<p>&nbsp;</p>
+  	</div>
+    <div id="consolePrompt">
+    	<span id="consoleLabel"><b>Command:</b></span> <input type="text" id="command" size="50" />
+    </div>
+    <div id="spacer">&nbsp;<br>&nbsp;<br>&nbsp;<br></div>
+  </div>
+  <div id="tabsSfdb">
+    <p><b>SFDB History</b></p>
+    <div id="timestepDiv">
+	    <p id="labelTimestep">Timestep</p>
+   		<p id="timestep"></p>
+   		<button id="timeStepBack">&lt;</button>
+   		<button id="timeStepForward">&gt;</button><br>
+   		<p id="sfdbhistorykey">Green indicates new value this timestep.</p>
+   		<button id="resetSFDBHistory">Clear History</button>
+   	</div>
+    <div id="sfdbtable"></div>
+
+  </div>
+  <div id="tabsRules">
+  	<div id="rulesTabs">
+  		<div id="ruleFilter">
+  			Filter Rules: <input id="inputRuleFilter"/>
+  			<p style="display:none;" id="filterWarning"><i>Showing only rules that match "<span id="filterWord"></span>"</i></p>
+  		</div>
+  		<ul>
+  			<li><a href="#tabstrigger">Trigger</a></li>
+  			<li><a href="#tabsvolition">Volition</a></li>
+  		</ul>
+  		<div id="tabstrigger">
+  			<p><b>Trigger Rules</b></p>
+  			<div id="triggerRulesArea"></div>
+  		</div>
+  		<div id="tabsvolition">
+  			<p><b>Volition Rules</b></p>
+  			<div id="volitionRulesArea"></div>
+  		</div>
+  		<div id="newRule">
+  			<button id="newRuleButton">New Trigger Rule</button>
+  		</div>
+  	</div>
+  </div>
+  <div id="tabsEditor">
+  	<p><i>No Rule Loaded.</i></p>
+  </div>
+
+
+</div>
+
+
+<div id="reference">
+
+	<p id="referenceLabel">Active Social Schema</p>
+	<button id="loadSchema">Load Schema</button>
+	<input style="display:none;" id="fileDialog" type="file" nwdirectory />
+	<div id="infoOnSocialTypes"></div>
+
+</div>
+
+<div id="actions">
+	<p id="referenceLabel">Actions</p>
+	<div id="actionList"></div>
+</div>
+
+<div id="characters">
+	<p id="referenceLabel">Characters</p>
+	<div id="characterList"></div>
+</div>
+
+
+
+<div id="msgBlock">
+</div>
+
+<div id="bindTest">
+</div>
+
+<div id="dialogBox" style="display:none;"></div>
+
+</body>
+</html>

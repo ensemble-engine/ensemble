@@ -1,0 +1,1322 @@
+
+<html>
+<head>
+	<title>Making a Sample Game. Part 3.</title>
+	<link href="tutorialPageStyle.css" rel="stylesheet" type="text/css">
+	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+</head>
+<body>
+
+<p>
+
+<p>
+And now we find ourselves at Part 3 of this sample game tutorial. We've come a long way together, but we still have a ways to go before we become bonified, certified ensemble superstars. Up until this point, we've primarily just been dealing with generic html and css, setting up localhosts, and dabbling in the lightest of javascript. But no more! This part of the tutorial will teach you how to set up your social schema!
+<p>
+
+<h2>What Is a Social Schema</h2>
+
+ensemble will be keeping track of a lot of information in your social world. Things like...
+<ul>
+<li>The characters that populate your world</li>
+<li>The history or backstory of those characters</li>
+<li>The types of social relationships in your world</li>
+<li>The social considerations your characters have that will govern their behavior</li>
+<li>The actions that characters can take to influence the social state of the world</li>
+</ul>
+
+As a ensemble author, it'll be up to you to define these things! It might seem like a lot, but once we get started hopefully you'll find that defining the social qualities of your world is actually pretty fun! You'll want all of the components of the schema to be in their own folder, with an appropriate descriptive name such as <i>data</i>.
+
+<h2>Define Your Cast of Characters</h2>
+
+Let's start off with an easy one to get our blood flowing: defining the characters that make up our world. As we already know from <a href="tutorial-SampleGameTutorialPart2.html">Part 2</a> of the tutorial, Lovers and Rivals is going to have three characters: The Hero, the Love, and the Rival. Defining these characters is as easy as whipping up a teeny tiny .json file that we'll call <i>cast.json</i>
+
+<h3>Complete Cast File</h3>
+<pre class="prettyprint">
+{
+	"cast": {
+		"hero": {
+			"name": "You"
+		},
+		"love": {
+			"name": "Love"
+		},
+		"rival": {
+			"name": "Rival"
+		}
+	}
+}
+</pre>
+
+<p>
+And that's all we need! For those of you not super familiar with json, even though it looks a little weird with all those colons and curly braces, it isn't that scary! Essentially, we're creating a "cast" object, that in turn has three objects inside of it, hero, love, and rival. And each of those sub-objects (hero, love, and rival) each has a name property. The 'hero' and 'love' and 'rival' objects in the cast will be used internally by ensemble. The name property is something that can be used in your game; you can think of it as the 'display name' for the character. If you want, you can add additional properties for each of the characters underneath their name property, but for the purposes of this tutorial we'll just assume you've only defined their names.
+</p>
+
+<p>
+
+So see, not so bad right? Now that we have a cast (and have refreshed our memories on the subject of json), we can create the somewhat confusingly named schema file!
+</p>
+
+<h2>Define Your Social Schema</h2>
+
+<p>
+
+What's that, you say? Isn't this whole part called defining the social schema? Er, well, yes, you caught us. Your social schema folder will in fact have a schema file inside of it. We should really change the name of something. But until we do, we'll just accept that we're about to define a social schema file inside of our social schema.
+
+</p>
+
+<p>
+Your schema file is where you'll define the very types of social state that can befall your characters. Your schema will be the raw material that your characters will keep track of and reason about to determine what actions to take. For a detailed overview of the schema, check out <a href="tutorial-ensembleUserREADME.html#schema">this part of the ensemble user's guide!</a>
+</p>
+
+<p>
+
+Okay! Finished reading up on what a schema is? Great! Let's start setting up the schema that we'll be using for Lovers and Rivals.
+
+</p>
+
+<pre class="prettyprint">
+{
+	"schema": [
+		{
+			"class": "feeling",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["closeness", "attraction"],
+			"defaultValue": 0,
+			"minValue": 0,
+			"maxValue": 100,
+			"allowIntent": true
+		},
+		{
+			"class" : "mood",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types": ["confident", "unsure"],
+			"allowIntent" : false,
+			"defaultValue" : false,
+			"duration" : 3
+		}
+	]
+}
+</pre>
+
+<p>
+	So, here we're defining two classes of social state: <i>feelings</i> and <i>moods</i>. Feelings, in this world, are numeric (specified by the line <i>"isBoolean": false</i>), and involve two people (specified by the line <i>"directionType" : "directed"</i>). The two types of feelings that we'll have in this world are "closeness" and "attraction" -- with the idea being that you can be close to someone (say having a closeness score of 80 or more) without being attracted to them (such as a family member, or a good friend). The converse is also true; you can be attracted to someone without being close to them (such as pining for a crush from afar, as we find The Hero to be doing at the beginning of Lovers and Rivals). The line <i>"allowIntent": true</i> means that you'll be able to author actions for characters to take to adjust these values.
+</p>
+
+<p>
+	We define moods to be boolean as opposed to numeric; either characters have a mood or they do not--they can't be "60" confident or "20" unsure. Their directionType is undirected, which means they only apply to an individual character (i.e., they are confident or unsure in themselves, independent of anyone else in the social world), their moods will naturally fade away after three turns (thanks to the line <i>"duration": 3</i>) and characters can <i> not </i> take actions to specifically give themselves (or take away) moods.
+</p>
+
+<p>
+	It should be stated that all of the schema components we're defining are simply the artistic choices made for Lovers and Rivals. In your own work, maybe you'll want to have actions that affect moods. And maybe you won't even want to call them moods. There's nothing sacred about any of these settings; they were just the choices made to get our little game up and running. So run wild when defining your own social schema!
+</p>
+
+<p>Now that we have a pretty good idea as to what the parts of a social schema look like, we'll present the rest of the schema file without comment:</p>
+
+<h3> Complete Schema File </h3>
+
+<pre class="prettyprint">
+{
+	"schema": [
+		{
+			"class": "feeling",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["closeness", "attraction"],
+			"defaultValue": 0,
+			"minValue": 0,
+			"maxValue": 100,
+			"allowIntent": true
+		},
+		{
+			"class" : "mood",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types": ["confident", "unsure"],
+			"allowIntent" : false,
+			"defaultValue" : false,
+			"duration" : 3
+		},
+		{
+			"class" : "attribute",
+			"types" : ["strength", "intelligence"],
+			"isBoolean" : false,
+			"directionType" : "undirected",
+			"allowIntent" : true,
+			"defaultValue" : 0,
+			"maxValue" : 100,
+			"minValue" : 0
+		},
+		{
+			"class" : "trait",
+			"isBoolean" : true,
+			"directionType" : "undirected",
+			"types" : ["named hero", "named love", "named rival", "anyone"],
+			"allowIntent" : false,
+			"defaultValue" : false
+		},
+		{
+			"class": "SFDBLabel",
+			"types": ["romantic-failure", "romantic-advance"],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		},
+		{
+			"class": "SFDBLabelUndirected",
+			"types": ["embarrassing", "self-involved"],
+			"isBoolean": true,
+			"directionType": "undirected",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration": 0
+		}
+	]
+}
+
+
+</pre>
+
+<p>
+
+Ok, I lied, here's a little bit of additional commentary. The 'trait' class you'll see has four types: "named hero", "named love", "named rival", and "anyone." You might find that its useful to have something akin to this in your future endeavors to have a way to reference specific characters in your system, by giving every character the trait of their own name. It can also be useful to have an 'anyone' trait that you'll apply to every character, in instances where it doesn't matter who the character is interacting with.
+
+</p>
+
+<p>
+The SFDBLabels are booleans with a duration of 0 -- that's an important sign to ensemble that these are classes that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel classes.
+</p>
+
+<h2>Define the Backstory of the World</h2>
+
+<p>
+	In order to make your world feel like a living, breathing thing, it helps if the characters come equipped with pre-existing relationships with each other. This gives the player the sense that they are stumbling into a world with history, loaded with characters that already love and hate each other, as appropriate. We'll define the history of our world in a <i>history.json</i> file.
+</p>
+
+<p>The history file is essentially going to be specify the state of the world at each time step you care to define through the use of predicates.  <a href="tutorial-ensembleUserREADME.html#predicate">You can read up a little on predicates here</a>, but we'll go over them here as well--they're an important concept for the ensemble author to grasp! Let's take a peek at what the history file will look like.
+	</p>
+
+<pre class="prettyprint">
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"class" : "trait",
+			"type" : "anyone",
+			"first" : "love",
+			"value" : true
+		},{
+			"class" : "attribute",
+			"type" : "strength",
+			"first" : "hero",
+			"value" : 0
+		},{
+			"class" : "attribute",
+			"type" : "intelligence",
+			"first" : "hero",
+			"value" : 5
+		}]
+	}]
+}
+</pre>
+
+<p>
+We can see at the top level we have an array called "history" that will be full of objects. Each of these objects will have two fields, "pos" which represents the timestep of the world you are defining the state for, and "data" which itself is another array that actually specifies the state. In this file, we'll only be defining the state for timestep 0, but additional entries in the history array can be added for additional timesteps.
+</p>
+
+<p>
+So far, we've added three bits of state -- we've given the character "love" the trait "anyone", we've given the character "hero" a strength value of 0, but we've also given the hero an intelligence of 5. Each of these atomic bits of state are what we refer to when we say predicate, and you'll see that they are intimately connected to the social schema you defined above. You specify the <i>class</i> and the <i>type</i> of the social state you are referring to, both of which must be defined in your social schema. As you may recall, our schema did indeed define the class "trait" of which one of its types was "anyone." Our schema also has the class "attribute" with the types "strength" and "intelligence." The "first" property is referring to the name of the character that the state applies to, and these should be names that were defined in your cast file (just as "hero" and "love" were). The value is what the starting state should actually be -- a strength of 0, intelligence of 5, and a confirmation that the love has the trait anyone in this case.
+</p>
+
+<p>
+Any predicate that has the direction type "directed" or "reciprocal" will need to have an additional property, "second", defined, which specifies the second character involved. (for example, the target of a character's attraction).
+</p>
+
+<p>
+Now that we've walked through the basic structure of the history file, it won't be so scary when we take in the whole thing at once, eh?
+</p>
+
+<h3>Complete History File</h3>
+<pre class="prettyprint">
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"class" : "trait",
+			"type" : "named hero",
+			"first" : "hero",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "named love",
+			"first" : "love",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "named rival",
+			"first" : "rival",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "anyone",
+			"first" : "hero",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "anyone",
+			"first" : "rival",
+			"value" : true
+				},{
+			"class" : "trait",
+			"type" : "anyone",
+			"first" : "love",
+			"value" : true
+				},{
+			"class" : "attribute",
+			"type" : "strength",
+			"first" : "hero",
+			"value" : 0
+			},{
+			"class" : "attribute",
+			"type" : "intelligence",
+			"first" : "hero",
+			"value" : 5
+			}
+		]}
+	]
+}
+</pre>
+
+<h2>Defining the Social Rules of Your World</h2>
+
+<p>
+	Okay. This is gonna be a bit of a doozy, but once you get it under your belt you'll find that it isn't really that bad. We're gonna talk about filling up your social world with rules. Rules come in two varieties: <b>Trigger Rules</b> and <b>Volition Rules</b>.
+</p>
+
+<p>
+	<b>Trigger Rules</b> check to see if the social state meets certain criterea, and if it does, applies a change to it. One example of a trigger rule might be to check if a character is cheating on their lover -- you could write a trigger rule that checks if that character is dating two or more people at the same time, and if they are, label them as a cheater so that future prospects know to be wary of the shmuck.
+</p>
+
+<p>
+	<b>Volition Rules</b> on the other hand are rules that help determine the types of actions that the characters want to take. Volition rules are tied to an intent; the concept of the intent you may recall from when we were defining the "allowIntent" property for each class in our schema file, above. Example intents could be thought of as "raise closeness" or "lose attraction". Eventually, every character in your world will have some amount (which could potentially be negative) of desire to do every possible intent towards every other possible character. And, as we'll see, these intents are then tied to actions which can be performed to ultimately change the social state.
+</p>
+
+<p>
+	To author both types of these rules, you're probably going to want to use the authoring tool that came packaged with ensemble. We'll look at the raw json of a rule (which is ultimately what the output of the authoring tool is), just so that we feel comfortable knowing what the different parts of a rule are.
+</p>
+
+<pre class="prettyprint">
+{
+	"fileName": "triggerRules",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "Rival is always confident",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named rival",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "mood",
+					"type": "confident",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_1"
+		}
+	]
+}
+</pre>
+
+<p>
+	So, above we can see the beginnings of our trigger rule file. We've given it a name (in the "fileName" property) of "triggerRules" (though we could have given it any name), and we've specified it's "type" to be "trigger" (the only other valid value here would have been volition). We then have an array of "rules", although this particular example above only has a single entry in this array.
+</p>
+
+<p>
+	That single rule (and all rules that would go in the array) has a "name" field, which is just meant to be a helpful reminder to you, the author, what the rule does. It has an array of conditions, an array of effects, and then an "origin" and "id" property that is generated and used by the ensemble authoring tool and we can safely ignore here. The conditions and the effects are specifically arrays of predicates, which we spoke about above. If all of the predicates in the conditions array hold true, then all of the predicates in the effects array will be carried out and change the world.
+</p>
+
+<p>
+	Here, in the conditions array, we're checking to see if there exists some character that we're calling "someone" who has the trait "rival." Our use of the word "someone" was totally arbitrary; we could have used any string we wanted. All that matters is that we are consistent in our use of it, because any characters that have the trait rival are going to become 'bound' to that string "someone" while this rule is evaluated. We can see in the effects array of this rule, we apply the "confident" mood to that same "someone" that was found in the conditions. <i>You can only make use of roles in the effects that you first referenced in the conditions.</i>
+</p>
+
+<p>
+	And that's the basics of a trigger rule! Again, you probably won't be building them directly in a text file, but here are all of the trigger rules used in Lovers and Rivals for your perusing pleasure. For consistency with the rest of the tutorial, plop 'em in a file called "triggerRules.json'
+</p>
+
+<h3>Complete Trigger Rules</h3>
+<pre class="prettyprint">
+{
+	"fileName": "triggerRules",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "Rival is always confident",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named rival",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "mood",
+					"type": "confident",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_1"
+		},
+		{
+			"name": "Love is repulsed by self indulged people",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named love",
+					"first": "theLove",
+					"value": true
+				},
+				{
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someone",
+					"value": true
+				},
+				{
+					"class": "SFDBLabelUndirected",
+					"type": "self-involved",
+					"first": "someoneElse",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "theLove",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_2"
+		},
+		{
+			"name": "People are repulsed when they are the recipients of romantic failures",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "wouldBeLover",
+					"second": "victim",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "romantic-failure",
+					"first": "someoneElse",
+					"second": "victim",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "victim",
+					"second": "someoneElse",
+					"value": 10,
+					"operator": "+"
+				}
+			],
+			"origin": "triggerRules",
+			"id": "triggerRules_3"
+		}
+	]
+}
+</pre>
+
+<p>
+Volition rules look very similar to trigger rules, with a single major difference: the predicates in the effects array aren't going to directly change the state, but will rather adjust character's volitions scores to perform certain actions. Let's illustrate that with a quick look at the raw json of a volition rule.
+</p>
+
+<pre class="prettyprint">
+{
+	"fileName": "volitionRules",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "Everyone Wants to Increase Closeness",
+			"conditions": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"operator": "&gt;",
+					"value": -10
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_2"
+		}
+	]
+}
+</pre>
+
+<p>
+This should largely look similar to the trigger rule introduced above. The difference is in the effects array. One thing to note is that this is a predicate that involves two people, and so both "first" and "second" is defined and are filled with the "x" and "y" that were bound when evaluating the conditions of the rule; namely that 'x' represents some character whose closeness for another character "y" is greater than -10. As you may recall from the schema that we defined together, the minimum value of feelings is 0, which means that every pair of characters x and y are guaranteed to have a closeness value greater than 10.
+</p>
+
+<p>
+So we dive into the effects of this rule, and we see a couple of properties here that we haven't seen in predicaes before. One is the "weight" field, which here is set to 5. The other is the "intentDirection" field, which is set to true. The weight refers to the effect it has on the character's volition -- positive numbers raise volition, and negative numbers lower it. The larger the absolute value of the number, the greater the effect. The intentDirection refers to whether or not the character wants to increase the value of the type, or decrease it. This means that there are essentially four different combinations of volitions. We'll use the term 'closeness' for convenience in this table, but the type closeness (and the class "feeling") could of course be substituted for anything that you've set allowIntent to be true for in your schema.
+</p>
+
+<a name="intentDirection"><table>
+<tr><td><b>Positive Weight, Negative intentDirection</b>:<BR> Character WANTS to DECREASE closeness.</td><td><b>Positive Weight, Positive intentDirection</b>:<br> Character WANTS to INCREASE closeness.</td> </tr>
+<tr><td><b>Negative Weight, Negative intentDirection</b>:<BR> Character DOESN'T WANT to DECREASE closeness</td><td><b>Negative Weight, Positive intentDirection</b>:<BR> Character DOESN'T WANT to INCREASE closeness.</td></tr>
+</table></a>
+
+<p>
+So, see, not too crazy, right? And of course, ultimately you'll have lots of rules in your system, with everything kind of competing with each other to determine what your characters want to do. Some rules might have a character want to increase their volition to do something towards a character, while another rule might decrease that same volition towards that same character. In the end, the character's volition is the sum of all of the weights from rules that held true for a given intentDirection. Depending on how you author your system, this means that it would be possible for characters to both simultaneously want to increase and decrease closeness towards the same person--a conflict not alltogether dissimilar from the contradictions of real life.
+</p>
+
+<p>
+Now that we're clearly all experts on volition rules, we'll present to you the remainder of the volition rules used in Lovers and Rivals (which we suggest storing in a file called volitionRules.json). Again, in real life you'd be authoring these rules using the authoring tool, but for tutorial purposes we'll just hand you over the code.
+</p>
+
+
+<h3>Complete Volition Rules</h3>
+<pre class="prettyprint">
+{
+	"fileName": "volitionRules",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "Everyone Wants to Increase Closeness",
+			"conditions": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": -10
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_2"
+		},
+		{
+			"name": "The hero REALLY wants to increase closeness to the love",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named hero",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "named love",
+					"first": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "x",
+					"second": "y",
+					"weight": 20,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_3"
+		},
+		{
+			"name": "The love generally doesn't want to get close to the hero",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named love",
+					"first": "love",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "named hero",
+					"first": "hero",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "love",
+					"second": "hero",
+					"weight": -10,
+					"intentDirection": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_4"
+		},
+		{
+			"name": "Weak people desire strength",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"value": 10,
+					"operator": "&lt;"
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_5"
+		},
+		{
+			"name": "The hero doesn't particularly want to get closer to the rival",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "named hero",
+					"first": "hero",
+					"value": true
+				},
+				{
+					"class": "trait",
+					"type": "named rival",
+					"first": "rival",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "hero",
+					"second": "rival",
+					"weight": -10,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_6"
+		},
+		{
+			"name": "People want to get closer to smart people",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "Smarty",
+					"value": 20,
+					"operator": ">"
+				},
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "onlooker",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "onlooker",
+					"second": "Smarty",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_7"
+		},
+		{
+			"name": "People want to get closer to strong people",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "onlooker",
+					"value": true
+				},
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "strongperson",
+					"value": 20,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "feeling",
+					"type": "closeness",
+					"first": "onlooker",
+					"second": "other",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_8"
+		},
+		{
+			"name": "Everyone desires intelligence",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "intelligence",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_9"
+		},
+		{
+			"name": "Everyone Desires Strength",
+			"conditions": [
+				{
+					"class": "trait",
+					"type": "anyone",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "attribute",
+					"type": "strength",
+					"first": "someone",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "volitionRules",
+			"id": "volitionRules_10"
+		}
+	]
+}
+</pre>
+
+<h2>Defining the Social Actions of Your Game</h2>
+
+<p>
+Now that you've got a world full of characters and history and social considerations, its time to fill it up with actions for your characters to take! To start things off, you might want to brush up on <a href="tutorial-ensembleUserREADME.html#actions">the general structures of actions in ensemble</a>. In Lovers and Rivals, we'll want the hero to have various ways to express their love to The Love, either through writing love notes or talking to them or however else you feel it makes sense for someone to convey their feelings to their crush. We'll also want ways for the hero to be able to improve themselves to make them appear more attractive to their crush, including engaging in such love-inducing activities as studying math, or doing pushups. Now that we know the goal of what we're trying to create, let's dive into how actions are represented internally.
+</p>
+
+<p>
+The structure of your actions can be pretty flexible, but at its most basic level, you'll probably want a structure that looks something like this:
+</p>
+
+<b><pre>
+INTENT1
+-->ACTION1
+---->ACTION1-EFFECT1
+---->ACTION1-EFFECT2
+-->ACTION2
+---->ACTION2-EFFECT1
+INTENT2
+-->ACTION3
+</pre></b>
+
+<p>
+As we see above, each action is tied to an intent, and can potentially have multiple effects leading out to it. Now, if you wanted, each one of those Effects could actually have children of their own, and at any point, any of these entries can point to an entirey different part of the graph structure (ACTION1-EFFECT2, for example, could 'lead to' ACTION3, if you so desired). But before we talk too much about crazy edge cases, lets just get the basics under our belt.
+</p>
+
+<p>
+
+So, we start off with an intent. We've talked about intents above when covering the social schema--we'll define our actions in a file called <b>actions.json</b> and open it with this:
+</p>
+
+<pre class="prettyprint">
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISEINTELLIGENCE",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "intelligence",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["STUDY"]
+		},
+</pre>
+
+
+<p>
+The entire actions file is just going to be a lot of entries in the actions array. That's right! In that example of the hierarchy that had INTENT1 and ACTION2 and ACTION1-EFFECT1, *technically* all of those things are represented AS actions. But for ease of communication, we'll call them different things based on how we're using them in this example. Thus, we start with an 'intent'
+</p>
+
+<p>
+We see that we have defined a name, an array of conditions and an array of influenceRules. Besides the name (RAISEINTELLIGENCE, here), the others aren't defined, demonstrating that they are, in fact, optional! We'll show an example of them filled in later on. The "intent" field ties the action to a specific intent, and it does it through something that should look a little bit like a predicate. As the name of the action might have clued you in, this intent is about characters wanting to raise the value of their strength attribute. The "class" and the "type" is how we specify that we're talking about the strength attribute in particular. An explanation of what intentDirection means can be found <a name="#intentDirection">here</a>. And although the notion of "first" has been discussed above along with predicates, <b>they are different here</b>. How are they different? <b>In the intent property of an action, first <i> must </i> have the value of <i>initiator</i>, and if you have a <i>second</i>, it must have the value of <i> responder </i></b>.
+
+</p>
+
+<p>
+As you may recall, we want to define actions such as "write love letter" or "study math" -- the former involving two people (the writer and the recipient of the note) and the latter only one. In ensemble, characters always want to take actions *towards* another character (or in the case of individual actions, *towards themselves* if you will). In the love letter case, for instance, the writer is the <b> initiator </b> and the recipient is the <b> responder. </b> Your actions can involve more than 2 people as well (imagine approaching someone to whisper rumours about a third party), but every action will have an initiator, and any action that involves a second person will have a responder.
+</p>
+
+<p>
+And finally, we have the "leadsTo" property, an array of strings. These strings are the names of other actions that we've defined and, following the example heirarchy, would be "ACTION1" and "ACTION2", namely STUDY in this case. Hopefully the metaphor is coming into place: in this world there is only one way for characters to raise their intelligence: by studying. Of course, just writing the string "STUDY" here is just the first step! We'll need to define what STUDY actually means! And perhaps it looks a little something like this...
+
+
+<pre class="prettyprint">
+		{
+			"name" : "STUDY",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["studyMath", "studyAnatomy"]
+		},
+</pre>
+
+<p>
+We see that this action is even simpler than the first! It has the name "STUDY" (nicely matching the name we wrote in the "leadsTo' property of the RAISEINTELLIGENCE" action), and has a leadsTo of its own, filled only with "studyMath" and "studyAnatomy". Here we can see an authoring convention of using all uppercase letters when naming "non-terminal" actions, and lowercase letters for "terminal" actions; this clues us in that, in the structure for actions used in Lovers and Rivals, we're nearing an end point. Also note that we *could* ahve defined conditions and influence rules here, but chose not to. So, let's leave this placeholder action and finish up this journey down the RAISEINTELLIGENCE rabbit hole, by taking a look at what one of these terminal actions looks like:
+</p>
+
+
+<pre class="prettyprint">
+{
+	"name" : "studyMath",
+	"conditions" : [],
+	"displayName" : "Study Math",
+	"influenceRules" : [
+		{
+			"name": "People in this world are inclined to study math.",
+			"conditions": [
+				{
+					"class" : "trait",
+					"type" : "anyone",
+					"first" : "initiator",
+					"value" : true
+				}
+			],
+			"weight" : 10
+		}
+	],
+	"effects" : [{
+		"class" : "attribute",
+		"type" : "intelligence",
+		"first" : "initiator",
+		"operator" : "+",
+		"value" : 10		
+	},
+	{
+		"class" : "SFDBLabelUndirected",
+		"type" : "self-involved",
+		"first" : "initiator",
+		"value" : true
+	}]
+},
+</pre>
+
+<p>
+
+Ah! And here we get a little more complicated! We can see that the conditions array is still empty, which simply means that there aren't any hard preconditions for role bindings that must be met for this action to be considered viable. We also see that there is a "displayName" field -- this actually isn't used by ensemble at all, and is instead just some additional meta data used by the game Lovers and Rivals itself. When authoring your actions, feel free to add additional properties to actions; though ensemble itself won't reason over them, you'll be able to access them directly in your game code (and we'll see how display name gets used later on as an example).
+</p>
+
+<p>
+
+We then see that, for once in our life, our array of influenceRules is NON-EMPTY! Hooray! So, what's going on here? The structure of the influence rule may look familiar to you... they should be at least semi-reminiscent of the volition rules we discussed above. The name is just an english representation to help authors remember what the rule is meant to convey. The conditions are what have to be true for the rule to "fire" (in this case, the initiator simply has to have the trait "anyone", which we'll recall from our history file *every* character in the world has), and then the "weight" is how much this rule should contribute (or detract) from this character wanting to perform this action. A positive weight contributes to them wanting to do it, a negative weight takes away.
+</p>
+
+<p>
+We also see we have an 'effects' array here as well -- this array is an array of predicates that describe the changes to the world that need to take place should this action be taken. Here we see that there are two changes: the first says that the intelligence attribute of the initiator should increase by 10. The second says that the label of "self-involved" should be applied to the initiator.
+</p>
+
+<p>
+And ta-da! We've completed a single potential pass through the actions. But before we close up and give you the long the summary of the code, let's take a look at "studyAnatomy"
+</p>
+
+
+<pre class="prettyprint">
+{
+	"name" : "studyAnatomy",
+	"conditions" : [],
+	"displayName" : "Study Anatomy",
+	"influenceRules" : [
+		{
+			"name": "Strong people in this world are inclined to study anatomy.",
+			"conditions": [
+				{
+					"class" : "attribute",
+					"type" : "strength",
+					"first" : "initiator",
+					"operator" : ">",
+					"value" : 10
+				}
+			],
+			"weight" : 30
+		}
+	],
+	"effects" : [{
+			"class" : "attribute",
+			"type" : "strength",
+			"first" : "initiator",
+			"operator" : "+",
+			"value" : 10
+		},
+		{
+			"class" : "attribute",
+			"type" : "intelligence",
+			"first" : "initiator",
+			"operator" : "+",
+			"value" : 10
+		},
+		{
+			"class" : "SFDBLabelUndirected",
+			"type" : "self-involved",
+			"first" : "initiator",
+			"value" : true
+		}
+	]
+
+},
+</pre>
+
+<p>
+In general, studyAnatomy is pretty similar to studyMath, but though the differences may be subtle, they are important all the same. One is that there are three effects here -- studying the human body not only raises your intelligence, but your strength as well (just like in real life!), while still labelling the studier as self involved. The influence rule here is also more stringent -- one is more likely (by a score of 30) to study anatomy if they already have a strength value over 10.
+</p>
+
+<p>
+This is a useful illustration of how influence rules within actions can be used: to help determine the "best" action under a certain intent heading. In this case, both studying math and studying anatomy increase intelligence, but "strong" people (at least in this pretty goofy made up world) have a predilection for studying anatomy. As we'll see later on, ensemble lets you choose how *many* actions within a single intent you want to present to the player; if this number is set to 1, then only the most relevant "raise intelligence" action will be available and for anyone with a strength above 10, it is very likely going to be studyAnatomy instead of studyMath.  
+</p>
+
+<p>
+A quick action recap:
+<ol>
+	<li>Characters form volitions for the intents they want to take towards each other and themselves. This is done by evaluating all of the volition rules, and yields a volition score.</li>
+	<li>For each volition, the system finds the "intent" action that matches it.</li>
+	<li>It then works its way down the heirarchy specified through the "leadsTo" arrays. If at any point there is a conditions array that doesn't hold, the action chain is considered unviable. Any influence rules encountered either add to or take away from the volition score.</li>
+	<li>Eventually, all possible actions for the intent will be returned, sorted by descending volition score.</li>
+</ol>
+
+</p>
+
+<p>
+There are other things to keep in mind too when writing actions. Just as with rules, actions can refer to as many characters as you'd like (though no more than 2 are referenced in any single predicate). And besides the enforced names of "initator" and "responder" for the, well, initiator and responder, any other roles can be called anything that you'd like. Plus, any roles that you define at a higher level of the hiearchy will persist as you drill lower down (so you can define a role at the top, and gradually get more specific, adding more and more conditions to whittle away the potential characters to fill that role until you are sure that they will be perfect).
+</p>
+
+<p>
+And although we didn't see it in the above cases, there is also the concept of actions being "accepted" or "rejected" -- this refers to the responder either agreeing or disagreeing to the intent of the action, respectively. For example, if the initiator attempted to write a love note to the responder, an accepted response would likely lead to increased closeness between the two. A rejected response would lead to, ah, well, anything other than an increase in closeness. Really, you as the author can still author any responses you desire (a reject COULD still increase closeness, if you wanted to!) But just as characters form volitions for what they want to do towards each other, those same volitions are used to determine how they will respond if someone engages in that behavior towards them.
+</p>
+
+<p>
+We'll have one last code dump, and then we'll finally be ready to move on to the final part of the tutorial--actually making a friggin' game!
+</p>
+
+<h3>Complete Action File</h3>
+<pre class="prettyprint">
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "RAISECLOSENESS",
+			"intent" : {
+				"class" : "feeling",
+				"type"  : "closeness",
+				"intentDirection" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WRITELOVENOTE", "KISS"]
+		},
+		{
+			"name" : "RAISESTRENGTH",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "strength",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["WEIGHTLIFT", "PUSHUP"]
+		},
+		{
+			"name" : "RAISEINTELLIGENCE",
+			"intent" : {
+				"class" : "attribute",
+				"type" : "intelligence",
+				"intentDirection" : true,
+				"first" : "initiator"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["STUDY"]
+		},
+		{
+			"name" : "STUDY",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["studyMath", "studyAnatomy"]
+		},
+		{
+			"name" : "studyMath",
+			"conditions" : [],
+			"displayName" : "Study Math",
+			"influenceRules" : [
+				{
+					"name": "People in this world are inclined to study math.",
+					"conditions": [
+						{
+							"class" : "trait",
+							"type" : "anyone",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 10
+				}
+			],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10		
+			},
+			{
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
+					"first" : "initiator",
+					"value" : true
+				}]
+		},
+		{
+			"name" : "studyAnatomy",
+			"conditions" : [],
+			"displayName" : "Study Anatomy",
+			"influenceRules" : [
+				{
+					"name": "Strong people in this world are inclined to study anatomy.",
+					"conditions": [
+						{
+							"class" : "attribute",
+							"type" : "strength",
+							"first" : "initiator",
+							"operator" : ">",
+							"value" : 10
+						}
+					],
+					"weight" : 30
+				}
+			],
+			"effects" : [{
+					"class" : "attribute",
+					"type" : "strength",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				},
+				{
+					"class" : "attribute",
+					"type" : "intelligence",
+					"first" : "initiator",
+					"operator" : "+",
+					"value" : 10
+				},
+				{
+					"class" : "SFDBLabelUndirected",
+					"type" : "self-involved",
+					"first" : "initiator",
+					"value" : true
+				}
+			]
+
+		},
+		{
+			"name" : "WEIGHTLIFT",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["weightLiftSuccess", "weightLiftFail"]
+		},
+		{
+			"name" : "weightLiftSuccess",
+			"conditions" : [],
+			"displayName" : "Weightlift",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 5
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}]
+		},
+		{
+			"name" : "weightLiftFail",
+			"displayName" : "Weight Lift &lt;FAIL&gt;",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "-",
+				"value" : 10
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}]
+		},
+		{
+			"name" : "PUSHUP",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["pushup1"]
+		},
+		{
+			"name" : "pushup1",
+			"conditions" : [],
+			"displayName" : "Do Pushups",
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "attribute",
+				"type" : "strength",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			},
+			{
+				"class" : "SFDBLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}
+			]
+		},
+		{
+			"name" : "WRITELOVENOTE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["writeLoveNoteAccept", "writeLoveNoteReject"]
+		},
+		{
+			"name" : "KISS",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["kissSuccess", "kissFail"]
+		},
+		{
+			"name" : "kissSuccess",
+			"displayName" : "Kiss &lt;SUCCESS&gt;",
+			"conditions" : [{
+				"class" : "feeling",
+				"type"  : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : 40,
+				"operator" : ">"
+				},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "trait",
+				"type" : "rival",
+				"first" : "evilPerson",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "evilPerson",
+				"operator" : "=",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "evilPerson",
+				"operator" : "=",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "kissFail",
+			"displayName" : "Kiss &lt;FAIL&gt;",
+			"isAccept" : false,
+			"conditions" : [{
+				"class" : "feeling",
+				"type"  : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : -10,
+				"operator" : ">"
+				}],
+			"influenceRules" : [],
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "-",
+				"value" : 100
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "writeLoveNoteAccept",
+			"displayName" : "Write Love Note &lt;ACCEPT&gt;",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "writeLoveNoteReject",
+			"displayName" : "Write Love Note &lt;REJECT&gt;",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"effects" : [{
+				"class" : "feeling",
+				"type" : "closeness",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 10
+			},{
+				"class" : "SFDBLabel",
+				"type" : "romantic-failure",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : true
+			}]
+		}
+	]
+}
+</pre>
+
+
+<p>
+Feeling good? Good! Time to move on to <a href="tutorial-SampleGameTutorialPart4.html">Part 4</a>!
+</p>
+
+
+</body>
+</html>

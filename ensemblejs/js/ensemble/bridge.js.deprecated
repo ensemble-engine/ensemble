@@ -1,0 +1,89 @@
+/*
+The Bridge module of ensemble provides an interface from the main game into ensemble.
+
+
+TODO:
+-- What are natively supported ways of removing characters from consideration? There's Prom Week's off-stage, where nothing changes except you can skip the characters when calculating volitions. (Can these characters still participate in trigger rules?) There's Dayton's "death", where they stay in SFDB history, but all active directed statuses, relationships etc. are deleted.
+-- Should this be the single public interface into the rest of ensemble?
+-- ensemble: The history at turns -1, -2 etc. should be assumed to be in the same state it is at turn 0, unless other info specifies otherwise. This prevents difficulties with a bunch of trigger rules firing on the first turn because of the "change" to the (initial) state.
+
+
+
+init
+addCharacter
+removeCharacter
+hasSocial(character, class, type)
+getSocial(character, class, type)
+getSFDB
+setSFDB
+nextTurn
+	(or can the player have these run manually? What if they want a game where you take three or four actions before the "game state" advances? In general, issues with conversion between a "main game's" sense of time and ensemble's sense of time.)
+	runTriggerRules()
+	calculateVolition(list of characters)
+
+*/
+
+
+define(["ensemble"], 
+function(ensemble) {
+
+	/**
+	 * Register a character with ensemble. Currently this is a stub function, but
+	 * eventually could be used to, for example, disallow any reference to an 
+	 * unregistered character from being added to the SFDB.
+	 *
+	 * @param {Object} characterData An object with information about this character. Currently the only field is 'name' (string).
+	 *
+	 * @return {Boolean}      True if the character was successfully registered, false otherwise.
+	 */
+	// var registerCharacter = function(characterData) {
+	// 	ensemble.addCharacters(characterData);
+	// }
+
+	/**
+	 * Allows a predicate to be saved to the SFDB at a given timeStep
+	 * Handles stored predicate updating as well as storing new predicates
+	 *
+	 * @method set
+	 * @param {Object} predicate	the predicate that we would like to save to the SFDB
+	 * @param {Number} optTimeStep		the timeStep at which we'd like to save the predicate to. If omitted, assumes we mean at the current timestep.
+	 */
+	var set = function(setPredicate, optTimeStep) {
+		var timeStep;
+		if (optTimeStep === undefined)
+			timeStep = sfdb.getCurrentTimeStep();
+		}
+		sfdb.set(setPredicate, timeStep);
+	},
+
+	/**
+	* Search the SFDB for a desired searchPredicate within a provided time period.
+	* The time block is determined by subtracting the mostRecentTime from the SFDB's
+	* currentTimeStep for the more recent bound of the time period, and subtracting
+	* lessRecentTime to determine the less recent bound of the time period. For example,
+	* to look within a period between the current time and 5 turns prior, we would pass in
+	* 0 and 5 to look between the current time step and 5 turns ago.
+	*
+	* @method get
+	* @param {Object} searchPredicate	a predicate we want to search the SFDB for
+	* @param {Number} mostRecentTime 	the lower bound time that we want to look within
+	* @param {Number} leastRecentTime	the upper bound time that we want to look within
+	* @return {Array} matchedResults	the array holding the found predicates which match the query
+	*/
+	var get = function (searchPredicate, mostRecentTime, lessRecentTime) {
+		sfdb.get(searchPredicate, mostRecentTime, lessRecentTime);
+	},
+
+	var hasSocial = function(character, class, type)
+
+	return {
+		// registerCharacter,
+		// removeCharacter
+		get: get,
+		set: set,
+		nextTurn
+
+
+
+	};
+}); 
