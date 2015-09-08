@@ -1,0 +1,28 @@
+{
+	"fileName": "fakeFile",
+	"type": "trigger",
+	"rules": [
+		{
+			"name": "Ifnore this rule just for testing.",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "networks",
+					"type": "respect",
+					"first": "someone",
+					"second": "other",
+					"value": 0
+				}
+			],
+			"origin": "fakeFile",
+			"id": "triggerRules_2"
+		}
+	]
+}
