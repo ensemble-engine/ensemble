@@ -50,7 +50,7 @@ requirejs.config({
 requirejs(["ensemble", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "text!../data/Schema80K.json", "text!../data/Volition80K.json", "text!../data/SFDB80K.json", "text!../data/Chars80K.json", "messages", "jqueryUI", "domReady!"], 
 function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
 
-	var autoLoad = false;	// Load sample schema on launch.
+	var autoLoad = false;	// Load sample schema package on launch.
 	var is80KTest = false; //in April 2015, Ben and Aaron ran an experiment for CMPS80K that hid some things (e.g. trigger rules).
 
 	var socialStructure;
@@ -208,7 +208,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 		}
 
 		//Make this path that we've found equal to 'lastPath'
-		//Also might be helpful with setting a 'default' schema location.
+		//Also might be helpful with setting a 'default' schema package location.
 		var path2 = process.execPath;
 		console.log("PATH: " , path2);
 		path2 = path2.split("ensemble Tool")[0];
@@ -226,7 +226,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 			return;
 		}
 
-		// Create a backup folder for the current schema, if none exists
+		// Create a backup folder for the current schema package, if none exists
 		if (!fs.existsSync(backupPath)) {
 			fs.mkdirSync(backupPath);
 			// console.log("Making folder at ", backupPath);
@@ -349,7 +349,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 
 	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
 
-	// Load a folder containing a set of schema files from disk into the editor and into ensemble.
+	// Load a folder containing a set of schema package files from disk into the editor and into ensemble.
 	var loadPackage = function() {
 		console.log("inside of loadPackage");
 		var chooser = document.querySelector('#fileDialog');

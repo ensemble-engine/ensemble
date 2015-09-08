@@ -1,6 +1,6 @@
-A ensemble schema is a set of files defining a social world.
+A ensemble schema package is a set of files defining a social world.
 
-A schema's files should exist within their own directory. They should be .json files containing a dictionary of objects. The dictionary requires several keys as specified below: these can be 
+A schema package's files should exist within their own directory. They should be .json files containing a dictionary of objects. The dictionary requires several keys as specified below: these can be 
 
 	schema.json
 		This file defines the social categories and types of your simulation.
@@ -13,5 +13,5 @@ A schema's files should exist within their own directory. They should be .json f
 
 	various rule files (see below)
 
-A schema should also have files defining trigger rules and volition rules, as well as possibly other kinds of rules. You can split your rules into as many files as you like. Each one should include keys "type" and "fileName" to help identify them.
+A schema package should also have files defining trigger rules and volition rules, as well as possibly other kinds of rules. You can split your rules into as many files as you like. Each one should include keys "type" and "fileName" to help identify them.
 

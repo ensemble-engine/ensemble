@@ -11,11 +11,11 @@
 Welcome to part 4 guys! Where it all comes together! The intricate puzzle pieces we've carefully jigsawed will finally snap into place, revealing the glorious picture which is your very first ensemble-based game. Let's get started!
 <p>
 
-<h3>Loading In Our Social Schema</h3>
+<h3>Loading In Our Social Schema Package</h3>
 
 <p>
 
-First things first -- let's load up that social schema we worked so hard on in <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>! We'll be doing this with a series of calls to ensemble functions that take the .json files of your schema as parameters. First, you'll want to load in your schema itself (that defines your categories and types), as ensemble will use it to help with the validation of your other files. This should all be in your html file, right after your call to ensemble.init() (reprinted here for convenience). So, something like this:
+First things first -- let's load up that social schema package we worked so hard on in <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>! We'll be doing this with a series of calls to ensemble functions that take the .json files of your schema as parameters. First, you'll want to load in your schema file itself (that defines your categories and types), as ensemble will use it to help with the validation of your other files. This should all be in your html file, right after your call to ensemble.init() (reprinted here for convenience). So, something like this:
 
 </p>
 
@@ -30,7 +30,7 @@ var schema = ensemble.loadSocialStructure(rawSchema);
 </pre>
 
 <p>
-And there you go, your schema is loaded! The path provided to schema.json should be relative to the location of the html file your game lives in. ensemble now understands all of the categories and types that compose the social structure of your game, and consequently will express concern if you load up rules or history that are not aligned with the structure you've defined. And don't worry: even though we're storing the schema in the <i>schema</i> variable, we won't need to use it directly as ensemble now has everything it needs internally, at least with regards to social structure.
+And there you go, your schema file is loaded! The path provided to schema.json should be relative to the location of the html file your game lives in. ensemble now understands all of the categories and types that compose the social structure of your game, and consequently will express concern if you load up rules or history that are not aligned with the structure you've defined. And don't worry: even though we're storing the schema in the <i>schema</i> variable, we won't need to use it directly as ensemble now has everything it needs internally, at least with regards to social structure.
 </p>
 
 <p>

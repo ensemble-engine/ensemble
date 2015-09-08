@@ -200,7 +200,7 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 		showRule();
 	}
 
-	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where allowIntent is true. Technically, we should only need to do this when a new social schema is loaded; for now we run whenever we load a new rule into the editor.
+	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where allowIntent is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
 	var buildIntentOptions = function() {
 		intentTypes = [];
 		allTypes = [];
@@ -930,7 +930,7 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 	}
 
 
-	// Create a new template predicate (either an effect or condition) and add it to activeRule. Generate appropriate templates from the active social schema.
+	// Create a new template predicate (either an effect or condition) and add it to activeRule. Generate appropriate templates from the active social schema package.
 	var newPredicate = function(predType, predNum) {
 		var whichTypeList = predType === "effects" ? intentTypes : allTypes;
 		var typeInfo = whichTypeList[0].split("_");
