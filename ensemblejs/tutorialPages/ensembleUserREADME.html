@@ -193,7 +193,7 @@ The social schema is the social 'stuff' of your world, the raw material that you
 "defaultValue": 0,
 "minValue": 0,
 "maxValue": 100,
-"allowIntent": true,
+"actionable": true,
 "duration": 6
 </pre>
 <p>
@@ -248,16 +248,16 @@ This should be an integer that specifies the lowest value a scalar social fact c
 This should be an integer that specifies the largest value a scalar social fact can reach. If something happens that would bring the number higher than this specified maximum value, it will calmp to the value of maxValue.
 
 <p>
-<b>allowIntent</b> -- <i>Possible values: <b>true</b> and <b>false</b></i>
+<b>actionable</b> -- <i>Possible values: <b>true</b> and <b>false</b></i>
 
 <p>
-Much of what ensemble affords the user is allowing characters to form volitions over various intents. An intent is some way that the social space can change. So, for example, an intent might be for two characters to gain the relationship 'married', or for one character to raise an affinity attribute towards another. The allowIntent property is what allows you to specify which social facts characters are able to form volitions over, and which ones they are not.
+Much of what ensemble affords the user is allowing characters to form volitions over various intents. An intent is some way that the social space can change. So, for example, an intent might be for two characters to gain the relationship 'married', or for one character to raise an affinity attribute towards another. The actionable property is what allows you to specify which social facts characters are able to form volitions over, and which ones they are not.
 
 <p>
-Using some of the above examples, if we had the category relationship with types 'freinds', 'enemies', and 'dating', this is likely a category that would have allowIntent set to true -- it seems reasonable that you would want characters to take actions with the goals of creating friendships and starting to date each other. Conversely, the 'character trait' category (with types such as "humble", "greedy", "intelligent", etc.) might not make as much sense; characters don't go out of their way to become greedy or humble; they just naturally are.
+Using some of the above examples, if we had the category relationship with types 'freinds', 'enemies', and 'dating', this is likely a category that would have actionable set to true -- it seems reasonable that you would want characters to take actions with the goals of creating friendships and starting to date each other. Conversely, the 'character trait' category (with types such as "humble", "greedy", "intelligent", etc.) might not make as much sense; characters don't go out of their way to become greedy or humble; they just naturally are.
 
 <p>
-Even if a category of social facts has allowIntent equal to false, it doesn't mean that they have to be immutable; people are welcome to evolve or remain stubborn in your world as much as you'd like. Scrooge never had the intent to stop being greedy; he naturally abandonded that trait as a result of the interventions of the spirits and his subsequent actions Christmas morning. The very same could happen in a system of your own design!
+Even if a category of social facts has actionable equal to false, it doesn't mean that they have to be immutable; people are welcome to evolve or remain stubborn in your world as much as you'd like. Scrooge never had the intent to stop being greedy; he naturally abandonded that trait as a result of the interventions of the spirits and his subsequent actions Christmas morning. The very same could happen in a system of your own design!
 
 <p>
 Or heck, maybe you *do* want character traits to be something that characters can form volitions over, and that's just fine too. You're welcome to design it in any way you see fit.

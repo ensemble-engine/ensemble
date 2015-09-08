@@ -84,7 +84,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		factory.min = blueprint.minValue;
 		factory.max = blueprint.maxValue;
 		factory.defaultVal = blueprint.defaultValue;
-		factory.allowIntent = blueprint.allowIntent;
+		factory.actionable = blueprint.actionable;
 		return factory;
 	}
 
@@ -126,7 +126,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 			var categoryBlueprint = blueprints[i];
 
 			// Error Checking
-			if (categoryBlueprint.allowIntent === true) {
+			if (categoryBlueprint.actionable === true) {
 				atLeastOneCategoryAllowsIntent = true;
 			}
 			if (structure[categoryBlueprint.category]) {
@@ -154,7 +154,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		}
 
 		if (!atLeastOneCategoryAllowsIntent) {
-			throw new Error("SCHEMA ERROR: A schema must include at least one category where allowIntent is true, otherwise there are no possible actions for characters to take.");
+			throw new Error("SCHEMA ERROR: A schema must include at least one category where actionable is true, otherwise there are no possible actions for characters to take.");
 		}
 
 		socialStructure = structure;

@@ -8,14 +8,14 @@
 			"defaultValue": 0,
 			"minValue": 0,
 			"maxValue": 100,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category" : "mood",
 			"isBoolean" : true,
 			"directionType" : "undirected",
 			"types": ["confident", "unsure"],
-			"allowIntent" : false,
+			"actionable" : false,
 			"defaultValue" : false,
 			"duration" : 3
 		},
@@ -24,7 +24,7 @@
 			"types" : ["strength", "intelligence"],
 			"isBoolean" : false,
 			"directionType" : "undirected",
-			"allowIntent" : true,
+			"actionable" : true,
 			"defaultValue" : 0,
 			"maxValue" : 100,
 			"minValue" : 0
@@ -34,7 +34,7 @@
 			"isBoolean" : true,
 			"directionType" : "undirected",
 			"types" : ["hero", "love", "rival", "anyone"],
-			"allowIntent" : false,
+			"actionable" : false,
 			"defaultValue" : false
 		},
 		{
@@ -43,7 +43,7 @@
 			"isBoolean": true,
 			"directionType": "directed",
 			"defaultValue": false,
-			"allowIntent": false,
+			"actionable": false,
 			"duration": 0
 		},
 		{
@@ -52,7 +52,7 @@
 			"isBoolean": true,
 			"directionType": "undirected",
 			"defaultValue": false,
-			"allowIntent": false,
+			"actionable": false,
 			"duration": 0
 		}
 	]

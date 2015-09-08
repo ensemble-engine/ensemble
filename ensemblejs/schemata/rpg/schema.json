@@ -8,7 +8,7 @@
 			"defaultValue": 10,
 			"minValue": 3,
 			"maxValue": 18,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "alignment",
@@ -16,7 +16,7 @@
 			"directionType": "undirected",
 			"types": ["good", "lawful", "chaotic", "evil"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "bonds",
@@ -26,7 +26,7 @@
 			"defaultValue": 0,
 			"minValue": 0,
 			"maxValue": 10,
-			"allowIntent": true
+			"actionable": true
 		}
 	]
 }

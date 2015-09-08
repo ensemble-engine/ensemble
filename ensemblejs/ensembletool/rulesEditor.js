@@ -200,7 +200,7 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 		showRule();
 	}
 
-	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where allowIntent is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
+	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where actionable is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
 	var buildIntentOptions = function() {
 		intentTypes = [];
 		allTypes = [];
@@ -209,7 +209,7 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 			var categoryRoster = structure[categoryKey];
 			for (var typeKey in categoryRoster) {
 				allTypes.push(categoryKey + "_" + typeKey);
-				if (structure[categoryKey][typeKey].allowIntent === true) {
+				if (structure[categoryKey][typeKey].actionable === true) {
 					intentTypes.push(categoryKey + "_" + typeKey);
 				}
 			}

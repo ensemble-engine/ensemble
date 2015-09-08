@@ -6,7 +6,7 @@
 			"directionType": "undirected",
 			"types": ["humble", "proud"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "networks",
@@ -14,7 +14,7 @@
 			"directionType": "directed",
 			"types": ["buddy", "romance", "cool"],
 			"defaultValue": 0,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "undirectedStatus",
@@ -22,7 +22,7 @@
 			"directionType": "undirected",
 			"types": ["popular"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "directedStatus",
@@ -30,7 +30,7 @@
 			"directionType": "directed",
 			"types": ["crushing on"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "relationship",
@@ -38,7 +38,7 @@
 			"directionType": "reciprocal",
 			"types": ["friends with", "dating", "enemies with"],
 			"defaultValue": false,
-			"allowIntent": true
+			"actionable": true
 		}
 	]
 }

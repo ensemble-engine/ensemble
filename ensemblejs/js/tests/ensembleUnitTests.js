@@ -26,7 +26,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 					"defaultValue": 50,
 					"directionType": "directed",
 					"types": ["affinity", "trust"],
-					"allowIntent": true
+					"actionable": true
 				},
 				{
 					"category": "relationship",
@@ -34,7 +34,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 					"defaultValue": false,
 					"directionType": "reciprocal",
 					"types": ["friends", "involved with"],
-					"allowIntent": true
+					"actionable": true
 				}
 			]
 		};

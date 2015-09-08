@@ -24,7 +24,7 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 			"isBoolean": false,
 			"directionType": "reciprocal",
 			"defaultValue": 50,
-			"allowIntent": true
+			"actionable": true
 		};
 
 		rejected = false;

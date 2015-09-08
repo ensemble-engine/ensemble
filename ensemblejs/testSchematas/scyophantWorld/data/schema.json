@@ -6,7 +6,7 @@
 			"directionType": "undirected",
 			"types": ["humble", "proud"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "networks",
@@ -14,7 +14,7 @@
 			"directionType": "directed",
 			"types": ["respect"],
 			"defaultValue": 0,
-			"allowIntent": true
+			"actionable": true
 		}
 	]
 }

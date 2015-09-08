@@ -240,8 +240,8 @@ function(util, _, $, sfdb) {
 			}
 			delete pred.maxValue;
 
-			if (isTypeWrong(pred, "allowIntent", "boolean", false)) return msg;
-			delete pred.allowIntent;
+			if (isTypeWrong(pred, "actionable", "boolean", false)) return msg;
+			delete pred.actionable;
 
 			delete pred.isBoolean;
 		} else {// if type is not blueprint

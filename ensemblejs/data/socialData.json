@@ -7,7 +7,7 @@
 			"types": ["grieving", "happy", "lonely", "sad", "injured", "injured", "fatigued", "dead", "exhausted", "recovering", "resting", "expelled"],
 			"duration": 6,
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "network",
@@ -17,7 +17,7 @@
 			"defaultValue": 50,
 			"minValue": 0,
 			"maxValue": 100,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "relationship",
@@ -25,7 +25,7 @@
 			"directionType": "reciprocal",
 			"types": ["friends", "involved with", "comrades"],
 			"defaultValue": false,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "directedStatus",
@@ -34,7 +34,7 @@
 			"types": ["attracted to", "worried about", "upset with", "hates"],
 			"duration": 20,
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "trait",
@@ -42,7 +42,7 @@
 			"directionType": "undirected",
 			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "jealous", "trusting", "has a kind face"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "SFDBLabel",
@@ -50,7 +50,7 @@
 			"isBoolean": true,
 			"directionType": "directed",
 			"defaultValue": false,
-			"allowIntent": false,
+			"actionable": false,
 			"duration": 0
 		}
 	]

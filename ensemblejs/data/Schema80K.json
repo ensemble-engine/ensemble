@@ -8,7 +8,7 @@
 			"defaultValue": 50,
 			"minValue": 0,
 			"maxValue": 100,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "relationship",
@@ -16,7 +16,7 @@
 			"directionType": "reciprocal",
 			"types": ["friends with", "involved with"],
 			"defaultValue": false,
-			"allowIntent": true
+			"actionable": true
 		},
 		{
 			"category": "directedStatus",
@@ -25,7 +25,7 @@
 			"types": ["attracted to", "worried about", "angry at"],
 			"duration": 20,
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		},
 		{
 			"category": "trait",
@@ -33,7 +33,7 @@
 			"directionType": "undirected",
 			"types": ["jealous", "trusting", "pessimistic", "stylish", "a sports fan", "clever"],
 			"defaultValue": false,
-			"allowIntent": false
+			"actionable": false
 		}
 	]
 }
