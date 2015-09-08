@@ -4,14 +4,14 @@
 		{
 			"name" : "AFFINITYUP",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
 			"conditions" : [{
-				"class" : "trait",
+				"category" : "trait",
 				"type"	: "lucky",
 				"first" : "luckyGuy",
 				"value" : true
@@ -23,7 +23,7 @@
 			"name" : "FAKEBRANCH",
 			"conditions" : [
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "happy",
 					"first" : "initiator",
 					"value" : true
@@ -41,17 +41,17 @@
 		{
 			"name" : "NIMBLEMAKEFRIENDS",
 			"conditions" : [{
-					"class" : "trait",
+					"category" : "trait",
 					"type"  : "nimble",
 					"first" : "nimble1",
 					"value" : true
 				},{
-					"class" : "trait",
+					"category" : "trait",
 					"type"  : "nimble",
 					"first" : "nimble2",
 					"value" : true
 				},{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type"  : "friends",
 					"first" : "nimble1",
 					"second" : "nimble2",
@@ -62,7 +62,7 @@
 					"name": "Happy people make the best nimble1 people.",
 					"conditions": [
 						{
-							"class" : "status",
+							"category" : "status",
 							"type" : "happy",
 							"first" : "nimble1",
 							"value" : true
@@ -82,7 +82,7 @@
 					"name": "ACTUALLY, you know what, Happy people make the WORST nimble1 people.",
 					"conditions": [
 						{
-							"class" : "status",
+							"category" : "status",
 							"type" : "happy",
 							"first" : "nimble1",
 							"value" : true
@@ -96,13 +96,13 @@
 			"name" : "actualFriends4Degrees",
 			"conditions" : [
 				{
-					"class" : "status",
+					"category" : "status",
 					"type" : "happy",
 					"first" : "nimble1",
 					"value" : true
 				},
 				{
-					"class" : "status",
+					"category" : "status",
 					"type" : "happy",
 					"first" : "initiator",
 					"value" : true
@@ -113,7 +113,7 @@
 				"name": "Ok, ok, ok, I'm sorry. I know I keep changing my mind, but you know what? Maybe happy people aren't that bad after all for being nimble1.",
 				"conditions": [
 					{
-						"class" : "status",
+						"category" : "status",
 						"type" : "happy",
 						"first" : "nimble1",
 						"value" : true
@@ -124,7 +124,7 @@
 			],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",

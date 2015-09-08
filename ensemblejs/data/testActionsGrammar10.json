@@ -4,14 +4,14 @@
 		{
 			"name" : "AFFINITYUP",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
 			"conditions" : [{
-				"class" : "trait",
+				"category" : "trait",
 				"type"	: "lucky",
 				"first" : "luckyGuy",
 				"value" : true
@@ -23,12 +23,12 @@
 			"name" : "LAUGH",
 			"conditions" : [
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "nimble",
 					"first" : "nimbleOne"
 				},
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "hardy",
 					"first" : "nimbleOne"
 				}

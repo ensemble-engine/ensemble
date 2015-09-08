@@ -42,48 +42,48 @@ var setUpLoversAndRivalsInitialState = function(){
 var updateLocalStateInformation = function(){
 	//First, let's grab the data we'll want to display.
 	var loveToHeroClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "hero"
 	};
 	var loveToRivalClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "rival"
 	};
 	var heroToLoveClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "hero",
 		"second" : "love"
 	};
 	var loveToHeroAttractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "love",
 		"second" : "hero"
 	};
 	var heroToLoveattractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "hero",
 		"second" : "love"
 	};
 	var loveToRivalAttractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "love",
 		"second" : "rival"
 	};
 	var heroIntelligencePred = {
-		"class" : "attribute",
+		"category" : "attribute",
 		"type" : "intelligence",
 		"first" : "hero"
 	};
 	var heroStrengthPred = {
-		"class" : "attribute",
+		"category" : "attribute",
 		"type" : "strength",
 		"first" : "hero"
 	};

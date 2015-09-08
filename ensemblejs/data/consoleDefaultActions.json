@@ -4,7 +4,7 @@
 		{
 			"name" : "STARTDATING",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "involved with",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -28,7 +28,7 @@
 					"name": "Happy people are more inclined to do pickuplines.",
 					"conditions": [
 						{
-							"class" : "status",
+							"category" : "status",
 							"type" : "happy",
 							"first" : "initiator",
 							"value" : true
@@ -44,7 +44,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "involved with",
 					"first" : "initiator",
 					"second" : "responder",
@@ -57,7 +57,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "involved with",
 					"first" : "initiator",
 					"second" : "responder",
@@ -70,7 +70,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "involved with",
 					"first" : "initiator",
 					"second" : "responder",
@@ -83,7 +83,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "friends",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -108,7 +108,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "friends",
 					"first" : "initiator",
 					"second" : "responder",
@@ -121,7 +121,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "friends",
 					"first" : "initiator",
 					"second" : "responder",
@@ -137,7 +137,7 @@
 					"name": "lucky people are a little less inclined to do a laughTerminal2.",
 					"conditions": [
 						{
-							"class" : "trait",
+							"category" : "trait",
 							"type"	: "lucky",
 							"first" : "initiator",
 							"value" : true
@@ -148,7 +148,7 @@
 
 			],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "friends",
 					"first" : "initiator",
 					"second" : "responder",

@@ -1,7 +1,7 @@
 {
 	"schema": [
 		{
-			"class": "status",
+			"category": "status",
 			"isBoolean": true,
 			"directionType": "undirected",
 			"types": ["grieving", "happy", "lonely", "sad", "injured", "injured", "fatigued", "dead", "exhausted", "recovering", "resting", "expelled"],
@@ -10,7 +10,7 @@
 			"allowIntent": false
 		},
 		{
-			"class": "network",
+			"category": "network",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["affinity", "trust"],
@@ -20,7 +20,7 @@
 			"allowIntent": true
 		},
 		{
-			"class": "relationship",
+			"category": "relationship",
 			"isBoolean": true,
 			"directionType": "reciprocal",
 			"types": ["friends", "involved with", "comrades"],
@@ -28,7 +28,7 @@
 			"allowIntent": true
 		},
 		{
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"isBoolean": true,
 			"directionType": "directed",
 			"types": ["attracted to", "worried about", "upset with", "hates"],
@@ -37,7 +37,7 @@
 			"allowIntent": false
 		},
 		{
-			"class": "trait",
+			"category": "trait",
 			"isBoolean": true,
 			"directionType": "undirected",
 			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "jealous", "trusting", "has a kind face"],
@@ -45,7 +45,7 @@
 			"allowIntent": false
 		},
 		{
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"types": ["romanticfailure", "romantic advance", "embarrassing", "newlabel"],
 			"isBoolean": true,
 			"directionType": "directed",

@@ -1,7 +1,7 @@
 {
 	"schema": [
 		{
-			"class": "trait",
+			"category": "trait",
 			"isBoolean": true,
 			"directionType": "undirected",
 			"types": ["humble", "proud", "friendly"],
@@ -9,7 +9,7 @@
 			"allowIntent": false
 		},
 		{
-			"class": "networks",
+			"category": "networks",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["respect"],
@@ -17,7 +17,7 @@
 			"allowIntent": true
 		},
 		{
-			"class": "intents",
+			"category": "intents",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["desire to be nice", "desire to be mean"],

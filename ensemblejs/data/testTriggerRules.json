@@ -6,16 +6,16 @@
 			"name": "If I'm jealous and someone hits on my sweetie, I hate them A LOT.",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y"
 				},{
-					"class": "trait",
+					"category": "trait",
 					"type": "jealous",
 					"first": "x"
 				},{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romantic advance",
 					"first": "z",
 					"second": "y"
@@ -23,7 +23,7 @@
 			],
 			"effects": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "z",
@@ -35,11 +35,11 @@
 			"name": "If your sweetie is injured, you worry about them.",
 			"conditions": [
 				{
-					"class": "status",
+					"category": "status",
 					"type": "injured",
 					"first": "y"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y"
@@ -47,7 +47,7 @@
 			],
 			"effects": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "worried about",
 					"first": "x",
 					"second": "y",
@@ -59,16 +59,16 @@
 			"name": "Someone with two friends is no longer lonely.",
 			"conditions": [
 				{
-					"class": "status",
+					"category": "status",
 					"type": "lonely",
 					"first": "x"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "y"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "z"
@@ -76,7 +76,7 @@
 			],
 			"effects": [
 				{
-					"class": "status",
+					"category": "status",
 					"type": "lonely",
 					"first": "x",
 					"value": false
@@ -87,7 +87,7 @@
 			"name": "If worried and no longer dating, remove status.",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -96,7 +96,7 @@
 					"turnsAgoBetween": ["NOW", 3]
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -106,7 +106,7 @@
 
 				},
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "worried about",
 					"first": "x",
 					"second": "y",
@@ -115,7 +115,7 @@
 			],
 			"effects": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "worried about",
 					"first": "x",
 					"second": "y",
@@ -129,28 +129,28 @@
 			"name": "If someone starts dating my ex, I stop being friends with them.",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
 					"turnsAgoBetween": [1, 100]
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
 					"value": false
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "y",
 					"second": "z",
 					"value": true
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "z"
@@ -158,7 +158,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "z",

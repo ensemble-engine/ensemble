@@ -6,7 +6,7 @@
 			"name": "Everyone Wants to Increase Closeness",
 			"conditions": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -16,7 +16,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -32,13 +32,13 @@
 			"name": "The hero REALLY wants to increase closeness to the love",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "x",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named love",
 					"first": "y",
 					"value": true
@@ -46,7 +46,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -61,13 +61,13 @@
 			"name": "The love generally doesn't want to get close to the hero",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named love",
 					"first": "love",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "hero",
 					"value": true
@@ -75,7 +75,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "love",
 					"second": "hero",
@@ -90,7 +90,7 @@
 			"name": "Weak people desire strength",
 			"conditions": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"value": 10,
@@ -99,7 +99,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
@@ -114,13 +114,13 @@
 			"name": "The hero doesn't particularly want to get closer to the rival",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "hero",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named rival",
 					"first": "rival",
 					"value": true
@@ -128,7 +128,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "hero",
 					"second": "rival",
@@ -144,14 +144,14 @@
 			"name": "People want to get closer to smart people",
 			"conditions": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "Smarty",
 					"value": 20,
 					"operator": ">"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "onlooker",
 					"value": true
@@ -159,7 +159,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "onlooker",
 					"second": "Smarty",
@@ -175,13 +175,13 @@
 			"name": "People want to get closer to strong people",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "onlooker",
 					"value": true
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "strongperson",
 					"value": 20,
@@ -190,7 +190,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "onlooker",
 					"second": "other",
@@ -206,7 +206,7 @@
 			"name": "Everyone desires intelligence",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "someone",
 					"value": true
@@ -214,7 +214,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "someone",
 					"weight": 5,
@@ -229,7 +229,7 @@
 			"name": "Everyone Desires Strength",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "someone",
 					"value": true
@@ -237,7 +237,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,

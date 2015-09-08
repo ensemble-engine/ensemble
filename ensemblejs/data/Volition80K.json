@@ -6,14 +6,14 @@
 			"name": "Low affinity suggests ending friendship.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
 					"operator": "<",
 					"value": 20
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "x",
 					"second": "y",
@@ -22,7 +22,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "x",
 					"second": "y",
@@ -36,12 +36,12 @@
 			"comment" : "BUG -- one role is labeled soneone cackle cackle",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "attracted to",
 					"first": "hero",
 					"second": "someone"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "soneone",
 					"second": "hero",
@@ -50,7 +50,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "hero",
 					"second": "someone",
@@ -64,14 +64,14 @@
 			"name": "Pessimistic people are less interested in romance.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "pessimistic",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -85,7 +85,7 @@
 			"name": "People are very inclined to trust someone they are dating.",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y"
@@ -93,7 +93,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -107,7 +107,7 @@
 			"name": "Someone is very unlikely to trust someone they're angry at.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "angry at",
 					"first": "x",
 					"second": "y"
@@ -115,14 +115,14 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
 					"weight": 10,
 					"intentDirection": false
 				},{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -137,7 +137,7 @@
 			"comment": "BUG: Condition is negated.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "angry at",
 					"first": "x",
 					"second": "y",
@@ -146,7 +146,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -154,7 +154,7 @@
 					"intentDirection": true
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -169,12 +169,12 @@
 			"comment": "BUG: extra condition",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "stylish",
 					"first": "x"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -184,7 +184,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "y",
 					"second": "x",
@@ -198,14 +198,14 @@
 			"name": "A trusting person is more likely to give trust.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "trusting",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -220,14 +220,14 @@
 			"comment": "BUG: Roles in first condition are swapped",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "other",
 					"second": "someone",
 					"value": 75,
 					"operator": ">"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "someone",
 					"second": "other",
@@ -236,7 +236,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "someone",
 					"second": "other",
@@ -251,7 +251,7 @@
 			"comment": "BUG: Contradictory second condition.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -259,7 +259,7 @@
 					"value": 66
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -269,7 +269,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "x",
 					"second": "y",
@@ -283,19 +283,19 @@
 			"name": "Similar interest suggests affinity up.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "a sports fan",
 					"first": "x"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "a sports fan",
 					"first": "y"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -309,7 +309,7 @@
 			"name": "If you're angry with someone, you don't want to trust them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "angry at",
 					"first": "x",
 					"second": "y"
@@ -317,7 +317,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection": true,
 					"weight": -20,
@@ -325,7 +325,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection": false,
 					"weight": 20,
@@ -338,7 +338,7 @@
 			"name": "Low affinity makes friendship less tenable.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -348,7 +348,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": true,
 					"weight": -10,
@@ -356,7 +356,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": false,
 					"weight": 10,
@@ -364,7 +364,7 @@
 					"second": "y"
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"intentDirection": true,
 					"weight": -15,
@@ -372,7 +372,7 @@
 					"second": "y"
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"intentDirection": false,
 					"weight": 10,
@@ -386,7 +386,7 @@
 			"name": "If you're angry with someone, you don't want to be friends with them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "angry at",
 					"first": "x",
 					"second": "y"
@@ -394,7 +394,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"intentDirection": false,
 					"weight": 20,
@@ -408,7 +408,7 @@
 			"name": "If you're angry with someone, you will not be friends with them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "angry at",
 					"first": "x",
 					"second": "y"
@@ -416,7 +416,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": true,
 					"weight": -20,
@@ -424,7 +424,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": false,
 					"weight": 20,
@@ -438,7 +438,7 @@
 			"comment": "BUG: First condition should be friend relationship",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "me",
 					"second": "buddy",
@@ -446,7 +446,7 @@
 					"value": 75
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "buddy",
 					"second": "mutual friend",
@@ -455,7 +455,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "me",
 					"second": "mutual friend",
@@ -469,7 +469,7 @@
 			"comment": "BUG: Missing jealous condition",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "pessimistic",
 					"first": "x",
 					"value": true
@@ -477,7 +477,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -491,7 +491,7 @@
 			"comment": "BUG: Not restricting to pessimists!",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "pessimist",
 					"second": "friend",
@@ -500,7 +500,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "pessimist",
 					"second": "friend",

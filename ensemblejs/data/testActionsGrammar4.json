@@ -4,14 +4,14 @@
 		{
 			"name" : "AFFINITYUP",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
 			"conditions" : [{
-				"class" : "trait",
+				"category" : "trait",
 				"type"	: "lucky",
 				"first" : "luckyGuy",
 				"value" : true
@@ -22,17 +22,17 @@
 		{
 			"name" : "NIMBLEMAKEFRIENDS",
 			"conditions" : [{
-					"class" : "trait",
+					"category" : "trait",
 					"type"  : "nimble",
 					"first" : "nimble1",
 					"value" : true
 				},{
-					"class" : "trait",
+					"category" : "trait",
 					"type"  : "nimble",
 					"first" : "nimble2",
 					"value" : true
 				},{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type"  : "friends",
 					"first" : "nimble1",
 					"second" : "nimble2",
@@ -44,12 +44,12 @@
 		{
 			"name" : "bestFriend",
 			"conditions" : [{
-				"class" : "status",
+				"category" : "status",
 				"type" : "happy",
 				"first" : "nimble1",
 				"value" : true
 			},{
-				"class" : "status",
+				"category" : "status",
 				"type" : "happy",
 				"first" : "happyDude",
 				"value" : true
@@ -57,7 +57,7 @@
 			"isAccept" : true,
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",

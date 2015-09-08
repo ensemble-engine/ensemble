@@ -230,11 +230,11 @@ margin-left: 6em;
 	margin-bottom: 0 !important;
 	margin-top: 0.5em;
 }
-.className {
+.categoryName {
 	font-weight: bold;
 	font-size: 120%;
 }
-.classInfo {
+.categoryInfo {
 	font-size: 80%;
 }
 .schemaTypes {

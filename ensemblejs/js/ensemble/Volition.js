@@ -9,13 +9,13 @@
  * 		{
 			"Simon": {
 				"Monica": [
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 20 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 }
+					{ "category": "network", "type": "buddy", "intentDirection": true, "weight": 20 },
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 }
 				]
 			},
 			"Monica": {
 				"Simon": [
-					{ "class": "network", "type": "romance", "intentDirection": false, "weight": 12 }
+					{ "category": "network", "type": "romance", "intentDirection": false, "weight": 12 }
 				]
 			}
 		}
@@ -42,7 +42,7 @@ define(["util", "underscore", "test"], function(util, _, test) {
 	 * @param  {String} from   Identifier for the "from" character.
 	 * @param  {String} to     Identifier for the "to" character.
 	 *
-	 * @return {Object}        A volition predicate, with keys "class", "network", "type", "intentDirection", and "weight". (Or undefined if there are no volotions for this pair of characters.)
+	 * @return {Object}        A volition predicate, with keys "category", "network", "type", "intentDirection", and "weight". (Or undefined if there are no volotions for this pair of characters.)
 	 */
 	var getFirstVolition = function(key, from, to) {
 
@@ -75,7 +75,7 @@ define(["util", "underscore", "test"], function(util, _, test) {
 	 * 
 	 * TODO: It would be nice to have functionality to get a specified intent (e.g. 'what is the volition for Simon to startDating Monica?')
 	 *
-	 * @return {Object}        A volition predicate, with keys "class", "network", "type", "intentDirection", and "weight". (Or undefined if there are no more volitions for this pair of characters.)
+	 * @return {Object}        A volition predicate, with keys "category", "network", "type", "intentDirection", and "weight". (Or undefined if there are no more volitions for this pair of characters.)
 	 */
 	var getNextVolition = function(key, from, to) {
 
@@ -122,7 +122,7 @@ define(["util", "underscore", "test"], function(util, _, test) {
 			
 		var thisV = getFirstVolition(key, responder, initiator);
 		while (thisV !== undefined) {
-			if (thisV["class"] === predicate["class"] &&
+			if (thisV["category"] === predicate["category"] &&
 				thisV["type"] === predicate["type"] &&
 				thisV["intentDirection"] === predicate["intentDirection"]) {
 				returnObject.weight = thisV.weight;

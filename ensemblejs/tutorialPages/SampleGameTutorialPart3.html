@@ -78,7 +78,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 {
 	"schema": [
 		{
-			"class": "feeling",
+			"category": "feeling",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["closeness", "attraction"],
@@ -88,7 +88,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"allowIntent": true
 		},
 		{
-			"class" : "mood",
+			"category" : "mood",
 			"isBoolean" : true,
 			"directionType" : "undirected",
 			"types": ["confident", "unsure"],
@@ -101,7 +101,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 </pre>
 
 <p>
-	So, here we're defining two classes of social state: <i>feelings</i> and <i>moods</i>. Feelings, in this world, are numeric (specified by the line <i>"isBoolean": false</i>), and involve two people (specified by the line <i>"directionType" : "directed"</i>). The two types of feelings that we'll have in this world are "closeness" and "attraction" -- with the idea being that you can be close to someone (say having a closeness score of 80 or more) without being attracted to them (such as a family member, or a good friend). The converse is also true; you can be attracted to someone without being close to them (such as pining for a crush from afar, as we find The Hero to be doing at the beginning of Lovers and Rivals). The line <i>"allowIntent": true</i> means that you'll be able to author actions for characters to take to adjust these values.
+	So, here we're defining two categories of social state: <i>feelings</i> and <i>moods</i>. Feelings, in this world, are numeric (specified by the line <i>"isBoolean": false</i>), and involve two people (specified by the line <i>"directionType" : "directed"</i>). The two types of feelings that we'll have in this world are "closeness" and "attraction" -- with the idea being that you can be close to someone (say having a closeness score of 80 or more) without being attracted to them (such as a family member, or a good friend). The converse is also true; you can be attracted to someone without being close to them (such as pining for a crush from afar, as we find The Hero to be doing at the beginning of Lovers and Rivals). The line <i>"allowIntent": true</i> means that you'll be able to author actions for characters to take to adjust these values.
 </p>
 
 <p>
@@ -120,7 +120,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 {
 	"schema": [
 		{
-			"class": "feeling",
+			"category": "feeling",
 			"isBoolean": false,
 			"directionType": "directed",
 			"types": ["closeness", "attraction"],
@@ -130,7 +130,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"allowIntent": true
 		},
 		{
-			"class" : "mood",
+			"category" : "mood",
 			"isBoolean" : true,
 			"directionType" : "undirected",
 			"types": ["confident", "unsure"],
@@ -139,7 +139,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"duration" : 3
 		},
 		{
-			"class" : "attribute",
+			"category" : "attribute",
 			"types" : ["strength", "intelligence"],
 			"isBoolean" : false,
 			"directionType" : "undirected",
@@ -149,7 +149,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"minValue" : 0
 		},
 		{
-			"class" : "trait",
+			"category" : "trait",
 			"isBoolean" : true,
 			"directionType" : "undirected",
 			"types" : ["named hero", "named love", "named rival", "anyone"],
@@ -157,7 +157,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"defaultValue" : false
 		},
 		{
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"types": ["romantic-failure", "romantic-advance"],
 			"isBoolean": true,
 			"directionType": "directed",
@@ -166,7 +166,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"duration": 0
 		},
 		{
-			"class": "SFDBLabelUndirected",
+			"category": "SFDBLabelUndirected",
 			"types": ["embarrassing", "self-involved"],
 			"isBoolean": true,
 			"directionType": "undirected",
@@ -182,12 +182,12 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 
 <p>
 
-Ok, I lied, here's a little bit of additional commentary. The 'trait' class you'll see has four types: "named hero", "named love", "named rival", and "anyone." You might find that its useful to have something akin to this in your future endeavors to have a way to reference specific characters in your system, by giving every character the trait of their own name. It can also be useful to have an 'anyone' trait that you'll apply to every character, in instances where it doesn't matter who the character is interacting with.
+Ok, I lied, here's a little bit of additional commentary. The 'trait' category you'll see has four types: "named hero", "named love", "named rival", and "anyone." You might find that its useful to have something akin to this in your future endeavors to have a way to reference specific characters in your system, by giving every character the trait of their own name. It can also be useful to have an 'anyone' trait that you'll apply to every character, in instances where it doesn't matter who the character is interacting with.
 
 </p>
 
 <p>
-The SFDBLabels are booleans with a duration of 0 -- that's an important sign to ensemble that these are classes that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel classes.
+The SFDBLabels are booleans with a duration of 0 -- that's an important sign to ensemble that these are categories that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel categories.
 </p>
 
 <h2>Define the Backstory of the World</h2>
@@ -204,17 +204,17 @@ The SFDBLabels are booleans with a duration of 0 -- that's an important sign to 
 	"history": [{
 		"pos": 0,
 		"data": [{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "anyone",
 			"first" : "love",
 			"value" : true
 		},{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "strength",
 			"first" : "hero",
 			"value" : 0
 		},{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "intelligence",
 			"first" : "hero",
 			"value" : 5
@@ -228,7 +228,7 @@ We can see at the top level we have an array called "history" that will be full 
 </p>
 
 <p>
-So far, we've added three bits of state -- we've given the character "love" the trait "anyone", we've given the character "hero" a strength value of 0, but we've also given the hero an intelligence of 5. Each of these atomic bits of state are what we refer to when we say predicate, and you'll see that they are intimately connected to the social schema you defined above. You specify the <i>class</i> and the <i>type</i> of the social state you are referring to, both of which must be defined in your social schema. As you may recall, our schema did indeed define the class "trait" of which one of its types was "anyone." Our schema also has the class "attribute" with the types "strength" and "intelligence." The "first" property is referring to the name of the character that the state applies to, and these should be names that were defined in your cast file (just as "hero" and "love" were). The value is what the starting state should actually be -- a strength of 0, intelligence of 5, and a confirmation that the love has the trait anyone in this case.
+So far, we've added three bits of state -- we've given the character "love" the trait "anyone", we've given the character "hero" a strength value of 0, but we've also given the hero an intelligence of 5. Each of these atomic bits of state are what we refer to when we say predicate, and you'll see that they are intimately connected to the social schema you defined above. You specify the <i>category</i> and the <i>type</i> of the social state you are referring to, both of which must be defined in your social schema. As you may recall, our schema did indeed define the category "trait" of which one of its types was "anyone." Our schema also has the category "attribute" with the types "strength" and "intelligence." The "first" property is referring to the name of the character that the state applies to, and these should be names that were defined in your cast file (just as "hero" and "love" were). The value is what the starting state should actually be -- a strength of 0, intelligence of 5, and a confirmation that the love has the trait anyone in this case.
 </p>
 
 <p>
@@ -245,42 +245,42 @@ Now that we've walked through the basic structure of the history file, it won't 
 	"history": [{
 		"pos": 0,
 		"data": [{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "named hero",
 			"first" : "hero",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "named love",
 			"first" : "love",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "named rival",
 			"first" : "rival",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "anyone",
 			"first" : "hero",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "anyone",
 			"first" : "rival",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "anyone",
 			"first" : "love",
 			"value" : true
 				},{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "strength",
 			"first" : "hero",
 			"value" : 0
 			},{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "intelligence",
 			"first" : "hero",
 			"value" : 5
@@ -301,7 +301,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 </p>
 
 <p>
-	<b>Volition Rules</b> on the other hand are rules that help determine the types of actions that the characters want to take. Volition rules are tied to an intent; the concept of the intent you may recall from when we were defining the "allowIntent" property for each class in our schema file, above. Example intents could be thought of as "raise closeness" or "lose attraction". Eventually, every character in your world will have some amount (which could potentially be negative) of desire to do every possible intent towards every other possible character. And, as we'll see, these intents are then tied to actions which can be performed to ultimately change the social state.
+	<b>Volition Rules</b> on the other hand are rules that help determine the types of actions that the characters want to take. Volition rules are tied to an intent; the concept of the intent you may recall from when we were defining the "allowIntent" property for each category in our schema file, above. Example intents could be thought of as "raise closeness" or "lose attraction". Eventually, every character in your world will have some amount (which could potentially be negative) of desire to do every possible intent towards every other possible character. And, as we'll see, these intents are then tied to actions which can be performed to ultimately change the social state.
 </p>
 
 <p>
@@ -317,7 +317,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"name": "Rival is always confident",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named rival",
 					"first": "someone",
 					"value": true
@@ -325,7 +325,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			],
 			"effects": [
 				{
-					"class": "mood",
+					"category": "mood",
 					"type": "confident",
 					"first": "someone",
 					"value": true
@@ -364,7 +364,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"name": "Rival is always confident",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named rival",
 					"first": "someone",
 					"value": true
@@ -372,7 +372,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			],
 			"effects": [
 				{
-					"class": "mood",
+					"category": "mood",
 					"type": "confident",
 					"first": "someone",
 					"value": true
@@ -385,19 +385,19 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"name": "Love is repulsed by self indulged people",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named love",
 					"first": "theLove",
 					"value": true
 				},
 				{
-					"class": "SFDBLabelUndirected",
+					"category": "SFDBLabelUndirected",
 					"type": "self-involved",
 					"first": "someone",
 					"value": true
 				},
 				{
-					"class": "SFDBLabelUndirected",
+					"category": "SFDBLabelUndirected",
 					"type": "self-involved",
 					"first": "someoneElse",
 					"value": false
@@ -405,7 +405,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "theLove",
 					"second": "someoneElse",
@@ -420,14 +420,14 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"name": "People are repulsed when they are the recipients of romantic failures",
 			"conditions": [
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romantic-failure",
 					"first": "wouldBeLover",
 					"second": "victim",
 					"value": true
 				},
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romantic-failure",
 					"first": "someoneElse",
 					"second": "victim",
@@ -436,7 +436,7 @@ Now that we've walked through the basic structure of the history file, it won't 
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "victim",
 					"second": "someoneElse",
@@ -464,7 +464,7 @@ Volition rules look very similar to trigger rules, with a single major differenc
 			"name": "Everyone Wants to Increase Closeness",
 			"conditions": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -474,7 +474,7 @@ Volition rules look very similar to trigger rules, with a single major differenc
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -495,7 +495,7 @@ This should largely look similar to the trigger rule introduced above. The diffe
 </p>
 
 <p>
-So we dive into the effects of this rule, and we see a couple of properties here that we haven't seen in predicaes before. One is the "weight" field, which here is set to 5. The other is the "intentDirection" field, which is set to true. The weight refers to the effect it has on the character's volition -- positive numbers raise volition, and negative numbers lower it. The larger the absolute value of the number, the greater the effect. The intentDirection refers to whether or not the character wants to increase the value of the type, or decrease it. This means that there are essentially four different combinations of volitions. We'll use the term 'closeness' for convenience in this table, but the type closeness (and the class "feeling") could of course be substituted for anything that you've set allowIntent to be true for in your schema.
+So we dive into the effects of this rule, and we see a couple of properties here that we haven't seen in predicaes before. One is the "weight" field, which here is set to 5. The other is the "intentDirection" field, which is set to true. The weight refers to the effect it has on the character's volition -- positive numbers raise volition, and negative numbers lower it. The larger the absolute value of the number, the greater the effect. The intentDirection refers to whether or not the character wants to increase the value of the type, or decrease it. This means that there are essentially four different combinations of volitions. We'll use the term 'closeness' for convenience in this table, but the type closeness (and the category "feeling") could of course be substituted for anything that you've set allowIntent to be true for in your schema.
 </p>
 
 <a name="intentDirection"><table>
@@ -522,7 +522,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "Everyone Wants to Increase Closeness",
 			"conditions": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -532,7 +532,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -548,13 +548,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "The hero REALLY wants to increase closeness to the love",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "x",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named love",
 					"first": "y",
 					"value": true
@@ -562,7 +562,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "x",
 					"second": "y",
@@ -577,13 +577,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "The love generally doesn't want to get close to the hero",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named love",
 					"first": "love",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "hero",
 					"value": true
@@ -591,7 +591,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "love",
 					"second": "hero",
@@ -606,7 +606,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "Weak people desire strength",
 			"conditions": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"value": 10,
@@ -615,7 +615,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
@@ -630,13 +630,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "The hero doesn't particularly want to get closer to the rival",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named hero",
 					"first": "hero",
 					"value": true
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "named rival",
 					"first": "rival",
 					"value": true
@@ -644,7 +644,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "hero",
 					"second": "rival",
@@ -660,14 +660,14 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "People want to get closer to smart people",
 			"conditions": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "Smarty",
 					"value": 20,
 					"operator": ">"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "onlooker",
 					"value": true
@@ -675,7 +675,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "onlooker",
 					"second": "Smarty",
@@ -691,13 +691,13 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "People want to get closer to strong people",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "onlooker",
 					"value": true
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "strongperson",
 					"value": 20,
@@ -706,7 +706,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "onlooker",
 					"second": "other",
@@ -722,7 +722,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "Everyone desires intelligence",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "someone",
 					"value": true
@@ -730,7 +730,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "someone",
 					"weight": 5,
@@ -745,7 +745,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			"name": "Everyone Desires Strength",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "anyone",
 					"first": "someone",
 					"value": true
@@ -753,7 +753,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
@@ -805,7 +805,7 @@ So, we start off with an intent. We've talked about intents above when covering 
 		{
 			"name" : "RAISEINTELLIGENCE",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"intentDirection" : true,
 				"first" : "initiator"
@@ -822,7 +822,7 @@ The entire actions file is just going to be a lot of entries in the actions arra
 </p>
 
 <p>
-We see that we have defined a name, an array of conditions and an array of influenceRules. Besides the name (RAISEINTELLIGENCE, here), the others aren't defined, demonstrating that they are, in fact, optional! We'll show an example of them filled in later on. The "intent" field ties the action to a specific intent, and it does it through something that should look a little bit like a predicate. As the name of the action might have clued you in, this intent is about characters wanting to raise the value of their strength attribute. The "class" and the "type" is how we specify that we're talking about the strength attribute in particular. An explanation of what intentDirection means can be found <a name="#intentDirection">here</a>. And although the notion of "first" has been discussed above along with predicates, <b>they are different here</b>. How are they different? <b>In the intent property of an action, first <i> must </i> have the value of <i>initiator</i>, and if you have a <i>second</i>, it must have the value of <i> responder </i></b>.
+We see that we have defined a name, an array of conditions and an array of influenceRules. Besides the name (RAISEINTELLIGENCE, here), the others aren't defined, demonstrating that they are, in fact, optional! We'll show an example of them filled in later on. The "intent" field ties the action to a specific intent, and it does it through something that should look a little bit like a predicate. As the name of the action might have clued you in, this intent is about characters wanting to raise the value of their strength attribute. The "category" and the "type" is how we specify that we're talking about the strength attribute in particular. An explanation of what intentDirection means can be found <a name="#intentDirection">here</a>. And although the notion of "first" has been discussed above along with predicates, <b>they are different here</b>. How are they different? <b>In the intent property of an action, first <i> must </i> have the value of <i>initiator</i>, and if you have a <i>second</i>, it must have the value of <i> responder </i></b>.
 
 </p>
 
@@ -858,7 +858,7 @@ We see that this action is even simpler than the first! It has the name "STUDY" 
 			"name": "People in this world are inclined to study math.",
 			"conditions": [
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "anyone",
 					"first" : "initiator",
 					"value" : true
@@ -868,14 +868,14 @@ We see that this action is even simpler than the first! It has the name "STUDY" 
 		}
 	],
 	"effects" : [{
-		"class" : "attribute",
+		"category" : "attribute",
 		"type" : "intelligence",
 		"first" : "initiator",
 		"operator" : "+",
 		"value" : 10		
 	},
 	{
-		"class" : "SFDBLabelUndirected",
+		"category" : "SFDBLabelUndirected",
 		"type" : "self-involved",
 		"first" : "initiator",
 		"value" : true
@@ -912,7 +912,7 @@ And ta-da! We've completed a single potential pass through the actions. But befo
 			"name": "Strong people in this world are inclined to study anatomy.",
 			"conditions": [
 				{
-					"class" : "attribute",
+					"category" : "attribute",
 					"type" : "strength",
 					"first" : "initiator",
 					"operator" : ">",
@@ -923,21 +923,21 @@ And ta-da! We've completed a single potential pass through the actions. But befo
 		}
 	],
 	"effects" : [{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "strength",
 			"first" : "initiator",
 			"operator" : "+",
 			"value" : 10
 		},
 		{
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "intelligence",
 			"first" : "initiator",
 			"operator" : "+",
 			"value" : 10
 		},
 		{
-			"class" : "SFDBLabelUndirected",
+			"category" : "SFDBLabelUndirected",
 			"type" : "self-involved",
 			"first" : "initiator",
 			"value" : true
@@ -986,7 +986,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 		{
 			"name" : "RAISECLOSENESS",
 			"intent" : {
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -999,7 +999,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 		{
 			"name" : "RAISESTRENGTH",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"intentDirection" : true,
 				"first" : "initiator"
@@ -1011,7 +1011,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 		{
 			"name" : "RAISEINTELLIGENCE",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"intentDirection" : true,
 				"first" : "initiator"
@@ -1035,7 +1035,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 					"name": "People in this world are inclined to study math.",
 					"conditions": [
 						{
-							"class" : "trait",
+							"category" : "trait",
 							"type" : "anyone",
 							"first" : "initiator",
 							"value" : true
@@ -1045,14 +1045,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				}
 			],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10		
 			},
 			{
-					"class" : "SFDBLabelUndirected",
+					"category" : "SFDBLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -1067,7 +1067,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 					"name": "Strong people in this world are inclined to study anatomy.",
 					"conditions": [
 						{
-							"class" : "attribute",
+							"category" : "attribute",
 							"type" : "strength",
 							"first" : "initiator",
 							"operator" : ">",
@@ -1078,21 +1078,21 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				}
 			],
 			"effects" : [{
-					"class" : "attribute",
+					"category" : "attribute",
 					"type" : "strength",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
 				},
 				{
-					"class" : "attribute",
+					"category" : "attribute",
 					"type" : "intelligence",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
 				},
 				{
-					"class" : "SFDBLabelUndirected",
+					"category" : "SFDBLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -1112,14 +1112,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"displayName" : "Weightlift",
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 5
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1131,14 +1131,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "-",
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1156,14 +1156,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"displayName" : "Do Pushups",
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1186,49 +1186,49 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"name" : "kissSuccess",
 			"displayName" : "Kiss &lt;SUCCESS&gt;",
 			"conditions" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"value" : 40,
 				"operator" : ">"
 				},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "trait",
+				"category" : "trait",
 				"type" : "rival",
 				"first" : "evilPerson",
 				"value" : true
 			}],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
 				"operator" : "+",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "evilPerson",
 				"operator" : "=",
 				"value" : 10
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "evilPerson",
@@ -1241,7 +1241,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"displayName" : "Kiss &lt;FAIL&gt;",
 			"isAccept" : false,
 			"conditions" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
@@ -1250,14 +1250,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				}],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "-",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
@@ -1272,14 +1272,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"influenceRules" : [],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
@@ -1294,14 +1294,14 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"influenceRules" : [],
 			"isAccept" : false,
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "SFDBLabel",
+				"category" : "SFDBLabel",
 				"type" : "romantic-failure",
 				"first" : "initiator",
 				"second" : "responder",

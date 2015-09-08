@@ -2,12 +2,12 @@
 	"history": [{
 		"pos": 0,
 		"data": [{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "humble",
 			"first" : "humbleGuy",
 			"value" : true
 				},{
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "proud",
 			"first" : "proudGuy",
 			"value" : true

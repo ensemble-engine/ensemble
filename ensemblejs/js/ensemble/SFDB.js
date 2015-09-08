@@ -82,66 +82,66 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	}
 	
 	var registerMaxValue = function (predicate) {
-		if (maxValues[predicate.class] === undefined) {
-			maxValues[predicate.class] = predicate.maxValue !== undefined ? predicate.maxValue : 100;
+		if (maxValues[predicate.category] === undefined) {
+			maxValues[predicate.category] = predicate.maxValue !== undefined ? predicate.maxValue : 100;
 		}
 	};
 
 	var getRegisteredMaxValue = function (predicate) {
-		if (predicate === undefined || predicate.class === undefined) {
-			console.log("Error: this predicate had no class.", predicate);
+		if (predicate === undefined || predicate.category === undefined) {
+			console.log("Error: this predicate had no category.", predicate);
 		}
-		return maxValues[predicate.class];
+		return maxValues[predicate.category];
 	};	
 	
 	var registerMinValue = function (predicate) {
-		if (minValues[predicate.class] === undefined) {
-			minValues[predicate.class] = predicate.minValue !== undefined ? predicate.minValue : 0;
+		if (minValues[predicate.category] === undefined) {
+			minValues[predicate.category] = predicate.minValue !== undefined ? predicate.minValue : 0;
 		}
 	};
 
 	var getRegisteredMinValue = function (predicate) {
-		return minValues[predicate.class];
+		return minValues[predicate.category];
 	};
 
 	var registerDuration = function (predicate) {
-		if (durations[predicate.class] === undefined) {
-			durations[predicate.class] = predicate.duration;
+		if (durations[predicate.category] === undefined) {
+			durations[predicate.category] = predicate.duration;
 		}
 	};
 
 	var getRegisteredDuration = function (predicate) {
-		return durations[predicate.class];
+		return durations[predicate.category];
 	};
 
 	var registerDirection = function (predicate) {
-		if (directions[predicate.class] === undefined) {
-			directions[predicate.class] = predicate.directionType;
+		if (directions[predicate.category] === undefined) {
+			directions[predicate.category] = predicate.directionType;
 		}
 	};
 
 	var getRegisteredDirection = function (predicate) {
-		return directions[predicate.class];
+		return directions[predicate.category];
 	};
 
 	var registerDefaultValue = function (predicate) {
-		if (defaultValues[predicate.class] === undefined) {
-			defaultValues[predicate.class] = predicate.defaultValue;
+		if (defaultValues[predicate.category] === undefined) {
+			defaultValues[predicate.category] = predicate.defaultValue;
 		}
 	};
 
 	var getRegisteredDefaultValue = function (predicate) {
-		return defaultValues[predicate.class];
+		return defaultValues[predicate.category];
 	};
 
 	var registerIsBoolean = function(predicate){
-		if(isBooleans[predicate.class] === undefined){
-			isBooleans[predicate.class] = predicate.isBoolean;
+		if(isBooleans[predicate.category] === undefined){
+			isBooleans[predicate.category] = predicate.isBoolean;
 		}
 	};
 
 	var getRegisteredIsBoolean = function(predicate){
-		return isBooleans[predicate.class];
+		return isBooleans[predicate.category];
 	};
 
 /**
@@ -232,7 +232,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		else if (operator === "<" && sfdbValue >= searchValue) {
 			return false;
 		}
-		// Either the values match, or we have a numeric class but no operator, in which case we count this as a match (we're probably trying to get the current value of this predicate.)
+		// Either the values match, or we have a numeric category but no operator, in which case we count this as a match (we're probably trying to get the current value of this predicate.)
 		return true;
 	}
 
@@ -308,7 +308,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue) {
 
 		var searchValue = searchPredicate.value;
-		var defaultValue = defaultValues[searchPredicate.class];
+		var defaultValue = defaultValues[searchPredicate.category];
 		var isBooleanPred = getRegisteredIsBoolean(searchPredicate);
 		var foundPatternMatch = false;	// Track whether we ever find a pattern matching the search predicate across this search.
 		useDefaultValue = typeof useDefaultValue !== 'undefined' ? useDefaultValue : true;
@@ -356,7 +356,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 					// Skip any predicates that don't match the search predicate's specification. 
 
-					if (searchPredicate.class !== undefined && searchPredicate.class !== sfdbPredicate.class) {
+					if (searchPredicate.category !== undefined && searchPredicate.category !== sfdbPredicate.category) {
 						continue;
 					}
 					if (searchPredicate.type !== undefined && searchPredicate.type !== sfdbPredicate.type) {
@@ -484,7 +484,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
  */
 	var set = function(setPredicate) {
 		var pattern = {};
-		pattern.class = setPredicate.class;
+		pattern.category = setPredicate.category;
 		pattern.type = setPredicate.type;
 		pattern.first = setPredicate.first;
 		pattern.second = setPredicate.second;
@@ -494,7 +494,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 		var isBooleanPred = getRegisteredIsBoolean(setPredicate);
 		var isReciprocal = getRegisteredDirection(setPredicate) === "reciprocal";
-		var defaultValue = defaultValues[pattern.class];
+		var defaultValue = defaultValues[pattern.category];
 		var duration = getRegisteredDuration(setPredicate);
 		var max = getRegisteredMaxValue(setPredicate);
 		var min = getRegisteredMinValue(setPredicate);
@@ -627,7 +627,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 		for(var i = 0; i < sfdb[timeStep].length; i += 1){
 			historyString += "<PREDICATE " + i + ">\n";
-			historyString += "class: " + sfdb[timeStep][i].class + "\n";
+			historyString += "category: " + sfdb[timeStep][i].category + "\n";
 			historyString += "type: " + sfdb[timeStep][i].type + "\n";
 			historyString += "first: " + sfdb[timeStep][i].first + "\n";
 			historyString += "second: " + sfdb[timeStep][i].second + "\n";

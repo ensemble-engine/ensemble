@@ -5,7 +5,7 @@
 		{	"name": "High magicka link allows intelligence training.",
 			"conditions": [
 				{
-					"class": "bonds",
+					"category": "bonds",
 					"type": "magicka link",
 					"first": "x",
 					"second": "y",
@@ -13,14 +13,14 @@
 					"value": 60
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "x",
 					"operator": "<",
 					"value": 10
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "y",
 					"operator": ">",
@@ -29,7 +29,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,

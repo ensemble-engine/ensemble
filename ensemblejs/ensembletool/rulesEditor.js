@@ -200,17 +200,17 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 		showRule();
 	}
 
-	// Build two arrays storing (in allTypes) all individual social types in the format "class_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where allowIntent is true. Technically, we should only need to do this when a new social schema is loaded; for now we run whenever we load a new rule into the editor.
+	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where allowIntent is true. Technically, we should only need to do this when a new social schema is loaded; for now we run whenever we load a new rule into the editor.
 	var buildIntentOptions = function() {
 		intentTypes = [];
 		allTypes = [];
 		var structure = ensemble.getSocialStructure();
-		for (var classKey in structure) {
-			var classRoster = structure[classKey];
-			for (var typeKey in classRoster) {
-				allTypes.push(classKey + "_" + typeKey);
-				if (structure[classKey][typeKey].allowIntent === true) {
-					intentTypes.push(classKey + "_" + typeKey);
+		for (var categoryKey in structure) {
+			var categoryRoster = structure[categoryKey];
+			for (var typeKey in categoryRoster) {
+				allTypes.push(categoryKey + "_" + typeKey);
+				if (structure[categoryKey][typeKey].allowIntent === true) {
+					intentTypes.push(categoryKey + "_" + typeKey);
 				}
 			}
 		}
@@ -934,12 +934,12 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 	var newPredicate = function(predType, predNum) {
 		var whichTypeList = predType === "effects" ? intentTypes : allTypes;
 		var typeInfo = whichTypeList[0].split("_");
-		var className = typeInfo[0];
+		var categoryName = typeInfo[0];
 		var type = typeInfo[1];
-		var desc = ensemble.getClassDescriptors(className);
+		var desc = ensemble.getCategoryDescriptors(categoryName);
 
 		var newPred = {};
-		newPred.class = className;
+		newPred.category = categoryName;
 		newPred.type = type;
 		newPred.first = getOrMakeAppropriateBinding(1);
 		if (desc.directionType !== "undirected") {
@@ -971,16 +971,16 @@ define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleT
 
 	// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing the operator field.
 	var changeIntent = function(predType, predNum, selection) {
-		var className = selection.split("_")[0];
+		var categoryName = selection.split("_")[0];
 		var type = selection.split("_")[1];
-		var oldClass = activeRule[predType][predNum].class;
-		activeRule[predType][predNum].class = className;
+		var oldcategory = activeRule[predType][predNum].category;
+		activeRule[predType][predNum].category = categoryName;
 		activeRule[predType][predNum].type = type;
 		// If we've changed value type, give a new default.
-		var descriptors = ensemble.getClassDescriptors(className)
+		var descriptors = ensemble.getCategoryDescriptors(categoryName)
 		var newIsBoolean = descriptors.isBoolean;
 		var newDirType = descriptors.directionType;
-		var oldDirType = ensemble.getClassDescriptors(oldClass).directionType;
+		var oldDirType = ensemble.getCategoryDescriptors(oldcategory).directionType;
 
 		if (activeRuleType === "volition" && predType === "effects") {
 			activeRule[predType][predNum].value = true;

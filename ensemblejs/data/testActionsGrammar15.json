@@ -4,7 +4,7 @@
 		{
 			"name" : "STARTDATING",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "involved with",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -20,7 +20,7 @@
 			"influenceRules" : [],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",

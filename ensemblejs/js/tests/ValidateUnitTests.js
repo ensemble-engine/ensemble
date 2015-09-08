@@ -19,7 +19,7 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 		test.assert(rejected, true, "An empty blueprint should be rejected as invalid.");
 
 		var samplePredicate = {
-			"class": "bond",
+			"category": "bond",
 			"types": ["familial", "fraternal", "passionate"],
 			"isBoolean": false,
 			"directionType": "reciprocal",
@@ -36,14 +36,14 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 		test.assert(rejected, false, "A valid blueprint should not be rejected.");
 
 		var badPred = util.clone(samplePredicate);
-		badPred.class = 5;
+		badPred.category = 5;
 		rejected = false;
 		try {
 			validate.blueprint(badPred, "");
 		} catch(e) {
 			rejected = true;
 		}
-		test.assert(rejected, true, "A blueprint's class should be a string.");
+		test.assert(rejected, true, "A blueprint's category should be a string.");
 
 		badPred = util.clone(samplePredicate);
 		badPred.types = "familial";
@@ -123,7 +123,7 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 
 		// Test trigger conditions
 		samplePredicate = {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "me",
 			"second": "sweetie"
@@ -188,7 +188,7 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 
 		rejected = false;
 		samplePredicate = {
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "buddy",
 			"second": "candidate",
@@ -295,7 +295,7 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 
 		// Test trigger effects
 		samplePredicate = {
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "me",
 			"second": "heartbreaker",

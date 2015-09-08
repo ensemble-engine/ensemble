@@ -142,7 +142,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			//any other start symbols that already exist!
 			for(var i = 0; i < startSymbols.length; i += 1){
 				var existingStartSymbol = startSymbols[i].intent;
-				if(existingStartSymbol.class === newStartSymbolIntent.class &&
+				if(existingStartSymbol.category === newStartSymbolIntent.category &&
 					existingStartSymbol.type === newStartSymbolIntent.type &&
 					existingStartSymbol.intentDirection === newStartSymbolIntent.intentDirection &&
 					existingStartSymbol.first === newStartSymbolIntent.first &&
@@ -264,7 +264,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		//first, we need to find the 'start' action based on the volition
 		for(var i = 0; i < startSymbols.length; i += 1){
 			actionIntent = startSymbols[i].intent;
-			if(actionIntent.class === volition.class &&
+			if(actionIntent.category === volition.category &&
 				actionIntent.type === volition.type &&
 				actionIntent.intentDirection === volition.intentDirection){
 					//it appears that this is an action pertaining to this volition!

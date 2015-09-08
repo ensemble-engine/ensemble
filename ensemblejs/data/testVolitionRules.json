@@ -5,7 +5,7 @@
 		{	"name": "Everyone is friendly!",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -15,7 +15,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "y",
@@ -28,12 +28,12 @@
 			"name": "Attraction makes people want to start dating.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "attracted to",
 					"first": "x",
 					"second": "y"
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -42,7 +42,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -56,13 +56,13 @@
 			"name": "(Recent) Attraction makes people REALLY want to start dating.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "attracted to",
 					"first": "x",
 					"second": "y",
 					"turnsAgoBetween": ["NOW", 4]
 				},{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -71,7 +71,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -85,14 +85,14 @@
 			"name": "Injured people are less interested in romance.",
 			"conditions": [
 				{
-					"class": "status",
+					"category": "status",
 					"type": "injured",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -106,7 +106,7 @@
 			"name": "People are very inclined to trust someone they are dating.",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y"
@@ -114,7 +114,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -128,7 +128,7 @@
 			"name": "Someone is very unlikely to trust someone they hate.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y"
@@ -136,14 +136,14 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
 					"weight": 10,
 					"intentDirection": false
 				},{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -157,7 +157,7 @@
 			"name": "Someone doesn't want to date someone they hate.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y"
@@ -165,7 +165,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -173,7 +173,7 @@
 					"intentDirection": true
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"first": "x",
 					"second": "y",
@@ -187,14 +187,14 @@
 			"name": "Someone with a great smile is likeable.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "has a great smile",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "y",
 					"second": "x",
@@ -208,14 +208,14 @@
 			"name": "Someone with a kind face seems trustworthy.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "has a kind face",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "y",
 					"second": "x",
@@ -229,14 +229,14 @@
 			"name": "A trusting person is more likely to give trust.",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "trusting",
 					"first": "x"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
@@ -250,7 +250,7 @@
 			"name": "High affinity suggests friendship.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -260,7 +260,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "y",
@@ -274,7 +274,7 @@
 			"name": "Low affinity suggests ending friendship.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -282,7 +282,7 @@
 					"value": 33
 				},
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y",
@@ -291,7 +291,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "y",
@@ -305,19 +305,19 @@
 			"name": "Similar interest suggests affinity up (movies).",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked movies",
 					"first": "x"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked movies",
 					"first": "y"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -331,19 +331,19 @@
 			"name": "Similar interest suggests affinity up (sports).",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked sports",
 					"first": "x"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked sports",
 					"first": "y"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -357,19 +357,19 @@
 			"name": "Similar interest suggests affinity up (music).",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked movies",
 					"first": "x"
 				},
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "liked movies",
 					"first": "y"
 				}
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -383,7 +383,7 @@
 			"name": "If you hate someone, you don't want to trust them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y"
@@ -391,7 +391,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection": true,
 					"weight": -20,
@@ -399,7 +399,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection": false,
 					"weight": 20,
@@ -412,7 +412,7 @@
 			"name": "Low affinity makes friendship less tenable.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -422,7 +422,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": true,
 					"weight": -10,
@@ -430,7 +430,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": false,
 					"weight": 10,
@@ -438,7 +438,7 @@
 					"second": "y"
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"intentDirection": true,
 					"weight": -15,
@@ -446,7 +446,7 @@
 					"second": "y"
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"intentDirection": false,
 					"weight": 10,
@@ -460,7 +460,7 @@
 			"name": "If you hate someone, you don't want to be friends with them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y"
@@ -468,7 +468,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"intentDirection": false,
 					"weight": 20,
@@ -482,7 +482,7 @@
 			"name": "If you hate someone, you will not be friends with them.",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "y"
@@ -490,7 +490,7 @@
 			],
 			"effects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": true,
 					"weight": -20,
@@ -498,7 +498,7 @@
 					"second": "y"
 				},
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": false,
 					"weight": 20,
@@ -511,7 +511,7 @@
 			"name": "Low affinity suggests rejecting friendship.",
 			"conditions": [
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"first": "x",
 					"second": "y",
@@ -521,7 +521,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "y",

@@ -4,7 +4,7 @@
 		{
 			"name" : "AFFINITYUP",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -22,7 +22,7 @@
 					"name": "Hardy people are more likely to reminisce.",
 					"conditions": [
 						{
-							"class" : "trait",
+							"category" : "trait",
 							"type" : "hardy",
 							"first" : "initiator",
 							"value" : true
@@ -45,7 +45,7 @@
 			"influenceRules" : [],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",
@@ -61,7 +61,7 @@
 			"salience" : 50,
 			"isAccept" : false,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",
@@ -73,13 +73,13 @@
 			"name" : "reminisce3",
 			"description" : "reminisce FANCY accept (initiator and responder must have a mutualfriend)",
 			"conditions" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "friends",
 				"first" : "initiator",
 				"second" : "mutualFriend",
 				"value" : true
 			},{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "friends",
 				"first" : "responder",
 				"second" : "mutualFriend",
@@ -89,13 +89,13 @@
 			"salience" : 30,
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "involved with",
 				"first" : "y",
 				"second" : "x",
 				"value" : true
 			}, {
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -110,7 +110,7 @@
 			"influenceRules" : [],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",
@@ -126,7 +126,7 @@
 			"isAccept" : false,
 			"salience" : 65,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",
@@ -138,7 +138,7 @@
 			"name" : "telljoke3",
 			"description" : "telljoke FANCY reject (initiator and responder are enemies)",
 			"conditions" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "enemies",
 				"first" : "initiator",
 				"second" : "responder",
@@ -148,7 +148,7 @@
 			"isAccept" : false,
 			"salience" : 70,
 			"effects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "responder",
 				"second" : "initiator",

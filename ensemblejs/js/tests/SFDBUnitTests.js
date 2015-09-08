@@ -41,7 +41,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 
 	// 	//let's put some things in the sfdb
 	// 	var pred1 = validate.triggerEffect({
-	// 		"class": "relationship",
+	// 		"category": "relationship",
 	// 		"type": "friends",
 	// 		"value": true,
 	// 		"first": "clara",
@@ -55,14 +55,14 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 	// 	var expectedContent = "" +
 	// 	"******SFDB At Time 0********\n" +
 	// 	"<PREDICATE 0>\n" +
-	// 	"class: relationship\n" +
+	// 	"category: relationship\n" +
 	// 	"type: friends\n" +
 	// 	"first: clara\n" +
 	// 	"second: doc\n" +
 	// 	"value: true\n" +
 	// 	"---------------------------\n" +
 	// 	"<PREDICATE 1>\n" +
-	// 	"class: relationship\n" +
+	// 	"category: relationship\n" +
 	// 	"type: friends\n" +
 	// 	"first: doc\n" +
 	// 	"second: clara\n" +
@@ -89,7 +89,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 
 		//Create a sample test predicate
 		var testPred = validate.triggerEffect({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "doc",
 			"value": true
@@ -146,7 +146,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		sfdb.clearHistory();
 		sfdb.setupNextTimeStep(); // Advance to next turn
 		sfdb.set({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "alice",
 			"second": "bob",
@@ -154,7 +154,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		});
 		// It should be true that they were not friends a turn ago.
 		var pred = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "alice",
 			"second": "bob",
@@ -178,7 +178,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 		//Create a sample test predicate
 		var testPred = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "doc",
 			"second": "vanessa",
@@ -186,7 +186,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testSet setting testPred");
 
 		var testPredTwo = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "doc",
 			"second": "reggie",
@@ -194,7 +194,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testSet setting testPredTwo");
 
 		var testPredThree = validate.triggerEffect({
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"type": "attracted to",
 			"first": "reggie",
 			"second": "doc",
@@ -239,7 +239,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 
 		//TEST SIX -- trying to change a predicate's value when that predicate doesn't exist.
 		var testPredFour = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "reggie",
 			"second": "doc",
@@ -259,7 +259,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST SEVEN -- changing a predicate's value.
 		sfdb.clearHistory();
 		var testPredFourB = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "reggie",
 			"second": "doc",
@@ -281,7 +281,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST EIGHT -- make sure reciprocal setting works
 
 		var testPredFive = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "vanessa",
 			"second": "doc",
@@ -309,7 +309,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// Verify that if we set a reciprocal value to false, it overrides a reciprocal assertion.
 		sfdb.clearHistory();
 		var testPredFriends = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "bob",
 			"second": "al"
@@ -327,7 +327,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//but rather they represent "This is what happeend, and this is when it happened".
 
 		var sfdbLabelPred = validate.triggerEffect({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romanticFailure",
 			"first": "reggie",
 			"second": "doc",
@@ -335,7 +335,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testSet setting sfdbLabelPred");
 
 		var tempBluePrint = {
-			"class" : "SFDBLabel",
+			"category" : "SFDBLabel",
 			"duration" : 0
 		};
 
@@ -368,7 +368,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 
 		//Create a sample test predicate
 		var testPred = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "doc",
 			"second": "vanessa",
@@ -376,7 +376,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting testPred");
 
 		var testPredTwo = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "doc",
 			"second": "reggie",
@@ -384,7 +384,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting testPredTwo");
 
 		var testPredThree = validate.triggerEffect({
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"type": "attracted to",
 			"first": "reggie",
 			"second": "doc",
@@ -392,7 +392,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting testPredThree");
 
 		var sfdbLabelPred = validate.triggerEffect({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romantic advance",
 			"first": "reggie",
 			"second": "doc",
@@ -400,7 +400,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting sfdbLabelPred");
 
 		var testPredFour = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"value": 75,
 			"type": "trust",
 			"first": "simon",
@@ -408,7 +408,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting testPredFour");
 
 		var testPredFive = validate.triggerEffect({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "monica",
 			"second": "simon",
@@ -429,7 +429,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//---> When given a very specific predicate to search for, is it able to find it?
 		//---> Least and Most recent time to search for is both 0 i.e. checking the present.
 		var testSearchPred = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "doc",
 			"second": "vanessa",
@@ -442,7 +442,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST 1.5
 		//-->Checking to see that the thing that was matched in Test 1 actually makes sense/is what we want!
 		var match = getResults[0]; // if the previous test is true, then this will work. If the previous test fails, you can't trust this one either.'
-		test.assert(match.class, testSearchPred.class, "the contents of the returned match's CLASS when looking at the current time step was wrong");
+		test.assert(match.category, testSearchPred.category, "the contents of the returned match's category when looking at the current time step was wrong");
 		test.assert(match.type, testSearchPred.type, "the contents of the returned match's TYPE when looking at the current time step was wrong");
 		test.assert(match.first, testSearchPred.first, "the contents of the returned match's FIRST when looking at the current time step was wrong");
 		test.assert(match.second, testSearchPred.second, "the contents of the returned match's SECOND when looking at the current time step was wrong");
@@ -456,7 +456,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST 2.5
 		//--->Checking to see that the thing that was matched in Test 2 actually makes sense/is what we want!
 		match = getResults[0]; // if the previous test is true, then this will work. If the previous test fails, you can't trust this one either.'
-		test.assert(match.class, testSearchPred.class, "the contents of the returned match for CLASS when looking at a range for the time step was wrong.");
+		test.assert(match.category, testSearchPred.category, "the contents of the returned match for category when looking at a range for the time step was wrong.");
 		test.assert(match.type, testSearchPred.type, "the contents of the returned match for TYPE when looking at a range for the time step was wrong.");
 		test.assert(match.first, testSearchPred.first, "the contents of the returned match for FIRST when looking at a range for the time step was wrong.");
 		test.assert(match.second, testSearchPred.second, "the contents of the returned match for SECOND when looking at a range for the time step was wrong.");
@@ -477,7 +477,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST 4
 		//--->What about a partial predicate that only matches one thing?
 		testSearchPred = {
-			"class": "relationship"
+			"category": "relationship"
 		};
 		// should match TWO predicates (because we are looking at a relationship, which--since it is recipricol--ends up getting a duplicate entry in the sfdb)
 		getResults = sfdb.get(testSearchPred, 0, 0);
@@ -491,7 +491,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST 5
 		//-->What happens when there is a search for something that ISN'T in the SFDB?'
 		testSearchPred = {
-			"class": "trait"
+			"category": "trait"
 		};
 		getResults = sfdb.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "Searching for something in the SFDB that shouldn't be there at time 0 failed. Expected length 0, got length " + getResults.length);
@@ -529,7 +529,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//-->Monica to Simon is 30
 		//Search Predicate: True if Simon's love for Monica is greater than 60
 		testSearchPred = validate.triggerCondition({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "simon",
 			"second": "monica",
@@ -611,7 +611,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//character does not have the requsted info, b/c booleans default
 		//to false.
 		// condition = [];
-		// conditions.push({"class": "status", "type": "injured", "first": "sal", "value": false});
+		// conditions.push({"category": "status", "type": "injured", "first": "sal", "value": false});
 		// evaluationResult = evaluateConditions(conditions);
 		// test.assert(evaluationResult, true, "evaluateConditions should return true if you request a false boolean value with no record, since booleans default to false.");
 
@@ -622,7 +622,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//Looking for a boolean with a value of false that ISN'T in the sfdb
 		sfdb.clearHistory();
 		var falseBoolPred = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "clara",
 			"second": "reggie",
@@ -642,7 +642,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// TEST 10.5
 		sfdb.clearHistory();
 		var lurePred = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "clara",
 			"second": "dopey",
@@ -650,7 +650,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		}, "testGet setting lurePred");
 		sfdb.set(lurePred);
 		var falseBoolPred = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"value": false,
 			"type": "friends",
 			"first": "clara",
@@ -664,7 +664,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//-->Dealing with Numeric defaultValues.
 		sfdb.clearHistory(); //we want to keep our registered defaultValues, but clear out all of the 'events' from the sfdb.
 		var numericPred = validate.triggerCondition({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "reggie",
 			"second": "doc",
@@ -741,7 +741,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 
 		//TEST 13 Giving a value with no operator.
 		var noOpPred = validate.triggerCondition({
-			"class": "network",
+			"category": "network",
 			"type": "trust",
 			"first": "reggie",
 			"second": "doc",
@@ -757,14 +757,14 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// Bug: If people are involved timeStep 1, then not involved timeStep2, then you set them involved/not involved on timeStep 3, it sometimes leaves behind ghost records incorrectly.
 		ensemble.loadBaseBlueprints(testSocial);
 		var involvedWithTruePredicate = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "doc",
 			"second": "vanessa",
 			"value": true
 		}, "testGet setting involvedWithTruePredicate");
 		var involvedWithFalsePredicate = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "doc",
 			"second": "vanessa",
@@ -881,7 +881,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		var relationshipPredicate = {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "doc",
 			"second": "clara"
@@ -914,7 +914,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var directedStatusPredicate = {
-			"class"	: "directedStatus",
+			"category"	: "directedStatus",
 			"type"	: "upset with",
 			"first" : "doc",
 			"second": "clara"
@@ -942,7 +942,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var directedStatusPredicate2 = {
-			"class"	: "directedStatus",
+			"category"	: "directedStatus",
 			"type"	: "upset with",
 			"first" : "clara",
 			"second": "reggie",
@@ -990,7 +990,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var traitPredicate = {
-			"class" : "trait",
+			"category" : "trait",
 			"type"  : "handy",
 			"first" : "clara"
 		};
@@ -1079,17 +1079,17 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.addHistory(testHistory);
 
-		var namedHeroPred =	{"class" : "trait",
+		var namedHeroPred =	{"category" : "trait",
 			"type" : "named hero",
 			"first" : "hero",
 			"value" : true
 				};
 		var namedLovePred ={
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "named love"
 		};
 		var namedDumbPred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "named love",
 			"first" : "love",
 			"value" : false	

@@ -6,7 +6,7 @@
 			"name": "New Volition Rule",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "humble",
 					"first": "someone",
 					"value": true
@@ -14,7 +14,7 @@
 			],
 			"effects": [
 				{
-					"class": "networks",
+					"category": "networks",
 					"type": "buddy",
 					"first": "someone",
 					"second": "other",
@@ -30,7 +30,7 @@
 			"name": "New Volition Rule",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "humble",
 					"first": "someone",
 					"value": true
@@ -38,7 +38,7 @@
 			],
 			"effects": [
 				{
-					"class": "networks",
+					"category": "networks",
 					"type": "buddy",
 					"first": "someone",
 					"second": "other",
@@ -54,7 +54,7 @@
 			"name": "New Volition Rule",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "humble",
 					"first": "someone",
 					"value": true
@@ -62,7 +62,7 @@
 			],
 			"effects": [
 				{
-					"class": "networks",
+					"category": "networks",
 					"type": "buddy",
 					"first": "someone",
 					"second": "other",
@@ -78,7 +78,7 @@
 			"name": "People Want to Date Their Crush",
 			"conditions": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "crushing on",
 					"first": "Chloe",
 					"value": true,
@@ -87,7 +87,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "dating",
 					"first": "Chloe",
 					"second": "Doug",
@@ -103,7 +103,7 @@
 			"name": "Friend Zone",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends with",
 					"first": "Doug",
 					"value": true,
@@ -112,7 +112,7 @@
 			],
 			"effects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "dating",
 					"first": "Doug",
 					"second": "Chloe",

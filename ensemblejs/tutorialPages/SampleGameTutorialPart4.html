@@ -15,7 +15,7 @@ Welcome to part 4 guys! Where it all comes together! The intricate puzzle pieces
 
 <p>
 
-First things first -- let's load up that social schema we worked so hard on in <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>! We'll be doing this with a series of calls to ensemble functions that take the .json files of your schema as parameters. First, you'll want to load in your schema itself (that defines your classes and types), as ensemble will use it to help with the validation of your other files. This should all be in your html file, right after your call to ensemble.init() (reprinted here for convenience). So, something like this:
+First things first -- let's load up that social schema we worked so hard on in <a href="tutorial-SampleGameTutorialPart3.html">Part 3</a>! We'll be doing this with a series of calls to ensemble functions that take the .json files of your schema as parameters. First, you'll want to load in your schema itself (that defines your categories and types), as ensemble will use it to help with the validation of your other files. This should all be in your html file, right after your call to ensemble.init() (reprinted here for convenience). So, something like this:
 
 </p>
 
@@ -30,7 +30,7 @@ var schema = ensemble.loadSocialStructure(rawSchema);
 </pre>
 
 <p>
-And there you go, your schema is loaded! The path provided to schema.json should be relative to the location of the html file your game lives in. ensemble now understands all of the classes and types that compose the social structure of your game, and consequently will express concern if you load up rules or history that are not aligned with the structure you've defined. And don't worry: even though we're storing the schema in the <i>schema</i> variable, we won't need to use it directly as ensemble now has everything it needs internally, at least with regards to social structure.
+And there you go, your schema is loaded! The path provided to schema.json should be relative to the location of the html file your game lives in. ensemble now understands all of the categories and types that compose the social structure of your game, and consequently will express concern if you load up rules or history that are not aligned with the structure you've defined. And don't worry: even though we're storing the schema in the <i>schema</i> variable, we won't need to use it directly as ensemble now has everything it needs internally, at least with regards to social structure.
 </p>
 
 <p>
@@ -93,7 +93,7 @@ We see here that this function is just a wrapper for two other functions, <i>upd
 var updateLocalStateInformation = function(){
 	//First, let's grab the data we'll want to display.
 	var loveToHeroClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "hero"
@@ -105,11 +105,11 @@ var updateLocalStateInformation = function(){
 </pre>
 
 <p>
-In the above example, we have our predicate, "heroToLoveClosenessPred" -- as with other predicates that we've seen before, it specifies a class ("feeling"), and the specific type within that class ("closeness"), as well as a first and a second. In english, this predicate could be thought to express "what is the value of the love's closeness feeling for the hero?" Once we've formed the predicate, we pass it into <i>ensemble.get</i>. You may be asking "well, wait a second. We've defined other predicates in the past, say inside of history.json, that also had to specify a value. Why is that missing here?" That is an astute observaton, dear reader, and it all ties in with how ensemble.get works.
+In the above example, we have our predicate, "heroToLoveClosenessPred" -- as with other predicates that we've seen before, it specifies a category ("feeling"), and the specific type within that category ("closeness"), as well as a first and a second. In english, this predicate could be thought to express "what is the value of the love's closeness feeling for the hero?" Once we've formed the predicate, we pass it into <i>ensemble.get</i>. You may be asking "well, wait a second. We've defined other predicates in the past, say inside of history.json, that also had to specify a value. Why is that missing here?" That is an astute observaton, dear reader, and it all ties in with how ensemble.get works.
 </p>
 
 <p>
-<i>ensemble.get</i> takes in a predicate, and returns an array of predicates. The predicate it takes in can be a fully specified predicate (i.e., it has class, type, first, second, and value defined), or it can be missing any of those fields. Regardless of how well specified it is, the passed in predicate is checked against the <b>social record</b> (i.e., the current social state, as well as the complete social history of the game) and the function returns a copy of all social record predicates that match the specified fields of the passed in predicate. By default it only looks at the current time step of the social record (i.e., it doesn't look at the history, only the present moment), but additional parameters can be passed in to expres how far back into the history you'd like your search to encompass.
+<i>ensemble.get</i> takes in a predicate, and returns an array of predicates. The predicate it takes in can be a fully specified predicate (i.e., it has category, type, first, second, and value defined), or it can be missing any of those fields. Regardless of how well specified it is, the passed in predicate is checked against the <b>social record</b> (i.e., the current social state, as well as the complete social history of the game) and the function returns a copy of all social record predicates that match the specified fields of the passed in predicate. By default it only looks at the current time step of the social record (i.e., it doesn't look at the history, only the present moment), but additional parameters can be passed in to expres how far back into the history you'd like your search to encompass.
 </p>
 
 <p>
@@ -123,48 +123,48 @@ So, here, by passing in this predicate, it will return an array of all predicate
 var updateLocalStateInformation = function(){
 	//First, let's grab the data we'll want to display.
 	var loveToHeroClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "hero"
 	};
 	var loveToRivalClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "love",
 		"second" : "rival"
 	};
 	var heroToLoveClosenessPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "closeness",
 		"first" : "hero",
 		"second" : "love"
 	};
 	var loveToHeroAttractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "love",
 		"second" : "hero"
 	};
 	var heroToLoveattractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "hero",
 		"second" : "love"
 	};
 	var loveToRivalAttractionPred = {
-		"class" : "feeling",
+		"category" : "feeling",
 		"type" : "attraction",
 		"first" : "love",
 		"second" : "rival"
 	};
 	var heroIntelligencePred = {
-		"class" : "attribute",
+		"category" : "attribute",
 		"type" : "intelligence",
 		"first" : "hero"
 	};
 	var heroStrengthPred = {
-		"class" : "attribute",
+		"category" : "attribute",
 		"type" : "strength",
 		"first" : "hero"
 	};

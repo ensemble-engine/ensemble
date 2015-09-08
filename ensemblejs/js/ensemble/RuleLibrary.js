@@ -583,8 +583,8 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		//
 		// "first": a character
 		// "second"
-		// "class": a class of abstract predicate ("relationship", "trait", etc.)
-		// "type": The kind within that class ("friend", "shy", etc.)
+		// "category": a category of abstract predicate ("relationship", "trait", etc.)
+		// "type": The kind within that category ("friend", "shy", etc.)
 		// "weight": The amount to adjust the weight up or down
 		// "intentDirection": true or false, for a desire to adjust this network up
 		// or down. (or to make true or false, for booleans).
@@ -1027,7 +1027,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			addPhrase(intentWord, "intentDirection");
 		}
 
-		addPhrase(pred.type, "type", pred.class);
+		addPhrase(pred.type, "type", pred.category);
 
 		if (directionType !== "undirected") {
 			var helper = "";

@@ -4,7 +4,7 @@
 		{
 			"name" : "reminisce",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : true,
 				"first" : "x",
@@ -12,7 +12,7 @@
 			},
 			"conditions" : {},
 			"acceptEffects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -20,7 +20,7 @@
 				"value" : 10
 			}],
 			"rejectEffects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -31,7 +31,7 @@
 		{
 			"name" : "handshake",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "friends",
 				"intentDirection" : true,
 				"first" : "x",
@@ -39,14 +39,14 @@
 			},
 			"conditions" : {},
 			"acceptEffects" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "friends",
 				"first" : "y",
 				"second" : "x",
 				"value" : true
 			}],
 			"rejectEffects" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "friends",
 				"first" : "y",
 				"second" : "x",
@@ -56,7 +56,7 @@
 		{
 			"name" : "StartDating",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "involved with",
 				"intentDirection" : true,
 				"first" : "x",
@@ -64,14 +64,14 @@
 			},
 			"conditions" : {},
 			"acceptEffects" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "involved with",
 				"first" : "y",
 				"second" : "x",
 				"value" : true
 			}],
 			"rejectEffects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -79,7 +79,7 @@
 				"value" : 500
 			},
 			{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "x",
 				"second" : "y",
@@ -90,7 +90,7 @@
 		{
 			"name" : "annoy",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "affinity",
 				"intentDirection" : false,
 				"first" : "x",
@@ -98,7 +98,7 @@
 			},
 			"conditions" : {},
 			"acceptEffects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -106,7 +106,7 @@
 				"value" : 10
 			}],
 			"rejectEffects" : [{
-				"class" : "network",
+				"category" : "network",
 				"type" : "affinity",
 				"first" : "y",
 				"second" : "x",
@@ -117,7 +117,7 @@
 		{
 			"name" : "Make Plans",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "friends",
 				"intentDirection" : true,
 				"first" : "x",
@@ -125,33 +125,33 @@
 			},
 			"conditions" : {},
 			"acceptEffects" : [{
-				"class" : "relationship",
+				"category" : "relationship",
 				"type" : "friends",
 				"first" : "y",
 				"second" : "x",
 				"value" : true
 			},
 			{
-				"class" : "status",
+				"category" : "status",
 				"type" : "happy",
 				"first" : "y",
 				"value" : true
 			},
 			{
-				"class" : "status",
+				"category" : "status",
 				"type" : "happy",
 				"first" : "x",
 				"value" : false
 			},
 			{
-				"class" : "directedStatus",
+				"category" : "directedStatus",
 				"type" : "worried about",
 				"first" : "x",
 				"second" : "y",
 				"value" : true
 			},
 			{
-				"class" : "directedStatus",
+				"category" : "directedStatus",
 				"type" : "attracted to",
 				"first" : "y",
 				"second" : "x",

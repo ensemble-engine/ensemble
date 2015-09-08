@@ -465,8 +465,8 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 
 		// Generate explanatory text.
 		var exp = "";
-		for (var className in socialStructure) {
-			var d = ensemble.getClassDescriptors(className);
+		for (var categoryName in socialStructure) {
+			var d = ensemble.getCategoryDescriptors(categoryName);
 			var direction = d.directionType;
 			var dataType = d.isBoolean ? "boolean" : "numeric";
 			var duration = d.duration > 0 ? "duration " + d.duration : "";
@@ -476,8 +476,8 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 			if (d.duration === 0) {
 				duration = "single turn";
 			}
-			exp += "<p class='schemaHeader'><span class='className'>" + className + "</span> <span class='classInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
-			var c = socialStructure[className];
+			exp += "<p class='schemaHeader'><span class='className'>" + categoryName + "</span> <span class='classInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
+			var c = socialStructure[categoryName];
 			exp += "<p class='schemaTypes'>";
 			var types = [];
 			for (var typeName in c) {
@@ -650,7 +650,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 		var logMsg = "<table><tr><td>";
 		for (i = 0; i < resultPrimary.length; i++) {
 			res = resultPrimary[i];
-			desc = ensemble.getClassDescriptors(res.class)
+			desc = ensemble.getCategoryDescriptors(res.category)
 			logMsg += ensemble.predicateToEnglish(res).text;
 			if (desc.directionType === "reciprocal") {
 				logMsg += " (R)";
@@ -666,7 +666,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 		logMsg += "</td></tr><tr><td>";
 		for (i = 0; i < resultSecondary.length; i++) {
 			res = resultSecondary[i];
-			desc = ensemble.getClassDescriptors(res.class)
+			desc = ensemble.getCategoryDescriptors(res.category)
 			if (desc.directionType === "reciprocal") {
 				continue;
 			}
@@ -765,9 +765,9 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 		var effects = action.effects;
 
 		for(var i = 0; i < effects.length; i += 1){
-			//Get information based on the class of the effect (such as the direction)
-			var className = effects[i].class;
-			var d = ensemble.getClassDescriptors(className);
+			//Get information based on the category of the effect (such as the direction)
+			var categoryName = effects[i].category;
+			var d = ensemble.getCategoryDescriptors(categoryName);
 			var directionType = d.directionType;
 
 			//Helper string; if the value of the effect is false, say that the character does NOT have this state anymore.
@@ -1044,10 +1044,10 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 				return cmdLog("Can't reference the same character twice.");
 			}
 
-			// Look for a type word and determine its class.
+			// Look for a type word and determine its category.
 			var allTypes = [];
-			for (var className in socialStructure) {
-				var c = socialStructure[className];
+			for (var categoryName in socialStructure) {
+				var c = socialStructure[categoryName];
 				for (var type in c) {
 					allTypes.push(type);
 				}
@@ -1056,21 +1056,21 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 			var typeMatch = extract(allTypes, "recognized social type", 1, 1);
 			if (!typeMatch) return;
 			var type = typeMatch[0];
-			var className = ensemble.getClassFromType(type);
-			if (!className) {
+			var categoryName = ensemble.getCategoryFromType(type);
+			if (!categoryName) {
 				return cmdLog("Did not recognize '" + type + "' as a registered type within a social scheme.");
 			}
-			var classDetails = ensemble.getClassDescriptors(className);
+			var categoryDetails = ensemble.getCategoryDescriptors(categoryName);
 
 			// If undirected, we should have found one character.
-			if (classDetails.directionType === "undirected") {
+			if (categoryDetails.directionType === "undirected") {
 				if (chars.length !== 1) {
-					return cmdLog("Included more than one character, but " + className + " '" + type + "' is undirected.");
+					return cmdLog("Included more than one character, but " + categoryName + " '" + type + "' is undirected.");
 				}
 			} else {
 				// Otherwise, is directed or reciprocal; requires two characters.
 				if (chars.length !== 2) {
-					return cmdLog("Included only one character, but " + className + " '" + type + "' is " + classDetails.directionType + " and requires two.");
+					return cmdLog("Included only one character, but " + categoryName + " '" + type + "' is " + categoryDetails.directionType + " and requires two.");
 				}
 			}
 
@@ -1109,11 +1109,11 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 			}
 
 			// Make sure the types we found are as expected.
-			if (classDetails.isBoolean && numbers.length > 0) {
-				return cmdLog("Oops: " + className + " '" + type + "' is boolean, so a number is not valid here.");
+			if (categoryDetails.isBoolean && numbers.length > 0) {
+				return cmdLog("Oops: " + categoryName + " '" + type + "' is boolean, so a number is not valid here.");
 			}
-			if (!classDetails.isBoolean && bools.length > 0) {
-				return cmdLog("Oops: " + className + " '" + type + "' is numeric, so a boolean is not valid here.");
+			if (!categoryDetails.isBoolean && bools.length > 0) {
+				return cmdLog("Oops: " + categoryName + " '" + type + "' is numeric, so a boolean is not valid here.");
 			}
 
 			// We should now have accounted for all params. Otherwise, we have too many.
@@ -1129,7 +1129,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 			}
 
 			var pred = {
-				"class": className,
+				"category": categoryName,
 				"type": type,
 				"first": chars[0],
 				"value": value

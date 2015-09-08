@@ -6,7 +6,7 @@
 			"name": "New Trigger Rule",
 			"conditions": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"value": 10
@@ -14,7 +14,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "strength",
 					"first": "someone",
 					"value": 10

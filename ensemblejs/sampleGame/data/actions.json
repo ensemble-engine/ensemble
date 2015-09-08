@@ -4,7 +4,7 @@
 		{
 			"name" : "RAISECLOSENESS",
 			"intent" : {
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -17,7 +17,7 @@
 		{
 			"name" : "RAISESTRENGTH",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"intentDirection" : true,
 				"first" : "initiator"
@@ -29,7 +29,7 @@
 		{
 			"name" : "RAISEINTELLIGENCE",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"intentDirection" : true,
 				"first" : "initiator"
@@ -53,7 +53,7 @@
 					"name": "People in this world are inclined to study math.",
 					"conditions": [
 						{
-							"class" : "trait",
+							"category" : "trait",
 							"type" : "anyone",
 							"first" : "initiator",
 							"value" : true
@@ -63,14 +63,14 @@
 				}
 			],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10		
 			},
 			{
-					"class" : "SFDBLabelUndirected",
+					"category" : "SFDBLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -85,7 +85,7 @@
 					"name": "Strong people in this world are inclined to study anatomy.",
 					"conditions": [
 						{
-							"class" : "attribute",
+							"category" : "attribute",
 							"type" : "strength",
 							"first" : "initiator",
 							"operator" : ">",
@@ -96,21 +96,21 @@
 				}
 			],
 			"effects" : [{
-					"class" : "attribute",
+					"category" : "attribute",
 					"type" : "strength",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
 				},
 				{
-					"class" : "attribute",
+					"category" : "attribute",
 					"type" : "intelligence",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
 				},
 				{
-					"class" : "SFDBLabelUndirected",
+					"category" : "SFDBLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -130,14 +130,14 @@
 			"displayName" : "Weightlift",
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 5
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -149,14 +149,14 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "-",
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -174,14 +174,14 @@
 			"displayName" : "Do Pushups",
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "strength",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10
 			},
 			{
-				"class" : "SFDBLabelUndirected",
+				"category" : "SFDBLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -204,49 +204,49 @@
 			"name" : "kissSuccess",
 			"displayName" : "Kiss <SUCCESS>",
 			"conditions" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"value" : 40,
 				"operator" : ">"
 				},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "trait",
+				"category" : "trait",
 				"type" : "rival",
 				"first" : "evilPerson",
 				"value" : true
 			}],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
 				"operator" : "+",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "evilPerson",
 				"operator" : "=",
 				"value" : 10
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "evilPerson",
@@ -259,7 +259,7 @@
 			"displayName" : "Kiss <FAIL>",
 			"isAccept" : false,
 			"conditions" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type"  : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
@@ -268,14 +268,14 @@
 				}],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "-",
 				"value" : 100
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
@@ -290,14 +290,14 @@
 			"influenceRules" : [],
 			"isAccept" : true,
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
@@ -312,14 +312,14 @@
 			"influenceRules" : [],
 			"isAccept" : false,
 			"effects" : [{
-				"class" : "feeling",
+				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
 				"value" : 10
 			},{
-				"class" : "SFDBLabel",
+				"category" : "SFDBLabel",
 				"type" : "romantic-failure",
 				"first" : "initiator",
 				"second" : "responder",

@@ -6,7 +6,7 @@
 			"name": "High magicka link allows intelligence training.",
 			"conditions": [
 				{
-					"class": "bonds",
+					"category": "bonds",
 					"type": "magicka link",
 					"first": "x",
 					"second": "y",
@@ -14,14 +14,14 @@
 					"value": 66
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "x",
 					"operator": "<",
 					"value": 10
 				},
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "y",
 					"operator": ">",
@@ -30,7 +30,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,
@@ -43,7 +43,7 @@
 		{	"name": "Everyone is friendly!",
 			"conditions": [
 				{
-					"class": "bonds",
+					"category": "bonds",
 					"type": "kinship",
 					"first": "x",
 					"second": "y",
@@ -53,7 +53,7 @@
 			],
 			"effects": [
 				{
-					"class": "bonds",
+					"category": "bonds",
 					"type": "kinship",
 					"first": "x",
 					"second": "y",
@@ -65,7 +65,7 @@
 		{	"name": "Everyone is smart!",
 			"conditions": [
 				{
-					"class": "bonds",
+					"category": "bonds",
 					"type": "kinship",
 					"first": "x",
 					"second": "y",
@@ -75,7 +75,7 @@
 			],
 			"effects": [
 				{
-					"class": "attribute",
+					"category": "attribute",
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,

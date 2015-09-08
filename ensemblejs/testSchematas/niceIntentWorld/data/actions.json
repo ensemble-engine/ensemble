@@ -4,7 +4,7 @@
 		{
 			"name" : "RAISERESPECT",
 			"intent" : {
-				"class" : "networks",
+				"category" : "networks",
 				"type"  : "respect",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -28,7 +28,7 @@
 			"influenceRules" : [
 			],
 			"effects" : [{
-				"class" : "networks",
+				"category" : "networks",
 				"type" : "respect",
 				"first" : "initiator",
 				"second" : "responder",
@@ -44,7 +44,7 @@
 			"influenceRules" : [
 			],
 			"effects" : [{
-				"class" : "networks",
+				"category" : "networks",
 				"type" : "respect",
 				"first" : "initiator",
 				"second" : "responder",

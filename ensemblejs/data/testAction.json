@@ -4,14 +4,14 @@
 			"name": "bear hug",
 			"intent": 
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"intentDirection": true
 				}
 			,
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type" : "friends",
 					"first": "x",
 					"second": "y",
@@ -20,7 +20,7 @@
 			],
 			"acceptEffects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type" : "friends",
 					"first": "x",
 					"second": "y",
@@ -29,7 +29,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -42,14 +42,14 @@
 			"name": "slap",
 			"intent": 
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"intentDirection": false
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type" : "friends",
 					"first": "x",
 					"second": "y",
@@ -58,7 +58,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -71,21 +71,21 @@
 			"name": "ask out",
 			"intent": 
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"intentDirection": true
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type" : "involved with",
 					"first": "x",
 					"second": "y",
 					"value": true
 				},
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romanticAdvance",
 					"first": "x",
 					"second": "y",
@@ -94,7 +94,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -102,7 +102,7 @@
 					"operator": "+"
 				},
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romanticFailure",
 					"first": "x",
 					"second": "y",
@@ -114,14 +114,14 @@
 			"name": "tell them that they look like a wookie",
 			"intent": 
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "involved with",
 					"intentDirection": false
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type" : "involved with",
 					"first": "x",
 					"second": "y",
@@ -130,7 +130,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -143,14 +143,14 @@
 			"name": "high-five",
 			"intent": 
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": true
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -160,7 +160,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -173,14 +173,14 @@
 			"name": "do the Macarena",
 			"intent": 
 				{
-					"class": "network",
+					"category": "network",
 					"type": "affinity",
 					"intentDirection": false
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -190,7 +190,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "affinity",
 					"first": "y",
 					"second": "x",
@@ -203,14 +203,14 @@
 			"name": "confide",
 			"intent": 
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection":true
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "trust",
 					"first": "y",
 					"second": "x",
@@ -220,7 +220,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "trust",
 					"first": "y",
 					"second": "x",
@@ -233,14 +233,14 @@
 			"name": "steal their lunch",
 			"intent": 
 				{
-					"class": "network",
+					"category": "network",
 					"type": "trust",
 					"intentDirection":false
 				}
 			,
 			"acceptEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "trust",
 					"first": "y",
 					"second": "x",
@@ -250,7 +250,7 @@
 			],
 			"rejectEffects": [
 				{
-					"class": "network",
+					"category": "network",
 					"type" : "trust",
 					"first": "y",
 					"second": "x",

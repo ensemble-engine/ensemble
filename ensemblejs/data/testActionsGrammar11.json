@@ -4,14 +4,14 @@
 		{
 			"name" : "STARTDATING",
 			"intent" : {
-				"class" : "relationship",
+				"category" : "relationship",
 				"type"  : "involved with",
 				"intentDirection" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
 			"conditions" : [{
-				"class" : "trait",
+				"category" : "trait",
 				"type"	: "lucky",
 				"first" : "luckyGuy",
 				"value" : true
@@ -23,12 +23,12 @@
 			"name" : "BOND",
 			"conditions" : [
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "nimble",
 					"first" : "nimbleOne"
 				},
 				{
-					"class" : "trait",
+					"category" : "trait",
 					"type" : "lucky",
 					"first" : "nimbleOne"
 				}
@@ -50,7 +50,7 @@
 					"name": "Happy people are more inclined to do pickuplines.",
 					"conditions": [
 						{
-							"class" : "status",
+							"category" : "status",
 							"type" : "happy",
 							"first" : "initiator",
 							"value" : true
@@ -66,7 +66,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "involved with",
 					"first" : "initiator",
 					"second" : "responder",
@@ -79,7 +79,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-					"class" : "relationship",
+					"category" : "relationship",
 					"type" : "involved with",
 					"first" : "initiator",
 					"second" : "responder",

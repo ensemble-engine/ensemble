@@ -63,7 +63,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		ensemble.dumpSFDB();
 
 		var testPredicate = {
-			"class" : "bond",
+			"category" : "bond",
 			"type" : "kinship",
 			"first" : "brax",
 			"second" : "grunt",
@@ -145,7 +145,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		//now let's set the hero's closeness to love to 10, to test the odd behavior we're experiencing.
 		/*
 		var newCloseness = {
-			"class" : "feeling",
+			"category" : "feeling",
 			"type" : "closeness",
 			"first" : "hero",
 			"second" : "love",

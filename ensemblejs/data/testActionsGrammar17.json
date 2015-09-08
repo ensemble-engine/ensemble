@@ -4,7 +4,7 @@
 		{
 			"name" : "RAISETRUST",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "trust",
 				"intentDirection" : true,
 				"first" : "initiator",

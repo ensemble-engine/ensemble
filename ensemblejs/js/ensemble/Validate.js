@@ -175,7 +175,7 @@ function(util, _, $, sfdb) {
 		var msg = "";
 
 		// Skip SFDBLabel predicates for now.
-		if (predicate.class === "SFDBLabel" || predicate.class === "SFDBLabelUndirected") return false;
+		if (predicate.category === "SFDBLabel" || predicate.category === "SFDBLabelUndirected") return false;
 
 		// Verify that the contents of a particular key exist and are of the expected type. If isRequired is false, it's okay for the given key to be missing. Add problem details to the isPredBad scoped "msg" variable.
 		var isTypeWrong = function(pred, key, type, isRequired) {
@@ -198,7 +198,7 @@ function(util, _, $, sfdb) {
 			return false;
 		};
 
-		if (isTypeWrong(pred, "class", "string", true)) {
+		if (isTypeWrong(pred, "category", "string", true)) {
 			return msg;
 		}
 
@@ -247,15 +247,15 @@ function(util, _, $, sfdb) {
 		} else {// if type is not blueprint
 
 			// Lookup details about this predicate.
-			if (socialStructure[pred.class] === undefined) {
-				return "class '" + pred.class + "' is not a registered social scheme category.";
+			if (socialStructure[pred.category] === undefined) {
+				return "category '" + pred.category + "' is not a registered social scheme category.";
 			}
-			if (socialStructure[pred.class][pred.type] === undefined) {
-				console.log("pred.class", pred.class, "pred.type", pred.type);
+			if (socialStructure[pred.category][pred.type] === undefined) {
+				console.log("pred.category", pred.category, "pred.type", pred.type);
 				console.log("socialStructure", socialStructure);
-				return "found class " + pred.class + " type " + pred.type + " but that type does not appear to be registered for that class.";
+				return "found category " + pred.category + " type " + pred.type + " but that type does not appear to be registered for that category.";
 			}
-			var descriptors = socialStructure[pred.class][pred.type];
+			var descriptors = socialStructure[pred.category][pred.type];
 			var dir = descriptors.directionType;
 			var isBool = descriptors.isBoolean;
 
@@ -274,7 +274,7 @@ function(util, _, $, sfdb) {
 			delete pred.operator;
 
 			if (pred.second !== undefined && dir === "undirected") {
-				return "key second: '" + pred.second + "' found but class '" + predicate.class + "' is undirected";
+				return "key second: '" + pred.second + "' found but category '" + predicate.category + "' is undirected";
 			}
 			// Temporarily relaxing the below constraint, because it makes it hard to swap roles in the Rule Editor. (Currently, the editor validates any change by verifying the changed rule is valid with this code; however, to swap two roles, you must first change one role to the other, which makes the rule invalid. In some ways this is a sort of higher-level validity check which we don't conceptually account for now: a rule with the same person in both roles is technically valid, it just can't ever be true.)
 			// if (pred.second !== undefined && pred.second === pred.first) {
@@ -291,20 +291,20 @@ function(util, _, $, sfdb) {
 					return "'value' was undefined: for numeric types, must be defined";
 				}
 				if (!isBool && typeof pred.value !== "number") {
-					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean false";
+					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but category '" + predicate.category + "' specifies isBoolean false";
 				}
 				if (!isBool && isNaN(pred.value)) {
-					return "'value' was '" + pred.value + "' which is not a number: class '" + predicate.class + "' specifies numeric value";
+					return "'value' was '" + pred.value + "' which is not a number: category '" + predicate.category + "' specifies numeric value";
 				}
 				if (isBool && typeof pred.value !== "boolean" && pred.value !== undefined) {
-					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but class '" + predicate.class + "' specifies isBoolean true";
+					return "'value' was '" + pred.value + "' which seems to be of type '" + typeof pred.value + "' but category '" + predicate.category + "' specifies isBoolean true";
 				}
 				if (!isBool) {
 					if (typeof descriptors.max === "number" && pred.value > descriptors.max) {
-						return "'value' was '" + pred.value + "' but that exceeds max of '" + descriptors.max + "' for class '" + predicate.class + "'";
+						return "'value' was '" + pred.value + "' but that exceeds max of '" + descriptors.max + "' for category '" + predicate.category + "'";
 					}
 					if (typeof descriptors.min === "number" && pred.value < descriptors.min) {
-						return "'value' was '" + pred.value + "' but that's below min of '" + descriptors.min + "' for class '" + predicate.class + "'";
+						return "'value' was '" + pred.value + "' but that's below min of '" + descriptors.min + "' for category '" + predicate.category + "'";
 					}
 				}
 				delete pred.value;
@@ -367,7 +367,7 @@ function(util, _, $, sfdb) {
 			}
 		}
 
-		delete pred.class;
+		delete pred.category;
 
 		// Look for extra keys.
 		delete pred.comment;

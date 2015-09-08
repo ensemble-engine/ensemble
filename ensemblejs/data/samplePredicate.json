@@ -2,9 +2,9 @@
 	"comment"	: "This documents all the possible fields for a predicate object. (Comments are written this way b/c there is no way to comment JSON.)",
 
 
-	"class"		: "Name for this class of predicate. network, relationship, etc.",
-	"type"		: "Distinguishes members of a class. For relationship, might be friends, dating, enemies, etc.",
-	"value"		: "Either true/false (for predicates about boolean classes) or a numeric value.",
+	"category"		: "Name for this category of predicate. network, relationship, etc.",
+	"type"		: "Distinguishes members of a category. For relationship, might be friends, dating, enemies, etc.",
+	"value"		: "Either true/false (for predicates about boolean categories) or a numeric value.",
 	"first"		: "The primary or 'from' character in the predicate.",
 
 
@@ -12,10 +12,10 @@
 	"operator"	: "Optional string; '=' is assumed if omitted. Explains how to apply the numeric value. \
 			(for valuations) \
 			=      means the value is set absolutely \
-			+      mean the value is set relative to the existing value (if any) or the class's default value. \
+			+      mean the value is set relative to the existing value (if any) or the category's default value. \
 			(for evaluations) \
 			=      means the value must be exactly equal \
-			>, <   means the value is compared to the existing value (if any) or the class's default vaule.",
+			>, <   means the value is compared to the existing value (if any) or the category's default vaule.",
 
 
 	"ONLY_FOR_DIRECTED" : 0,

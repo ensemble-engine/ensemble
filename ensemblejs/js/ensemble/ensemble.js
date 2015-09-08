@@ -75,7 +75,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	*/
 	var registerSocialType = function(blueprint) {
 		var factory = {};
-		factory.class = blueprint.class;
+		factory.category = blueprint.category;
 		factory.type = blueprint.type;
 		factory.directionType = blueprint.directionType;
 		factory.isBoolean = blueprint.isBoolean;
@@ -100,7 +100,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 *
 	 * @param  {Object} data The object to load
 	 * 
-	 * @return {Object} An object with parameters for each class name specified in the data file.
+	 * @return {Object} An object with parameters for each category name specified in the data file.
 	 */
 	var loadSocialStructure = function(data) {
 		var structure = {};
@@ -121,40 +121,40 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		if (blueprints === undefined) {
 			throw new Error("Error: social structure data file must be JSON that defines a top-level key 'schema'");
 		}
-		var atLeastOneClassAllowsIntent = false;
+		var atLeastOneCategoryAllowsIntent = false;
 		for (var i = 0; i < blueprints.length; i++) {
-			var classBlueprint = blueprints[i];
+			var categoryBlueprint = blueprints[i];
 
 			// Error Checking
-			if (classBlueprint.allowIntent === true) {
-				atLeastOneClassAllowsIntent = true;
+			if (categoryBlueprint.allowIntent === true) {
+				atLeastOneCategoryAllowsIntent = true;
 			}
-			if (structure[classBlueprint.class]) {
-				throw new Error("DATA ERROR in ensemble.loadSocialStructure: the class '" + classBlueprint.class + "' is defined more than once.");
+			if (structure[categoryBlueprint.category]) {
+				throw new Error("DATA ERROR in ensemble.loadSocialStructure: the category '" + categoryBlueprint.category + "' is defined more than once.");
 			}
 
-			validate.blueprint(classBlueprint, "Examining blueprint  #" + i);
+			validate.blueprint(categoryBlueprint, "Examining blueprint  #" + i);
 
-			sfdb.registerDuration(classBlueprint);
-			sfdb.registerDefault(classBlueprint);
-			sfdb.registerDirection(classBlueprint);
-			sfdb.registerIsBoolean(classBlueprint);
-			sfdb.registerMaxValue(classBlueprint);
-			sfdb.registerMinValue(classBlueprint);
+			sfdb.registerDuration(categoryBlueprint);
+			sfdb.registerDefault(categoryBlueprint);
+			sfdb.registerDirection(categoryBlueprint);
+			sfdb.registerIsBoolean(categoryBlueprint);
+			sfdb.registerMaxValue(categoryBlueprint);
+			sfdb.registerMinValue(categoryBlueprint);
 
-			// Create an interface for each type within this class.
-			structure[classBlueprint.class] = {};
-			for (var j = 0; j < classBlueprint.types.length; j++) {
-				var type = classBlueprint.types[j].toLowerCase();
-				var typeBlueprint = util.clone(classBlueprint);
+			// Create an interface for each type within this category.
+			structure[categoryBlueprint.category] = {};
+			for (var j = 0; j < categoryBlueprint.types.length; j++) {
+				var type = categoryBlueprint.types[j].toLowerCase();
+				var typeBlueprint = util.clone(categoryBlueprint);
 				typeBlueprint.type = type;
-				structure[classBlueprint.class][type] = registerSocialType(typeBlueprint);
+				structure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
 			}
 
 		}
 
-		if (!atLeastOneClassAllowsIntent) {
-			throw new Error("SCHEMA ERROR: A schema must include at least one class where allowIntent is true, otherwise there are no possible actions for characters to take.");
+		if (!atLeastOneCategoryAllowsIntent) {
+			throw new Error("SCHEMA ERROR: A schema must include at least one category where allowIntent is true, otherwise there are no possible actions for characters to take.");
 		}
 
 		socialStructure = structure;
@@ -168,29 +168,29 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 * @public
 	 * @description Returns an object reference describing the social structure loaded into ensemble. 
 	 *
-	 * @return {Object} A dictionary with top level keys will be each of the social "classes" (a la "relationship", "network", etc.). Each of these contains a dictionary of its subtypes. 
+	 * @return {Object} A dictionary with top level keys will be each of the social "categoryes" (a la "relationship", "network", etc.). Each of these contains a dictionary of its subtypes. 
 	 */
 	var getSocialStructure = function() {
 		return socialStructure;
 	}
 
 	/**
-	 * @method getClassDescriptors
+	 * @method getGategoryDescriptors
 	 * @memberOf ensemble
 	 * @public
-	 * @description Returns an object containing fields describing the properties of a given class registered with ensemble
+	 * @description Returns an object containing fields describing the properties of a given category registered with ensemble
 	 *
-	 * @param  {String} className The social class to get information about.
+	 * @param  {String} categoryName The social category to get information about.
 	 *
-	 * @return {Object} A dictionary with keys for each piece of metadata about the social class: "directionType" will be directed, undirected, or reciprocal; "isBoolean" will be true or false (false = numeric). 
+	 * @return {Object} A dictionary with keys for each piece of metadata about the social category: "directionType" will be directed, undirected, or reciprocal; "isBoolean" will be true or false (false = numeric). 
 	 */
-	var getClassDescriptors = function(className) {
+	var getCategoryDescriptors = function(categoryName) {
 		var descriptors = {};
-		var c = socialStructure[className];
+		var c = socialStructure[categoryName];
 		if (c === undefined) {
 			return false;
 		}
-		// The details for every type within a class should be the same, so just go with the first one.
+		// The details for every type within a category should be the same, so just go with the first one.
 		for (var typeName in c) {
 			var t = c[typeName];
 			descriptors.directionType = t.directionType;
@@ -202,31 +202,31 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 			descriptors.defaultVal = t.defaultVal;
 			return descriptors;
 		}
-		// If the class was somehow empty, also return false.
+		// If the category was somehow empty, also return false.
 		return false;
 	}
 
 	/**
-	 * @method getClassFromType
+	 * @method getCategoryFromType
 	 * @memberOf ensemble
 	 * @public
-	 * @description Returns the class name associated with a particular type. TODO: This method is unreliable if we allow the same type name to appear in multiple classes, which we currently do.
+	 * @description Returns the category name associated with a particular type. TODO: This method is unreliable if we allow the same type name to appear in multiple categoryes, which we currently do.
 	 *
 	 * @param  {String} type A type from a social scheme (i.e. "friends").
 	 *
-	 * @return {String} The name of the social class to which that type belongs (i.e. "relationships"), or false if none was found. 
+	 * @return {String} The name of the social category to which that type belongs (i.e. "relationships"), or false if none was found. 
 	 */
-	var getClassFromType = function(type) {
-		for (var className in socialStructure) {
-			if (socialStructure[className][type] !== undefined) {
-				return className;
+	var getCategoryFromType = function(type) {
+		for (var categoryName in socialStructure) {
+			if (socialStructure[categoryName][type] !== undefined) {
+				return categoryName;
 			}
 		}
 		return false;
 	}
 
-	var isValidTypeForClass = function(type, className) {
-		var cn = socialStructure[className];
+	var isValidTypeForCategory = function(type, categoryName) {
+		var cn = socialStructure[categoryName];
 		if (cn === undefined) return false;
 		if (cn[type] === undefined) return false;
 		return true;
@@ -596,9 +596,9 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		init					: init,
 		loadSocialStructure		: loadSocialStructure,
 		getSocialStructure		: getSocialStructure,
-		getClassDescriptors		: getClassDescriptors,
-		getClassFromType		: getClassFromType,
-		isValidTypeForClass		: isValidTypeForClass,
+		getCategoryDescriptors		: getCategoryDescriptors,
+		getCategoryFromType		: getCategoryFromType,
+		isValidTypeForCategory		: isValidTypeForCategory,
 		addCharacters			: addCharacters,
 		getCharacters			: getCharacters,
 		getCharactersWithMetadata : getCharactersWithMetadata,

@@ -61,14 +61,14 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		test.assert(action1.name, "reminisce", "Name property of action not parsed correctly");
 		test.assert(action1.fileName, "testActions.json", "The stored origin name of the file the action came from is incorrect.");
 		var action1Intent = action1.intent;
-		test.assert(action1Intent.class, "network", "class of intent not parsed correctly");
+		test.assert(action1Intent.category, "network", "category of intent not parsed correctly");
 		test.assert(action1Intent.type, "affinity", "type of intent not parsed correctly");
 		test.assert(action1Intent.first, "x", "first of intent not parsed correctly");
 		test.assert(action1Intent.second, "y", "second of intent not parsed correctly");
 		var action1Condition = action1.condition;
 		test.assert(action1Condition, undefined, "The first action shouldn't have had a condition");
 		var acceptEffects = action1.acceptEffects[0];
-		test.assert(acceptEffects.class, "network", "the class of the accept effects wasn't parsed in correctly.");
+		test.assert(acceptEffects.category, "network", "the category of the accept effects wasn't parsed in correctly.");
 		test.assert(acceptEffects.type, "affinity", "the type of the acceptEffects wasn't parsed correctly.");
 		test.assert(acceptEffects.first, "y", "the first of the accept Effects wasn't parsed in correctly.");
 		test.assert(acceptEffects.second, "x", "the second of th accept effects wasn't parsed in correctly.");
@@ -87,7 +87,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		
 		test.assert(reminisceAction.name, "reminisce", "successfully retrieved the correct action");
 		var action1Intent = reminisceAction.intent;
-		test.assert(action1Intent.class, "network", "class of intent not parsed correctly");
+		test.assert(action1Intent.category, "network", "category of intent not parsed correctly");
 		test.assert(action1Intent.type, "affinity", "type of intent not parsed correctly");
 		test.assert(action1Intent.first, "x", "first of intent not parsed correctly");
 		test.assert(action1Intent.second, "y", "second of intent not parsed correctly");
@@ -107,35 +107,35 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		var sampleVolitions = {
 			"simon": {
 				"monica": [
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
 				]
 			},
 			"monica": {
 				"simon": [
-					{ "class": "network", "type": "affinity", "intentDirection": false, "weight": -12 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 981 }
+					{ "category": "network", "type": "affinity", "intentDirection": false, "weight": -12 },
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 981 }
 				]
 			}
 		};
 
 		var affinityPredicate = {
-			"class" : "network",
+			"category" : "network",
 			"type" : "affinity",
 			"first" : "monica",
 			"second" : "simon",
 			"value" : 60
 		};
 		var affinityPredicate2 = {
-			"class" : "network",
+			"category" : "network",
 			"type" : "affinity",
 			"first" : "monica",
 			"second" : "simon",
 			"value" : 49
 		};
 		var genericAffinityPredicate = {
-			"class" : "network",
+			"category" : "network",
 			"type" : "affinity",
 			"first" : "monica",
 			"second" : "simon"
@@ -394,15 +394,15 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		var sampleVolitions = {
 			"simon": {
 				"monica": [
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 30 },
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 30 },
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
 				]
 			},
 			"monica": {
 				"simon": [
-					{ "class": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
+					{ "category": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
+					{ "category": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
 				]
 			}
 		};
@@ -453,33 +453,33 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 		};
 
 		//var nimble1 -- bob is nimble
 		var nimble1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Bob",
 			"value" : true
 		};
 		//var nimble2 -- Alice is nimble
 		var nimble2Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Alice",
 			"value" : true
 		};
 		//var nimble3 -- Scott is nimble
 		var nimble3Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Scott",
 			"value" : true
@@ -487,7 +487,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 
 		//friends1 -- Bob and Alice are friends
 		var friends1Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "Bob",
 			"second" : "Alice",
@@ -495,7 +495,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//friends2 -- Scott and Biff are friends
 		var friends2Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "Scott",
 			"second" : "Biff",
@@ -503,21 +503,21 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//lucky1  -- Biff is lucky
 		var lucky1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Biff",
 			"value" : true
 		};
 		//happy1 -- Alice is happy (THIS SHOULD MAKE IT SO THAT THE ONLY VALID COMBINATION IS THAT ALICE IS NIMBLE 1)
 		var happy1Pred = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "Alice",
 			"vlaue" : true
 		};
 		//happy2 -- Scott is happy
 		var happy2Pred = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "Scott",
 			"vlaue" : true
@@ -660,26 +660,26 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 		};
 
 		//var hardy1 -- MisterInit is hardy
 		var hardy1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "hardy",
 			"first" : "MisterInit",
 			"value" : true
 		};
 		//var friend1 -- MisterInit and Biff are friends
 		var friend1Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "MisterInit",
 			"second" : "Biff",
@@ -687,7 +687,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//var friend2 -- MadamRespond and Biff are friends
 		var friend2Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "MadamRespond",
 			"second" : "Biff",
@@ -695,21 +695,21 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//var nimble1 -- bob is nimble
 		var nimble1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Bob",
 			"value" : true
 		};
 		//var nimble2 -- Alice is nimble
 		var nimble2Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Alice",
 			"value" : true
 		};
 		//var nimble3 -- Scott is nimble
 		var nimble3Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Scott",
 			"value" : true
@@ -717,7 +717,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 
 		//friends3 -- Bob and Alice are friends
 		var friends3Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "Bob",
 			"second" : "Alice",
@@ -725,7 +725,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//friends4 -- Scott and Biff are friends
 		var friends4Pred = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends",
 			"first" : "Scott",
 			"second" : "Biff",
@@ -733,21 +733,21 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		};
 		//lucky1  -- Biff is lucky
 		var lucky1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Biff",
 			"value" : true
 		};
 		//happy1 -- Alice is happy (THIS SHOULD MAKE IT SO THAT THE ONLY VALID COMBINATION IS THAT ALICE IS NIMBLE 1)
 		var happy1Pred = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "Alice",
 			"vlaue" : true
 		};
 		//happy2 -- Scott is happy
 		var happy2Pred = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "Scott",
 			"vlaue" : true
@@ -902,51 +902,51 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "class": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
 				]
 			},
 		};
 
 		var lucky1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Biff",
 			"value" : true
 		};
 		var jealous1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Bob",
 			"value" : true
 		};
 		var hardy1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "hardy",
 			"first" : "Alice",
 			"value" : true
 		};
 		//var nimble1 -- bob is nimble
 		var nimble1Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Bob",
 			"value" : true
 		};
 		//var nimble2 -- Alice is nimble
 		var nimble2Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Alice",
 			"value" : true
 		};
 		//var nimble3 -- Scott is nimble
 		var nimble3Pred = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Scott",
 			"value" : true
@@ -1027,39 +1027,39 @@ var testGetAction = function(){
 		//OH, hey, you know what, maybe that's what I want?
 		//Let's pretend that is what I want...
 		var attractedToPred1 = {
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type" : "attracted to",
 			"first" : "MisterInit",
 			"second" : "MadamRespond",
 			"value" : true
 		};
 		var attractedToPred2 = {
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type" : "attracted to",
 			"first" : "MadamRespond",
 			"second" : "MisterInit",
 			"value" : true
 		};
 		var luckyPred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Biff",
 			"value" : true
 		};
 		var nimblePred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Scott",
 			"value" : true
 		};
 		var nimblePred2 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Alice",
 			"value" : true
 		};
 		var happyPred1 = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "MisterInit",
 			"value" : true
@@ -1091,7 +1091,7 @@ var testGetAction = function(){
 		test.assert(action.effects.length, 1, "ensemble.getAction returned an action with the wrong number of effects");
 		test.assert(action.effects[0].first, "MisterInit", "The 'first' role in the returned action's effects was incorrect.");
 		test.assert(action.effects[0].second, "MadamRespond", "The 'second' role in the returned action's effects was incorrect.");
-		test.assert(action.effects[0].class, "relationship", "The class role in the returned action's effects was incorrect.");
+		test.assert(action.effects[0].category, "relationship", "The category role in the returned action's effects was incorrect.");
 		test.assert(action.effects[0].type, "involved with", "The 'type' role in the returned action's effects was incorrect.");
 
 		//TEST 2 -- What happens when we search for an action, but no actions exist to be found?
@@ -1112,7 +1112,7 @@ var testGetAction = function(){
 		test.assert(action.effects.length, 1, "ensemble.getAction returned an action with the wrong number of effects");
 		test.assert(action.effects[0].first, "MadamRespond", "TEST 3 The 'first' role in the returned action's effects was incorrect.");
 		test.assert(action.effects[0].second, "MisterInit", "TEST 3 The 'second' role in the returned action's effects was incorrect.");
-		test.assert(action.effects[0].class, "network", "TEST 3 The class role in the returned action's effects was incorrect.");
+		test.assert(action.effects[0].category, "network", "TEST 3 The category role in the returned action's effects was incorrect.");
 		test.assert(action.effects[0].type, "affinity", "TEST 3 The 'type' role in the returned action's effects was incorrect.");
 
 
@@ -1142,57 +1142,57 @@ var testGetAction = function(){
 		//MisterInit has the following volitions for MadamResponder: StartDating, StartFriends (and maybe raise trust)
 
 		var attractedToPred1 = {
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type" : "attracted to",
 			"first" : "MisterInit",
 			"second" : "MadamRespond",
 			"value" : true
 		};
 		var attractedToPred2 = {
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type" : "attracted to",
 			"first" : "MadamRespond",
 			"second" : "MisterInit",
 			"value" : true
 		};
 		var trustingPred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "kind face",
 			"first" : "MadamRespond",
 			"value" : true
 		};
 		var kindFacePred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "trusting",
 			"first" : "MisterInit",
 			"value" : true
 		};
 		var luckyPred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "Biff",
 			"value" : true
 		};
 		var luckyPred2 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "lucky",
 			"first" : "MisterInit",
 			"value" : true
 		};
 		var nimblePred1 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Scott",
 			"value" : true
 		};
 		var nimblePred2 = {
-			"class" : "trait",
+			"category" : "trait",
 			"type" : "nimble",
 			"first" : "Alice",
 			"value" : true
 		};
 		var happyPred1 = {
-			"class" : "status",
+			"category" : "status",
 			"type" : "happy",
 			"first" : "MisterInit",
 			"value" : true
@@ -1324,7 +1324,7 @@ var testGetAction = function(){
 
 		//The predicate we are going to be searching for (value is left off to make it generic)
 		var braxIntelligence = {
-			"class" : "attribute",
+			"category" : "attribute",
 			"type" : "intelligence",
 			"first" : "brax"
 		};
@@ -1358,7 +1358,7 @@ var testGetAction = function(){
 		var repeatStartsymbol = {
 			"name" : "RAISETRUST2",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "trust",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -1378,7 +1378,7 @@ var testGetAction = function(){
 		var nonRepeatStartSymbol = {
 			"name" : "NOTRAISETRUST",
 			"intent" : {
-				"class" : "network",
+				"category" : "network",
 				"type"  : "trust",
 				"intentDirection" : false,
 				"first" : "initiator",

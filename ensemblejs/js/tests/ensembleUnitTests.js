@@ -21,7 +21,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 		var data = {
 			"schema": [
 				{
-					"class": "network",
+					"category": "network",
 					"isBoolean": false,
 					"defaultValue": 50,
 					"directionType": "directed",
@@ -29,7 +29,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 					"allowIntent": true
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"isBoolean": true,
 					"defaultValue": false,
 					"directionType": "reciprocal",
@@ -122,16 +122,16 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'"name": "If I am jealous and someone hits on my sweetie, I hate them.",' +
 				'"conditions": [' +
 					'{' +
-						'"class": "relationship",' +
+						'"category": "relationship",' +
 						'"type": "involved with",' +
 						'"first": "x",' +
 						'"second": "y"' +
 					'},{' +
-						'"class": "trait",' +
+						'"category": "trait",' +
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"class": "SFDBLabel",' +
+						'"category": "SFDBLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +
@@ -140,7 +140,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'],' +
 				'"effects": [' +
 					'{' +
-						'"class": "directedStatus",' +
+						'"category": "directedStatus",' +
 						'"type": "attracted to",' +
 						'"first": "x",' +
 						'"second": "z",' +
@@ -158,16 +158,16 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'"name": "If I am jealous and someone hits on my sweetie, I want to lower affinity with them.",' +
 				'"conditions": [' +
 					'{' +
-						'"class": "relationship",' +
+						'"category": "relationship",' +
 						'"type": "involved with",' +
 						'"first": "x",' +
 						'"second": "y"' +
 					'},{' +
-						'"class": "trait",' +
+						'"category": "trait",' +
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"class": "SFDBLabel",' +
+						'"category": "SFDBLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +
@@ -176,7 +176,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'],' +
 				'"effects": [' +
 					'{' +
-						'"class": "network",' +
+						'"category": "network",' +
 						'"type": "affinity",' +
 						'"first": "x",' +
 						'"second": "z",' +
@@ -195,16 +195,16 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'"name": "If I am jealous and someone hits on my sweetie, I want to lower affinity with them.",' +
 				'"conditions": [' +
 					'{' +
-						'"class": "relationship",' +
+						'"category": "relationship",' +
 						'"type": "involved with",' +
 						'"first": "x",' +
 						'"second": "y"' +
 					'},{' +
-						'"class": "trait",' +
+						'"category": "trait",' +
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"class": "SFDBLabel",' +
+						'"category": "SFDBLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +
@@ -213,7 +213,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 				'],' +
 				'"effects": [' +
 					'{' +
-						'"class": "network",' +
+						'"category": "network",' +
 						'"type": "affinity",' +
 						'"first": "x",' +
 						'"second": "z",' +

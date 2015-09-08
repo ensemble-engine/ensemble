@@ -16,15 +16,15 @@ function(util, _, ruleLibrary, sfdb, ensemble, test, volition) {
 		var sampleVolitions = {
 			"simon": {
 				"monica": [
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 20 }
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
+					{ "category": "network", "type": "buddy", "intentDirection": true, "weight": 20 }
 				]
 			},
 			"monica": {
 				"simon": [
-					{ "class": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
-					{ "class": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "class": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
+					{ "category": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
+					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
+					{ "category": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
 				]
 			}
 		};
@@ -52,15 +52,15 @@ function(util, _, ruleLibrary, sfdb, ensemble, test, volition) {
 
 		test.start("Volition", "isAccepted");
 		test.assert(volition.isAccepted("main", "simon", "monica", {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"intentDirection": true}).accepted, false, "A negative weight from responder to initiator should mean the social move is rejected.");
 		test.assert(volition.isAccepted("main", "simon", "monica", {
-			"class": "network",
+			"category": "network",
 			"type": "buddy",
 			"intentDirection": true}).accepted, true, "A positive weight from responder to initiator should mean the social movei is accepted.");
 		test.assert(volition.isAccepted("main", "monica", "simon", {
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"intentDirection": false }).accepted, true, "When the responder has no feelings about the intent, it should succeed (based on acceptIfNoMatch variable)");
 		test.finish();

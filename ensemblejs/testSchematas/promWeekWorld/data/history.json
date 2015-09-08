@@ -2,13 +2,13 @@
 	"history": [{
 		"pos": 0,
 		"data": [{
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type" : "crushing on",
 			"first" : "doug",
 			"second" : "chloe",
 			"value" : true
 			}, {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type" : "friends with",
 			"first" : "doug",
 			"second" : "chloe",

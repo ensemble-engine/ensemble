@@ -71,14 +71,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 	var testArePredicatesEqual = function(){
 
 		var friendPred = {};
-		friendPred.class = "relationship";
+		friendPred.category = "relationship";
 		friendPred.type = "friends";
 		friendPred.first = "doc";
 		friendPred.second = "alice";
 		friendPred.value = true;
 
 		var traitPred = {};
-		traitPred.class = "trait";
+		traitPred.category = "trait";
 		traitPred.type = "brainy";
 		traitPred.first = "doc";
 		traitPred.value = true;
@@ -105,20 +105,20 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.start("RuleLibrary", "testAreRulesEqual");
 
 		var condPred1 = {};
-		condPred1.class = "relationship";
+		condPred1.category = "relationship";
 		condPred1.type = "friends";
 		condPred1.first = "x";
 		condPred1.second = "y";
 		condPred1.value = true;
 
 		var condPred2 = {};
-		condPred2.class = "trait";
+		condPred2.category = "trait";
 		condPred2.type = "brainy";
 		condPred2.first = "x";
 		condPred2.value = true;
 
 		var condPred3 = {};
-		condPred3.class = "network";
+		condPred3.category = "network";
 		condPred3.type = "affinity";
 		condPred3.first = "x";
 		condPred3.second = "y";
@@ -126,7 +126,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		condPred3.value = 50;
 
 		var condPred4 = {};
-		condPred4.class = "network";
+		condPred4.category = "network";
 		condPred4.type = "trust";
 		condPred4.first = "x";
 		condPred4.second = "y";
@@ -134,13 +134,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		condPred4.value = 50;
 
 		var condPred5 = {};
-		condPred5.class = "status";
+		condPred5.category = "status";
 		condPred5.type = "sad";
 		condPred5.first = "x";
 		condPred5.value = true;
 
 		var effectPred1 = {};
-		effectPred1.class = "network";
+		effectPred1.category = "network";
 		effectPred1.type = "affinity";
 		effectPred1.first = "x";
 		effectPred1.second = "y";
@@ -148,7 +148,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		effectPred1.value = 20;
 
 		var effectPred2 = {};
-		effectPred2.class = "network";
+		effectPred2.category = "network";
 		effectPred2.type = "trust";
 		effectPred2.first  = "x";
 		effectPred2.second = "y";
@@ -156,7 +156,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		effectPred2.value = 20;
 
 		var effectPred3 = {};
-		effectPred3.class = "status";
+		effectPred3.category = "status";
 		effectPred3.type = "sad";
 		effectPred3.first  = "x";
 		effectPred3.value = true;
@@ -212,8 +212,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 4.5 -- In Test 4, the content of the predicates differed but had same amount of attributes. What if number of attributes differed?
 		rule1 = util.clone(baseRule1); // getting back to basics
 		rule2 = util.clone(rule1); // make them equal
-		rule1.conditions.push(condPred3); // adding a network predicate with 6 fields (first, second, class, type, value, operator)
-		rule2.conditions.push(condPred5); //adding a status predicate with 4 fields (class, type, first, value)
+		rule1.conditions.push(condPred3); // adding a network predicate with 6 fields (first, second, category, type, value, operator)
+		rule2.conditions.push(condPred5); //adding a status predicate with 4 fields (category, type, first, value)
 		result = ruleLibrary.areRulesEqual(rule1, rule2);
 		test.assert(result, false, "rule1 and rule2 are apparantly equal. Have same number of conditions, but the number of properties in one of them differs.");
 		result = ruleLibrary.areRulesEqual(rule2, rule1);
@@ -319,13 +319,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ruleLibrary.clearRuleLibrary(); // start off with a clean slate.
 
 		var condPred1 = {};
-		condPred1.class = "trait";
+		condPred1.category = "trait";
 		condPred1.type = "brainy";
 		condPred1.first = "x";
 		condPred1.value = true;
 
 		var effectPred1 = {};
-		effectPred1.class = "relationship";
+		effectPred1.category = "relationship";
 		effectPred1.type = "friends";
 		effectPred1.first = "x";
 		effectPred1.second = "y";
@@ -419,7 +419,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//This would be an example TRIGGER rule
 		//(if the elements of the conditions hold, then we make the effect true)
 		var triggerConditionOne = {}; //X and Y must be friends
-		triggerConditionOne.class = "relationship";
+		triggerConditionOne.category = "relationship";
 		triggerConditionOne.type = "friends";
 		triggerConditionOne.first = "x";
 		triggerConditionOne.second = "y";
@@ -432,14 +432,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		sfdb.registerDefault(triggerConditionOne);
 
 		var triggerConditionTwo = {}; //X and Z must not be friends
-		triggerConditionTwo.class = "relationship";
+		triggerConditionTwo.category = "relationship";
 		triggerConditionTwo.type = "friends";
 		triggerConditionTwo.first = "x";
 		triggerConditionTwo.second = "z";
 		triggerConditionTwo.value = false;
 
 		var triggerEffectOne = {};
-		triggerEffectOne.class = "relationship";
+		triggerEffectOne.category = "relationship";
 		triggerEffectOne.type = "involved with";
 		triggerEffectOne.first = "x";
 		triggerEffectOne.second = "y";
@@ -466,7 +466,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		volitionEffectOne.weight = 15;
 		var volitionRule = {};
 		var volitionConditionOne ={};
-		volitionConditionOne.class = "network";
+		volitionConditionOne.category = "network";
 		volitionConditionOne.type = "affinity";
 		volitionConditionOne.first = "x";
 		volitionConditionOne.second = "y";
@@ -513,7 +513,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		// x and y are friends
 		var predicateOne = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "y",
@@ -522,7 +522,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//x and z are friends
 		var predicateTwo = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "z",
@@ -531,7 +531,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//x has the trait hardy
 		var predicateThree = validate.triggerEffect({
-			"class": "trait",
+			"category": "trait",
 			"type": "lucky",
 			"first": "x",
 			"value": true
@@ -577,7 +577,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//X and Y must be friends
 		var conditionOne = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "y",
@@ -586,7 +586,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//X and Y must not be friends
 		var conditionTwo = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "y",
@@ -595,7 +595,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//X and Z must be friends
 		var conditionThree = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "z",
@@ -604,7 +604,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		// Y and Z must not be friends
 		var conditionFour = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "y",
 			"second": "z",
@@ -649,7 +649,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//Ok, first it needs a unique bindings thing, which comes from rule conditions.
 		//X and Y must be friends
 		var conditionOne = validate.triggerCondition({
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"type": "attracted to",
 			"first": "x",
 			"second": "y",
@@ -659,7 +659,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//X and Z must not be friends. If X is NOT friends with multiple people, it will make
 		//the rule fire multiple times.
 		var conditionTwo = validate.triggerCondition({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "friends",
 			"first": "x",
 			"second": "z",
@@ -668,7 +668,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 
 		var effectOne = validate.triggerEffect({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "x",
 			"second": "y",
@@ -726,7 +726,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result, true, "In match unique bindings, even though it was true in the SFDB, we failed to match the unique bindings in the test.");
 
 		//TEST 1.5 -- is the returned effect full of the stuff that we dreamed it would be?
-		test.assert(boundEffect.class, "relationship", "The class of the effect somehow got altered through matchUniqueBindings");
+		test.assert(boundEffect.category, "relationship", "The category of the effect somehow got altered through matchUniqueBindings");
 		test.assert(boundEffect.type, "involved with", "The type of the effect somehow got altered through matchUniqueBindings");
 		test.assert(boundEffect.first, "doc", "The wrong person got matched to the 'first' binding");
 		test.assert(boundEffect.second, "reggie", "The wrong person got matched to the 'second' binding");
@@ -742,14 +742,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		sfdb.clearEverything();
 		numTimesProcessed = 0; //reset this as well for our new test.
 		var claraOne = {};
-		claraOne.class = "directedStatus";
+		claraOne.category = "directedStatus";
 		claraOne.type = "attracted to";
 		claraOne.first = "clara";
 		claraOne.second = "doc";
 		claraOne.value = true;
 
 		var claraTwo = {};
-		claraTwo.class = "relationship";
+		claraTwo.category = "relationship";
 		claraTwo.type = "friends";
 		claraTwo.first = "clara";
 		claraTwo.second = "reggie";
@@ -760,7 +760,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		ruleLibrary.matchUniqueBindings(uniqueBindings, cast, processResult, rule, params, unaffectedCharacters);
 		test.assert(numTimesProcessed, 1, "Test 3 -- numTimesProcessed doesn't check out");
-		test.assert(boundEffect.class, "relationship", "test 3 class is incorrect");
+		test.assert(boundEffect.category, "relationship", "test 3 category is incorrect");
 		test.assert(boundEffect.type, "involved with", "test 3 type is incorrect");
 		test.assert(boundEffect.first, "clara", "test 3 first is incorrect");
 		test.assert(boundEffect.second, "doc", "test 3 second is incorrect");
@@ -769,7 +769,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 4 -- What happens when we want to find MULTIPLE matches (i.e. we want to call process result multiple times?)
 		var claraThree = {};
 		numTimesProcessed = 0;
-		claraThree.class = "relationship";
+		claraThree.category = "relationship";
 		claraThree.type = "friends";
 		claraThree.first = "clara";
 		claraThree.second = "vanessa";
@@ -810,7 +810,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//sure! But first, let's put some things in the sfdb to make some of them true, you know?
 		//How about the 'if your sweetie is injured you worry about them' trigger rule? That seems like a nice one...
 		var sfdbEntryOne = {};
-		sfdbEntryOne.class = "status";
+		sfdbEntryOne.category = "status";
 		sfdbEntryOne.type = "injured";
 		sfdbEntryOne.first = "doc";
 		sfdbEntryOne.value = true;
@@ -825,7 +825,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		delete sfdbEntryOne.directionType;
 
 		var sfdbEntryTwo = {};
-		sfdbEntryTwo.class = "relationship";
+		sfdbEntryTwo.category = "relationship";
 		sfdbEntryTwo.type = "involved with";
 		sfdbEntryTwo.second = "doc";
 		sfdbEntryTwo.first = "reggie";
@@ -842,7 +842,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//Let's also make Clara lonely
 		var sfdbEntryThree = {};
-		sfdbEntryThree.class = "status";
+		sfdbEntryThree.category = "status";
 		sfdbEntryThree.type = "lonely";
 		sfdbEntryThree.first = "clara";
 		sfdbEntryThree.value = true;
@@ -874,7 +874,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 1 (Actual trigger rule test)
 		//-->Does Reggie have the status worried because his sweetie is injured?
 		var concernedPred = {};
-		concernedPred.class = "directedStatus";
+		concernedPred.category = "directedStatus";
 		concernedPred.type = "worried about";
 		concernedPred.first = "reggie";
 		concernedPred.second = "doc";
@@ -902,7 +902,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//-->And just for fun, now lets give Clara ONE friend at the next time step, and see what happens.
 		//-->HINT -- she should still be lonely!
 		var friendPredicateOne = {};
-		friendPredicateOne.class = "relationship";
+		friendPredicateOne.category = "relationship";
 		friendPredicateOne.type = "friends";
 		friendPredicateOne.first = "clara";
 		friendPredicateOne.second = "vanessa";
@@ -916,7 +916,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//OK, and NOW let's give Clara on additional friend, which should make the trigger rule start to fire
 		//Which, consequently, should make Clara no longer lonely!
 		var friendPredicateTwo = {};
-		friendPredicateTwo.class = "relationship";
+		friendPredicateTwo.category = "relationship";
 		friendPredicateTwo.type = "friends";
 		friendPredicateTwo.first = "clara";
 		friendPredicateTwo.second = "doc";
@@ -926,13 +926,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		var trigResult = ruleLibrary.runTriggerRules(cast);
 
 		var lonelyPredicate = {};
-		lonelyPredicate.class = "status";
+		lonelyPredicate.category = "status";
 		lonelyPredicate.type = "lonely";
 		lonelyPredicate.first = "clara";
 		lonelyPredicate.value = true;
 
 		var notLonelyPredicate = {};
-		notLonelyPredicate.class = "status";
+		notLonelyPredicate.category = "status";
 		notLonelyPredicate.type = "lonely";
 		notLonelyPredicate.first = "clara";
 		notLonelyPredicate.value = false;
@@ -946,27 +946,27 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//Testing the 'sfdb' trigger rule as it currently exists in the testTriggerRules.json file.
 		sfdb.clearHistory();
 		var involvedWithPred = {};
-		involvedWithPred.class = "relationship";
+		involvedWithPred.category = "relationship";
 		involvedWithPred.type = "involved with";
 		involvedWithPred.first = "doc";
 		involvedWithPred.second = "reggie";
 		involvedWithPred.value = true;
 
 		var traitPred = {};
-		traitPred.class = "trait";
+		traitPred.category = "trait";
 		traitPred.type = "jealous";
 		traitPred.first = "doc";
 		traitPred.value = true;
 
 		var sfdbLabelPred = validate.triggerCondition({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romantic advance",
 			"first": "clara",
 			"second": "reggie"
 		});
 
 		var hatePredicate = {};
-		hatePredicate.class = "directedStatus";
+		hatePredicate.category = "directedStatus";
 		hatePredicate.type = "hates";
 		hatePredicate.first = "doc";
 		hatePredicate.second = "clara";
@@ -1018,19 +1018,19 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Two people who are injured automatically start dating.",
 				"conditions": [
 					{
-						"class": "status",
+						"category": "status",
 						"type": "injured",
 						"first": "x"
 					},
 					{
-						"class": "status",
+						"category": "status",
 						"type": "injured",
 						"first": "y"
 					},
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
@@ -1041,17 +1041,17 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		var basicTriggerRules = [];
 		basicTriggerRules.push(basicTriggerRule);
 		var injuredPred1 = {
-			"class": "status",
+			"category": "status",
 			"type": "injured",
 			"first": "alex"
 		};
 		var injuredPred2 = {
-			"class": "status",
+			"category": "status",
 			"type": "injured",
 			"first": "brick"
 		};
 		var newInvolvedWithPred = {
-			"class": "relationship",
+			"category": "relationship",
 			"type" : "involved with",
 			"first": "alex",
 			"second": "brick"
@@ -1110,17 +1110,17 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Two people who are injured automatically start dating.",
 				"conditions": [
 					{
-						"class": "status",
+						"category": "status",
 						"type": "injured",
 						"first": "x"
 					},
 					{
-						"class": "status",
+						"category": "status",
 						"type": "injured",
 						"first": "y"
 					},
 					{
-						"class": "status",
+						"category": "status",
 						"type": "happy",
 						"first": "z",
 						"turnsAgoBetween": [0, 5]
@@ -1128,14 +1128,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
 						"value": true
 					},
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "z",
@@ -1144,19 +1144,19 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				]
 			};
 		var happyPred = {
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "clyde"
 		};
 		var involvedWithPred1 = {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "alex",
 			"second": "brick",
 			"value": true
 		};
 		var involvedWithPred2 = {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "alex",
 			"second": "clyde",
@@ -1280,7 +1280,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 
 		var statusPredicate = {};  //what we are storing in the SFDB. the value true is definitely stored here.
-		statusPredicate.class = "status";
+		statusPredicate.category = "status";
 		statusPredicate.type = "injured";
 		statusPredicate.first = "doc";
 		statusPredicate.value = true;
@@ -1296,7 +1296,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		var conditions = [];
 		var searchPredicate1 = {}; // chck to see if doc is injured -- note that we are explicitly leaving off value: true
-		searchPredicate1.class = "status";
+		searchPredicate1.category = "status";
 		searchPredicate1.type = "injured";
 		searchPredicate1.first = "doc";
 
@@ -1354,7 +1354,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 5 -- Test to see if ordered conditions work
 		sfdb.clearHistory();
 		statusPredicate = {};  //what we are storing in the SFDB. the value true is definitely stored here.
-		statusPredicate.class = "network";
+		statusPredicate.category = "network";
 		statusPredicate.type = "friend";
 		statusPredicate.first = "doc";
 		statusPredicate.second = "bob";
@@ -1379,7 +1379,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// I think this unit test is failing because of something to do with the turnsAgoBetween being in the same window across two orders. But trying to make them non-overlapping doesn't work either. :/
 		conditions.push(
 			{
-				"class": "network",
+				"category": "network",
 				"type": "friend",
 				"first": "doc",
 				"second": "bob",
@@ -1392,7 +1392,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		conditions.push
 		(
 			{
-				"class": "network",
+				"category": "network",
 				"type": "friend",
 				"first": "doc",
 				"second": "bob",
@@ -1425,7 +1425,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Attraction makes people want to start dating.",
 				"conditions": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "x",
 						"second": "y"
@@ -1433,7 +1433,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
@@ -1448,14 +1448,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Injured people are less interested in romance.",
 				"conditions": [
 					{
-						"class": "status",
+						"category": "status",
 						"type": "injured",
 						"first": "x"
 					}
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
@@ -1468,7 +1468,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "If I hate you, I'm more inclined to be mean to you..",
 				"conditions": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "x",
 						"second": "y",
@@ -1477,7 +1477,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"first": "x",
 						"second": "y",
@@ -1489,7 +1489,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		];
 
 		var predicate = {};
-		predicate.class = "directedStatus";
+		predicate.category = "directedStatus";
 		predicate.type = "attracted to";
 		predicate.first = "Simon";
 		predicate.second = "Monica";
@@ -1515,7 +1515,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//Register relationships...
 		var relationshipBlueprint = {};
-		relationshipBlueprint.class = "relationship";
+		relationshipBlueprint.category = "relationship";
 		relationshipBlueprint.defaultValue = false;
 		relationshipBlueprint.directionType = "reciprocal";
 		relationshipBlueprint.isBoolean = true;
@@ -1526,7 +1526,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//Register Statuses...
 		var statusBlueprint = {};
-		statusBlueprint.class = "status";
+		statusBlueprint.category = "status";
 		statusBlueprint.defaultValue = false;
 		statusBlueprint.directionType = "undirected";
 		statusBlueprint.isBoolean = true;
@@ -1548,7 +1548,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Hating someone makes people want to start dating. (weird, huh?)",
 				"conditions": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "x",
 						"second": "y"
@@ -1556,7 +1556,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
@@ -1575,7 +1575,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 3 test to see what the the other volitions are are!
 		var intent = volitionTest.getNext("Simon", "Monica");
-		test.assert(intent.class, "network", "secondary intent between Simon and Monica was wrong.");
+		test.assert(intent.category, "network", "secondary intent between Simon and Monica was wrong.");
 		test.assert(intent.type, "affinity", "secondary type between Simon and Monica was wrong.");
 		test.assert(intent.intentDirection, false, "secondary intentDirection between Simon and Monica was wrong.");
 		test.assert(intent.weight, 5, "secondary weight between Simon and Monica was wrong.");
@@ -1599,7 +1599,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		cast = ["alvin", "simon", "dave"];
 		var hatesPred = {
-			"class" : "directedStatus",
+			"category" : "directedStatus",
 			"type"  : "hates",
 			"first" : "alvin",
 			"second": "simon"
@@ -1652,7 +1652,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 4.7 -- Putting someone offstage removes your volitions towards that person, but not towards another person.
 		var injuredPred = {
-			"class" : "status",
+			"category" : "status",
 			"type"	: "injured",
 			"first" : "alvin"
 		};
@@ -1769,13 +1769,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Being comrades with someone while someone else is happy makes you more likely to be involved with your comrade, and more likely to like the happy person less(just go with it)",
 				"conditions": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "comrades",
 						"first": "x",
 						"second": "y"
 					},
 					{
-						"class": "status",
+						"category": "status",
 						"type": "happy",
 						"first": "z",
 						"turnsAgoBetween": ['NOW', 'START']
@@ -1783,7 +1783,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "x",
 						"second": "y",
@@ -1791,7 +1791,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						"intentDirection": true
 					},
 					{
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"first": "x",
 						"second": "z",
@@ -1802,12 +1802,12 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		});
 		var happyPredicate = {
-			"class" : "status",
+			"category" : "status",
 			"type"  : "happy",
 			"first" : "dave"
 		};
 		var comradePredicate = {
-			"class" : "relationship",
+			"category" : "relationship",
 			"type"  : "comrades",
 			"first" : "alvin",
 			"second": "simon"
@@ -1869,7 +1869,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		var conditionPred = {};
 		var effectPred = {};
 
-		conditionPred.class = "relationship";
+		conditionPred.category = "relationship";
 		conditionPred.type = "friends";
 		conditionPred.first = "x";
 		conditionPred.second = "y";
@@ -1886,7 +1886,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		delete conditionPred.defaultValue;
 		delete conditionPred.directionType;
 
-		effectPred.class = "network";
+		effectPred.category = "network";
 		effectPred.type = "buddy";
 		effectPred.first = "x";
 		effectPred.second = "y";
@@ -1933,16 +1933,16 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 2 -- the contents of the set should match that which we just pushed in
 		//--->This is checking the condition
-		test.assert(ruleLibrary.getTriggerRules()[0].conditions[0].class, "relationship", "class of first trigger rule's condition was incorrect");
+		test.assert(ruleLibrary.getTriggerRules()[0].conditions[0].category, "relationship", "category of first trigger rule's condition was incorrect");
 
-		//test.assert(ruleLibrary["triggerRules"][0].conditions[0].class, "relationship", "class of first trigger rule's condition was incorrect");
+		//test.assert(ruleLibrary["triggerRules"][0].conditions[0].category, "relationship", "category of first trigger rule's condition was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].conditions[0].type, "friends", "type of first trigger rule's condition was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].conditions[0].first, "x", "first of first trigger rule' condition' was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].conditions[0].second, "y", "second of first trigger rule's condition was incorrect");
 
 		//TEST 2 .5-- the contents of the set should match that which we just pushed in
 		//--->This is checking the effect
-		test.assert(ruleLibrary.getTriggerRules()[0].effects[0].class, "network", "class of first trigger rule's effect was incorrect");
+		test.assert(ruleLibrary.getTriggerRules()[0].effects[0].category, "network", "category of first trigger rule's effect was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].effects[0].type, "buddy", "type of first trigger rule's effect was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].effects[0].first, "x", "first of first trigger rule's effect was incorrect");
 		test.assert(ruleLibrary.getTriggerRules()[0].effects[0].second, "y", "second of first trigger rule's effect was incorrect");
@@ -2001,7 +2001,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"name": "...",
 			"conditions": [
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "comrades",
 					"first": "x",
 					"second": "y"
@@ -2009,14 +2009,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			],
 			"effects": [
 				{
-					"class": "directedStatus",
+					"category": "directedStatus",
 					"type": "hates",
 					"first": "x",
 					"second": "z",
 					"value": true
 				},
 				{
-					"class": "relationship",
+					"category": "relationship",
 					"type": "friends",
 					"first": "x",
 					"second": "z",
@@ -2052,7 +2052,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "If your affinity with someone is at least 70, and then your affinity is at least 80, you become attracted to them",
 				"conditions": [
 					{
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"operator": ">",
 						"first": "me",
@@ -2063,7 +2063,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"operator": ">",
 						"first": "me",
@@ -2076,7 +2076,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "me",
 						"second": "destinedToLove"
@@ -2088,7 +2088,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Someone who hates you first, and then someone else hates them, makes you attracted to them. I dunno you pity them or something.",
 				"conditions": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2097,7 +2097,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "shmuck",
 						"second": "destinedToLove",
@@ -2108,7 +2108,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "me",
 						"second": "destinedToLove"
@@ -2120,7 +2120,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Someone who expressed interest in you first, and then rejected someone else expressing interest in them, makes you attracted to them.",
 				"conditions": [
 					{
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticAdvance",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2129,7 +2129,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "destinedToLove",
@@ -2140,7 +2140,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "me",
 						"second": "destinedToLove"
@@ -2152,7 +2152,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "If you are not involved with someone, and then you are involved with someone, you become attracted to them",
 				"conditions": [
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2162,7 +2162,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "relationship",
+						"category": "relationship",
 						"type": "involved with",
 						"value": true,
 						"first": "destinedToLove",
@@ -2174,7 +2174,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "me",
 						"second": "destinedToLove"
@@ -2188,40 +2188,40 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//Add our trigger rule to the ruleset!
 		ensemble.addRules(triggerRules);
 		var romanticAdvancePred = {
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticAdvance",
 						"first": "doc",
 						"second": "clara",
 						"value": true
 		};
 		var romanticFailPred = {
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticFailure",
 						"first": "reggie",
 						"second": "doc",
 						"value": true
 		};
 		var attractedToPred = {
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "clara",
 						"second": "doc",
 						"value": true
 		};
 		var randomPredicate = {
-			"class": "trait",
+			"category": "trait",
 			"type": "lucky",
 			"first": "reggie"
 		};
 		var involvedWithPred = {
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "clara",
 			"second": "doc",
 			"value": true
 		};
 		var affinityPredicate = {
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "clara",
 			"second": "doc",
@@ -2229,14 +2229,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		};
 		
 		var hatesFirstPredicate = {
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"type": "hates",
 			"first": "doc",
 			"second": "clara",
 			"value": true
 		};
 		var hatesSecondPredicate = {
-			"class": "directedStatus",
+			"category": "directedStatus",
 			"type": "hates",
 			"first": "reggie",
 			"second": "doc",
@@ -2571,7 +2571,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// TEST 10.5 -- What about a case where we are dealing with 3 orders, but the sfdb events are in the wrong order.
 		ruleLibrary.clearRuleLibrary();
 		var extraCondition = {
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2602,7 +2602,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// TEST 10.6 -- What about a case where we are dealing with 3 orders, but the sfdb events are in the wrong order.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2633,7 +2633,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 10.7 -- Three things, two with same order, 1 with higher order, but things in sfdb in correct order.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "hates",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2664,7 +2664,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// TEST 11 -- Using multiple predicates to ensure a numeric is within a very particular range.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"first": "me",
 						"second": "destinedToLove",
@@ -2695,7 +2695,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// TEST 11.5 -- Using multiple predicates to ensure a numeric is within a very particular range -- three different orders.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
-						"class": "network",
+						"category": "network",
 						"type": "affinity",
 						"first": "me",
 						"second": "destinedToLove",
@@ -2733,7 +2733,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Someone who expressed interest in you first, and then rejected someone else expressing interest in them, makes you attracted to them.",
 				"conditions": [
 					{
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticAdvance",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2741,7 +2741,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "destinedToLove",
@@ -2749,7 +2749,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"class": "SFDBLabel",
+						"category": "SFDBLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "whatever",
@@ -2759,7 +2759,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				],
 				"effects": [
 					{
-						"class": "directedStatus",
+						"category": "directedStatus",
 						"type": "attracted to",
 						"first": "me",
 						"second": "destinedToLove"
@@ -2836,52 +2836,52 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "bob",
 			"second": "al"
 		}).text, "bob is involved with al", "Directed/reciprocal boolean.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "al",
 			"value": "75"
 		}).text, "bob has exactly 75 affinity for al", "Directed/reciprocal numeric.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob"
 		}).text, "bob is happy", "Undirected boolean.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": false
 		}).text, "bob is not happy", "Undirected boolean (negated).");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "attribute",
+			"category": "attribute",
 			"type": "strength",
 			"first": "bob",
 			"value": "12"
 		}).text, "bob has exactly 12 strength", "Undirected numeric.");
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "attribute",
+			"category": "attribute",
 			"type": "strength",
 			"first": "bob",
 			"value": "12",
 			"operator": "="
 		}).text, "bob has exactly 12 strength", "Undirected numeric, equal.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "attribute",
+			"category": "attribute",
 			"type": "strength",
 			"first": "bob",
 			"value": "12",
 			"operator": ">"
 		}).text, "bob has more than 12 strength", "Undirected numeric, >.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "carl",
@@ -2889,7 +2889,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"operator": "<"
 		}).text, "bob has less than 50 affinity for carl", "Directed numeric, <.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "attribute",
+			"category": "attribute",
 			"type": "strength",
 			"first": "bob",
 			"value": "4",
@@ -2897,7 +2897,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		}).text, "bob has 4 more strength", "Undirected numeric, +.");
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "bob",
 			"second": "al",
@@ -2905,7 +2905,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"intentDirection": true
 		}).text, "bob has more volition ( +5 ) to become involved with al", "Directed/reciprocal boolean, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "relationship",
+			"category": "relationship",
 			"type": "involved with",
 			"first": "bob",
 			"second": "al",
@@ -2913,7 +2913,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"intentDirection": false
 		}).text, "bob has less volition ( -5 ) to stop being involved with al", "Directed/reciprocal boolean, negative intent");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "al",
@@ -2921,7 +2921,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"intentDirection": true
 		}).text, "bob has more volition ( +7 ) to increase affinity for al", "Directed/reciprocal numeric, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "al",
@@ -2929,7 +2929,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"intentDirection": false
 		}).text, "bob has more volition ( +7 ) to decrease affinity for al", "Directed/reciprocal numeric, negative intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "lonely",
 			"first": "bob",
 			"weight": "2",
@@ -2937,7 +2937,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		}).text, "bob has more volition ( +2 ) to become lonely", "Undirected boolean, positive intent.");
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
@@ -2947,56 +2947,56 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		// Past tense!
 		// We assume predicateToEnglish will only be called with correctly preloaded predicates, where turnsAgoBetween has been auto-sorted low to high (i.e. smaller number always first).
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": [0, 0]
 		}).text, "bob is happy", "turnsAgoBetween 0-->0");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": ["NOW", "NOW"]
 		}).text, "bob is happy", "turnsAgoBetween NOW-->NOW");		
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": ["NOW", 1]
 		}).text, "bob has been happy sometime between 0 and 1 turns ago", "turnsAgoBetween NOW-->1");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": ["NOW", 3]
 		}).text, "bob has been happy sometime between 0 and 3 turns ago", "turnsAgoBetween NOW-->3");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": [1, 4]
 		}).text, "bob was happy sometime between 1 and 4 turns ago", "turnsAgoBetween 1-->4");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": [5, "START"]
 		}).text, "bob was happy sometime up until 5 turns ago [ 5 , START ]", "turnsAgoBetween 5-->START");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
 			"turnsAgoBetween": ["NOW", "START"]
 		}).text, "bob has been happy at any point [ 0 , START ]", "turnsAgoBetween NOW-->START");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": true,
@@ -3004,14 +3004,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		}).text, "bob was happy at the very beginning [ START , START ]", "turnsAgoBetween NOW-->START");
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "status",
+			"category": "status",
 			"type": "happy",
 			"first": "bob",
 			"value": false,
 			"turnsAgoBetween": ["NOW", 1]
 		}).text, "bob has been not happy sometime between 0 and 1 turns ago", "turnsAgoBetween with false NOW-->1");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "carl",
@@ -3020,7 +3020,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"turnsAgoBetween": ["NOW", "START"]
 		}).text, "bob has had less than 50 affinity for carl at any point [ 0 , START ]", "turns ago between with directed numeric.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "network",
+			"category": "network",
 			"type": "affinity",
 			"first": "bob",
 			"second": "carl",
@@ -3029,7 +3029,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"turnsAgoBetween": [5, 10]
 		}).text, "bob had less than 50 affinity for carl sometime between 5 and 10 turns ago", "turns ago between in past with directed numeric.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
@@ -3037,7 +3037,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"turnsAgoBetween": [2, 4]
 		}).text, "bob did something romanticFailure to al sometime between 2 and 4 turns ago", "sfdblabel turnsAgoBetween, 2-->4");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"class": "SFDBLabel",
+			"category": "SFDBLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
@@ -3053,7 +3053,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//We're going to test "Innocent Until Proven GuiltY"
 		//This means that we have a boolean thing that 'defaults' to true.
 		var defaultTruePred = {};
-		defaultTruePred.class = "defaultTrueTrait";
+		defaultTruePred.category = "defaultTrueTrait";
 		defaultTruePred.type = "innocent";
 		defaultTruePred.defaultValue = true;
 		defaultTruePred.isBoolean = true;
@@ -3061,7 +3061,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		sfdb.registerDefault(defaultTruePred);
 
 		var defaultFalsePred = {};
-		defaultFalsePred.class = "defaultFalseTrait";
+		defaultFalsePred.category = "defaultFalseTrait";
 		defaultFalsePred.type = "guilty";
 		defaultFalsePred.defaultValue = false;
 		defaultFalsePred.isBoolean = true;
@@ -3070,13 +3070,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		var searchPredicate = {};
 		searchPredicate.first = "doc";
-		searchPredicate.class = "defaultTrueTrait";
+		searchPredicate.category = "defaultTrueTrait";
 		searchPredicate.type = "innocent";
 		searchPredicate.value = true;
 
 		var searchPredicate2 = {};
 		searchPredicate2.first = "doc";
-		searchPredicate2.class = "defaultFalseTrait";
+		searchPredicate2.category = "defaultFalseTrait";
 		searchPredicate2.type = "guilty";
 
 		var results;

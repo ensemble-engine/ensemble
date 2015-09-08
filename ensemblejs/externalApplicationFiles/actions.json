@@ -4,7 +4,7 @@
 		{
 			"name" : "INTUP",
 			"intent" : {
-				"class" : "attribute",
+				"category" : "attribute",
 				"type"  : "intelligence",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -19,7 +19,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"first" : "initiator",
 				"operator" : "+",
@@ -31,7 +31,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "attribute",
+				"category" : "attribute",
 				"type" : "intelligence",
 				"first" : "initiator",
 				"operator" : "+",
@@ -41,7 +41,7 @@
 		{
 			"name" : "KINSHIPUP",
 			"intent" : {
-				"class" : "bonds",
+				"category" : "bonds",
 				"type"  : "kinship",
 				"intentDirection" : true,
 				"first" : "initiator",
@@ -62,7 +62,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
-				"class" : "bonds",
+				"category" : "bonds",
 				"type" : "kinship",
 				"first" : "initiator",
 				"second" : "responder",

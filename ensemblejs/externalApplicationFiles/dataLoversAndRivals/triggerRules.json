@@ -6,7 +6,7 @@
 			"name": "Rival is always confident",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "rival",
 					"first": "someone",
 					"value": true
@@ -14,7 +14,7 @@
 			],
 			"effects": [
 				{
-					"class": "mood",
+					"category": "mood",
 					"type": "confident",
 					"first": "someone",
 					"value": true
@@ -27,19 +27,19 @@
 			"name": "Love is repulsed by self indulged people",
 			"conditions": [
 				{
-					"class": "trait",
+					"category": "trait",
 					"type": "love",
 					"first": "theLove",
 					"value": true
 				},
 				{
-					"class": "SFDBLabelUndirected",
+					"category": "SFDBLabelUndirected",
 					"type": "self-involved",
 					"first": "someone",
 					"value": true
 				},
 				{
-					"class": "SFDBLabelUndirected",
+					"category": "SFDBLabelUndirected",
 					"type": "self-involved",
 					"first": "someoneElse",
 					"value": false
@@ -47,7 +47,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "theLove",
 					"second": "someoneElse",
@@ -62,14 +62,14 @@
 			"name": "People are repulsed when they are the recipients of romantic failures",
 			"conditions": [
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romantic-failure",
 					"first": "wouldBeLover",
 					"second": "victim",
 					"value": true
 				},
 				{
-					"class": "SFDBLabel",
+					"category": "SFDBLabel",
 					"type": "romantic-failure",
 					"first": "someoneElse",
 					"second": "victim",
@@ -78,7 +78,7 @@
 			],
 			"effects": [
 				{
-					"class": "feeling",
+					"category": "feeling",
 					"type": "closeness",
 					"first": "victim",
 					"second": "someoneElse",
