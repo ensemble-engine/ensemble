@@ -10,7 +10,7 @@
 					"first": "x",
 					"second": "y",
 					"operator": ">",
-					"value": 60
+					"value": 9
 				},
 				{
 					"category": "attribute",
