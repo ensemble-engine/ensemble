@@ -223,6 +223,45 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 				']' +
 			'}'+
 		']}';
+
+		var intentTypeTest = '{' +
+		'"fileName" : "testAddRules (method)",' + 
+		'"type": "volition",' +
+		'"rules": [' +
+			'{' +
+				'"name": "If I am jealous and someone hits on my sweetie, I want to lower affinity with them.",' +
+				'"conditions": [' +
+					'{' +
+						'"category": "relationship",' +
+						'"type": "involved with",' +
+						'"first": "x",' +
+						'"second": "y"' +
+					'},{' +
+						'"category": "trait",' +
+						'"type": "jealous",' +
+						'"first": "x"' +
+					'},{' +
+						'"category": "socialRecordLabel",' +
+						'"type": "romanticAdvance",' +
+						'"first": "z",' +
+						'"second": "y",' +
+						'"turnsAgoBetween": ["NOW", "NOW"]' +
+					'}' +
+				'],' +
+				'"effects": [' +
+					'{' +
+						'"category": "network",' +
+						'"type": "affinity",' +
+						'"first": "x",' +
+						'"second": "z",' +
+						'"weight": 5,' +
+						'"intentType" : "decrease"' +
+					'}' +
+				']' +
+			'}'+
+		']}';
+
+		intentTypeTest = JSON.parse(intentTypeTest);
 		
 		
 		
@@ -259,7 +298,62 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 		test.assert(volitionRules.length, 1, "adding the crazy user specified field affected volition rules in a way that it shouldn't have");
 		test.assert(triggerRules.length, 1, "adding the crazy user specified field affected trigger rules in a way that it hsouldn't have");
 		
+		socialRecord.clearEverything();
+		ruleLibrary.clearRuleLibrary();
+		//TEST 6 -- What happens when we enter in non standardized values for intentType
+		ensemble.addRules(intentTypeTest); // uses "decrease" for a lessen affinity effect
+		volitionRules = ruleLibrary.getVolitionRules();
+		test.assert(volitionRules.length, 1, "Volition rule with a non-standard intentType was not read in correctly.");
+		test.assert(volitionRules[0].effects[0].intentType, false, "Volition rule with a non-standard intentType was not standardized properly");
+
+		//TEST 6.1 -- What happens when we enter in a non standardized value for intentType that mismatches the isBoolean value of the category.
+		socialRecord.clearEverything();
+		ruleLibrary.clearRuleLibrary();
+		intentTypeTest.rules[0].effects[0].intentType = "stop";
+		var rejected = false;
+		try{
+			ensemble.addRules(intentTypeTest);
+		} catch (e){
+			rejected = true;
+		}
+
+		test.assert(rejected, true, "Volition rule with an INCORRECT non-standard intentType was NOT rejected.");
+
+		//TEST 6.2 -- what happens when gibberish is used for intentType
+		socialRecord.clearEverything();
+		ruleLibrary.clearRuleLibrary();
+		intentTypeTest.rules[0].effects[0].intentType = "jbkjdkfjdkfj";
+		var rejected = false;
+		try{
+			ensemble.addRules(intentTypeTest);
+		} catch (e){
+			rejected = true;
+		}
+
+		test.assert(rejected, true, "Volition rule with a gibberish intentType was NOT rejected.");
 		
+		//TEST 6.3 -- what happens when intentType is 'start' (with a boolean )
+		socialRecord.clearEverything();
+		ruleLibrary.clearRuleLibrary();
+		intentTypeTest.rules[0].effects[0] = util.clone(intentTypeTest.rules[0].conditions[0]);
+		intentTypeTest.rules[0].effects[0].intentType = "start";
+		intentTypeTest.rules[0].effects[0].weight = 100;
+		//var rejected = false;
+		//try{
+
+		volitionRules = ruleLibrary.getVolitionRules();
+		console.log("$$$$$$$$ Here are all of my volition rules... " , volitionRules);
+
+		ensemble.addRules(intentTypeTest);
+		//} catch (e){
+		//	rejected = true;
+		//}
+		volitionRules = ruleLibrary.getVolitionRules();
+		console.log("$$$$$$$$ Here are all of my volition rules... " , volitionRules);
+		test.assert(volitionRules.length, 1, "blah Volition rule with a non-standard intentType (start) was not read in correctly.");
+		test.assert(volitionRules[0].effects[0].intentType, true, "blah Volition rule with a non-standard intentType (start) was not standardized properly");
+
+
 		test.finish();
 	};
 

@@ -376,21 +376,28 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 			ids.push(newId);
 			rule.id = newId;
 
+
 			// Check conditions
 			if (conditionValFunc !== undefined) {
 				for (j = 0; j < rule.conditions.length; j++) {
-					conditionValFunc(rule.conditions[j], "Examining " + ruleType + " rule #" + i + ": '" + rule.name + "' Validating condition at position " + j);
-					// Sort turnsAgoBetween tuple, if present, low-hi.
-					if (rule.conditions[j].turnsAgoBetween !== undefined) {
-						rule.conditions[j].turnsAgoBetween = getSortedTurnsTuple(rule.conditions[j].turnsAgoBetween);
-					}
+					var condRef = rule.conditions[j];
+
+					//Make uniform aspects of predicates that can be written in multiple valid ways.
+					condRef = standardizePredicate(condRef);
+
+					conditionValFunc(condRef, "Examining " + ruleType + " rule #" + i + ": '" + rule.name + "' Validating condition at position " + j);
+					
 				}
 			}
 
 			// Check effects
 			if (effectValFunc !== undefined) {
 				for (j = 0; j < rule.effects.length; j++) {
-					effectValFunc(rule.effects[j], "Examining " + ruleType + " rule #" + i + ": '" + rule.name + "' Validating effect at position " + j);
+					var effectRef = rule.effects[j];
+					//Make uniform aspects of predicates that can be written in multiple valid ways.
+					effectRef = standardizePredicate(effectRef);
+
+					effectValFunc(effectRef, "Examining " + ruleType + " rule #" + i + ": '" + rule.name + "' Validating effect at position " + j);
 				}
 			}			
 		}
@@ -401,7 +408,76 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		} else {
 			return [];
 		}
+	};
+
+	
+	//standardize a predicate (called before validation).
+	var standardizePredicate = function(pred){
+
+		//Convert string vlaues of "intentType" to a boolean
+		//(after making sure that the string value used makes sense given the pred's
+		//"isBoolean" value)
+		var intentType = pred.intentType;
+		var categoryDescriptors = getCategoryDescriptors(pred.category);
+		if(typeof intentType === "string"){ // not every predicate has an intentType, only standardize this if it has it (and is a string, as if it is already a boolean our work is done for us.)
+			if(intentType.toLowerCase() === "start"){
+				//isBoolean better be true!
+				if(!categoryDescriptors.isBoolean){
+					//User specified a boolean specific intentType, but the predicate is numeric! Problem!
+					console.log("problem predicate: " , pred);
+					throw new Error("Error! predicate has a boolean-only intentType (" + intentType + ") but is numeric!");
+				}
+				else{
+					//everything is ok! Let's standardize!
+					pred.intentType = true;
+				}
+			}
+			else if(intentType.toLowerCase() === "increase"){
+				//isBoolean better be false!
+				if(categoryDescriptors.isBoolean){
+					//user specified a numeric specific intent type but the predicate is a boolean! 
+					console.log("problem predicate: " , pred);
+					throw new Error("Error loading in predicate -- it has a numeric-only intentType (" + intentType + ") but is a boolean!");
+				}
+				else{
+					//Everything is ok! time to standardize!
+					pred.intentType = true;
+				}
+			}
+			else if(intentType.toLowerCase() === "stop"){
+				//isBoolean better be true!
+				if(!categoryDescriptors.isBoolean){
+					//user specified a boolean specific intentType but the predicate is numeric!
+					console.log("problem predicate: " , pred);
+					throw new Error("Error loading in predicate -- it has a boolean specific intentType ( " + intentType + ") but is numeric!");
+				}
+				else{
+					//Everything is ok! standardize.
+					pred.intentType = false;
+				}
+			}
+			else if(intentType.toLowerCase() === "decrease"){
+				//isBoolean better be false.
+				if(categoryDescriptors.isBoolean){
+					//user specified a numeric specific intentType but the predicate is boolean.
+					console.log("problem predicate: " , pred);
+					throw new Error("Error loading in predicate -- it has a numeric specific intentType ( " + intentType + ") but is boolean!");
+				}
+				else{
+					//Everything is ok. Standardize.
+					pred.intentType = false;
+				}
+			}
+		}
+
+		// Sort turnsAgoBetween tuple, if present, low-hi.
+		if (pred.turnsAgoBetween !== undefined) {
+			pred.turnsAgoBetween = getSortedTurnsTuple(pred.turnsAgoBetween);
+		}
+
+		return pred;
 	}
+
 	
 	/**
 	 *@method addRules
