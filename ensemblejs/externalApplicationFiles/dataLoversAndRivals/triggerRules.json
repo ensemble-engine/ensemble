@@ -33,13 +33,13 @@
 					"value": true
 				},
 				{
-					"category": "SFDBLabelUndirected",
+					"category": "socialRecordLabelUndirected",
 					"type": "self-involved",
 					"first": "someone",
 					"value": true
 				},
 				{
-					"category": "SFDBLabelUndirected",
+					"category": "socialRecordLabelUndirected",
 					"type": "self-involved",
 					"first": "someoneElse",
 					"value": false
@@ -62,14 +62,14 @@
 			"name": "People are repulsed when they are the recipients of romantic failures",
 			"conditions": [
 				{
-					"category": "SFDBLabel",
+					"category": "socialRecordLabel",
 					"type": "romantic-failure",
 					"first": "wouldBeLover",
 					"second": "victim",
 					"value": true
 				},
 				{
-					"category": "SFDBLabel",
+					"category": "socialRecordLabel",
 					"type": "romantic-failure",
 					"first": "someoneElse",
 					"second": "victim",

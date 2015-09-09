@@ -43,7 +43,7 @@
 			"actionable": false
 		},
 		{
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"types": ["romanticFailure", "romantic advance", "embarrassing"],
 			"isBoolean": true,
 			"directionType": "directed",

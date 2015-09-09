@@ -6,8 +6,8 @@
  * @class ensemble
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "test", "validate"],
-function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "socialRecord", "test", "validate"],
+function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 
 
 	/**
@@ -22,7 +22,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 * @return {Object} An object with an interface to the loaded factories.
 	 */
 	var loadBaseBlueprints = function(bp) {
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		return loadSocialStructure( bp );
 	};
 
@@ -135,12 +135,12 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 
 			validate.blueprint(categoryBlueprint, "Examining blueprint  #" + i);
 
-			sfdb.registerDuration(categoryBlueprint);
-			sfdb.registerDefault(categoryBlueprint);
-			sfdb.registerDirection(categoryBlueprint);
-			sfdb.registerIsBoolean(categoryBlueprint);
-			sfdb.registerMaxValue(categoryBlueprint);
-			sfdb.registerMinValue(categoryBlueprint);
+			socialRecord.registerDuration(categoryBlueprint);
+			socialRecord.registerDefault(categoryBlueprint);
+			socialRecord.registerDirection(categoryBlueprint);
+			socialRecord.registerIsBoolean(categoryBlueprint);
+			socialRecord.registerMaxValue(categoryBlueprint);
+			socialRecord.registerMinValue(categoryBlueprint);
 
 			// Create an interface for each type within this category.
 			structure[categoryBlueprint.category] = {};
@@ -267,7 +267,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 *
 	 * @param {Object} data A file defining the characters in this story. Should contain a single top-level key, "cast", which holds a dictionary of character identifiers, each containing an object with character metadata. If the object contains a key "name" with the printed name of the character, the getCharName function can be used to quickly return this.
 	 *
-	 * @return {Array}      An array of strings with all character keys (same as will be used in sfdb entries, etc..
+	 * @return {Array}      An array of strings with all character keys (same as will be used in socialRecord entries, etc..
 	 */
 	var addCharacters = function(data) {
 		// STUB: For the moment we aren't doing anything with this data,
@@ -284,7 +284,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 * @memberOf ensemble
 	 * Returns an array of character IDs for all registered characters.
 	 *
-	 * @return {Array}      An array of strings with all character keys (same as will be used in sfdb entries, etc..
+	 * @return {Array}      An array of strings with all character keys (same as will be used in socialRecord entries, etc..
 	 */
 	var getCharacters = function() {
 		return _.keys(savedChars);
@@ -484,8 +484,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		return ruleLibrary.setRuleById(label, rule);
 	}
 
-	// Public-facing function to access the SFDB. Does verification on input. Internal functions should use sfdb.get instead.
-	var getSFDB = function(searchPredicate, mostRecentTime, lessRecentTime) {
+	// Public-facing function to access the socialRecord. Does verification on input. Internal functions should use socialRecord.get instead.
+	var getSocialRecord = function(searchPredicate, mostRecentTime, lessRecentTime) {
 
 		// TODO: Make sure operator is not + or -
 
@@ -506,44 +506,44 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 			lessRecentTime = tmp;
 		}
 
-		// Ensure SFDB has been initialized.
-		if (sfdb.getCurrentTimeStep() === -1) {
-			sfdb.setupNextTimeStep(0);
+		// Ensure socialRecord has been initialized.
+		if (socialRecord.getCurrentTimeStep() === -1) {
+			socialRecord.setupNextTimeStep(0);
 		}
 
-		return sfdb.get(searchPredicate, mostRecentTime, lessRecentTime);
+		return socialRecord.get(searchPredicate, mostRecentTime, lessRecentTime);
 	};
 
 	//public facing function to put a character offstage.
 	
 	var setCharacterOffstage = function(characterName){
-		sfdb.putCharacterOffstage(characterName);
+		socialRecord.putCharacterOffstage(characterName);
 	};
 
 	//public facing function to see if a character is offstage or not.
 	var getIsCharacterOffstage = function(characterName){
-		return(sfdb.getIsCharacterOffstage(characterName));
+		return(socialRecord.getIsCharacterOffstage(characterName));
 	};
 
 	//public facing function to place a character onstage.
 	var setCharacterOnstage = function(characterName){
-		sfdb.putCharacterOnstage(characterName);
+		socialRecord.putCharacterOnstage(characterName);
 	};
 
 	//public facing function to see if a character is onstage or not.
 	var getIsCharacterOnstage	= function(characterName){
-		var characterOffstage = sfdb.getIsCharacterOffstage(characterName);
+		var characterOffstage = socialRecord.getIsCharacterOffstage(characterName);
 		return (!characterOffstage);
 	};
 
 	//public facing function to see if a character has been eliminated.
 	var setCharacterEliminated = function(characterName){
-		sfdb.eliminateCharacter(characterName);
+		socialRecord.eliminateCharacter(characterName);
 	};
 
 	//public facing function to see if a character has been eliminated or not.
 	var getIsCharacterEliminated  = function(characterName){
-		sfdb.getIsCharacterEliminated(characterName);
+		socialRecord.getIsCharacterEliminated(characterName);
 	};
 
 	//public facing function to make two characters perform an action.
@@ -566,8 +566,8 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		// Clear all character info
 		// For now, we aren't storing this anyway.
 
-		// Clear the SFDB History.
-		sfdb.clearEverything();
+		// Clear the socialRecord History.
+		socialRecord.clearEverything();
 
 		// Clear all rules.
 		ruleLibrary.clearRuleLibrary();
@@ -588,7 +588,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 	 *
 	 */
 	var init = function() {
-		sfdb.init();		
+		socialRecord.init();		
 		return "Ok";
 	};
 
@@ -613,23 +613,23 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, test, validate) {
 		ruleToEnglish			: ruleLibrary.ruleToEnglish,
 		predicateToEnglish		: ruleLibrary.predicateToEnglish,
 		
-		dumpSFDB				: sfdb.dumpSFDB,
-		set						: sfdb.set,
-		get						: getSFDB,
+		dumpSocialRecord				: socialRecord.dumpSocialRecord,
+		set						: socialRecord.set,
+		get						: getSocialRecord,
 		setCharacterOffstage	: setCharacterOffstage,
 		getIsCharacterOffstage	: getIsCharacterOffstage,
 		setCharacterOnstage		: setCharacterOnstage,
 		getIsCharacterOnstage	: getIsCharacterOnstage,
 		setCharacterEliminated	: setCharacterEliminated,
 		getIsCharacterEliminated : getIsCharacterEliminated,
-		setupNextTimeStep		: sfdb.setupNextTimeStep,
-		getRegisteredDirection	: sfdb.getRegisteredDirection,
+		setupNextTimeStep		: socialRecord.setupNextTimeStep,
+		getRegisteredDirection	: socialRecord.getRegisteredDirection,
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
-		addHistory				: sfdb.addHistory,
-		getSFDBCopyAtTimestep	: sfdb.getSFDBCopyAtTimestep,
-		getCurrentTimeStep		: sfdb.getCurrentTimeStep,
+		addHistory				: socialRecord.addHistory,
+		getSocialRecordCopyAtTimestep	: socialRecord.getSocialRecordCopyAtTimestep,
+		getCurrentTimeStep		: socialRecord.getCurrentTimeStep,
 		
 		addRules				: addRules,
 		getRules				: getRules,

@@ -30,7 +30,7 @@
 	"intentDirection": "if true, weight applies to the desire to start/increase the given predicate; if false, weight applies to the desire to stop/decrease the given predicate. Can also be defined as 'up' or 'down', which will be converted to true or false on preprocessing.",
 
 	"OPTIONAL": 0,
-	["turnsAgoBetween"	: "A tuple of positive integers or the quoted strings START or NOW, indicating the range of time in which this is valid, relative to the current time step. Order does not matter, so both [5, 10] and [10, 5] mean 'between five and ten turns ago.' START means from the first registered timestep in the SFDB, and NOW means the most recent timestep, so ['NOW', 3] means in the last three turns.",]
+	["turnsAgoBetween"	: "A tuple of positive integers or the quoted strings START or NOW, indicating the range of time in which this is valid, relative to the current time step. Order does not matter, so both [5, 10] and [10, 5] mean 'between five and ten turns ago.' START means from the first registered timestep in the social record, and NOW means the most recent timestep, so ['NOW', 3] means in the last three turns.",]
 	"labels"	: "An array of strings, labels attached to the predicate. Unused for now but useful for future expansion to tie additional information to predicates (i.e., first: Monica is dating second: Simon because label: Cassandra.)"
 	"duration": "The number of turns until a value is reversed. Only used for booleans.
 		

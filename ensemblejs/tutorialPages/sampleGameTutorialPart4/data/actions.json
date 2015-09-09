@@ -70,7 +70,7 @@
 				"value" : 10		
 			},
 			{
-					"category" : "SFDBLabelUndirected",
+					"category" : "socialRecordLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -110,7 +110,7 @@
 					"value" : 10
 				},
 				{
-					"category" : "SFDBLabelUndirected",
+					"category" : "socialRecordLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -137,7 +137,7 @@
 				"value" : 5
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -156,7 +156,7 @@
 				"value" : 10
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -181,7 +181,7 @@
 				"value" : 10
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -319,7 +319,7 @@
 				"operator" : "+",
 				"value" : 10
 			},{
-				"category" : "SFDBLabel",
+				"category" : "socialRecordLabel",
 				"type" : "romantic-failure",
 				"first" : "initiator",
 				"second" : "responder",

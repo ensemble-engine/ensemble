@@ -9,7 +9,7 @@
  * @private
  */
 
-define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb, volition, _, util, log, test) {
+define(["socialRecord", "volition", "underscore", "util", "log", "test"], function(socialRecord, volition, _, util, log, test) {
 
 	var ruleLibrary = {
 		triggerRules : [],
@@ -23,7 +23,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
  *
  * @method runRules
  * @memberof RuleLibrary
- * @param {String} ruleSet	an array of rules to check for in the SFDB
+ * @param {String} ruleSet	an array of rules to check for in the socialRecord
  * @param {Array} cast		an array of characters we are interested in seeing if the provided rules apply to
  * @param onMatchFunction	the function that we will apply if the rule(s) are found to be true
  */
@@ -283,7 +283,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		var condition;
 		var orderCounter = - 9999;
 		var timeStart = 0;
-		var timeEnd = sfdb.getCurrentTimeStep();
+		var timeEnd = socialRecord.getCurrentTimeStep();
 		var timeOfLastMatch = -1;
 		var currentTimeStep = timeEnd;
 		var results;
@@ -327,7 +327,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			//more common case). There may be enough of these conventions that it should be
 			//separated out into it's own file, but for now, let's just do the status thing.
 			// TODO: change to default value here
-			if(condition.value === undefined && sfdb.getRegisteredIsBoolean(condition) === true) {
+			if(condition.value === undefined && socialRecord.getRegisteredIsBoolean(condition) === true) {
 				//condition.value = sfdb.getRegisteredDefault(condition);
 				condition.value = true;
 			}
@@ -341,7 +341,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 
 			if(searchCondition.order === undefined){
 				//Normal Evaluation. 
-				results = sfdb.get(searchCondition, smallerRelTime, largerRelTime);	//zeros signify currentTimeStep
+				results = socialRecord.get(searchCondition, smallerRelTime, largerRelTime);	//zeros signify currentTimeStep
 				// If no match was found, this condition is false; so this
 				// whole predicate must be false..
 				if (results.length === 0) {
@@ -373,7 +373,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 					return false; // the 'start point' is already PAST the acceptable end point, which means it is impossible for us to succeed.
 				}
 
-				results = sfdb.get(searchCondition, timeEnd, timeStart );
+				results = socialRecord.get(searchCondition, timeEnd, timeStart );
 
 				if (results.length === 0) {
 					//No results found! Must not be true!
@@ -459,7 +459,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 	};
 
 /**
- * @description  Run the SFDB's appropriate trigger rules with a given cast. Trigger rules always run at the current timeStep.
+ * @description  Run the socialRecord's appropriate trigger rules with a given cast. Trigger rules always run at the current timeStep.
  *
  * @method runTriggerRules
  * @memberof ensemble
@@ -483,7 +483,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		//a trigger had two effects: one we want to run, and one that involves 'characters to ignore'
 		//So we still need to do another check here!
 		var charactersToNotBeTheSubjectOrObjectOfTriggerRules = [];
-		var eliminatedCharacters = sfdb.getEliminatedCharacters();
+		var eliminatedCharacters = socialRecord.getEliminatedCharacters();
 		charactersToNotBeTheSubjectOrObjectOfTriggerRules = util.clone(eliminatedCharacters);
 
 
@@ -499,7 +499,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			}
 			explanation += predicateToEnglish(effect).text;
 			if(isEffectValid(effect, charactersToNotBeTheSubjectOrObjectOfTriggerRules)){
-				sfdb.set(effect);
+				socialRecord.set(effect);
 				triggerObj.effects.push(effect);
 			}
 			if (effectNumber === lastNumber) {
@@ -563,8 +563,8 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 		//from the offstage list and the eliminated list
 		//and lumping them together here.
 		var charactersToSkipVolitionCalculation = [];
-		var offstageCharacters = sfdb.getOffstageCharacters();
-		var eliminatedCharacters = sfdb.getEliminatedCharacters();
+		var offstageCharacters = socialRecord.getOffstageCharacters();
+		var eliminatedCharacters = socialRecord.getEliminatedCharacters();
 		for(var i = 0; i < offstageCharacters.length; i += 1){
 			if(charactersToSkipVolitionCalculation.indexOf(offstageCharacters[i]) === -1){
 				charactersToSkipVolitionCalculation.push(offstageCharacters[i]);
@@ -616,7 +616,7 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			//and then directly update/adjust the value at that spot in the array.
 			
 			//TODO: currently, adjustWeight cannot handle a situation where there is no second person in the effect. We might want to handle this.
-			var direction = sfdb.getRegisteredDirection(effect);
+			var direction = socialRecord.getRegisteredDirection(effect);
 			//console.log(direction);
 			if(effect.second === undefined){
 				if(direction === "undirected" ){
@@ -932,9 +932,9 @@ define(["sfdb", "volition", "underscore", "util", "log", "test"], function(sfdb,
 			return o;
 		}
 
-		var isBoolean = sfdb.getRegisteredIsBoolean(pred);
-		var directionType = sfdb.getRegisteredDirection(pred);
-		var duration = sfdb.getRegisteredDuration(pred);
+		var isBoolean = socialRecord.getRegisteredIsBoolean(pred);
+		var directionType = socialRecord.getRegisteredDirection(pred);
+		var duration = socialRecord.getRegisteredDuration(pred);
 		var isPersistent = (duration !== 0) ? true : false;
 
 		var nameFirst = pred.first;

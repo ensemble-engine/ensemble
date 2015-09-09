@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ensemble.js
  */
 
-define(["util", "underscore", "ruleLibrary", "sfdb", "ensemble", "test", "volition"],
-function(util, _, ruleLibrary, sfdb, ensemble, test, volition) {
+define(["util", "underscore", "ruleLibrary", "socialRecord", "ensemble", "test", "volition"],
+function(util, _, ruleLibrary, socialRecord, ensemble, test, volition) {
 
 
 	/***************************************************************/

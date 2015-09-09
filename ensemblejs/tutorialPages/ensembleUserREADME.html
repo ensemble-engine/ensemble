@@ -26,7 +26,7 @@ Inside of the zip file we're distributing, you should see the following folders 
 ensemble.html is an API of the various functions you can call from ensemble. If you need a reminder of the functions you have available, or what parameters those functions require, this is the place to check out!
 
 <p>
-And, for what it's worth, all of the files in this folder can be accessed from the others. So, files such as RuleLibrary.js.html, SFDB.js.html, Validate.js.html, ActionLibrary.js.html, and Volition.js.html (which let you look at the actual code to ensemble itself if you are curious) can be found by clicking on line numbers associated with functions from within ensemble.html.
+And, for what it's worth, all of the files in this folder can be accessed from the others. So, files such as RuleLibrary.js.html, socialRecord.js.html, Validate.js.html, ActionLibrary.js.html, and Volition.js.html (which let you look at the actual code to ensemble itself if you are curious) can be found by clicking on line numbers associated with functions from within ensemble.html.
 
 <p>
 <b>exampleSchemata</b> -- Contains two examples ("rpg" and "yarn") of social schema packages to build off of. See "Using ensemble: Basic Setup" for a description of what a schema package is. When first opening the authoring tool, it is going to want you to select a schema package folder. Try giving it either rpg or yarn, or alternatively just direct it to the sampleEmptyProject folder, and the tool should be nice and happy!
@@ -160,11 +160,11 @@ This will get you an action object, filled with interesting information, such as
 	}
 </pre>
 
-This will either add, remove, or edit an entry from the Social Facts Database (SFDB). The world is now changed forever!
+This will either add, remove, or edit an entry from the Social Facts Database (Social Record). The world is now changed forever!
 
 <h3>Using ensemble: Completing the Loop</h3>
 
-Just because the SFDB has been changed, the character's still have their lingering volitions from the previous state of the world. However, to fix that, all you need is a simple call to calculate volitions once again!
+Just because the Social Record has been changed, the character's still have their lingering volitions from the previous state of the world. However, to fix that, all you need is a simple call to calculate volitions once again!
 
 <pre class="prettyprint">
 	storedActions = ensemble.calculateVolitions(cast);
@@ -350,10 +350,10 @@ This is an array of predicates specifying what NEEDS to be true in order for thi
 </pre></a>
 
 <p>
-Once again, category and type are things defined in your schema. Depending on the category, there may or may not be two people involved. In this example, there is only one person involved, so the 'first' field is filled in, but there is no 'second' field -- this is because we defined in our schema that "trait" is something that only applies to a single person. If we were dealing with something like, say, "relationship", then we would want there to be a "second" field in this predicate as well.  Value is what we are actually looking for in the sfdb, so in this case, we are checking to see if there exists an instance where there is a character who DOES have the trait lucky (i.e., a character with lucky = true in the sfdb).
+Once again, category and type are things defined in your schema. Depending on the category, there may or may not be two people involved. In this example, there is only one person involved, so the 'first' field is filled in, but there is no 'second' field -- this is because we defined in our schema that "trait" is something that only applies to a single person. If we were dealing with something like, say, "relationship", then we would want there to be a "second" field in this predicate as well.  Value is what we are actually looking for in the Social Record, so in this case, we are checking to see if there exists an instance where there is a character who DOES have the trait lucky (i.e., a character with lucky = true in the Social Record).
 
 <p>
-If we weren't dealing with a boolean category, then the value would be a number, and there would also be an 'operator' field that could have "<", ">" or "=" -- that would essentially us be saying that in the sfdb, some character has to have a value greater than, less than, or equal to whatever number is specified in the value field, respectively.
+If we weren't dealing with a boolean category, then the value would be a number, and there would also be an 'operator' field that could have "<", ">" or "=" -- that would essentially us be saying that in the Social Record, some character has to have a value greater than, less than, or equal to whatever number is specified in the value field, respectively.
 
 <p>
 Note that we use the word "luckyGuy" here -- lucky guy is just an arbitrary string -- you can type whatever the heck you want. But now at this point in the action selection process, luckyGuy has now been 'bound' to a specific character, and specifically characters that are NOT the initiator and responder. Later on down the chain, we can reference luckyGuy again, and we'll be able to do so with confidence that they do, in fact, have the trait lucky (because otherwise they wouldn't have passed this current action that we're on right now). It's also possible that there are MULTIPLE characters that would qualify to be 'luckyGuy', and we actually keep track of all of them; ultimately we'll only pick one, and not just ANY one! We'll pick the BEST luckyGuy! And we'll do that in part by taking a look at...

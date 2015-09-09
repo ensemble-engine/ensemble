@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ActionLibrary.js
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "sfdb", "ensemble", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json", "text!data/testActionsGrammar14.json", "text!data/testActionsGrammar15.json", "text!data/testActionsGrammar16.json", "text!data/testActionsGrammar17.json"],
-function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions, testActionsGrammar14, testActionsGrammar15, testActionsGrammar16, testActionsGrammar17) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "socialRecord", "ensemble", "test", "volition", "text!data/testVolitionRules.json", "text!data/testSocial.json", "text!data/testActions.json", "text!data/testActionsGrammar.json", "text!data/testActionsGrammar2.json", "text!data/testActionsGrammar3.json", "text!data/testActionsGrammar4.json", "text!data/testActionsGrammar5.json", "text!data/testActionsGrammar6.json", "text!data/testActionsGrammar7.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json", "text!data/testActionsGrammar10.json", "text!data/testActionsGrammar11.json", "text!data/testActionsGrammar12.json", "text!data/testActionsGrammar13.json", "text!data/samsVolition.json", "text!data/rpgSchema.json", "text!data/rpgActions.json", "text!data/testActionsGrammar14.json", "text!data/testActionsGrammar15.json", "text!data/testActionsGrammar16.json", "text!data/testActionsGrammar17.json"],
+function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, volition, testVolitionRules, testSocial, testActions, testActionsGrammar, testActionsGrammar2, testActionsGrammar3, testActionsGrammar4, testActionsGrammar5, testActionsGrammar6, testActionsGrammar7, testActionsGrammar8, testActionsGrammar9, testActionsGrammar10, testActionsGrammar11, testActionsGrammar12, testActionsGrammar13, samsVolition, rpgSchema, rpgActions, testActionsGrammar14, testActionsGrammar15, testActionsGrammar16, testActionsGrammar17) {
 
 
 	/***************************************************************/
@@ -15,36 +15,36 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 	var runTests = function() {
 
 
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testParseActions();
-		sfdb.clearEverything();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
+		socialRecord.clearEverything();
 		testGetActionFromName();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		//testDoAction();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		//testBindActionEffects();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testCategorizeActionGrammar();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testGetTerminalsFromNonTerminal();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testGetActionHierarchyFromVolition();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testActionsWithConditions();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testActionsWithInfluenceRules();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testReadingActionsFromMultipleFiles();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testGetAction();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testGetActions();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testUndirectedActions();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testStartSymbolAlreadyExists();
-		//sfdb.clearEverything();
+		//socialRecord.clearEverything();
 
 
 	};
@@ -161,7 +161,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		ensemble.setupNextTimeStep(0);
 		v = volition.register("main", sampleVolitions);
 		actionLibrary.doAction("annoy", "simon", "monica", v);
-		console.log(sfdb.sfdbFullHistoryToString());
+		console.log(socialRecord.socialRecordFullHistoryToString());
 		result = ensemble.get(affinityPredicate2);
 		test.assert(result.length, 1, "Annoy was rejected -- instead of going down by 10 should have only gone down by 1!");
 		
@@ -447,7 +447,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 		//Scott and Biff will be friends with each other.
 		//So the only valid combinations will be Bob for nimble1, Alice for nimble2, OR vice versa.
 		//MisterInit and MadamRespond are just the placeholders -- they'll be the initiator and responder (who are automatically bound to the initiator and responder roles).
-		//So, let's set this up in the sfdb.
+		//So, let's set this up in the socialRecord.
 		var cast = ["Bob", "Alice", "Scott", "Biff", "MisterInit", "MadamRespond", "ThePrinceOfNothing"];
 
 		var sampleVolitions = {
@@ -1004,7 +1004,7 @@ function(util, _, ruleLibrary, actionLibrary, sfdb, ensemble, test, volition, te
 
 var testGetAction = function(){
 		console.log("inside of testGetAction!");
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar10);
 		actionLibrary.parseActions(testActionsGrammar11);
@@ -1016,8 +1016,8 @@ var testGetAction = function(){
 		test.start("ActionLibrary", "testGetAction");
 
 		
-		//goal: simulate a "real situation" with characters with stuff specified in the sfdb.
-		//so, first we probably want to: populate the sfdb with some predicates.
+		//goal: simulate a "real situation" with characters with stuff specified in the socialRecord.
+		//so, first we probably want to: populate the socialRecord with some predicates.
 		//Then we want to "compute volitions" or whatever.
 		//Then we want to use those volitions to get a good action.
 		//NOTE: there may be some re-writing of actions that has to be done, now that we are in a 'real' enviorenment. Possibly...
@@ -1123,7 +1123,7 @@ var testGetAction = function(){
 	var testGetActions = function(){
 		console.log("inside of testGetActions!");
 		ensemble.reset();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(testActionsGrammar13);
 		ensemble.loadBaseBlueprints(testSocial);
@@ -1309,12 +1309,12 @@ var testGetAction = function(){
 
 		//Zero everything out, load in the schema/actions/rules we want to be using.
 		ensemble.reset();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		actionLibrary.clearActionLibrary();
 		actionLibrary.parseActions(rpgActions);
 		ensemble.loadBaseBlueprints(rpgSchema);
 		ensemble.addRules(samsVolition);
-		sfdb.setupNextTimeStep(0);
+		socialRecord.setupNextTimeStep(0);
 		var cast = ["brax", "tarloc", "finnigan", "charles"];
 
 		//Calculate volitions and find the top action.
@@ -1329,14 +1329,14 @@ var testGetAction = function(){
 			"first" : "brax"
 		};
 
-		//SFDB should be empty at this point, creates a new 'default' entry in it (which should be 10)
+		//socialRecord should be empty at this point, creates a new 'default' entry in it (which should be 10)
 		var result = ensemble.get(braxIntelligence);
 
 		//Make sure that the thing that was returned was correct.
 		test.assert(actions.length, 1, "Wrong number of actions returned.");
 		test.assert(actions[0].name, "read", "Wrong action returned when boosting an undirected element.");
 		test.assert(actions[0].weight, 15, "unexpected weight for boosting an undirected element.");
-		test.assert(result[0].value, 10, "SFDB for the result was unexpected value.");
+		test.assert(result[0].value, 10, "socialRecord for the result was unexpected value.");
 
 		//Go through each effect of the action and 'set' it's effects (should increase intelligence by 1)
 		for(var i = 0; i < actions[0].effects.length; i += 1){

@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from RuleLibrary.js
  */
 
-define(["util", "underscore", "util", "ruleLibrary", "sfdb", "ensemble", "volition", "test", "validate", "text!data/testSocial.json", "text!data/testTriggerRules.json"],
-function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, testSocial, testTriggerRules) {
+define(["util", "underscore", "util", "ruleLibrary", "socialRecord", "ensemble", "volition", "test", "validate", "text!data/testSocial.json", "text!data/testTriggerRules.json"],
+function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, validate, testSocial, testTriggerRules) {
 
 
 	/***************************************************************/
@@ -19,37 +19,37 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 	var runTests = function(){
 		var testResults = "<span class='unitTestHeader'>***RuleLibrary.js***</span>";
 		testResults += testRunRules();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testGetUniqueBindings();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testMatchUniqueBindings();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testDoBinding();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testRunTriggerRules();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testCalculateVolition();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testAddRuleSet();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testAccessById();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testEvaluateConditions();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testRuleToEnglish();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testArePredicatesEqual();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testAreRulesEqual();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults +=testIsRuleAlreadyInRuleSet();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testTimeOrderedRules();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testSortConditionsByOrder();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testPredicateToEnglish();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testResults += testPredicateDefaults();
 
 		//the above functions assume that rules have the following two things:
@@ -427,9 +427,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		triggerConditionOne.defaultValue = false;
 		triggerConditionOne.isBoolean = true;
 		triggerConditionOne.directionType = "reciprocal";
-		sfdb.registerDirection(triggerConditionOne);
-		sfdb.registerIsBoolean(triggerConditionOne);
-		sfdb.registerDefault(triggerConditionOne);
+		socialRecord.registerDirection(triggerConditionOne);
+		socialRecord.registerIsBoolean(triggerConditionOne);
+		socialRecord.registerDefault(triggerConditionOne);
 
 		var triggerConditionTwo = {}; //X and Z must not be friends
 		triggerConditionTwo.category = "relationship";
@@ -473,9 +473,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		volitionConditionOne.isBoolean = false;
 		volitionConditionOne.defaultValue = 50;
 		volitionConditionOne.directionType = "directed";
-		sfdb.registerDirection(volitionConditionOne);
-		sfdb.registerIsBoolean(volitionConditionOne);
-		sfdb.registerDefault(volitionConditionOne);
+		socialRecord.registerDirection(volitionConditionOne);
+		socialRecord.registerIsBoolean(volitionConditionOne);
+		socialRecord.registerDefault(volitionConditionOne);
 
 
 		var volitionConditions = util.clone(triggerConditions);
@@ -691,15 +691,15 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		var cast = ["doc", "reggie", "vanessa", "clara"];
 		var numTimesProcessed = 0;
 
-		//Ah, and because we want this to be true, let's conveniently add some things to the sfdb
-		var sfdbEntryOne = util.clone(conditionOne);
-		sfdbEntryOne.first = "doc";
-		sfdbEntryOne.second = "reggie";
-		var sfdbEntryTwo = util.clone(conditionTwo);
-		sfdbEntryTwo.first = "doc";
-		sfdbEntryTwo.second = "vanessa";
-		sfdb.set(sfdbEntryOne);
-		sfdb.set(sfdbEntryTwo);
+		//Ah, and because we want this to be true, let's conveniently add some things to the socialRecord
+		var socialRecordEntryOne = util.clone(conditionOne);
+		socialRecordEntryOne.first = "doc";
+		socialRecordEntryOne.second = "reggie";
+		var socialRecordEntryTwo = util.clone(conditionTwo);
+		socialRecordEntryTwo.first = "doc";
+		socialRecordEntryTwo.second = "vanessa";
+		socialRecord.set(socialRecordEntryOne);
+		socialRecord.set(socialRecordEntryTwo);
 
 		//useful variables that get updated when we go inside of processResult
 		var result;
@@ -719,11 +719,11 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.start("RuleLibrary", "testMatchUniqueBindings");
 
 		//TEST 1 -- Does match unique bindings successfully get into 'processResult' if the stuff does
-		//in fact exist in the sfdb.
+		//in fact exist in the socialRecord.
 		var unaffectedCharacters = []; //used for ignoring offstage/eliminated characters.
 		var params = {}; //TODO: phase out.
 		ruleLibrary.matchUniqueBindings(uniqueBindings, cast, processResult, rule, params, unaffectedCharacters);
-		test.assert(result, true, "In match unique bindings, even though it was true in the SFDB, we failed to match the unique bindings in the test.");
+		test.assert(result, true, "In match unique bindings, even though it was true in the socialRecord, we failed to match the unique bindings in the test.");
 
 		//TEST 1.5 -- is the returned effect full of the stuff that we dreamed it would be?
 		test.assert(boundEffect.category, "relationship", "The category of the effect somehow got altered through matchUniqueBindings");
@@ -731,15 +731,15 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(boundEffect.first, "doc", "The wrong person got matched to the 'first' binding");
 		test.assert(boundEffect.second, "reggie", "The wrong person got matched to the 'second' binding");
 
-		//TEST 2 -- what happens when the stuff does NOT exist in the sfdb?
-		sfdb.clearEverything();
-		sfdb.set(sfdbEntryOne); // here we are only setting one of our two things!
+		//TEST 2 -- what happens when the stuff does NOT exist in the socialRecord?
+		socialRecord.clearEverything();
+		socialRecord.set(socialRecordEntryOne); // here we are only setting one of our two things!
 		ruleLibrary.matchUniqueBindings(uniqueBindings, cast, processResult, rule, params, unaffectedCharacters);
 		test.assert(numTimesProcessed, 1, "Hm, we apparantly processed the wrong amount; supposed to have only done it once.");
 
 		//TEST 3 -- There had been an issue when people defined LATER in the cast needed to do things with people
 		//defined EARLIER in the cast. Let's deal with that.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		numTimesProcessed = 0; //reset this as well for our new test.
 		var claraOne = {};
 		claraOne.category = "directedStatus";
@@ -755,8 +755,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		claraTwo.second = "reggie";
 		claraTwo.value = true;
 
-		sfdb.set(claraOne);
-		sfdb.set(claraTwo);
+		socialRecord.set(claraOne);
+		socialRecord.set(claraTwo);
 
 		ruleLibrary.matchUniqueBindings(uniqueBindings, cast, processResult, rule, params, unaffectedCharacters);
 		test.assert(numTimesProcessed, 1, "Test 3 -- numTimesProcessed doesn't check out");
@@ -775,7 +775,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		claraThree.second = "vanessa";
 		claraThree.value = true;
 
-		sfdb.set(claraThree);
+		socialRecord.set(claraThree);
 		ruleLibrary.matchUniqueBindings(uniqueBindings, cast, processResult, rule, params, unaffectedCharacters);
 		test.assert(numTimesProcessed, 2, "Test 4 -- numTimesProcessed didn't check out when should have been run multiple times");
 
@@ -807,49 +807,49 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//Ok, theoretically I now have all of the trigger rules built in!
 		//great! Now I guess there is nothing left to do but... run them?
-		//sure! But first, let's put some things in the sfdb to make some of them true, you know?
+		//sure! But first, let's put some things in the socialRecord to make some of them true, you know?
 		//How about the 'if your sweetie is injured you worry about them' trigger rule? That seems like a nice one...
-		var sfdbEntryOne = {};
-		sfdbEntryOne.category = "status";
-		sfdbEntryOne.type = "injured";
-		sfdbEntryOne.first = "doc";
-		sfdbEntryOne.value = true;
-		sfdbEntryOne.defaultValue = false;
-		sfdbEntryOne.isBoolean = true;
-		sfdbEntryOne.directionType = "undirected";
-		sfdb.registerDirection(sfdbEntryOne);
-		sfdb.registerIsBoolean(sfdbEntryOne);
-		sfdb.registerDefault(sfdbEntryOne);
-		delete sfdbEntryOne.isBoolean;
-		delete sfdbEntryOne.defaultValue;
-		delete sfdbEntryOne.directionType;
+		var socialRecordEntryOne = {};
+		socialRecordEntryOne.category = "status";
+		socialRecordEntryOne.type = "injured";
+		socialRecordEntryOne.first = "doc";
+		socialRecordEntryOne.value = true;
+		socialRecordEntryOne.defaultValue = false;
+		socialRecordEntryOne.isBoolean = true;
+		socialRecordEntryOne.directionType = "undirected";
+		socialRecord.registerDirection(socialRecordEntryOne);
+		socialRecord.registerIsBoolean(socialRecordEntryOne);
+		socialRecord.registerDefault(socialRecordEntryOne);
+		delete socialRecordEntryOne.isBoolean;
+		delete socialRecordEntryOne.defaultValue;
+		delete socialRecordEntryOne.directionType;
 
-		var sfdbEntryTwo = {};
-		sfdbEntryTwo.category = "relationship";
-		sfdbEntryTwo.type = "involved with";
-		sfdbEntryTwo.second = "doc";
-		sfdbEntryTwo.first = "reggie";
-		sfdbEntryTwo.value = true;
-		sfdbEntryTwo.defaultValue = false;
-		sfdbEntryTwo.isBoolean = true;
-		sfdbEntryTwo.directionType = "reciprocal";
-		sfdb.registerDirection(sfdbEntryTwo);
-		sfdb.registerIsBoolean(sfdbEntryTwo);
-		sfdb.registerDefault(sfdbEntryTwo);
-		delete sfdbEntryTwo.isBoolean;
-		delete sfdbEntryTwo.defaultValue;
-		delete sfdbEntryTwo.directionType;
+		var socialRecordEntryTwo = {};
+		socialRecordEntryTwo.category = "relationship";
+		socialRecordEntryTwo.type = "involved with";
+		socialRecordEntryTwo.second = "doc";
+		socialRecordEntryTwo.first = "reggie";
+		socialRecordEntryTwo.value = true;
+		socialRecordEntryTwo.defaultValue = false;
+		socialRecordEntryTwo.isBoolean = true;
+		socialRecordEntryTwo.directionType = "reciprocal";
+		socialRecord.registerDirection(socialRecordEntryTwo);
+		socialRecord.registerIsBoolean(socialRecordEntryTwo);
+		socialRecord.registerDefault(socialRecordEntryTwo);
+		delete socialRecordEntryTwo.isBoolean;
+		delete socialRecordEntryTwo.defaultValue;
+		delete socialRecordEntryTwo.directionType;
 
 		//Let's also make Clara lonely
-		var sfdbEntryThree = {};
-		sfdbEntryThree.category = "status";
-		sfdbEntryThree.type = "lonely";
-		sfdbEntryThree.first = "clara";
-		sfdbEntryThree.value = true;
+		var socialRecordEntryThree = {};
+		socialRecordEntryThree.category = "status";
+		socialRecordEntryThree.type = "lonely";
+		socialRecordEntryThree.first = "clara";
+		socialRecordEntryThree.value = true;
 
-		sfdb.set(sfdbEntryOne);
-		sfdb.set(sfdbEntryTwo);
-		sfdb.set(sfdbEntryThree);
+		socialRecord.set(socialRecordEntryOne);
+		socialRecord.set(socialRecordEntryTwo);
+		socialRecord.set(socialRecordEntryThree);
 
 		//Ok, so doc is injured, and doc and reggie are in a relationship
 		//Sounds to me like reggie should TOTALLY BE CONCERNED!
@@ -857,18 +857,18 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 0 (sanity check)
 		// ----> Check to see that the things that we directly added are in fact being added
-		var getResults = sfdb.get(sfdbEntryOne, 0, 0);
+		var getResults = socialRecord.get(socialRecordEntryOne, 0, 0);
 		test.assert(getResults.length, 1, "oh oh. the first predicate that we pushed on there doesn't seem to be there");
 
 		//TEST 0.5
-		getResults = sfdb.get(sfdbEntryTwo, 0, 0);
+		getResults = socialRecord.get(socialRecordEntryTwo, 0, 0);
 		test.assert(getResults.length, 1, "Oh oh, the second predicate that we pushed on there doesn't seem to be there");
 
 		//TEST 0.75
-		var tempSearchPred = util.clone(sfdbEntryTwo);
+		var tempSearchPred = util.clone(socialRecordEntryTwo);
 		tempSearchPred.first = "doc";
 		tempSearchPred.second = "reggie";
-		getResults = sfdb.get(tempSearchPred, 0, 0);
+		getResults = socialRecord.get(tempSearchPred, 0, 0);
 		test.assert(getResults.length, 1, "Oh oh, the recipricol predicate that we would hope would be there doesn't seem to be there");
 
 		//TEST 1 (Actual trigger rule test)
@@ -882,20 +882,20 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		concernedPred.defaultValue = false;
 		concernedPred.isBoolean = true;
 		concernedPred.directionType = "directed";
-		sfdb.registerDirection(concernedPred);
-		sfdb.registerIsBoolean(concernedPred);
-		sfdb.registerDefault(concernedPred);
+		socialRecord.registerDirection(concernedPred);
+		socialRecord.registerIsBoolean(concernedPred);
+		socialRecord.registerDefault(concernedPred);
 		delete concernedPred.isBoolean;
 		delete concernedPred.defaultValue;
 		delete concernedPred.directionType;
 
-		getResults = sfdb.get(concernedPred, 0, 0);
+		getResults = socialRecord.get(concernedPred, 0, 0);
 
 		test.assert(getResults.length, 1, "Bummer. Reggie doesn't seem to be concerned about doc, even though the trigger rule should have fired");
 
-		//TEST 2 (Verify that a trigger which DOESN'T have its conditions true get 'called' and inserted into the sfdb anyway )
+		//TEST 2 (Verify that a trigger which DOESN'T have its conditions true get 'called' and inserted into the socialRecord anyway )
 		//-->So, Clara should still be lonely!
-		getResults = sfdb.get(sfdbEntryThree, 0, 0);
+		getResults = socialRecord.get(socialRecordEntryThree, 0, 0);
 		test.assert(getResults.length, 1, "Hmm, Clara appears to no longer be lonely, even though she sitll has no friends");
 
 		//TEST 3
@@ -907,9 +907,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		friendPredicateOne.first = "clara";
 		friendPredicateOne.second = "vanessa";
 		friendPredicateOne.value = true;
-		sfdb.set(friendPredicateOne);
+		socialRecord.set(friendPredicateOne);
 		ruleLibrary.runTriggerRules(cast);
-		getResults = sfdb.get(sfdbEntryThree, 0, 0);
+		getResults = socialRecord.get(socialRecordEntryThree, 0, 0);
 		test.assert(getResults.length, 1, "Hmm, Clara appears to no longer be lonely, but she only has ONE friend. You are supposed to be lonely unless you have 2.");
 
 		//TEST 4
@@ -921,8 +921,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		friendPredicateTwo.first = "clara";
 		friendPredicateTwo.second = "doc";
 		friendPredicateTwo.value = true;
-		sfdb.setupNextTimeStep();
-		sfdb.set(friendPredicateTwo);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(friendPredicateTwo);
 		var trigResult = ruleLibrary.runTriggerRules(cast);
 
 		var lonelyPredicate = {};
@@ -937,14 +937,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		notLonelyPredicate.first = "clara";
 		notLonelyPredicate.value = false;
 
-		getResults = sfdb.get(lonelyPredicate, 0, 0);
+		getResults = socialRecord.get(lonelyPredicate, 0, 0);
 		test.assert(getResults.length, 0, "Hmm, Clara is STILL lonely, even though now she has two friends!");
-		getResults = sfdb.get(notLonelyPredicate, 0, 0);
-		test.assert(getResults.length, 1, "Hmm, the predicate 'not lonely' for Clara is apparantly not in the sfdb");
+		getResults = socialRecord.get(notLonelyPredicate, 0, 0);
+		test.assert(getResults.length, 1, "Hmm, the predicate 'not lonely' for Clara is apparantly not in the socialRecord");
 
 		//TEST 5
-		//Testing the 'sfdb' trigger rule as it currently exists in the testTriggerRules.json file.
-		sfdb.clearHistory();
+		//Testing the 'socialRecord' trigger rule as it currently exists in the testTriggerRules.json file.
+		socialRecord.clearHistory();
 		var involvedWithPred = {};
 		involvedWithPred.category = "relationship";
 		involvedWithPred.type = "involved with";
@@ -958,8 +958,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		traitPred.first = "doc";
 		traitPred.value = true;
 
-		var sfdbLabelPred = validate.triggerCondition({
-			"category": "SFDBLabel",
+		var socialRecordLabelPred = validate.triggerCondition({
+			"category": "socialRecordLabel",
 			"type": "romantic advance",
 			"first": "clara",
 			"second": "reggie"
@@ -975,42 +975,42 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//Starting state: Reggie and Doc are dating, Doc is jealous
 		//Turn one: Clara does a romAdvance towards Reggie.
 
-		sfdb.set(involvedWithPred);
-		sfdb.set(traitPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(sfdbLabelPred);
+		socialRecord.set(involvedWithPred);
+		socialRecord.set(traitPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(socialRecordLabelPred);
 
-		getResults = sfdb.get(hatePredicate);
+		getResults = socialRecord.get(hatePredicate);
 		test.assert(getResults.length, 0, "Doc hates Clara; this is weird, because the conditions for his hate are met, but the trigger rules haven't been run yet'");
 
 		ruleLibrary.runTriggerRules(cast);
 
-		getResults = sfdb.get(hatePredicate, 0, 0);
+		getResults = socialRecord.get(hatePredicate, 0, 0);
 		test.assert(getResults.length, 1, "Doc doesn't hate clara, even though she made a romantic advance on his sweetie and he is jealous");
 
 
-		//Another test, here we have some time pass after the SFDB window passes, and so we
+		//Another test, here we have some time pass after the socialRecord window passes, and so we
 		//don't want the thing to fire in this instance!
 
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(sfdbLabelPred);
-		sfdb.set(traitPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(involvedWithPred);
+		socialRecord.set(socialRecordLabelPred);
+		socialRecord.set(traitPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(involvedWithPred);
 		ruleLibrary.runTriggerRules(cast);
-		getResults = sfdb.get(hatePredicate, 0, 0);
-		test.assert(getResults.length, 0, "Doc hates clara. This seems to be a little surprising, however, because the SFDBLabel in the sfdb should be outside of the window specified in the trigger rule's condition");
+		getResults = socialRecord.get(hatePredicate, 0, 0);
+		test.assert(getResults.length, 0, "Doc hates clara. This seems to be a little surprising, however, because the socialRecordLabel in the socialRecord should be outside of the window specified in the trigger rule's condition");
 
-		//console.log(sfdb.sfdbHistoryToString(1));
+		//console.log(socialRecord.socialRecordHistoryToString(1));
 
 		// Should work even if value has to rely on default.
-		sfdb.clearHistory();
-		delete sfdbEntryOne.value;
-		sfdb.set(sfdbEntryOne);
-		//console.log(sfdb.sfdbHistoryToString());
-		sfdbEntryOne.value = true;
-		test.assert(sfdb.get(sfdbEntryOne, 0, 0).length, 1, "Setting a predicate should work even if it has to rely on default value.");
+		socialRecord.clearHistory();
+		delete socialRecordEntryOne.value;
+		socialRecord.set(socialRecordEntryOne);
+		//console.log(socialRecord.socialRecordHistoryToString());
+		socialRecordEntryOne.value = true;
+		test.assert(socialRecord.get(socialRecordEntryOne, 0, 0).length, 1, "Setting a predicate should work even if it has to rely on default value.");
 
 		//TEST 6 (Let's say) -- do trigger rules work with characters that are offstage/eliminated as expected.
 		//I'm going to make a clean slate of everything past this point, including making my own trigger rules.
@@ -1072,7 +1072,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.putCharacterOffstage("clyde"); // someone totally not involved.
+		socialRecord.putCharacterOffstage("clyde"); // someone totally not involved.
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 1, "Putting a character who is not involved should change nothing.");
@@ -1081,7 +1081,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.putCharacterOffstage("brick");
+		socialRecord.putCharacterOffstage("brick");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 1, "Putting the 'responder' of the trigger effect offstage should change nothing.");
@@ -1090,7 +1090,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.putCharacterOffstage("alex");
+		socialRecord.putCharacterOffstage("alex");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 1, "Putting the 'initiator' of the trigger effect offstage should change nothing.");
@@ -1099,8 +1099,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.putCharacterOffstage("alex");
-		sfdb.putCharacterOffstage("brick");
+		socialRecord.putCharacterOffstage("alex");
+		socialRecord.putCharacterOffstage("brick");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 1, "Putting both the 'initiator and responder' of the trigger effect offstage should change nothing.");
@@ -1184,7 +1184,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
 		ensemble.set(happyPred); // the advanced trigger rule should now fire.
-		sfdb.putCharacterOffstage("clyde");
+		socialRecord.putCharacterOffstage("clyde");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(involvedWithPred1);
 		test.assert(result.length, 1, "Even with a character offstage, onstage characters should still get new statuses from triggers");
@@ -1206,7 +1206,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.eliminateCharacter("clyde"); // someone totally not involved.
+		socialRecord.eliminateCharacter("clyde"); // someone totally not involved.
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 1, "Eliminating a character who is not involved should change nothing.");
@@ -1215,7 +1215,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.eliminateCharacter("brick");
+		socialRecord.eliminateCharacter("brick");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 0, "Eliminating the 'responder' of the trigger effect should make rule not fire.");
@@ -1224,7 +1224,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.eliminateCharacter("alex");
+		socialRecord.eliminateCharacter("alex");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 0, "Eliminating the 'initiator' of the trigger effect offstage should make the rule not fire.");
@@ -1233,8 +1233,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
-		sfdb.eliminateCharacter("alex");
-		sfdb.eliminateCharacter("brick");
+		socialRecord.eliminateCharacter("alex");
+		socialRecord.eliminateCharacter("brick");
 		ruleLibrary.runTriggerRules(newCast);
 		result = ensemble.get(newInvolvedWithPred);
 		test.assert(result.length, 0, "Eliminating both the 'initiator and responder' of the trigger effect should make the rule not fire.");
@@ -1258,8 +1258,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.set(injuredPred1);
 		ensemble.set(injuredPred2);
 		ensemble.set(happyPred); // the advanced trigger rule should now fire.
-		sfdb.setupNextTimeStep(1); // to dance around clyde's role getting completely wiped along with the current timestep.
-		sfdb.eliminateCharacter("clyde");
+		socialRecord.setupNextTimeStep(1); // to dance around clyde's role getting completely wiped along with the current timestep.
+		socialRecord.eliminateCharacter("clyde");
 		ruleLibrary.runTriggerRules(newCast); // even with clyde eliminated, conditions should still hold true, but HE should not receive a new status
 		result = ensemble.get(involvedWithPred1);
 		test.assert(result.length, 1, "Even with a character eliminated who is involved in trigger conditions, onstage characters should still get new social state from triggers");
@@ -1279,7 +1279,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 	var testEvaluateConditions = function(){
 
 
-		var statusPredicate = {};  //what we are storing in the SFDB. the value true is definitely stored here.
+		var statusPredicate = {};  //what we are storing in the socialRecord. the value true is definitely stored here.
 		statusPredicate.category = "status";
 		statusPredicate.type = "injured";
 		statusPredicate.first = "doc";
@@ -1287,9 +1287,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		statusPredicate.direction = "undirected";
 		statusPredicate.isBoolean = true;
 		statusPredicate.defaultValue = false;
-		sfdb.registerDirection(statusPredicate);
-		sfdb.registerIsBoolean(statusPredicate);
-		sfdb.registerDefault(statusPredicate);
+		socialRecord.registerDirection(statusPredicate);
+		socialRecord.registerIsBoolean(statusPredicate);
+		socialRecord.registerDefault(statusPredicate);
 		delete statusPredicate.isBoolean;
 		delete statusPredicate.defaultValue;
 		delete statusPredicate.direction;
@@ -1314,10 +1314,10 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		conditions.push(searchPredicate1);
 
-		//First, let's clear out the SFDB HISTORY (not the registering we just did!) just to be safe, and then
+		//First, let's clear out the socialRecord HISTORY (not the registering we just did!) just to be safe, and then
 		//add a status to it.
-		sfdb.clearHistory();
-		sfdb.set(statusPredicate);
+		socialRecord.clearHistory();
+		socialRecord.set(statusPredicate);
 
 		test.start("RuleLibrary", "testEvaluateConditions");
 
@@ -1336,24 +1336,24 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		conditions = [];
 		conditions.push(searchPredicate3);
 		evaluationResult = ruleLibrary.evaluateConditions(conditions);
-		test.assert(evaluationResult, false, "The searched for status SHOULDN'T have existed in the SFDB -- false was specified");
+		test.assert(evaluationResult, false, "The searched for status SHOULDN'T have existed in the socialRecord -- false was specified");
 
-		//TEST 3 -- Looking for a status type that doesn't exist in the SFDB should return false
+		//TEST 3 -- Looking for a status type that doesn't exist in the socialRecord should return false
 		conditions = [];
 		conditions.push(searchPredicate4);
 		evaluationResult = ruleLibrary.evaluateConditions(conditions);
-		test.assert(evaluationResult, false, "The searched for status SHOULDN'T have existed in the SFDB -- nothing about 'happy', true or false, should be in there.");
+		test.assert(evaluationResult, false, "The searched for status SHOULDN'T have existed in the socialRecord -- nothing about 'happy', true or false, should be in there.");
 
-		//TEST 4 -- Looking for a status that DOESN'T exist in the SFDB, whose value matches the DEFAULT value, should return true
+		//TEST 4 -- Looking for a status that DOESN'T exist in the socialRecord, whose value matches the DEFAULT value, should return true
 		//--->Even if the default value is false
 		conditions = [];
 		conditions.push(searchPredicate5);
 		evaluationResult = ruleLibrary.evaluateConditions(conditions);
-		test.assert(evaluationResult, true, "The searched for status SHOULDN'T have existed in the SFDB -- nothing about 'happy', true or false, should be in there. BUT since the default value of happy is false, we should have returned true anyway!");
+		test.assert(evaluationResult, true, "The searched for status SHOULDN'T have existed in the socialRecord -- nothing about 'happy', true or false, should be in there. BUT since the default value of happy is false, we should have returned true anyway!");
 
 		//TEST 5 -- Test to see if ordered conditions work
-		sfdb.clearHistory();
-		statusPredicate = {};  //what we are storing in the SFDB. the value true is definitely stored here.
+		socialRecord.clearHistory();
+		statusPredicate = {};  //what we are storing in the socialRecord. the value true is definitely stored here.
 		statusPredicate.category = "network";
 		statusPredicate.type = "friend";
 		statusPredicate.first = "doc";
@@ -1362,18 +1362,18 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		statusPredicate.direction = "undirected";
 		statusPredicate.isBoolean = false;
 		statusPredicate.defaultValue = 10;
-		sfdb.registerDirection(statusPredicate);
-		sfdb.registerIsBoolean(statusPredicate);
-		sfdb.registerDefault(statusPredicate);
+		socialRecord.registerDirection(statusPredicate);
+		socialRecord.registerIsBoolean(statusPredicate);
+		socialRecord.registerDefault(statusPredicate);
 		delete statusPredicate.isBoolean;
 		delete statusPredicate.defaultValue;
 		delete statusPredicate.direction;
-		sfdb.set(statusPredicate);
+		socialRecord.set(statusPredicate);
 
 		statusPredicate.value = 20;
-		sfdb.setupNextTimeStep();
-		sfdb.setupNextTimeStep();
-		sfdb.set(statusPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(statusPredicate);
 
 		conditions = [];
 		// I think this unit test is failing because of something to do with the turnsAgoBetween being in the same window across two orders. But trying to make them non-overlapping doesn't work either. :/
@@ -1498,20 +1498,20 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		predicate.directionType = "directed";
 		predicate.isBoolean = true;
 		predicate.defaultValue = false;
-		sfdb.registerDefault(predicate);
-		sfdb.registerIsBoolean(predicate);
-		sfdb.registerDirection(predicate);
-		delete sfdb.directionType;
-		delete sfdb.isBoolean;
-		delete sfdb.defaultValue;
+		socialRecord.registerDefault(predicate);
+		socialRecord.registerIsBoolean(predicate);
+		socialRecord.registerDirection(predicate);
+		delete socialRecord.directionType;
+		delete socialRecord.isBoolean;
+		delete socialRecord.defaultValue;
 
 		var angryAtPredicate = {}; // now that the same rule can't be entered into a library multiple times, need a separate predicate for a new rule.
 		angryAtPredicate = util.clone(predicate);
 		angryAtPredicate.type = "hates";
 
 
-		sfdb.set(predicate);
-		sfdb.set(angryAtPredicate);
+		socialRecord.set(predicate);
+		socialRecord.set(angryAtPredicate);
 
 		//Register relationships...
 		var relationshipBlueprint = {};
@@ -1520,9 +1520,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		relationshipBlueprint.directionType = "reciprocal";
 		relationshipBlueprint.isBoolean = true;
 
-		sfdb.registerDefault(relationshipBlueprint);
-		sfdb.registerIsBoolean(relationshipBlueprint);
-		sfdb.registerDirection(relationshipBlueprint);
+		socialRecord.registerDefault(relationshipBlueprint);
+		socialRecord.registerIsBoolean(relationshipBlueprint);
+		socialRecord.registerDirection(relationshipBlueprint);
 
 		//Register Statuses...
 		var statusBlueprint = {};
@@ -1531,9 +1531,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		statusBlueprint.directionType = "undirected";
 		statusBlueprint.isBoolean = true;
 
-		sfdb.registerDefault(statusBlueprint);
-		sfdb.registerIsBoolean(statusBlueprint);
-		sfdb.registerDirection(statusBlueprint);
+		socialRecord.registerDefault(statusBlueprint);
+		socialRecord.registerIsBoolean(statusBlueprint);
+		socialRecord.registerDirection(statusBlueprint);
 
 		ruleLibrary.addRuleSet("volitionRules", rules);
 		test.start("RuleLibrary", "testCalculateVolition");
@@ -1593,7 +1593,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 4
 		//TESTING VOLITION CALCULATIONS WITH OFFSTAGE CHARACTERS
 		//Clear everything out, make a new cast for this.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ruleLibrary.clearRuleLibrary(); // Let's first clear out everything from the rule set, and start afresh.
 		ruleLibrary.addRuleSet("volitionRules", rules);
 		ensemble.loadBaseBlueprints(testSocial);
@@ -1605,13 +1605,13 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"second": "simon"
 		};
 
-		//TEST 4.0 WITH AN EMPTY SFDB run the volition tests
+		//TEST 4.0 WITH AN EMPTY socialRecord run the volition tests
 		volitionTest = ruleLibrary.calculateVolition(cast);
 		var result = volitionTest.getFirst("alvin", "simon");
 		test.assert(result, undefined, "Base case -- with no social state, no rules should fire");
 
-		//TEST 4.1 -- Let's actually put something in the SFDB.
-		sfdb.set(hatesPred);
+		//TEST 4.1 -- Let's actually put something in the socialRecord.
+		socialRecord.set(hatesPred);
 		volitionTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "At least one volition should have existed with a bit of social state...");
@@ -1619,7 +1619,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result.length, 2, "Two volition rules should have fired in this case.");
 
 		//TEST 4.2 -- put offstage a character, but don't recalculate volitions.
-		sfdb.putCharacterOffstage("simon");
+		socialRecord.putCharacterOffstage("simon");
 		result = volition.getAllVolitionsByKeyFromTo("main", "alvin", "simon");
 		test.assert(result.length, 2, "Putting a character offstage should not remove previously calculated volitions, but apparantly it did.");
 
@@ -1629,7 +1629,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result, undefined, "Calculating volitions with a character who is offstage should result in no volitions towards them");
 
 		//TEST 4.4 -- making the character NOT off stage, but not re-calculating the volitions should still be undefined.
-		sfdb.putCharacterOnstage("simon");
+		socialRecord.putCharacterOnstage("simon");
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assert(result, undefined, "Putting an offstage character back on stage shouldn't make volitions work suddenly");
 		result = volition.getAllVolitionsByKeyFromTo("main", "alvin", "simon");
@@ -1643,7 +1643,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result.length, 2, "Calculating volitions with a character who was offstage but then put onstage (getAllVolitionsByKeyFromTo).");
 
 		//TEST 4.6 -- putting another character offstage shouldn't impact anything.
-		sfdb.putCharacterOffstage("dave");
+		socialRecord.putCharacterOffstage("dave");
 		volitionTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "Putting a different person off stage shouldn't affect the volitions of those onstage.");
@@ -1657,8 +1657,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"first" : "alvin"
 		};
 		//Setting up the baselines (making sure that it is behaving as we would expect when all characters are onstage...)
-		sfdb.set(injuredPred); // alvin is now less interested in romance with both simon and dave.
-		sfdb.putCharacterOnstage("dave");
+		socialRecord.set(injuredPred); // alvin is now less interested in romance with both simon and dave.
+		socialRecord.putCharacterOnstage("dave");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "Base case for 4.7 (alvin, simon, getFirst)");
@@ -1670,7 +1670,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result.length, 1, "Base case for 4.7 (alvin, dave, getAll...");
 
 		//And now if we take one of these characters offstage, the remaining onstage characters should be unchanged.
-		sfdb.putCharacterOffstage("dave");
+		socialRecord.putCharacterOffstage("dave");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "Putting a different person offstage when we might have volitions for them shouldn't affect the remaining people on stage (getFirst)");
@@ -1682,7 +1682,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result.length, 0, "Now that Dave is offstage, we shouldn't have any volitions for him (getAll)");
 
 		//TEST 4.8 -- Making sure that if the 'initiator' of the volition is offstage then you still get nothing.
-		sfdb.putCharacterOffstage("alvin");
+		socialRecord.putCharacterOffstage("alvin");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assert(result, undefined, "Having the initiator and a random person offstage should yield no volitions (getFirst)");
@@ -1698,9 +1698,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 5 -- Same as Test 4, but with 'eliminate character' instead of putCharacterOffstage
 		//Test 5 setup.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.setupNextTimeStep(0);
+		socialRecord.setupNextTimeStep(0);
 		ruleLibrary.clearRuleLibrary(); // Let's first clear out everything from the rule set, and start afresh.
 		ruleLibrary.addRuleSet("volitionRules", rules);
 		ensemble.set(hatesPred);
@@ -1710,7 +1710,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//TEST 5.1 -- eliminate a character, but don't recalculate volitions.
 		result = ruleLibrary.calculateVolition(cast);
 		result = volition.getAllVolitionsByKeyFromTo("main", "alvin", "simon");
-		sfdb.eliminateCharacter("simon");
+		socialRecord.eliminateCharacter("simon");
 		test.assert(result.length, 2, "Eliminating should not remove previously calculated volitions, but apparantly it did.");
 
 		//tEST 5.2 -- Recalculating volitions with an eliminated character
@@ -1719,11 +1719,11 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result, undefined, "Calculating volitions with a character who is eliminated should result in no volitions towards them");
 
 		//TEST 5.3 -- Eliminating a different character shouldn't impact anything.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.setupNextTimeStep(0);
+		socialRecord.setupNextTimeStep(0);
 		ensemble.set(hatesPred);
-		sfdb.eliminateCharacter("dave");
+		socialRecord.eliminateCharacter("dave");
 		volitionTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "Eliminating a different character shouldn't affect the volitions of those that remain (getFirst).");
@@ -1732,14 +1732,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		//TEST 5.4 -- Eliminating someone removes your volitions towards that person, but not towards another person.
 		//Setting up the baselines (making sure that it is behaving as we would expect when all characters are onstage...)
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.setupNextTimeStep(0);
+		socialRecord.setupNextTimeStep(0);
 		ensemble.set(hatesPred);
 		ensemble.set(injuredPred); // alvin is now less interested in romance with both simon and dave.
 		
 		//And now if we take one of these characters offstage, the remaining onstage characters should be unchanged.
-		sfdb.eliminateCharacter("dave");
+		socialRecord.eliminateCharacter("dave");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "Eliminating a different character when we might have volitions for them shouldn't affect the remaining people (getFirst)");
@@ -1751,7 +1751,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assert(result.length, 0, "Now that Dave is eliminated, we shouldn't have any volitions for him (getAll)");
 
 		//TEST 5.5 -- Making sure that if the 'initiator' of the volition is eliminated then you still get nothing.
-		sfdb.eliminateCharacter("alvin");
+		socialRecord.eliminateCharacter("alvin");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assert(result, undefined, "Having the initiator and a random person both eliminated should yield no volitions (getFirst)");
@@ -1826,7 +1826,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		test.assertNEQ(result, undefined, "6 Basecase -- Alvin has a volition to interact with Dave.");
 
 		//6.2 -- now if we put dave offstage and recalculate volition, alvin SHOULD want to interact with simon, but not with dave.
-		sfdb.putCharacterOffstage("dave");
+		socialRecord.putCharacterOffstage("dave");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "(offstage) Trigger rules with multiple effects should still have good effects allowed to pass through");
@@ -1841,8 +1841,8 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ruleLibrary.addRuleSet("volitionRules", rules);
 		ensemble.set(happyPredicate);
 		ensemble.set(comradePredicate);
-		sfdb.setupNextTimeStep(1);
-		sfdb.eliminateCharacter("dave");
+		socialRecord.setupNextTimeStep(1);
+		socialRecord.eliminateCharacter("dave");
 		volitionsTest = ruleLibrary.calculateVolition(cast);
 		result = volitionTest.getFirst("alvin", "simon");
 		test.assertNEQ(result, undefined, "(onstage) Trigger rules with multiple effects should still have good effects allowed to pass through");
@@ -1878,9 +1878,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		conditionPred.defaultValue = false;
 		conditionPred.directonType = "reciprocal";
 
-		sfdb.registerDefault(conditionPred);
-		sfdb.registerDirection(conditionPred);
-		sfdb.registerIsBoolean(conditionPred);
+		socialRecord.registerDefault(conditionPred);
+		socialRecord.registerDirection(conditionPred);
+		socialRecord.registerIsBoolean(conditionPred);
 
 		delete conditionPred.isBoolean;
 		delete conditionPred.defaultValue;
@@ -1896,9 +1896,9 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		effectPred.directionType = "directed";
 		effectPred.isBoolean = false;
 
-		sfdb.registerDefault(effectPred);
-		sfdb.registerDirection(effectPred);
-		sfdb.registerIsBoolean(effectPred);
+		socialRecord.registerDefault(effectPred);
+		socialRecord.registerDirection(effectPred);
+		socialRecord.registerIsBoolean(effectPred);
 
 		delete effectPred.isBoolean;
 		delete effectPred.defaultValue;
@@ -2120,7 +2120,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Someone who expressed interest in you first, and then rejected someone else expressing interest in them, makes you attracted to them.",
 				"conditions": [
 					{
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticAdvance",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2129,7 +2129,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "destinedToLove",
@@ -2188,14 +2188,14 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		//Add our trigger rule to the ruleset!
 		ensemble.addRules(triggerRules);
 		var romanticAdvancePred = {
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticAdvance",
 						"first": "doc",
 						"second": "clara",
 						"value": true
 		};
 		var romanticFailPred = {
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticFailure",
 						"first": "reggie",
 						"second": "doc",
@@ -2243,32 +2243,32 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"value": true
 		};
 		
-		var tempSFDB;
+		var tempSocialRecord;
 		var result;
 		var tempTriggerRules;
 		test.start("RuleLibrary", "testTimeOrderedRules");
 		
-		//TEST 0 -- Before running the trigger rules, the SFDB should only have the two entries that we manually inserted.
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep()
-		sfdb.set(hatesSecondPredicate);
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(tempSFDB.length, 1, "We inserted 1 thing at timestep 0, but it has a non-1 length" );
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(1);
-		test.assert(tempSFDB.length, 2, "We inserted 1 thing at timestep 1; combined with carry over from step 0 should be 2 length" );
+		//TEST 0 -- Before running the trigger rules, the socialRecord should only have the two entries that we manually inserted.
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep()
+		socialRecord.set(hatesSecondPredicate);
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(tempSocialRecord.length, 1, "We inserted 1 thing at timestep 0, but it has a non-1 length" );
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(1);
+		test.assert(tempSocialRecord.length, 2, "We inserted 1 thing at timestep 1; combined with carry over from step 0 should be 2 length" );
 		
 		ruleLibrary.runTriggerRules(cast);
 
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(tempSFDB.length, 1, "There should still only be 1 entry at timestep 0. Value ommitted." );
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(1);
-		test.assert(tempSFDB.length, 3, "After running the trigger rules, there should now be three entries at timestep 1. Value ommitted." );
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(tempSocialRecord.length, 1, "There should still only be 1 entry at timestep 0. Value ommitted." );
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(1);
+		test.assert(tempSocialRecord.length, 3, "After running the trigger rules, there should now be three entries at timestep 1. Value ommitted." );
 
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(hatesSecondPredicate);
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(hatesSecondPredicate);
 
 		//TEST 0.5 -- we had been running into some issues with specifying 'value' in trigger rules, let's just do a sanity check that it works when value is specified.
 		tempTriggerRules = util.clone(triggerRules);
@@ -2277,177 +2277,177 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast);
 
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(tempSFDB.length, 1, "There should STILL only be 1 entry at timestep 0, even after modifying the value of the trigger's effects." );
-		tempSFDB = sfdb.getSFDBCopyAtTimestep(1);
-		test.assert(tempSFDB.length, 3, "After running the trigger rules, there should now be three entries at timestep 1, trigger's effect specified to have value true." );
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(tempSocialRecord.length, 1, "There should STILL only be 1 entry at timestep 0, even after modifying the value of the trigger's effects." );
+		tempSocialRecord = socialRecord.getSocialRecordCopyAtTimestep(1);
+		test.assert(tempSocialRecord.length, 3, "After running the trigger rules, there should now be three entries at timestep 1, trigger's effect specified to have value true." );
 		
-		//TEST 1 -- Trigger rules that use the order property should add things to the sfdb, assuming that all conditions are true.
+		//TEST 1 -- Trigger rules that use the order property should add things to the socialRecord, assuming that all conditions are true.
 		//"Things entered in the right order should work"
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(hatesSecondPredicate);
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(hatesSecondPredicate);
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast, 1);
-		result = sfdb.get(attractedToPred, 0, 0);
+		result = socialRecord.get(attractedToPred, 0, 0);
 		test.assert(result.length, 1, "Base Functionality: We wanted clara to be attracted to doc (from directedstatuses) but she wasn't for some weird reason.");
 
-		//TEST 1.5 -- Works for SFDBLabels, too!
+		//TEST 1.5 -- Works for socialRecordLabels, too!
 		//"Things entered in the right order should work"
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast, 1);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "Base Functionality: We wanted clara to be attracted to doc (from sfdbLabels) but she wasn't for some weird reason.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "Base Functionality: We wanted clara to be attracted to doc (from socialRecordLabels) but she wasn't for some weird reason.");
 
 		//TEST 2 -- Order-based trigger rules should not fire if the events happened in the wrong order.
 		//"Things entered in the wrong order should not work"
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(hatesSecondPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(hatesFirstPredicate);
+		socialRecord.set(hatesSecondPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(hatesFirstPredicate);
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast, 1);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "Events were entered into sfdb in wrong order, but rule fired anyway.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "Events were entered into socialRecord in wrong order, but rule fired anyway.");
 
 		//TEST 3 -- Order-based trigger rules should not fire if events that were meant to happen at two separate times happened on the same timestep.
-		//Note--works better for SFDBLabels since they don't get cloned!
+		//Note--works better for socialRecordLabels since they don't get cloned!
 		//"Things happening on the same time step that SHOULD happen on different time steps should not work"
-		//BEN: Pick up here! Looks like we are seeing some of that SFDB Cloning issues that Aaron was notcing?
+		//BEN: Pick up here! Looks like we are seeing some of that socialRecord Cloning issues that Aaron was notcing?
 
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticAdvancePred); // The 'right' thing happened first
-		sfdb.set(romanticFailPred); // And the right thing happeend second... -- only seems to happen when both of these guys are timestep 0!?!
+		socialRecord.set(romanticAdvancePred); // The 'right' thing happened first
+		socialRecord.set(romanticFailPred); // And the right thing happeend second... -- only seems to happen when both of these guys are timestep 0!?!
 
-		sfdb.setupNextTimeStep();
-		sfdb.set(randomPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(randomPredicate);
 
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "Events were entered into the sfdb at the same time step, but rule fired anyway");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "Events were entered into the socialRecord at the same time step, but rule fired anyway");
 
-		//TEST 4 -- And if two things happened at the same time but were entered into the SFDB in the 'wrong order' it should also totally note fire.
-		sfdb.clearEverything();
+		//TEST 4 -- And if two things happened at the same time but were entered into the socialRecord in the 'wrong order' it should also totally note fire.
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(hatesSecondPredicate); // And the wrong thing happeend second...
-		sfdb.set(hatesFirstPredicate); // The 'wrong' thing happened first
+		socialRecord.set(hatesSecondPredicate); // And the wrong thing happeend second...
+		socialRecord.set(hatesFirstPredicate); // The 'wrong' thing happened first
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "Events were entered into the sfdb at the same time step in the WRONG ORDER even, but rule fired anyway");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "Events were entered into the socialRecord at the same time step in the WRONG ORDER even, but rule fired anyway");
 
 
 		//TEST 4 -- Order based trigger rules should not fire if nothing even remotely looking like the events fired.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(randomPredicate); // Totally random thing here...
+		socialRecord.set(randomPredicate); // Totally random thing here...
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "Something completely unrelatead in sfdb, but rule fired anyway");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "Something completely unrelatead in socialRecord, but rule fired anyway");
 		
 		//TEST 5 -- A test for the 'same thing' being edited 
 		//(e.g. first affinity is 70, second affinity is 80) should work.
 		var tempAffinityPred = util.clone(affinityPredicate);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		tempAffinityPred.value = 75;
-		sfdb.set(tempAffinityPred); // affinity is at 75.
+		socialRecord.set(tempAffinityPred); // affinity is at 75.
 		tempAffinityPred.value = 85;
-		sfdb.setupNextTimeStep();
-		sfdb.set(tempAffinityPred); // affinity is now at 85.
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(tempAffinityPred); // affinity is now at 85.
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		ensemble.addRules(tempTriggerRules);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
+		result = socialRecord.get(attractedToPred, 0, 0);
 		test.assert(result.length, 1, "An ordered rule that has two predicates that depend on a single numeric value failed to fire.");
 
 		//TEST 6 -- Similarly, boolean edits should work as well (e.g. step 1, not dating, step 2, dating).
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.setupNextTimeStep();
-		sfdb.set(involvedWithPred); // involved with false at time 0, true at 1
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(involvedWithPred); // involved with false at time 0, true at 1
 		var results = ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
+		result = socialRecord.get(attractedToPred, 0, 0);
 		test.assert(result.length, 1, "An ordered rule that has two predicates that depend on a single boolean value failed to fire.");
 
 		//TEST 6.5 ok, we're gonna do a similar thing, but we're going to explicitly say that the value was false for the first relationship.
 		//This is because there used to be a bug with TEST 6, but it has since been fixed. Both 6 and 6.5 should work great now.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		var tempInvolvedWithPred = util.clone(involvedWithPred);
 		tempInvolvedWithPred.value = false;
-		sfdb.set(tempInvolvedWithPred);
+		socialRecord.set(tempInvolvedWithPred);
 		tempInvolvedWithPred.value = true;
-		sfdb.setupNextTimeStep();
-		sfdb.set(tempInvolvedWithPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(tempInvolvedWithPred);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "Ordered rule that has two predicates that depend on boolean numeric value failed when turnsAgoBetween was DEFINED and the 'false' part of it was explicitly put into the sfdb");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "Ordered rule that has two predicates that depend on boolean numeric value failed when turnsAgoBetween was DEFINED and the 'false' part of it was explicitly put into the socialRecord");
 
 
-		//TEST 7 Events entered into the sfdb in the correct order with turnsAgoBetween defined in a window where they didn't happen (should be false)
-		//Kind of only really makes sense to do this with SFDBLabel predicates (or non-cloned predicates)
-		sfdb.clearEverything();
+		//TEST 7 Events entered into the socialRecord in the correct order with turnsAgoBetween defined in a window where they didn't happen (should be false)
+		//Kind of only really makes sense to do this with socialRecordLabel predicates (or non-cloned predicates)
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep(10);
-		sfdb.set(randomPredicate); // we're now at timestep 10, far away from the window.
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep(10);
+		socialRecord.set(randomPredicate); // we're now at timestep 10, far away from the window.
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "sfdb events happend OUTSIDE of the window, but rule fired anyway..");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "socialRecord events happend OUTSIDE of the window, but rule fired anyway..");
 
 		//TEST 7.5 -- pretty much the same as 7.5, but what if everything took place on the 'same' time step.
 		///really shouldn't be a problem at all, but we're being thorough
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticAdvancePred);
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep(10)
-		sfdb.set(randomPredicate);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep(10)
+		socialRecord.set(randomPredicate);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "relevant sfdb events happened at SAME timestep, but that happened way outstide the window, so it shoudl fail.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "relevant socialRecord events happened at SAME timestep, but that happened way outstide the window, so it shoudl fail.");
 	
 		//TEST 7.6 -- OK OK, and just because I'm paranoid: Things outside of the window entered in the wrong order.
 		///really shouldn't be a problem at all, but we're being thorough
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep(10);
-		sfdb.set(randomPredicate);
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep(10);
+		socialRecord.set(randomPredicate);
 		ruleLibrary.runTriggerRules(cast);
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "relevant sfdb events happened at SAME timestep, but that happened way outstide the window, so it shoudl fail.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "relevant socialRecord events happened at SAME timestep, but that happened way outstide the window, so it shoudl fail.");
 
 		//TEST 8 -- The order should still work, even if it doesn't begin at 0
 		ruleLibrary.clearRuleLibrary();
@@ -2455,15 +2455,15 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[0].order = 1;
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "sfdb trigger rule had order set to 1 and 2 (not starting at 0); everything correct but rule failed to fire.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "socialRecord trigger rule had order set to 1 and 2 (not starting at 0); everything correct but rule failed to fire.");
 
 		//TEST 8.5 -- Normal ordering issues will still flag a rule as false, even if order doesn't begin at 0
 		ruleLibrary.clearRuleLibrary();
@@ -2471,16 +2471,16 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[0].order = 1;
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "sfdb trigger rule had order set to 1 and 2 (not starting at 0), but sfdb events happened in wrong order; rule shouldn't have fired.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "socialRecord trigger rule had order set to 1 and 2 (not starting at 0), but socialRecord events happened in wrong order; rule shouldn't have fired.");
 
 		//TEST 9 -- "Skipping" numbers in the ordering should be totally fine
 		ruleLibrary.clearRuleLibrary();
@@ -2488,16 +2488,16 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[0].order = 0;
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "sfdb trigger rule had order set to 0 and 2 (skipped 1), but sfdb events are ordered correctly");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "socialRecord trigger rule had order set to 0 and 2 (skipped 1), but socialRecord events are ordered correctly");
 		
 		//TEST 9.5 -- Normal ordering issues will still flag a rule as false, even if order has numbers that skip
 		ruleLibrary.clearRuleLibrary();
@@ -2505,70 +2505,70 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[0].order = 0;
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "sfdb trigger rule had order set to 0 and 2 (skipped 1), but sfdb events happened in wrong order; rule shouldn't have fired.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "socialRecord trigger rule had order set to 0 and 2 (skipped 1), but socialRecord events happened in wrong order; rule shouldn't have fired.");
 
-		//TEST 10 -- If there are condition predicates with the same order specified, and the events happened at the same time in the sfdb, that should be fine. 
+		//TEST 10 -- If there are condition predicates with the same order specified, and the events happened at the same time in the socialRecord, that should be fine. 
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		tempTriggerRules.rules[2].conditions[0].order = 0;
 		tempTriggerRules.rules[2].conditions[1].order = 0;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticAdvancePred);
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "two predicates in condition had same order specified, and sfdb events happened at same time.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "two predicates in condition had same order specified, and socialRecord events happened at same time.");
 
-		//TEST 10.2 -- If there are two condition predicates  with the same order specified, and the events happened at DIFFERENT times in the sfdb (but still in the window, that should be fine. 
+		//TEST 10.2 -- If there are two condition predicates  with the same order specified, and the events happened at DIFFERENT times in the socialRecord (but still in the window, that should be fine. 
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		tempTriggerRules.rules[2].conditions[0].order = 0;
 		tempTriggerRules.rules[2].conditions[1].order = 0;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "two predicates in condition had same order specified, and sfdb events happened at different times (but within the window).");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "two predicates in condition had same order specified, and socialRecord events happened at different times (but within the window).");
 
-		//TEST 10.3 -- If there are two condition predicates  with the same order specified, and the events happened at DIFFERENT times in the sfdb (but still in the window, that should be fine. 
+		//TEST 10.3 -- If there are two condition predicates  with the same order specified, and the events happened at DIFFERENT times in the socialRecord (but still in the window, that should be fine. 
 		ruleLibrary.clearRuleLibrary();
 		tempTriggerRules = util.clone(triggerRules);
 		tempTriggerRules.rules[2].conditions[0].order = 0;
 		tempTriggerRules.rules[2].conditions[1].order = 0;
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep(6)
-		sfdb.set(romanticFailPred);
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep(6)
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "two predicates in condition had same order specified, and sfdb events happened at different times (but OUTSIDE the window).");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "two predicates in condition had same order specified, and socialRecord events happened at different times (but OUTSIDE the window).");
 
 		//check edge cases of weird order issues,
 		// i.e. pred1 and pred2 are order 0, pred1 @ 0, pred2 @ 4, pred3 (higher order) @ 3 should FAIL).
-		// TEST 10.5 -- What about a case where we are dealing with 3 orders, but the sfdb events are in the wrong order.
+		// TEST 10.5 -- What about a case where we are dealing with 3 orders, but the socialRecord events are in the wrong order.
 		ruleLibrary.clearRuleLibrary();
 		var extraCondition = {
 						"category": "directedStatus",
@@ -2583,23 +2583,23 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		tempTriggerRules.rules[2].conditions.push(util.clone(extraCondition));
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		//it WANTS: hates, romAdvance, romFail
 		//it GETS: hates, romFail, romAdvance
 		//Thus it should fail.
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "three predicates in condition. All have differnet orders. sfdb events happened at wrong times.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "three predicates in condition. All have differnet orders. socialRecord events happened at wrong times.");
 
-		// TEST 10.6 -- What about a case where we are dealing with 3 orders, but the sfdb events are in the wrong order.
+		// TEST 10.6 -- What about a case where we are dealing with 3 orders, but the socialRecord events are in the wrong order.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
 						"category": "directedStatus",
@@ -2614,23 +2614,23 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[1].order = 2;
 		tempTriggerRules.rules[2].conditions.push(util.clone(extraCondition));
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		//it WANTS: (hates, romAdvance), romFail (i.e. hates and romAdvance BEFORE romFail)
 		//it GETS: hates, romFail, romAdvance
 		//Thus it should fail.
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 0, "three predicates in condition. Two have same order. sfdb events happened at wrong times.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 0, "three predicates in condition. Two have same order. socialRecord events happened at wrong times.");
 
-		//TEST 10.7 -- Three things, two with same order, 1 with higher order, but things in sfdb in correct order.
+		//TEST 10.7 -- Three things, two with same order, 1 with higher order, but things in socialRecord in correct order.
 		ruleLibrary.clearRuleLibrary();
 		extraCondition = {
 						"category": "directedStatus",
@@ -2645,21 +2645,21 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[2].conditions[1].order = 1;
 		tempTriggerRules.rules[2].conditions.push(util.clone(extraCondition));
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		//it WANTS: (hates, romAdvance), romFail (i.e. hates and romAdvance BEFORE romFail)
 		//it GETS: hates, romAdvance, romFail
 		//Thus it should succeed.
-		sfdb.set(hatesFirstPredicate);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticAdvancePred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(romanticFailPred);
+		socialRecord.set(hatesFirstPredicate);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticAdvancePred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(romanticFailPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "three predicates in condition. Two have same order. sfdb events happened at right times.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "three predicates in condition. Two have same order. socialRecord events happened at right times.");
 
 		// TEST 11 -- Using multiple predicates to ensure a numeric is within a very particular range.
 		ruleLibrary.clearRuleLibrary();
@@ -2678,19 +2678,19 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[0].conditions[1].order = 1;
 		tempTriggerRules.rules[0].conditions.push(util.clone(extraCondition));
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		tempAffinityPred = util.clone(affinityPredicate);
 		tempAffinityPred.value = 75;
-		sfdb.set(tempAffinityPred);
+		socialRecord.set(tempAffinityPred);
 		tempAffinityPred.value = 85;
-		sfdb.setupNextTimeStep();
-		sfdb.set(tempAffinityPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(tempAffinityPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "three predicates in condition. Two have same order. two are in place to 'enforce' a range first. sfdb events happened at right times.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "three predicates in condition. Two have same order. two are in place to 'enforce' a range first. socialRecord events happened at right times.");
 
 		// TEST 11.5 -- Using multiple predicates to ensure a numeric is within a very particular range -- three different orders.
 		ruleLibrary.clearRuleLibrary();
@@ -2709,19 +2709,19 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		tempTriggerRules.rules[0].conditions[1].order = 2;
 		tempTriggerRules.rules[0].conditions.push(util.clone(extraCondition));
 		ensemble.addRules(tempTriggerRules);
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		tempAffinityPred = util.clone(affinityPredicate);
 		tempAffinityPred.value = 75;
-		sfdb.set(tempAffinityPred);
+		socialRecord.set(tempAffinityPred);
 		tempAffinityPred.value = 85;
-		sfdb.setupNextTimeStep(2);
-		sfdb.set(tempAffinityPred);
+		socialRecord.setupNextTimeStep(2);
+		socialRecord.set(tempAffinityPred);
 		ruleLibrary.runTriggerRules(cast);
 
-		result = sfdb.get(attractedToPred, 0, 0);
-		test.assert(result.length, 1, "three predicates in condition. All have different orders. two are in place to 'enforce' a range first. sfdb events happened at right times.");
+		result = socialRecord.get(attractedToPred, 0, 0);
+		test.assert(result.length, 1, "three predicates in condition. All have different orders. two are in place to 'enforce' a range first. socialRecord events happened at right times.");
 
 
 		test.finish();
@@ -2733,7 +2733,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 				"name": "Someone who expressed interest in you first, and then rejected someone else expressing interest in them, makes you attracted to them.",
 				"conditions": [
 					{
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticAdvance",
 						"first": "destinedToLove",
 						"second": "me",
@@ -2741,7 +2741,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "destinedToLove",
@@ -2749,7 +2749,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 						
 					},
 					{
-						"category": "SFDBLabel",
+						"category": "socialRecordLabel",
 						"type": "romanticFailure",
 						"first": "shmuck",
 						"second": "whatever",
@@ -2937,7 +2937,7 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		}).text, "bob has more volition ( +2 ) to become lonely", "Undirected boolean, positive intent.");
 
 		test.assert(ruleLibrary.predicateToEnglish({
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
@@ -3029,21 +3029,21 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 			"turnsAgoBetween": [5, 10]
 		}).text, "bob had less than 50 affinity for carl sometime between 5 and 10 turns ago", "turns ago between in past with directed numeric.");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
 			"value": true,
 			"turnsAgoBetween": [2, 4]
-		}).text, "bob did something romanticFailure to al sometime between 2 and 4 turns ago", "sfdblabel turnsAgoBetween, 2-->4");
+		}).text, "bob did something romanticFailure to al sometime between 2 and 4 turns ago", "socialRecordlabel turnsAgoBetween, 2-->4");
 		test.assert(ruleLibrary.predicateToEnglish({
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"type": "romanticFailure",
 			"first": "bob",
 			"second": "al",
 			"value": false,
 			"turnsAgoBetween": [2, "START"]
-		}).text, "bob did not do something romanticFailure to al sometime up until 2 turns ago [ 2 , START ]", "sfdblabel turnsAgoBetween, 2-->4");
+		}).text, "bob did not do something romanticFailure to al sometime up until 2 turns ago [ 2 , START ]", "socialRecordlabel turnsAgoBetween, 2-->4");
 
 		test.finish();
 	};
@@ -3057,16 +3057,16 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		defaultTruePred.type = "innocent";
 		defaultTruePred.defaultValue = true;
 		defaultTruePred.isBoolean = true;
-		sfdb.registerIsBoolean(defaultTruePred);
-		sfdb.registerDefault(defaultTruePred);
+		socialRecord.registerIsBoolean(defaultTruePred);
+		socialRecord.registerDefault(defaultTruePred);
 
 		var defaultFalsePred = {};
 		defaultFalsePred.category = "defaultFalseTrait";
 		defaultFalsePred.type = "guilty";
 		defaultFalsePred.defaultValue = false;
 		defaultFalsePred.isBoolean = true;
-		sfdb.registerIsBoolean(defaultFalsePred);
-		sfdb.registerDefault(defaultFalsePred);
+		socialRecord.registerIsBoolean(defaultFalsePred);
+		socialRecord.registerDefault(defaultFalsePred);
 
 		var searchPredicate = {};
 		searchPredicate.first = "doc";
@@ -3083,17 +3083,17 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 
 		results = ensemble.get(searchPredicate);
 
-		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in sfdb is true.
+		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in socialRecord is true.
 		//TEST 0 -- The search predicate has value speensembleied as true -- should return true.
-		test.assert(results.length, 1, "The default value of Innocent is true. Searching for true should have returned true, even though it wasn't specified in the sfdb.");
+		test.assert(results.length, 1, "The default value of Innocent is true. Searching for true should have returned true, even though it wasn't specified in the socialRecord.");
 		
-		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in sfdb is true.
+		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in socialRecord is true.
 		//TEST 0.5 -- The search predicate has the vlaue specified as false -- should return false.
 		searchPredicate.value = false;
 		results = ensemble.get(searchPredicate);
 		test.assert(results.length, 0, "The default value of innocent is true. Searching for true should have returned false");
 
-		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in sfdb is true.
+		//"INNOCENT UNTIL PROVEN GULTY TEST" -- default value if not in socialRecord is true.
 		//TEST 1 -- The search predicate doesn't HAVE a value specified. Should return TRUE
 		//Becuase this assumes that people who don't specify a value are actually always searching for true.
 		//TODO: Double super check that this IS in fact the kind of behavior that we want.
@@ -3101,17 +3101,17 @@ function(util, _, util, ruleLibrary, sfdb, ensemble, volition, test, validate, t
 		results = ensemble.get(searchPredicate);
 		test.assert(results.length, 1, "TROUBLE ONE The default value of innocent is true. Searching without value specified should have returned true");
 
-		//TEST 2 -- Default value if not in sfdb is false. Search predicate value is true, should return false.
+		//TEST 2 -- Default value if not in socialRecord is false. Search predicate value is true, should return false.
 		searchPredicate2.value = true;
 		results = ensemble.get(searchPredicate2);
 		test.assert(results.length, 0, "The default value of guilty is false. Searching for value true should return false.");
 
-		//TEST 2.1 -- Default value if not in sfdb is false. Search predicate value is false. Should return true.
+		//TEST 2.1 -- Default value if not in socialRecord is false. Search predicate value is false. Should return true.
 		searchPredicate2.value = false;
 		results = ensemble.get(searchPredicate2);
 		test.assert(results.length, 1, "The default value of guilty is false. Searching for value false should return true");
 
-		//TEST 2.2 -- Default value if not in sfdb is false. Search predicate value is undefined. Should return false
+		//TEST 2.2 -- Default value if not in socialRecord is false. Search predicate value is undefined. Should return false
 		//TODO: CONFIRM THAt THIS IS THE FUNCTIONALITY WE WANT: Assume that if value in search predicate is not specified, we are searching for true.
 		searchPredicate2.value = undefined;
 		results = ensemble.get(searchPredicate2);

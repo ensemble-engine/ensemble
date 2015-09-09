@@ -20,7 +20,7 @@ require.config({
 		,"log": "jslib/log"
 
 		// ensemble
-		,"sfdb": "js/ensemble/SFDB"
+		,"socialRecord": "js/ensemble/socialRecord"
 		,"ruleLibrary": "js/ensemble/RuleLibrary"
 		,"actionLibrary":"js/ensemble/ActionLibrary"
 		,"volition": "js/ensemble/Volition"
@@ -39,7 +39,7 @@ require.config({
 		,"test": "js/tests/Tests"
 		// Unit Test Files
 		,"ensembleUnitTests": "js/tests/ensembleUnitTests"
-		,"sfdbUnitTests": "js/tests/SFDBUnitTests"
+		,"socialRecordUnitTests": "js/tests/socialRecordUnitTests"
 		,"ruleLibraryUnitTests": "js/tests/RuleLibraryUnitTests"
 		,"actionLibraryUnitTests": "js/tests/ActionLibraryUnitTests"
 		,"volitionUnitTests": "js/tests/VolitionUnitTests" 
@@ -62,15 +62,15 @@ require.config({
 
 // Main entry function for Project Yarn
 
-require(["volition", "text!data/testState.json", "sfdb", "ruleLibrary", "actionLibrary", "ensemble", "ensembleUnitTests", "sfdbUnitTests", "ruleLibraryUnitTests", "volitionUnitTests", "validateUnitTests", "actionLibraryUnitTests", "externalApplicationTest", "domReady!"], function(volition, testState, sfdb, ruleLibrary, actionLibrary, ensemble, ensembleUnitTests, sfdbUnitTests, ruleLibraryUnitTests, volitionUnitTests, validateUnitTests, actionLibraryUnitTests, externalApplicationTest){
+require(["volition", "text!data/testState.json", "socialRecord", "ruleLibrary", "actionLibrary", "ensemble", "ensembleUnitTests", "socialRecordUnitTests", "ruleLibraryUnitTests", "volitionUnitTests", "validateUnitTests", "actionLibraryUnitTests", "externalApplicationTest", "domReady!"], function(volition, testState, socialRecord, ruleLibrary, actionLibrary, ensemble, ensembleUnitTests, socialRecordUnitTests, ruleLibraryUnitTests, volitionUnitTests, validateUnitTests, actionLibraryUnitTests, externalApplicationTest){
 
 	console.log("Beginning tests-main.js main function.");
 	//try{
 		ensemble.init();
-		sfdb.init();
+		socialRecord.init();
 
 		ensembleUnitTests.runTests();
-		sfdbUnitTests.runTests();
+		socialRecordUnitTests.runTests();
 		ruleLibraryUnitTests.runTests();
 		volitionUnitTests.runTests();
 		validateUnitTests.runTests();

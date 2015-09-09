@@ -90,7 +90,7 @@
 			var rawHistory = ensemble.loadFile("data/history.json");
 			var history = ensemble.addHistory(rawHistory);
 
-			//ensemble.dumpSFDB();
+			//ensemble.dumpSocialRecord();
 
 			//Set up our initial state
 			setUpLoversAndRivalsInitialState();
@@ -113,7 +113,7 @@
 
 			var testActions = ensemble.getActions("love", "hero", storedVolitions, cast, 2, 100);
 			console.log("This is what love wants to do towards hero: ", testActions);
-			//ensemble.dumpSFDB();
+			//ensemble.dumpSocialRecord();
 			
 			var testHeroActions = ensemble.getActions("hero", "hero", storedVolitions, cast, 2, 100);
 			console.log("This is what hero wants to do towards hero: " , testHeroActions);
@@ -129,7 +129,7 @@
 				}
 				else{
 					ensemble.setupNextTimeStep();
-					ensemble.dumpSFDB();
+					ensemble.dumpSocialRecord();
 					storedVolitions = ensemble.calculateVolition(cast);
 			var testActions = ensemble.getActions("love", "hero", storedVolitions, cast, 2, 100);
 			console.log("This is what love wants to do towards hero: ", testActions);

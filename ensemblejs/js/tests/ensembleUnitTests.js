@@ -3,8 +3,8 @@
  * This has all of the unit tests for functions that are from ensemble.js
  */
 
-define(["util", "underscore", "ruleLibrary", "sfdb", "ensemble", "actionLibrary", "test", "text!data/testSocial.json", "text!data/testVolitionRules.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json"],
-function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, testVolitionRules, testActionsGrammar8, testActionsGrammar9) {
+define(["util", "underscore", "ruleLibrary", "socialRecord", "ensemble", "actionLibrary", "test", "text!data/testSocial.json", "text!data/testVolitionRules.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json"],
+function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, testSocial, testVolitionRules, testActionsGrammar8, testActionsGrammar9) {
 
 
 	/***************************************************************/
@@ -131,7 +131,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"category": "SFDBLabel",' +
+						'"category": "socialRecordLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +
@@ -167,7 +167,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"category": "SFDBLabel",' +
+						'"category": "socialRecordLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +
@@ -204,7 +204,7 @@ function(util, _, ruleLibrary, sfdb, ensemble, actionLibrary, test, testSocial, 
 						'"type": "jealous",' +
 						'"first": "x"' +
 					'},{' +
-						'"category": "SFDBLabel",' +
+						'"category": "socialRecordLabel",' +
 						'"type": "romanticAdvance",' +
 						'"first": "z",' +
 						'"second": "y",' +

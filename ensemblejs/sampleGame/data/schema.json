@@ -38,7 +38,7 @@
 			"defaultValue" : false
 		},
 		{
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"types": ["romantic-failure", "romantic-advance"],
 			"isBoolean": true,
 			"directionType": "directed",

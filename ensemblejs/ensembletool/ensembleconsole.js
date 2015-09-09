@@ -17,7 +17,7 @@ requirejs.config({
 
 		// ensemble
 		,"ensemble" : "../js/ensemble/ensemble"
-		,"sfdb" : "../js/ensemble/SFDB"
+		,"socialRecord" : "../js/ensemble/SocialRecord"
 		,"ruleLibrary" : "../js/ensemble/RuleLibrary"
 		,"volition": "../js/ensemble/Volition"
 		,"validate": "../js/ensemble/Validate"
@@ -47,8 +47,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "sfdb", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "text!../data/Schema80K.json", "text!../data/Volition80K.json", "text!../data/SFDB80K.json", "text!../data/Chars80K.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "text!../data/Schema80K.json", "text!../data/Volition80K.json", "text!../data/SFDB80K.json", "text!../data/Chars80K.json", "messages", "jqueryUI", "domReady!"], 
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, Schema80K, Volition80K, SFDB80K, Chars80K, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 	var is80KTest = false; //in April 2015, Ben and Aaron ran an experiment for CMPS80K that hid some things (e.g. trigger rules).
@@ -78,7 +78,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 	$("#tabs").tabs({
 		activate: function( event, ui ) {
 			if (ui.newPanel[0].id === "tabsSfdb") {
-				historyViewer.refresh(sfdb.getCurrentTimeStep());
+				historyViewer.refresh(socialRecord.getCurrentTimeStep());
 			}
 		}
 	});
@@ -630,7 +630,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 	// Handle the "next" console command (advance timestep)
 	var doNext = function() {
 		ensemble.setupNextTimeStep();
-		var curr = sfdb.getCurrentTimeStep();
+		var curr = socialRecord.getCurrentTimeStep();
 		var logMsg = "ensemble timestep advanced to " + curr + ".<br/>";
 
 		// Run Trigger rules.
@@ -789,7 +789,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 				alreadyTrueString = "(FYI, this was already true)";
 			}
 
-			//Actually update the sfdb!
+			//Actually update the socialRecord!
 			ensemble.set(effects[i]);
 
 			//Grab a reference to the new value, whatever it is
@@ -917,7 +917,7 @@ function(ensemble, sfdb, actionLibrary, historyViewer, rulesViewer, rulesEditor,
 		}
 
 		if (command === "dump") {
-			console.log(sfdb.dumpSFDB());
+			console.log(socialRecord.dumpSocialRecord());
 			return;
 		}
 

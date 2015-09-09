@@ -1,6 +1,6 @@
 /*global console */
 
-define(["util", "underscore", "sfdb", "ensemble", "validate", "messages", "ruleTester", "jquery"], function(util, _, sfdb, ensemble, validate, messages, ruleTester, $){
+define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages", "ruleTester", "jquery"], function(util, _, socialRecord, ensemble, validate, messages, ruleTester, $){
 
 	var showTestBindingsButton = false;
 

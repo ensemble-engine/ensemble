@@ -1,11 +1,11 @@
-define(["ensemble", "sfdb", "util", "jquery"], function(ensemble, sfdb, util, $){
+define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, socialRecord, util, $){
 
 	var interfaceTimestep;
 	var timeStepDisplay = $("#timestep");
 	var historyTableArea = $("#sfdbtable");
 
 	var stepForward = function() {
-		if (interfaceTimestep >= sfdb.getCurrentTimeStep()) {
+		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
 			return;
 		}
 		interfaceTimestep += 1;
@@ -21,7 +21,7 @@ define(["ensemble", "sfdb", "util", "jquery"], function(ensemble, sfdb, util, $)
 	};
 
 	var reset = function() {
-		sfdb.clearHistory();
+		socialRecord.clearHistory();
 		interfaceTimestep = undefined;
 		refresh();
 	};
@@ -32,13 +32,13 @@ define(["ensemble", "sfdb", "util", "jquery"], function(ensemble, sfdb, util, $)
 			interfaceTimestep = newTimeStep;
 		}
 		if (interfaceTimestep === undefined) {
-			interfaceTimestep = sfdb.getCurrentTimeStep();
+			interfaceTimestep = socialRecord.getCurrentTimeStep();
 		}
 		timeStepDisplay.html(interfaceTimestep);
-		var sfdbSlice = sfdb.getSFDBCopyAtTimestep(interfaceTimestep);
+		var socialRecordSlice = socialRecord.getSocialRecordCopyAtTimestep(interfaceTimestep);
 		var table = "<table class='sfdb'>";
-		for (var i = 0; i < sfdbSlice.length; i++) {
-			var pred = sfdbSlice[i];
+		for (var i = 0; i < socialRecordSlice.length; i++) {
+			var pred = socialRecordSlice[i];
 			var desc = ensemble.predicateToEnglish(pred).text;
 			// Was this true on prior timestep?
 			var wasTrueLastTurn = pred.timeHappened !== interfaceTimestep;

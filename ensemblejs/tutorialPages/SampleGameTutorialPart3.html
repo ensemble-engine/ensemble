@@ -157,7 +157,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"defaultValue" : false
 		},
 		{
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"types": ["romantic-failure", "romantic-advance"],
 			"isBoolean": true,
 			"directionType": "directed",
@@ -166,7 +166,7 @@ Okay! Finished reading up on what a schema is? Great! Let's start setting up the
 			"duration": 0
 		},
 		{
-			"category": "SFDBLabelUndirected",
+			"category": "socialRecordLabelUndirected",
 			"types": ["embarrassing", "self-involved"],
 			"isBoolean": true,
 			"directionType": "undirected",
@@ -187,7 +187,7 @@ Ok, I lied, here's a little bit of additional commentary. The 'trait' category y
 </p>
 
 <p>
-The SFDBLabels are booleans with a duration of 0 -- that's an important sign to ensemble that these are categories that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these SFDBLabel categories.
+The socialRecordLabels are booleans with a duration of 0 -- that's an important sign to ensemble that these are categories that refer not to 'state' but rather to 'events.' If you want to keep track of specific acts that were done (e.g., a character did something embarrasing) as opposed to state (e.g., a character was feeling embarrassed), then you'll want to make use of these socialRecordLabel categories.
 </p>
 
 <h2>Define the Backstory of the World</h2>
@@ -391,13 +391,13 @@ Now that we've walked through the basic structure of the history file, it won't 
 					"value": true
 				},
 				{
-					"category": "SFDBLabelUndirected",
+					"category": "socialRecordLabelUndirected",
 					"type": "self-involved",
 					"first": "someone",
 					"value": true
 				},
 				{
-					"category": "SFDBLabelUndirected",
+					"category": "socialRecordLabelUndirected",
 					"type": "self-involved",
 					"first": "someoneElse",
 					"value": false
@@ -420,14 +420,14 @@ Now that we've walked through the basic structure of the history file, it won't 
 			"name": "People are repulsed when they are the recipients of romantic failures",
 			"conditions": [
 				{
-					"category": "SFDBLabel",
+					"category": "socialRecordLabel",
 					"type": "romantic-failure",
 					"first": "wouldBeLover",
 					"second": "victim",
 					"value": true
 				},
 				{
-					"category": "SFDBLabel",
+					"category": "socialRecordLabel",
 					"type": "romantic-failure",
 					"first": "someoneElse",
 					"second": "victim",
@@ -875,7 +875,7 @@ We see that this action is even simpler than the first! It has the name "STUDY" 
 		"value" : 10		
 	},
 	{
-		"category" : "SFDBLabelUndirected",
+		"category" : "socialRecordLabelUndirected",
 		"type" : "self-involved",
 		"first" : "initiator",
 		"value" : true
@@ -937,7 +937,7 @@ And ta-da! We've completed a single potential pass through the actions. But befo
 			"value" : 10
 		},
 		{
-			"category" : "SFDBLabelUndirected",
+			"category" : "socialRecordLabelUndirected",
 			"type" : "self-involved",
 			"first" : "initiator",
 			"value" : true
@@ -1052,7 +1052,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				"value" : 10		
 			},
 			{
-					"category" : "SFDBLabelUndirected",
+					"category" : "socialRecordLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -1092,7 +1092,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 					"value" : 10
 				},
 				{
-					"category" : "SFDBLabelUndirected",
+					"category" : "socialRecordLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
@@ -1119,7 +1119,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				"value" : 5
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1138,7 +1138,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				"value" : 10
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1163,7 +1163,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				"value" : 10
 			},
 			{
-				"category" : "SFDBLabelUndirected",
+				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
@@ -1301,7 +1301,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 				"operator" : "+",
 				"value" : 10
 			},{
-				"category" : "SFDBLabel",
+				"category" : "socialRecordLabel",
 				"type" : "romantic-failure",
 				"first" : "initiator",
 				"second" : "responder",

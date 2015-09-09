@@ -38,7 +38,7 @@
 			"defaultValue" : false
 		},
 		{
-			"category": "SFDBLabel",
+			"category": "socialRecordLabel",
 			"types": ["romantic-failure", "romantic-advance"],
 			"isBoolean": true,
 			"directionType": "directed",
@@ -47,7 +47,7 @@
 			"duration": 0
 		},
 		{
-			"category": "SFDBLabelUndirected",
+			"category": "socialRecordLabelUndirected",
 			"types": ["embarrassing", "self-involved"],
 			"isBoolean": true,
 			"directionType": "undirected",

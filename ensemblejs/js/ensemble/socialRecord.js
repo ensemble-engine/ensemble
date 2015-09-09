@@ -1,11 +1,11 @@
 /**
-* This is the class SFDB
-* @class  SFDB
+* This is the class socialRecord
+* @class  socialRecord
 * @private
 */
 define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
-	var sfdb = [];
+	var socialRecord = [];
 	var currentTimeStep = -1; //initialize to -1 (assumes we start at time 0 when playings)
 	var defaultValues = {};
 	var maxValues = {};
@@ -19,20 +19,20 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	/**
 	 * @method getLength
-	 * @memberof SFDB
-	 * @description gets the length of the sfdb object.
+	 * @memberof socialRecord
+	 * @description gets the length of the socialRecord object.
 	 * @private
-	 * @return {[int]} [length of the sfdb object]
+	 * @return {[int]} [length of the socialRecord object]
 	 */
 	var getLength = function () {
-		return sfdb.length;
+		return socialRecord.length;
 	};
 
 	/**
 	 * @function getLengthAtTimeStep 
-	 * @description Given a timestep, returns the length of the array at the index represented by that timestep in the sfdb.
+	 * @description Given a timestep, returns the length of the array at the index represented by that timestep in the socialRecord.
 	 * @param  {[int]} timestep [The timestep to get the length of. Should be >= 0]
-	 * @return {[int]}          [the length of the array that resides at sfdb[timestep]]
+	 * @return {[int]}          [the length of the array that resides at socialRecord[timestep]]
 	 * @private
 	 */
 	var getLengthAtTimeStep = function(timestep){
@@ -40,41 +40,41 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			console.log("ERROR in getLengthAtTimeStep -- tried to get the length of a negative timestep");
 		}
 		else{
-			return sfdb[timestep].length;
+			return socialRecord[timestep].length;
 		}
 	};
 
 	/**
 	 * @method getCurrentTimeStep
 	 * @description return the value of currentTimeStep.
-	 * @return {[int]} [the currentTimeStep stored in the sfdb]
+	 * @return {[int]} [the currentTimeStep stored in the socialRecord]
 	 */
 	var getCurrentTimeStep = function(){
 		return currentTimeStep;
 	};
 	
 	/**
-	 * @method  dumpSFDB
-	 * @description Debugging function: Dumps the whole SFDB object to the console.
+	 * @method  dumpSocialRecord
+	 * @description Debugging function: Dumps the whole socialRecord object to the console.
 	 * @public
 	 * @memberOf ensemble
 	 */
-	var dumpSFDB = function() {
-		console.log("sfdb:", sfdb);
+	var dumpSocialRecord = function() {
+		console.log("socialRecord:", socialRecord);
 	};
 
 	/**
-	 * Returns a copy of the sfdb at the given timestep.
+	 * Returns a copy of the socialRecord at the given timestep.
 	 *
 	 * @param  {Number} timeStep The timestep to retrieve.
 	 *
-	 * @return {Object} A copy of an SFDB timeslice, an array of predicate objects.
+	 * @return {Object} A copy of an socialRecord timeslice, an array of predicate objects.
 	 */
-	var getSFDBCopyAtTimestep = function(timeStep) {
+	var getSocialRecordCopyAtTimestep = function(timeStep) {
 		if (timeStep === undefined) {
 			timeStep = currentTimeStep;
 		}
-		var slice = util.clone(sfdb[timeStep]);
+		var slice = util.clone(socialRecord[timeStep]);
 		if (slice === undefined) {
 			slice = [];
 		}
@@ -145,12 +145,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 /**
-* @description  Catches the SFDB's currentTimeStep to the timeStep specified.
+* @description  Catches the socialRecord's currentTimeStep to the timeStep specified.
 *
 * @method setUpNextTimeStep
 * @memberof ensemble
 * @return {int} The current timestep. 
-* @param {Number} timeStep - the timeStep to catch up the SFDB to. If omitted, assumes the currentTimeStep + 1.
+* @param {Number} timeStep - the timeStep to catch up the socialRecord to. If omitted, assumes the currentTimeStep + 1.
 */
 	var setupNextTimeStep = function (timeStep) {
 		if (currentTimeStep === -1) {
@@ -160,42 +160,42 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		if (timeStep === undefined) {
 			timeStep = currentTimeStep + 1;
 		}
-		var currentSFDBEntry = currentTimeStep;
+		var currentSocialRecordEntry = currentTimeStep;
 
-		// If this given timestep in the sfdb doesn't exist yet, fill it in with an empty array.
-		if(sfdb[currentTimeStep] === undefined ){
-			sfdb[currentTimeStep] = [];
+		// If this given timestep in the socialRecord doesn't exist yet, fill it in with an empty array.
+		if(socialRecord[currentTimeStep] === undefined ){
+			socialRecord[currentTimeStep] = [];
 		}
 
 		for (var i = currentTimeStep + 1; i <= timeStep ; i += 1) {
 
-			//sfdb[i] = util.clone(sfdb[i-1]); OLD WAY, changed to no longer clone things we aren't supposed to in the first place.
-			sfdb[i] = [];
-			if(sfdb[i-1] !== undefined){
-				for(var k = 0; k < sfdb[i-1].length; k += 1){
-					if(getRegisteredDuration(sfdb[i-1][k]) !== 0 ){
+			//socialRecord[i] = util.clone(socialRecord[i-1]); OLD WAY, changed to no longer clone things we aren't supposed to in the first place.
+			socialRecord[i] = [];
+			if(socialRecord[i-1] !== undefined){
+				for(var k = 0; k < socialRecord[i-1].length; k += 1){
+					if(getRegisteredDuration(socialRecord[i-1][k]) !== 0 ){
 						//ONLY clone if the duration is 0.
-						//Otherwise we are dealing with something like an SFDB label, and we don't want to copy it
+						//Otherwise we are dealing with something like an socialRecord label, and we don't want to copy it
 						//to this new timestep.
-						sfdb[i].push(util.clone(sfdb[i-1][k]));
+						socialRecord[i].push(util.clone(socialRecord[i-1][k]));
 					}
 				}
 			}
 
 
 			// code to handle the expiring of statuses
-			// if at a given timeStep, an element in the sfdb has a duration timer,
+			// if at a given timeStep, an element in the socialRecord has a duration timer,
 			// decrement it, and if necessary reverse the status value and delete the duration timer
-			for (var j = 0 ; j < sfdb[i].length; j++ ){
-				if (getRegisteredIsBoolean(sfdb[i][j])) {
-					if (sfdb[i][j].duration !== undefined) {
-						sfdb[i][j].duration -= 1;
-						if (sfdb[i][j].duration <= 0) {
-							delete sfdb[i][j].duration;
+			for (var j = 0 ; j < socialRecord[i].length; j++ ){
+				if (getRegisteredIsBoolean(socialRecord[i][j])) {
+					if (socialRecord[i][j].duration !== undefined) {
+						socialRecord[i][j].duration -= 1;
+						if (socialRecord[i][j].duration <= 0) {
+							delete socialRecord[i][j].duration;
 							// We set it to false; if we just delete it, the old true value gets cloned over.
-							if (sfdb[i][j].value !== false) {
-								sfdb[i][j].value = false;
-								sfdb[i][j].timeHappened = timeStep;
+							if (socialRecord[i][j].value !== false) {
+								socialRecord[i][j].value = false;
+								socialRecord[i][j].timeHappened = timeStep;
 							}
 						}
 					}
@@ -208,10 +208,10 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		if(timeStep > currentTimeStep){
 			currentTimeStep = timeStep;
 		}
-		// Rewind the SFDB, clearing out what was in it after the point we are rewinding to
+		// Rewind the socialRecord, clearing out what was in it after the point we are rewinding to
 		else if (timeStep < currentTimeStep) {
 			for (var i = currentTimeStep; i > timeStep ; i -= 1) {
-				sfdb[i] = [];
+				socialRecord[i] = [];
 			}
 			currentTimeStep = timeStep;
 		}
@@ -219,17 +219,17 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	// Helper function for newGet(). Checks whether two predicates have a compatible value, taking into account an optional operator and passed-in expected values.
-	var checkValueMatch = function(sfdbValue, searchValue, operator) {
-		if (typeof searchValue === "boolean" && sfdbValue !== searchValue) {
+	var checkValueMatch = function(socialRecordValue, searchValue, operator) {
+		if (typeof searchValue === "boolean" && socialRecordValue !== searchValue) {
 			return false;
 		}
-		else if (operator === "=" && sfdbValue !== searchValue) {
+		else if (operator === "=" && socialRecordValue !== searchValue) {
 			return false;
 		}
-		else if (operator === ">" && sfdbValue <= searchValue) {
+		else if (operator === ">" && socialRecordValue <= searchValue) {
 			return false;
 		}
-		else if (operator === "<" && sfdbValue >= searchValue) {
+		else if (operator === "<" && socialRecordValue >= searchValue) {
 			return false;
 		}
 		// Either the values match, or we have a numeric category but no operator, in which case we count this as a match (we're probably trying to get the current value of this predicate.)
@@ -239,16 +239,16 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	var matchedResults;
 	var matchedResultsStrings;
 
-	// Helper function for newGet(). Adds a matching predicate to the module array matchedResults, either as a new object or a reference to a point in the SFDB, and ensuring no duplicate predicates are added.
+	// Helper function for newGet(). Adds a matching predicate to the module array matchedResults, either as a new object or a reference to a point in the socialRecord, and ensuring no duplicate predicates are added.
 	var addResult = function(predicateRef, value, addAsReference) {
 
 		var matchResult;
 
 		if (addAsReference) {
-			// Simply add the reference to this predicate in the SFDB.
+			// Simply add the reference to this predicate in the socialRecord.
 			matchResult = predicateRef;
 		} else {
-			// We're matching a predicate that doesn't exist in the SFDB because it's representing a default value.
+			// We're matching a predicate that doesn't exist in the socialRecord because it's representing a default value.
 			matchResult = util.clone(predicateRef);
 			if (value !== undefined) {
 				matchResult.value = value;
@@ -264,7 +264,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	}
 
-	// Helper function used by sfdb.get to see if the given predicate matches a default value.
+	// Helper function used by socialRecord.get to see if the given predicate matches a default value.
 	var checkForDefaultMatch = function(searchPredicate, defaultValue, searchValue, isBooleanPred) {
 		var matchesDefault;
 		if (searchPredicate.value !== undefined) {
@@ -275,11 +275,11 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			}
 		}
 
-		// If the search predicate is numeric and did not provide a value, we want to add an entry to the SFDB with the default value, and return a reference to that.
+		// If the search predicate is numeric and did not provide a value, we want to add an entry to the socialRecord with the default value, and return a reference to that.
 		else if (searchPredicate.value === undefined && !isBooleanPred && defaultValue !== undefined)  {
 			var tempPred = util.clone(searchPredicate);
 			tempPred.value = defaultValue;
-			sfdb[currentTimeStep].push(tempPred);
+			socialRecord[currentTimeStep].push(tempPred);
 			addResult(tempPred, defaultValue, true);
 		}
 
@@ -294,14 +294,14 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	/**
-	* @description  Search the SFDB for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. 
+	* @description  Search the socialRecord for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. 
 	*
 	* @method get
 	* @memberof ensemble
-	* @param {Object} searchPredicate - a predicate we want to search the SFDB for
+	* @param {Object} searchPredicate - a predicate we want to search the socialRecord for
 	* @param {Number} mostRecentTime - the lower bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
 	* @param {Number} leastRecentTime - the upper bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
-	* @param {Bool} useDefaultValue - If true, then if the searchPredicate is not explicitly found in the sfdb it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
+	* @param {Bool} useDefaultValue - If true, then if the searchPredicate is not explicitly found in the socialRecord it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
 	* @return {Array} matchedResults	the array holding the found predicates which match the query
 	*/
 	//ensemble.get() should be called by public, this should only be used internally.
@@ -343,55 +343,55 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		mostRecentTime = currentTimeStep - mostRecentTime;
 		lessRecentTime = currentTimeStep - lessRecentTime;
 
-		var foundAnySFDBTimesteps = false;
+		var foundAnySocialRecordTimesteps = false;
 
-		// Look through each defined SFDB time step in the given range.
+		// Look through each defined socialRecord time step in the given range.
 		for (var i = lessRecentTime ; i <= mostRecentTime ; i += 1) {
-			if(sfdb[i] !== undefined) {
+			if(socialRecord[i] !== undefined) {
 
-				foundAnySFDBTimesteps = true;
-				// Consider each predicate at this SFDB timestep.
-				for (var j = 0 ; j < sfdb[i].length ; j += 1) {
-					var sfdbPredicate = sfdb[i][j];
+				foundAnySocialRecordTimesteps = true;
+				// Consider each predicate at this socialRecord timestep.
+				for (var j = 0 ; j < socialRecord[i].length ; j += 1) {
+					var socialRecordPredicate = socialRecord[i][j];
 
 					// Skip any predicates that don't match the search predicate's specification. 
 
-					if (searchPredicate.category !== undefined && searchPredicate.category !== sfdbPredicate.category) {
+					if (searchPredicate.category !== undefined && searchPredicate.category !== socialRecordPredicate.category) {
 						continue;
 					}
-					if (searchPredicate.type !== undefined && searchPredicate.type !== sfdbPredicate.type) {
+					if (searchPredicate.type !== undefined && searchPredicate.type !== socialRecordPredicate.type) {
 						continue;
 					}
-					if (searchPredicate.first !== undefined && searchPredicate.first !== sfdbPredicate.first) {
+					if (searchPredicate.first !== undefined && searchPredicate.first !== socialRecordPredicate.first) {
 						continue;
 					}
-					if (searchPredicate.second !== undefined && searchPredicate.second !== sfdbPredicate.second) {
+					if (searchPredicate.second !== undefined && searchPredicate.second !== socialRecordPredicate.second) {
 						continue;
 					}
 
 					// If we made it to here, we found a match of the search predicate's pattern (although the value may not match up.)
 					foundPatternMatch = true;
 
-					// We don't want to assume "=" as operator, b/c then we won't match checks for existing SFDB values.
-					var doesValueMatch = checkValueMatch(sfdbPredicate.value, searchValue, searchPredicate.operator);
+					// We don't want to assume "=" as operator, b/c then we won't match checks for existing socialRecord values.
+					var doesValueMatch = checkValueMatch(socialRecordPredicate.value, searchValue, searchPredicate.operator);
 
 					if (doesValueMatch) {
-						addResult(sfdbPredicate, searchValue, true);
+						addResult(socialRecordPredicate, searchValue, true);
 					}
 				}
 
-				// In the case that we found no pattern matches for this predicate (meaning the SFDB has no record of this information), see if the default value should indicate a positive result anyway.
+				// In the case that we found no pattern matches for this predicate (meaning the socialRecord has no record of this information), see if the default value should indicate a positive result anyway.
 				if ( !foundPatternMatch ) {
 					checkForDefaultMatch(searchPredicate, defaultValue, searchValue, isBooleanPred);
 				}
 				foundPatternMatch = false;
 
-			} // end if(sfdb[i] !== undefined)
+			} // end if(socialRecord[i] !== undefined)
 
 		} // end for (var i = lessRecentTime
 
-		// In the case where the whole SFDB was empty, we never got a chance to check for default values, so do it here.
-		if (!foundAnySFDBTimesteps) {
+		// In the case where the whole socialRecord was empty, we never got a chance to check for default values, so do it here.
+		if (!foundAnySocialRecordTimesteps) {
 			checkForDefaultMatch(searchPredicate, defaultValue, searchValue, isBooleanPred);
 		}
 
@@ -404,7 +404,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	 * @public
 	 * @memberOf ensemble
 	 * @return {object} A Parsed JSON file representing the history that was just loaded in.
-	 * @param  {object} content - A javascript object detailing the social history to populate the sfdb with.
+	 * @param  {object} content - A javascript object detailing the social history to populate the socialRecord with.
 	 */
 	var addHistory = function(content) {
 		var history;
@@ -461,7 +461,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
  * This function is meant to be assigned to a predicate objects toString method.
  *
  * @method predicateToString
- * @memberof SFDB
+ * @memberof socialRecord
  * @return a string representation of the current predicate represented by 'this'
  */
 	var predicateToString = function(){
@@ -475,12 +475,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 
 /**
- * @description Allows a predicate to be saved to the SFDB at the current timeStep. Handles stored predicate updating as well as storing new predicates
+ * @description Allows a predicate to be saved to the socialRecord at the current timeStep. Handles stored predicate updating as well as storing new predicates
  *
  * @method set
  * @memberof ensemble
  * @public
- * @param {Object} setPredicate - the predicate that we would like to save to the SFDB
+ * @param {Object} setPredicate - the predicate that we would like to save to the socialRecord
  */
 	var set = function(setPredicate) {
 		var pattern = {};
@@ -512,42 +512,42 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			value = true;
 		}
 
-		// Get a reference to an SFDB record.
-		var sfdbPredicate;
+		// Get a reference to an socialRecord record.
+		var socialRecordPredicate;
 		var searchResult = get(pattern, 0, 0, false);
 		if (searchResult.length === 0) {
-			sfdbPredicate = pattern;
-			sfdbPredicate.value = defaultValue;
-			sfdb[timeStep].push(sfdbPredicate);
+			socialRecordPredicate = pattern;
+			socialRecordPredicate.value = defaultValue;
+			socialRecord[timeStep].push(socialRecordPredicate);
 		} else if (searchResult.length === 1) {
-			sfdbPredicate = searchResult[0];
+			socialRecordPredicate = searchResult[0];
 		} else {
 			console.log("bad predicate: ", setPredicate);
-			throw new Error("Expected any pattern get to the SFDB to return either an existing record or make a new one w/the default value and return that.")			
+			throw new Error("Expected any pattern get to the socialRecord to return either an existing record or make a new one w/the default value and return that.")			
 		}
 
-		sfdbPredicate.timeHappened = timeStep;
-		sfdbPredicate.duration = duration;
+		socialRecordPredicate.timeHappened = timeStep;
+		socialRecordPredicate.duration = duration;
 
 		if (operator === undefined || operator === "=") {
 			// Straight update.
-			sfdbPredicate.value = value;
+			socialRecordPredicate.value = value;
 		} else {
 			// Offset.
 			if (operator === "+") {
-				sfdbPredicate.value += value;
+				socialRecordPredicate.value += value;
 			} else if (operator === "-") {
-				sfdbPredicate.value -= value;
+				socialRecordPredicate.value -= value;
 			}
 		}
 
 		// Verify new value is valid.
 		if (!isBooleanPred) {
-			if (sfdbPredicate.value > max) {
-				sfdbPredicate.value = max;
+			if (socialRecordPredicate.value > max) {
+				socialRecordPredicate.value = max;
 			}
-			if (sfdbPredicate.value < min) {
-				sfdbPredicate.value = min;
+			if (socialRecordPredicate.value < min) {
+				socialRecordPredicate.value = min;
 			}
 		}
 
@@ -565,38 +565,38 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 				rPred = recipSearchResult[0]
 			} else {
 				rPred = recipPredicate;
-				sfdb[timeStep].push(rPred);
+				socialRecord[timeStep].push(rPred);
 			}
 
-			rPred.timeHappened = sfdbPredicate.timeHappened;
-			rPred.duration = sfdbPredicate.duration;
-			rPred.value = sfdbPredicate.value;
+			rPred.timeHappened = socialRecordPredicate.timeHappened;
+			rPred.duration = socialRecordPredicate.duration;
+			rPred.value = socialRecordPredicate.value;
 
 		}
 
 	}
 
 /**
- * Clears out the history of the SFDB. Note that all registered things from blueprints, such as
+ * Clears out the history of the socialRecord. Note that all registered things from blueprints, such as
  * defaultValues and directions, are NOT removed, so there is no need to re-register
  *
  * @method clearHistory
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var clearHistory = function(){
-		sfdb = [];
+		socialRecord = [];
 		currentTimeStep = -1;
 	};
 
 /**
- * Clears out EVERYTHING from the SFDB. This means the entire social history, and also data that came from
+ * Clears out EVERYTHING from the socialRecord. This means the entire social history, and also data that came from
  * our factory blueprints, including defaultValues and directions. After calling this, predicates need to be re-registered
  *
  * @method clearEverthing
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var clearEverything = function(){
-		sfdb = [];
+		socialRecord = [];
 		currentTimeStep = -1;
 		defaultValues = {};
 		maxValues = {};
@@ -610,42 +610,42 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	/**
-	 * Prints out the contents of the sfdb's history at a given timeStep. If no timeStep is specified,
-	 * prints out the conents of the sfdb at the current time step
+	 * Prints out the contents of the socialRecord's history at a given timeStep. If no timeStep is specified,
+	 * prints out the conents of the socialRecord at the current time step
 	 *
-	 * @method sfdbHistoryToString
-	 * @memberof SFDB
-	 * @param timeStep 			an integer representing the timeStep we want to see the contents of the sfdb at. Assume current time step if undefined.
-	 * @return historyString 	A string representing the contents of the sfdb at the specified point in history
+	 * @method socialRecordHistoryToString
+	 * @memberof socialRecord
+	 * @param timeStep 			an integer representing the timeStep we want to see the contents of the socialRecord at. Assume current time step if undefined.
+	 * @return historyString 	A string representing the contents of the socialRecord at the specified point in history
 	 */
-	var sfdbHistoryToString = function(timeStep){
+	var socialRecordHistoryToString = function(timeStep){
 		if(timeStep === undefined){
 			timeStep = currentTimeStep;
 		}
 
-		var historyString = "******SFDB At Time " + timeStep + "********\n";
+		var historyString = "******socialRecord At Time " + timeStep + "********\n";
 
-		for(var i = 0; i < sfdb[timeStep].length; i += 1){
+		for(var i = 0; i < socialRecord[timeStep].length; i += 1){
 			historyString += "<PREDICATE " + i + ">\n";
-			historyString += "category: " + sfdb[timeStep][i].category + "\n";
-			historyString += "type: " + sfdb[timeStep][i].type + "\n";
-			historyString += "first: " + sfdb[timeStep][i].first + "\n";
-			historyString += "second: " + sfdb[timeStep][i].second + "\n";
-			historyString += "value: " + sfdb[timeStep][i].value + "\n";
-			historyString += "timeHappened: " + sfdb[timeStep][i].timeHappened + "\n";
+			historyString += "category: " + socialRecord[timeStep][i].category + "\n";
+			historyString += "type: " + socialRecord[timeStep][i].type + "\n";
+			historyString += "first: " + socialRecord[timeStep][i].first + "\n";
+			historyString += "second: " + socialRecord[timeStep][i].second + "\n";
+			historyString += "value: " + socialRecord[timeStep][i].value + "\n";
+			historyString += "timeHappened: " + socialRecord[timeStep][i].timeHappened + "\n";
 			historyString += "---------------------------\n";
 		}
 
-		historyString += "Total Length: " + sfdb[timeStep].length + "\n";
+		historyString += "Total Length: " + socialRecord[timeStep].length + "\n";
 		historyString += "******************************";
 		return historyString;
 
 	};
 
-	var sfdbFullHistoryToString = function(){
+	var socialRecordFullHistoryToString = function(){
 		var returnString = "";
-		for(var i = 0; i < sfdb.length; i += 1){
-			returnString += sfdbHistoryToString(i);
+		for(var i = 0; i < socialRecord.length; i += 1){
+			returnString += socialRecordHistoryToString(i);
 		}
 		return returnString;
 	};
@@ -721,8 +721,8 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	var removeUndirectedSocialFacts = function(characterName){
 		var indicesToRemove = [];
-		for(var i = 0; i < sfdb[currentTimeStep].length; i += 1){
-			var socialFact = sfdb[currentTimeStep][i];
+		for(var i = 0; i < socialRecord[currentTimeStep].length; i += 1){
+			var socialFact = socialRecord[currentTimeStep][i];
 			if(getRegisteredDirection(socialFact) === "undirected"){
 				if(socialFact.first === characterName || socialFact.second === characterName){
 					indicesToRemove.push(i);
@@ -731,15 +731,15 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		}
 
 		for(var j = indicesToRemove.length - 1; j >= 0; j -= 1){
-			sfdb[currentTimeStep].splice(indicesToRemove[j], 1);
+			socialRecord[currentTimeStep].splice(indicesToRemove[j], 1);
 		}
 	};
 
 	var removeDirectedSocialFacts = function(characterName){
 		//TODO: Validate that characterName is an actual character in the system.
 		var indicesToRemove = [];
-		for(var i = 0; i < sfdb[currentTimeStep].length; i +=1){
-			var socialFact = sfdb[currentTimeStep][i];
+		for(var i = 0; i < socialRecord[currentTimeStep].length; i +=1){
+			var socialFact = socialRecord[currentTimeStep][i];
 			if(getRegisteredDirection(socialFact) === "directed"){
 				if(socialFact.first === characterName || socialFact.second === characterName){
 					//This means that we are dealing with someone who has a directed attribute to or from the 'name' character.
@@ -750,15 +750,15 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 		for(var j = indicesToRemove.length - 1; j >= 0; j -= 1){
 			//We want to go backwards, so as not to disrupt the ordering of the indexes we've marked for removal.
-			sfdb[currentTimeStep].splice(indicesToRemove[j], 1);
+			socialRecord[currentTimeStep].splice(indicesToRemove[j], 1);
 		}
 	};
 
 	var removeReciprocalSocialFacts = function(characterName){
 		//TODO: Validate that characterName is an actual character in the system.
 		var indicesToRemove = [];
-		for(var i = 0; i < sfdb[currentTimeStep].length; i += 1){
-			var socialFact = sfdb[currentTimeStep][i];
+		for(var i = 0; i < socialRecord[currentTimeStep].length; i += 1){
+			var socialFact = socialRecord[currentTimeStep][i];
 			if(getRegisteredDirection(socialFact) === "reciprocal"){
 				if(socialFact.first === characterName || socialFact.second === characterName){
 					//Anything that involves this character is going to be removed.
@@ -769,7 +769,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 		for(var j = indicesToRemove.length - 1; j >= 0; j -= 1){
 			//we want to go backwards, so as not to disrupt the ordering of the indexes we've marked for removal.
-			sfdb[currentTimeStep].splice(indicesToRemove[j], 1);
+			socialRecord[currentTimeStep].splice(indicesToRemove[j], 1);
 		}
 	};
 
@@ -794,10 +794,10 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	};
 
-	var sfdbInterface = {
+	var socialRecordInterface = {
 		init: init,
-		dumpSFDB: dumpSFDB,
-		getSFDBCopyAtTimestep: getSFDBCopyAtTimestep,
+		dumpSocialRecord: dumpSocialRecord,
+		getSocialRecordCopyAtTimestep: getSocialRecordCopyAtTimestep,
 
 		getCurrentTimeStep		: getCurrentTimeStep,
 
@@ -818,8 +818,8 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		set 					: set,
 		get 					: publicGet,
 		addHistory				: addHistory,
-		sfdbHistoryToString 	: sfdbHistoryToString,
-		sfdbFullHistoryToString	: sfdbFullHistoryToString,
+		socialRecordHistoryToString 	: socialRecordHistoryToString,
+		socialRecordFullHistoryToString	: socialRecordFullHistoryToString,
 		putCharacterOffstage	: putCharacterOffstage,
 		putCharacterOnstage		: putCharacterOnstage,
 		eliminateCharacter		: eliminateCharacter,
@@ -832,16 +832,16 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	// See comment at top of Tests.js for explanation of below.
 
 	/* test-code */
-	sfdbInterface.currentTimeStep = currentTimeStep;
-	sfdbInterface.getLength = getLength;
-	sfdbInterface.getCurrentTimeStep = getCurrentTimeStep;
-	sfdbInterface.getLengthAtTimeStep = getLengthAtTimeStep;
+	socialRecordInterface.currentTimeStep = currentTimeStep;
+	socialRecordInterface.getLength = getLength;
+	socialRecordInterface.getCurrentTimeStep = getCurrentTimeStep;
+	socialRecordInterface.getLengthAtTimeStep = getLengthAtTimeStep;
 	/* end-test-code */
 
 	//public things removed and turned 'private'
 	//getLength 				: getLength,
 
-	return sfdbInterface;
+	return socialRecordInterface;
 
 
 });

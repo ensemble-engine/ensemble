@@ -1,87 +1,36 @@
 /**
-* This has all of the unit tests that test functions that are from SFDB.js
+* This has all of the unit tests that test functions that are from socialRecord.js
 */
-define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(_, util, $, ensemble, sfdb, test, validate, testSocial, testHistory) {
+define(["underscore", "util", "jquery", "ensemble", "socialRecord", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(_, util, $, ensemble, socialRecord, test, validate, testSocial, testHistory) {
 
 
 /**
  * Run the provided test functions
  *
  * @method runTests
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var runTests = function(){
 		testSetupNextTimeStep();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testSet();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testGet();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testPutCharacterOffstage();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testPutCharacterOnstage();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testEliminateCharacter();
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		testAddHistory();
 	};
-
-/**
- * testSfdbHistoryToString();
- * Test the use of sfdbHistoryToString() Beause this is just a diagnostic thing, it isn't really of the
- * utmost importance that we keep these unit tets up to date. All the same, I think this will prove to be a useful
- * thing to have!
- *
- *
- */
- 	// *** We probably don't need a test here since it's just a debugging/utility function.
-	// var testSfdbHistoryToString = function(){
-	// 	test.start("SFDB", "testSfdbHistoryToString");
-	// 	ensemble.loadBaseBlueprints(testSocial);
-
-	// 	//let's put some things in the sfdb
-	// 	var pred1 = validate.triggerEffect({
-	// 		"category": "relationship",
-	// 		"type": "friends",
-	// 		"value": true,
-	// 		"first": "clara",
-	// 		"second": "doc"
-	// 	}, "testSfdbHistoryToString setting pred1");
-
-	// 	set(pred1, 0);
-
-	// 	var sfdbContents = sfdbHistoryToString(0);
-
-	// 	var expectedContent = "" +
-	// 	"******SFDB At Time 0********\n" +
-	// 	"<PREDICATE 0>\n" +
-	// 	"category: relationship\n" +
-	// 	"type: friends\n" +
-	// 	"first: clara\n" +
-	// 	"second: doc\n" +
-	// 	"value: true\n" +
-	// 	"---------------------------\n" +
-	// 	"<PREDICATE 1>\n" +
-	// 	"category: relationship\n" +
-	// 	"type: friends\n" +
-	// 	"first: doc\n" +
-	// 	"second: clara\n" +
-	// 	"value: true\n" +
-	// 	"---------------------------\n" +
-	// 	"Total Length: 2\n" +
-	// 	"******************************";
-
-	// 	//TEST 1 -- Make sure that a relationship predicate is handled appropriately when we print it to a string.
-	// 	test.assert(sfdbContents, expectedContent, "actual contents of sfdb differ from expected content of sfdb");
-
-	// 	test.finish();
-	// };
 
 /**
  * Test the use of setupNextTimeStep
  *
  * @method testSetupNextTimeStep
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var testSetupNextTimeStep = function(){
 		var tempTimeStep = 5;
@@ -98,17 +47,17 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		var defaultDuration = 6;
 
 		//The call itself
-		sfdb.setupNextTimeStep(tempTimeStep); // should make the sfdb the length of tempTimeStep
+		socialRecord.setupNextTimeStep(tempTimeStep); // should make the socialRecord the length of tempTimeStep
 
-		//Insert our test predicate into the SFDB
-		sfdb.set(testPred);
+		//Insert our test predicate into the socialRecord
+		socialRecord.set(testPred);
 
 		//TEST 1 -- the time step was successfully updated
-		test.start("SFDB", "testSetupNextTimeStep");
-		test.assert(sfdb.getCurrentTimeStep(), tempTimeStep, "currentTimeStep did not update properly.");
+		test.start("socialRecord", "testSetupNextTimeStep");
+		test.assert(socialRecord.getCurrentTimeStep(), tempTimeStep, "currentTimeStep did not update properly.");
 
-		//TEST 2 -- The SFDB has grown to the appropriate size
-		test.assert(sfdb.getLength(), tempTimeStep+1, "sfdb.length was not the same as timeStep+1.");
+		//TEST 2 -- The socialRecord has grown to the appropriate size
+		test.assert(socialRecord.getLength(), tempTimeStep+1, "socialRecord.length was not the same as timeStep+1.");
 
 		//TEST 3 -- Passing in a time that is IN THE PAST does NOT reset the current time step.
 		// This is no longer true since we can now move backwards in time to an earlier state, so this has been commented out.
@@ -117,35 +66,35 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// test.assertGTE(currentTimeStep, oldCurrentTimeStep, "currentTimeStep should be >= previous time step.");
 
 		//TEST 4 -- Check expiresAfter
-		sfdb.setupNextTimeStep(7); //move to turn 7
-		var p = sfdb.get(testPred, 0, 0);
+		socialRecord.setupNextTimeStep(7); //move to turn 7
+		var p = socialRecord.get(testPred, 0, 0);
 		test.assert(p.length, 1, "two turns after something with duration 6 was set, it should not have expired (1/2).");
 		test.assert(p.length > 0 && p[0].value, true, "two turns after something with duration 6 was set, it should not have expired. (2/2)");
 		// test.assert(p[0].duration, 4, "two turns after something with duration 6 was set, its duration should be 4.");
 
-		sfdb.setupNextTimeStep(10); 
-		p = sfdb.get(testPred, 0, 0);
+		socialRecord.setupNextTimeStep(10); 
+		p = socialRecord.get(testPred, 0, 0);
 		test.assert(p.length, 1, "five turns after something with duration 6 was set, it should not have expired. (1/2)");
 		test.assert(p.length > 0 && p[0].value, true, "five turns after something with duration 6 was set, it should not have expired. (2/2)");
 
-		sfdb.setupNextTimeStep(); 
-		p = sfdb.get(testPred, 0, 0);
+		socialRecord.setupNextTimeStep(); 
+		p = socialRecord.get(testPred, 0, 0);
 		test.assert(p.length, 0, "six turns after something with duration 6 was set, there should no longer be a match.");
 
-		p = sfdb.get(testPred, 1, 1);
+		p = socialRecord.get(testPred, 1, 1);
 		test.assert(p.length > 0 && p[0].value, true, "six turns after something with duration 6 was set, there should be a match one turn in the past.");
 
-		p = sfdb.get(testPred, 6, 6);
+		p = socialRecord.get(testPred, 6, 6);
 		test.assert(p.length > 0 && p[0].value, true, "six turns after something with duration 6 was set, there should be a match six turns in the past.");
 
-		p = sfdb.get(testPred, 7, 7);
+		p = socialRecord.get(testPred, 7, 7);
 		test.assert(p.length === 0, true, "six turns after something with duration 6 was set, there should not be a match seven turns in the past.");
 
 
 		// This should work if we use turnsAgoBetween in predicates, too.
-		sfdb.clearHistory();
-		sfdb.setupNextTimeStep(); // Advance to next turn
-		sfdb.set({
+		socialRecord.clearHistory();
+		socialRecord.setupNextTimeStep(); // Advance to next turn
+		socialRecord.set({
 			"category": "relationship",
 			"type": "friends",
 			"first": "alice",
@@ -161,7 +110,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": false,
 			"turnsAgoBetween": [1, 1],
 		});
-		var evaluationResult = sfdb.get(pred);
+		var evaluationResult = socialRecord.get(pred);
 		test.assert(evaluationResult.length, 1, "ruleLibrary.evaluateCondition - turnsAgoBetween should correctly let you identify a false prior state if there's no record.");
 
 
@@ -172,7 +121,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
  * Test the use of the set function
  *
  * @method testSet
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var testSet = function(){
 		ensemble.loadBaseBlueprints(testSocial);
@@ -204,38 +153,38 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		var testTimeStamp = 0;
 		
 
-		//Adding predicates to the SFDB.
+		//Adding predicates to the socialRecord.
 		var numPredicatesAdded = 2; // starts off at two, since the first predicate we enter in is a relationship predicate.
-		sfdb.set(testPred);
+		socialRecord.set(testPred);
 
-		test.start("SFDB", "testSet");
-		//TEST ONE -- setting the first thing in the SFDB.
-		test.assert(sfdb.getLengthAtTimeStep(0), numPredicatesAdded, "length of SFDB is incorrect.");
+		test.start("socialRecord", "testSet");
+		//TEST ONE -- setting the first thing in the socialRecord.
+		test.assert(socialRecord.getLengthAtTimeStep(0), numPredicatesAdded, "length of socialRecord is incorrect.");
 
 		numPredicatesAdded = numPredicatesAdded + 1;
-		sfdb.set(testPredTwo);
+		socialRecord.set(testPredTwo);
 
 
 		//TEST TWO-- setting a second predicate at a previously established time step 0
-		test.assert(sfdb.getLengthAtTimeStep(0), numPredicatesAdded, "length of SFDB is incorrect after setting a second predicate.");
+		test.assert(socialRecord.getLengthAtTimeStep(0), numPredicatesAdded, "length of socialRecord is incorrect after setting a second predicate.");
 
 		//TEST THREE -- setting a predicate at a new time step when time step 0 has things in it already.
 		//--->Is current time updated?
-		sfdb.setupNextTimeStep()
-		sfdb.set(testPredThree);
+		socialRecord.setupNextTimeStep()
+		socialRecord.set(testPredThree);
 		numPredicatesAdded = numPredicatesAdded + 1;
-		test.assert(sfdb.getCurrentTimeStep(), testTimeStamp + 1, "currentTime did not get updated");
+		test.assert(socialRecord.getCurrentTimeStep(), testTimeStamp + 1, "currentTime did not get updated");
 
 		//TEST FOUR -- checking the length across time steps
 		//---> We added 2 predicates at timeStep 0, and 1 predicate at timeStep 1. That means that at timeStep 1 we should have three total
 		//---> The two from time step 0 that we cloned, and the 1 additional one that we added.
-		test.assert(sfdb.getLengthAtTimeStep(testTimeStamp+1), numPredicatesAdded, "Length across time steps fail.");
+		test.assert(socialRecord.getLengthAtTimeStep(testTimeStamp+1), numPredicatesAdded, "Length across time steps fail.");
 
 
 
 		//TEST FIVE -- setting a predicate that already exists at that time step doesn't increase the length.
-		sfdb.set(testPredThree); // we don't increment numPredicatesAdded, because we dont think that we actually added anything'
-		test.assert(sfdb.getLengthAtTimeStep(testTimeStamp+1), numPredicatesAdded, "duplicate predicate pushed to SFDB");
+		socialRecord.set(testPredThree); // we don't increment numPredicatesAdded, because we dont think that we actually added anything'
+		test.assert(socialRecord.getLengthAtTimeStep(testTimeStamp+1), numPredicatesAdded, "duplicate predicate pushed to socialRecord");
 
 		//TEST SIX -- trying to change a predicate's value when that predicate doesn't exist.
 		var testPredFour = validate.triggerEffect({
@@ -247,17 +196,17 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"operator": '+'
 		}, "testSet setting testPredFour");
 
-		sfdb.set(testPredFour);
+		socialRecord.set(testPredFour);
 
 		testPredFour.operator = "=";
 		testPredFour.value = 60; //	the default is 50, so when we pass this in, the predicate will be made, stored, and given a value of 60 (50+10)
 		testPredFour = validate.triggerCondition(testPredFour, "testSet setting modified testPredFour (1)");
 
-		var result = sfdb.get(testPredFour, 0, 0);
-		test.assert(result[0].value, 60, "failed to ADD new predicate to sfdb using defaultValues and the operator set mode.");
+		var result = socialRecord.get(testPredFour, 0, 0);
+		test.assert(result[0].value, 60, "failed to ADD new predicate to socialRecord using defaultValues and the operator set mode.");
 
 		//TEST SEVEN -- changing a predicate's value.
-		sfdb.clearHistory();
+		socialRecord.clearHistory();
 		var testPredFourB = validate.triggerEffect({
 			"category": "network",
 			"type": "trust",
@@ -266,16 +215,16 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": 60,
 		}, "testSet setting testPredFourB");
 
-		sfdb.set(testPredFourB);
+		socialRecord.set(testPredFourB);
 		
 		testPredFourB.operator = "+"
 		testPredFourB.value = -20;
 		testPredFourB = validate.triggerEffect(testPredFourB, "testSet setting modified testPredFourB");
-		var results = sfdb.set(testPredFourB);
+		var results = socialRecord.set(testPredFourB);
 		delete testPredFourB.value;
 		delete testPredFourB.operator;
 
-		var results = sfdb.get(testPredFourB, 0, 0);
+		var results = socialRecord.get(testPredFourB, 0, 0);
 		test.assert(results[0].value, 40, "failed to SUBTRACT from a predicate using the operator set mode.");
 
 		//TEST EIGHT -- make sure reciprocal setting works
@@ -287,7 +236,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "doc",
 			"value": true
 		}, "testSet setting testPredFive");
-		sfdb.set(testPredFive);
+		socialRecord.set(testPredFive);
 
 		var testPredSix = util.clone(testPredFive);
 		testPredSix.first = "doc";
@@ -295,63 +244,63 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		testPredSix = validate.triggerCondition(testPredSix, "testSet setting testPredSix");
 
 		//	should return an array of length 1 with the reciprocal of testPredFive (which is testPredSix)
-		test.assert(sfdb.get(testPredSix, 0, 0).length, 1, "failed to set reciprocal person in sfdb.");
+		test.assert(socialRecord.get(testPredSix, 0, 0).length, 1, "failed to set reciprocal person in socialRecord.");
 
 		//TEST NINE -- make sure reciprocal updating works
 
 		testPredFive.value = false;
-		sfdb.set(testPredFive);
+		socialRecord.set(testPredFive);
 
 		testPredSix.value = false;
-		var result = sfdb.get(testPredSix, 0, 0);
-		test.assert(result.length, 1, "failed to update reciprocal person in sfdb.");
+		var result = socialRecord.get(testPredSix, 0, 0);
+		test.assert(result.length, 1, "failed to update reciprocal person in socialRecord.");
 
 		// Verify that if we set a reciprocal value to false, it overrides a reciprocal assertion.
-		sfdb.clearHistory();
+		socialRecord.clearHistory();
 		var testPredFriends = validate.triggerCondition({
 			"category": "relationship",
 			"type": "friends",
 			"first": "bob",
 			"second": "al"
 		}, "testSet setting final recip check");
-		sfdb.set(testPredFriends);
-		sfdb.setupNextTimeStep();
+		socialRecord.set(testPredFriends);
+		socialRecord.setupNextTimeStep();
 		testPredFriends.value = false
-		sfdb.set(testPredFriends);
-		var result = sfdb.get({"first": "al"}, 0, 0);
+		socialRecord.set(testPredFriends);
+		var result = socialRecord.get({"first": "al"}, 0, 0);
 		test.assert(result.length, 1, "We expect reciprocal values to update correctly, not leaving duplicate records behind.");
 
-		//TEST 10 -- SFDBLabel work
-		//SFDBLabels are strange beasts, because they get entered into the SFDB when they happen
+		//TEST 10 -- socialRecordLabel work
+		//socialRecordLabels are strange beasts, because they get entered into the socialRecord when they happen
 		//but they DON'T get cloned (unlike other aspects of social state, they don't represent "this is the current state")
 		//but rather they represent "This is what happeend, and this is when it happened".
 
-		var sfdbLabelPred = validate.triggerEffect({
-			"category": "SFDBLabel",
+		var socialRecordLabelPred = validate.triggerEffect({
+			"category": "socialRecordLabel",
 			"type": "romanticFailure",
 			"first": "reggie",
 			"second": "doc",
 			"value": true,
-		}, "testSet setting sfdbLabelPred");
+		}, "testSet setting socialRecordLabelPred");
 
 		var tempBluePrint = {
-			"category" : "SFDBLabel",
+			"category" : "socialRecordLabel",
 			"duration" : 0
 		};
 
-		sfdb.registerDuration(tempBluePrint);
+		socialRecord.registerDuration(tempBluePrint);
 
-		//ok, let's put our sfdb label into the sfdb!
-		sfdb.set(sfdbLabelPred);
-		test.assert(sfdb.get(sfdbLabelPred, 0, 0).length, 1, "even after JUST inserting an sfdbLabelPred, we failed to 'get' it back again");
+		//ok, let's put our socialRecord label into the socialRecord!
+		socialRecord.set(socialRecordLabelPred);
+		test.assert(socialRecord.get(socialRecordLabelPred, 0, 0).length, 1, "even after JUST inserting an socialRecordLabelPred, we failed to 'get' it back again");
 
 		//and for kicks, let's add a NEW thing to the NEXT time step, to make sure that
-		//the sfdbLabel DIDN'T get cloned to the new timestep!
-		sfdb.setupNextTimeStep();
-		sfdb.set(testPredFive);
-		test.assert(sfdb.get(sfdbLabelPred, 0, 0).length, 0, "We don't want the sfdbLabel predicate to be here now, because we've advanced a timestep. Seeing it here would mean that it cloned.");
+		//the socialRecordLabel DIDN'T get cloned to the new timestep!
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(testPredFive);
+		test.assert(socialRecord.get(socialRecordLabelPred, 0, 0).length, 0, "We don't want the socialRecordLabel predicate to be here now, because we've advanced a timestep. Seeing it here would mean that it cloned.");
 
-		//sfdbLabelPred
+		//socialRecordLabelPred
 		//
 
 		test.finish();
@@ -361,7 +310,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
  * Test the use of the get function
  *
  * @method testGet
- * @memberof SFDB
+ * @memberof socialRecord
  */
 	var testGet = function(){
 		ensemble.loadBaseBlueprints(testSocial);
@@ -391,13 +340,13 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": true
 		}, "testGet setting testPredThree");
 
-		var sfdbLabelPred = validate.triggerEffect({
-			"category": "SFDBLabel",
+		var socialRecordLabelPred = validate.triggerEffect({
+			"category": "socialRecordLabel",
 			"type": "romantic advance",
 			"first": "reggie",
 			"second": "doc",
 			"value": true
-		}, "testGet setting sfdbLabelPred");
+		}, "testGet setting socialRecordLabelPred");
 
 		var testPredFour = validate.triggerEffect({
 			"category": "network",
@@ -415,15 +364,15 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": 30
 		}, "testGet setting testPredFive");
 
-		//Populate the SFDB with our test predicates
-		sfdb.set(testPred);
-		sfdb.set(testPredTwo);
-		sfdb.setupNextTimeStep();
-		sfdb.set(testPredThree);
-		sfdb.set(testPredFour);
-		sfdb.set(testPredFive);
+		//Populate the socialRecord with our test predicates
+		socialRecord.set(testPred);
+		socialRecord.set(testPredTwo);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(testPredThree);
+		socialRecord.set(testPredFour);
+		socialRecord.set(testPredFive);
 
-		test.start("SFDB", "testGet");
+		test.start("socialRecord", "testGet");
 
 		//TEST 1
 		//---> When given a very specific predicate to search for, is it able to find it?
@@ -435,7 +384,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "vanessa",
 			"value": true
 		}, "testGet setting testSearchPred");
-		var getResults = sfdb.get(testSearchPred, 0, 0);
+		var getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 1, "Getting a single match at current time step Failed. Expecting length 1, got length " + getResults.length);
 
 
@@ -450,7 +399,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//TEST 2
 		//---> When expanding the window to be beyond a single time step, we don't want to return
 		//multiple matches of the same predicate
-		getResults = sfdb.get(testSearchPred, 0, 1);
+		getResults = socialRecord.get(testSearchPred, 0, 1);
 		test.assert(getResults.length, 1, "Getting a single match with a range for time step Failed. Expecting length 1, got length " + getResults.length);
 
 		//TEST 2.5
@@ -462,16 +411,16 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		test.assert(match.second, testSearchPred.second, "the contents of the returned match for SECOND when looking at a range for the time step was wrong.");
 
 		//TEST 3
-		//--->When given a partial predicate, does it successfully match all of the predicates in the SFDB that it should?
+		//--->When given a partial predicate, does it successfully match all of the predicates in the socialRecord that it should?
 		testSearchPred = {
 			"first": "doc"
 		};
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 2, "Getting multiple matches with a partial predicate at time step 0 failed.");
 
 		//TEST 3.5
 		//Same as Test 3, but using a windowed history -- result shouldn't differ'
-		getResults = sfdb.get(testSearchPred, 0, 1);
+		getResults = socialRecord.get(testSearchPred, 0, 1);
 		test.assert(getResults.length, 2, "Getting multiple matches using partial predicates with a windowed time step failed. Expected length 2, got length " + getResults.length);
 
 		//TEST 4
@@ -479,27 +428,27 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		testSearchPred = {
 			"category": "relationship"
 		};
-		// should match TWO predicates (because we are looking at a relationship, which--since it is recipricol--ends up getting a duplicate entry in the sfdb)
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		// should match TWO predicates (because we are looking at a relationship, which--since it is recipricol--ends up getting a duplicate entry in the socialRecord)
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 2, "Getting a single match using partial predicate at time step 0 failed. Expected length 2, got length " + getResults.length);
 
 		//TEST 4.5
 		//-->Same as test 4 but looking at a window of things?
-		getResults = sfdb.get(testSearchPred, 0, 1);
+		getResults = socialRecord.get(testSearchPred, 0, 1);
 		test.assert(getResults.length, 2, "Getting a single match using partial predicate with windowed time steps failed. Expected length 1, got length " + getResults.length);
 
 		//TEST 5
-		//-->What happens when there is a search for something that ISN'T in the SFDB?'
+		//-->What happens when there is a search for something that ISN'T in the socialRecord?'
 		testSearchPred = {
 			"category": "trait"
 		};
-		getResults = sfdb.get(testSearchPred, 0, 0);
-		test.assert(getResults.length, 0, "Searching for something in the SFDB that shouldn't be there at time 0 failed. Expected length 0, got length " + getResults.length);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
+		test.assert(getResults.length, 0, "Searching for something in the socialRecord that shouldn't be there at time 0 failed. Expected length 0, got length " + getResults.length);
 
 		//TEST 5.5
 		//-->Same as test 5, but with a window
-		getResults = sfdb.get(testSearchPred, 0, 1);
-		test.assert(getResults.length, 0, "Searching for something in the SFDB that shouldn't be there with a windowed time failed. Expected length 0, got length " + getResults.length);
+		getResults = socialRecord.get(testSearchPred, 0, 1);
+		test.assert(getResults.length, 0, "Searching for something in the socialRecord that shouldn't be there with a windowed time failed. Expected length 0, got length " + getResults.length);
 
 		//TEST 6
 		//-->What happens when you give invalid inputs for the time window (e.g. negative? e.g. looking 1000 turns back on turn 2 of the game?)
@@ -509,7 +458,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// should match... two predicates
 		getResults= [];
 		getResults = ensemble.get(testSearchPred, 0, 1000); // WAY further back than it should be?
-		test.assert(getResults.length, 2, "Going back before time 0 in the SFDB failed. Expected length 2, got length " + getResults.length);
+		test.assert(getResults.length, 2, "Going back before time 0 in the socialRecord failed. Expected length 2, got length " + getResults.length);
 
 		//TEST 6.5
 		//-->Same as Test 6 but with a negative number as an input)
@@ -536,12 +485,12 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": 60,
 			"operator": ">"
 		}, "testGet testSearchPred (2)");
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 1, "Searching for network value with > operator failed -- should have found something but didn't");
 
 		//TEST 7.5 -- same as 7, but changing the value to make it false
 		testSearchPred.value = 90;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "Searching for network value with > operator failed. Found something when it shouldn't have.'");
 
 		//TEST 7.6 -- dealing with a case where testing for something that is HIGHER than what is true, but is LOWER than the default
@@ -549,7 +498,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		testSearchPred.first = "monica";
 		testSearchPred.second = "simon";
 		testSearchPred.value = 40;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "Searching for a network value with > operator failed. Searching for something higher than truth, but lower than default returned true, when should have returned false");
 
 		//TEST 7.7 -- kind of a weird case -- similar to the above, but using a DIFFERENT NETWORK this time.
@@ -557,8 +506,8 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//of the ordering that the dictionary items are regarded in, which seems pretty scary to me.
 		var affinitySearchPred = util.clone(testSearchPred);
 		affinitySearchPred.type = "affinity";
-		getResults = sfdb.get(affinitySearchPred, 0, 0);
-		test.assert(getResults.length, 1, "testing > operator. This network IS undefined in the sfdb, so we SHOULD look at the default value, which IS greater than 40, so SHOULD return true. Aparantly didn't happen, probably due to incorrect setting of 'mismatch' inside of get'");
+		getResults = socialRecord.get(affinitySearchPred, 0, 0);
+		test.assert(getResults.length, 1, "testing > operator. This network IS undefined in the socialRecord, so we SHOULD look at the default value, which IS greater than 40, so SHOULD return true. Aparantly didn't happen, probably due to incorrect setting of 'mismatch' inside of get'");
 
 
 		//TEST 8 checking the "<" operator for network values
@@ -567,13 +516,13 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		testSearchPred.first = "simon";
 		testSearchPred.second = "monica";
 		testSearchPred.value = 90;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 1, "Searching for network value with < operator failed. Should have found something but didn't.'");
 
 		//TEST 8.5 checking the "<" operator for network values
 		//--->Same as 8 but want it to NOT find something this time
 		testSearchPred.value = 40;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "Searching for network value with < operator failed. Found something when it shouldn't have");
 
 		//TEST 8.6
@@ -582,7 +531,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//It SHOULD return false, yeah? Because we are checking to see if it is less than 60, but it is actually 75, which is
 		//MORE than 60!
 		testSearchPred.value = 60;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "testing < operator, with a search value LESS than actual but MORE than default returnd true. It should return false");
 
 		//TEST 8.7 -- kind of a weird case -- similar to the above, but using a DIFFERENT NETWORK this time.
@@ -590,19 +539,19 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//of the ordering that the dictionary items are regarded in, which seems pretty scary to me.
 		affinitySearchPred = util.clone(testSearchPred);
 		affinitySearchPred.type = "affinity";
-		getResults = sfdb.get(affinitySearchPred, 0, 0);
-		test.assert(getResults.length, 1, "testing < operator. This network IS undefined in the sfdb, so we SHOULD look at the default value, which IS less than 60, so SHOULD return true. Aparantly didn't happen, probably due to incorrect setting of 'mismatch' inside of get'");
+		getResults = socialRecord.get(affinitySearchPred, 0, 0);
+		test.assert(getResults.length, 1, "testing < operator. This network IS undefined in the socialRecord, so we SHOULD look at the default value, which IS less than 60, so SHOULD return true. Aparantly didn't happen, probably due to incorrect setting of 'mismatch' inside of get'");
 
 		//TEST 9 Checking the "=" operator for network values
 		//-->Saving time by re-using the testSearchPred defined for Test 78
 		testSearchPred.operator = "=";
 		testSearchPred.value = 75;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 1, "Searching for network value with = operator failed. Should have found something but didn't.'");
 
 		//TEST 9.5 -- same thing but want it to NOT find something
 		testSearchPred.value = 74;
-		getResults = sfdb.get(testSearchPred, 0, 0);
+		getResults = socialRecord.get(testSearchPred, 0, 0);
 		test.assert(getResults.length, 0, "Searching for network value with = operator failed. Found something when it shouldn't have.'");
 
 		//TEST 10 -- Dealing with defaultValues
@@ -615,12 +564,12 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		// evaluationResult = evaluateConditions(conditions);
 		// test.assert(evaluationResult, true, "evaluateConditions should return true if you request a false boolean value with no record, since booleans default to false.");
 
-		sfdb.clearHistory(); // we want to keep our registered defaultValues, but clear out all of the 'events' from the sfdb.
-		getResults = sfdb.get(testPred, 0, 0);
-		test.assert(getResults.length, 0, "Default values of booleans are FALSE, we were looking for something TRUE, but the sfdb was empty, so should have returned false!");
+		socialRecord.clearHistory(); // we want to keep our registered defaultValues, but clear out all of the 'events' from the socialRecord.
+		getResults = socialRecord.get(testPred, 0, 0);
+		test.assert(getResults.length, 0, "Default values of booleans are FALSE, we were looking for something TRUE, but the socialRecord was empty, so should have returned false!");
 
-		//Looking for a boolean with a value of false that ISN'T in the sfdb
-		sfdb.clearHistory();
+		//Looking for a boolean with a value of false that ISN'T in the socialRecord
+		socialRecord.clearHistory();
 		var falseBoolPred = validate.triggerCondition({
 			"category": "relationship",
 			"type": "friends",
@@ -628,19 +577,19 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "reggie",
 			"value": false
 		}, "testGet setting falseBoolPred");
-		getResults = sfdb.get(falseBoolPred, 0, 0);
+		getResults = socialRecord.get(falseBoolPred, 0, 0);
 		test.assert(getResults.length, 1, "we looked for something which, though technically not there, SHOULD still have been flagged as true due to default, but we didn't'.");
 
-		//We do a search to see if something is FALSE when in the SFDB it is stored as true (should return false);
-		sfdb.clearHistory();
+		//We do a search to see if something is FALSE when in the socialRecord it is stored as true (should return false);
+		socialRecord.clearHistory();
 		var trueBoolPred = util.clone(falseBoolPred);
 		trueBoolPred.value = true;
-		sfdb.set(trueBoolPred);
-		getResults = sfdb.get(falseBoolPred, 0, 0);
-		test.assert(getResults.length, 0, "we did a search for something that is FALSE when in the SFDB it is stored as true. Should have returned false");
+		socialRecord.set(trueBoolPred);
+		getResults = socialRecord.get(falseBoolPred, 0, 0);
+		test.assert(getResults.length, 0, "we did a search for something that is FALSE when in the socialRecord it is stored as true. Should have returned false");
 
 		// TEST 10.5
-		sfdb.clearHistory();
+		socialRecord.clearHistory();
 		var lurePred = validate.triggerCondition({
 			"category": "relationship",
 			"type": "friends",
@@ -648,7 +597,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "dopey",
 			"value": true
 		}, "testGet setting lurePred");
-		sfdb.set(lurePred);
+		socialRecord.set(lurePred);
 		var falseBoolPred = validate.triggerCondition({
 			"category": "relationship",
 			"value": false,
@@ -656,13 +605,13 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"first": "clara",
 			"second": "reggie",
 		}, "testGet setting falseBoolPred2");
-		getResults = sfdb.get(falseBoolPred, 0, 0);
+		getResults = socialRecord.get(falseBoolPred, 0, 0);
 		test.assert(getResults.length, 1, "Should work even if 'value' key is not last!");
 
 
 		//TEST 11
 		//-->Dealing with Numeric defaultValues.
-		sfdb.clearHistory(); //we want to keep our registered defaultValues, but clear out all of the 'events' from the sfdb.
+		socialRecord.clearHistory(); //we want to keep our registered defaultValues, but clear out all of the 'events' from the socialRecord.
 		var numericPred = validate.triggerCondition({
 			"category": "network",
 			"type": "trust",
@@ -671,19 +620,19 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"value": 30,
 			"operator": "<"
 		}, "testGet setting numericPred");
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 0, "the default is 50 and we looked for something LESS than 30. We should have came up with nothing");
 
 		//TEST 11.2
 		//Let's try the greater than operator
 		numericPred.operator = ">";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 1, "the default is 50 and we looked for something GREATER THAN 30. We should have found something (i.e. the default!)");
 
 		//TEST 11.3
 		//Let's try teh = operator
 		numericPred.operator = "=";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 0, "the default is 50, and we looked for something EQUAL to 30. We should have found nothing.");
 
 
@@ -699,45 +648,45 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		//Except for '=' which should still fail...
 		numericPred.value = 60;
 		numericPred.operator = "<";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 1, "the default is 50, and we are looking for something LESS than 60. We should have come up with the default!");
 
 		//TEST 11.5 -- the ">" operator
 		numericPred.operator = ">";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 0, "the default is 50, and we are looking for something GREATER than 60. We should have come up with nothing.");
 
 		//TEST 11.6 -- testing the '=' operator in an instance where it should find a match!
 		numericPred.value = 50;
 		numericPred.operator = "=";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 1, "the default is 50, and we are looking to something EQUAL to 50, so we should have been OK with the default");
 
 		//TEST 11.7 -- testing what happens when no operator is specified.
 		numericPred.operator = "=";
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 1, "When an operator isn't specified, default to the '=' sign. And here we are testing a case when it SHOULD be equal so length should be 1'");
 
 		//TEST 11.8 -- testing what happens when no operator is specified and the values aren't equal
 		numericPred.value = 40;
-		getResults = sfdb.get(numericPred, 0, 0);
+		getResults = socialRecord.get(numericPred, 0, 0);
 		test.assert(getResults.length, 0, "When an operator isn't specified, default to =. The numeric values weren't equal, so shouldn't have found anything'");
 
-		//TEST 12 -- testing getting SFDB values
-		sfdb.clearHistory();
-		sfdb.set(sfdbLabelPred);
-		sfdb.setupNextTimeStep();
-		sfdb.set(trueBoolPred); // just some temp thing.
-		getResults = sfdb.get(sfdbLabelPred, 0, 0);
-		test.assert(getResults.length, 0, "we inserted an sfdb label at timestep 0. We are now at timestep one. Should return false as they are not cloned");
+		//TEST 12 -- testing getting socialRecord values
+		socialRecord.clearHistory();
+		socialRecord.set(socialRecordLabelPred);
+		socialRecord.setupNextTimeStep();
+		socialRecord.set(trueBoolPred); // just some temp thing.
+		getResults = socialRecord.get(socialRecordLabelPred, 0, 0);
+		test.assert(getResults.length, 0, "we inserted an socialRecord label at timestep 0. We are now at timestep one. Should return false as they are not cloned");
 
-		//12.1 -- what happens with SFDB using history?
-		getResults = sfdb.get(sfdbLabelPred, 0, 1); // we are now looking one time step back into the past!
-		test.assert(getResults.length, 1, "we inserted an sfdb label at timestep 0, and we're looking one step back in the history (from step 1). So we should be able to find it!'");
+		//12.1 -- what happens with socialRecord using history?
+		getResults = socialRecord.get(socialRecordLabelPred, 0, 1); // we are now looking one time step back into the past!
+		test.assert(getResults.length, 1, "we inserted an socialRecord label at timestep 0, and we're looking one step back in the history (from step 1). So we should be able to find it!'");
 
 		//12.2 -- another history test
-		getResults = sfdb.get(sfdbLabelPred, 1, 1); // we are now looking specifically ONE time step ago.
-		test.assert(getResults.length, 1, "we inserted an sfdb label at timestep 0, and we're looking one step back in the history (from step 1). So we should be able to find it!'");
+		getResults = socialRecord.get(socialRecordLabelPred, 1, 1); // we are now looking specifically ONE time step ago.
+		test.assert(getResults.length, 1, "we inserted an socialRecord label at timestep 0, and we're looking one step back in the history (from step 1). So we should be able to find it!'");
 
 		//TEST 13 Giving a value with no operator.
 		var noOpPred = validate.triggerCondition({
@@ -747,8 +696,8 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "doc",
 			"value": 30
 		});
-		sfdb.clearHistory();
-		sfdb.set(noOpPred); // make it so reggie trusts doc by 30
+		socialRecord.clearHistory();
+		socialRecord.set(noOpPred); // make it so reggie trusts doc by 30
 		noOpPred.value = 60;
 		getResults = ensemble.get(noOpPred, 0, 0); // checking to see if reggie trusts doc by 60?
 		test.assert(getResults.length, 0, "If we specify a non-matching value in a numeric predicate, we shouldn't get any results back.");
@@ -770,24 +719,24 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 			"second": "vanessa",
 			"value": false
 		}, "testGet setting involvedWithFalsePredicate");
-		sfdb.setupNextTimeStep(1); // get us to timestep 1.
+		socialRecord.setupNextTimeStep(1); // get us to timestep 1.
 		ensemble.set(involvedWithTruePredicate);
 		result = ensemble.get(involvedWithTruePredicate);
 		test.assert(result.length, 1, "14 Base case");
 		result = ensemble.get(involvedWithFalsePredicate);
 		test.assert(result.length, 0, "14 Base Case");
-		sfdb.setupNextTimeStep(2); // now at timetep 2, we want them to be NOT involved.
+		socialRecord.setupNextTimeStep(2); // now at timetep 2, we want them to be NOT involved.
 		ensemble.set(involvedWithFalsePredicate);
 		result = ensemble.get(involvedWithTruePredicate);
 		test.assert(result.length, 0, "14 - people used to be involved but now they are not, so searching for htem being involved should be false.");
 		result = ensemble.get(involvedWithFalsePredicate);
 		test.assert(result.length, 1, "14 - they used to be involved, but now they are not!");
-		sfdb.setupNextTimeStep(3); // now at timestep 3, we are going to make them involved again.
+		socialRecord.setupNextTimeStep(3); // now at timestep 3, we are going to make them involved again.
 		ensemble.set(involvedWithTruePredicate); // so this seems to not be doing what we need it to do: updating an existing predicate (instead it just makes a new one!)
 		result = ensemble.get(involvedWithTruePredicate);
 		test.assert(result.length, 1, "14 - Making a couple involved with after making them not involved with should make them involved with agian.");
 		result = ensemble.get(involvedWithFalsePredicate);
-		test.assert(result.length, 0, "14 - Making the couple not involved anymore should remove the entry in the sfdb of them not being involved.");		
+		test.assert(result.length, 0, "14 - Making the couple not involved anymore should remove the entry in the socialRecord of them not being involved.");		
 
 
 		test.finish();
@@ -795,58 +744,58 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 	};
 
 	var testPutCharacterOffstage = function(){
-		test.start("SFDB", "testPutCharacterOffstage");
-		var offstageCharacters = sfdb.getOffstageCharacters();
+		test.start("socialRecord", "testPutCharacterOffstage");
+		var offstageCharacters = socialRecord.getOffstageCharacters();
 		
 		//TEST 1 -- offstage characters, by default, should be 0.
 		test.assert(offstageCharacters.length,0, "No characters should be offstage by default.");
 
-		//TEST 2 -- adding a character off stage should add it to the sfdb's offstage character array.
-		sfdb.putCharacterOffstage("doc");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		//TEST 2 -- adding a character off stage should add it to the socialRecord's offstage character array.
+		socialRecord.putCharacterOffstage("doc");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 1, "Offstage character array not upated when putCharacter offstage called");
 		test.assert(offstageCharacters[0], "doc", "doc wasn't the character that was placed off stage...");
 
 		//TEST 3 -- adding a character who is already off stage shouldn't add it twice.
-		sfdb.putCharacterOffstage("doc");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOffstage("doc");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 1, "Should have caught that we were adding the same character twice, but didn't");
 
 		//TEST 4 -- adding other characters who aren't already off stage SHOULD add them to the list.
-		sfdb.putCharacterOffstage("reggie");
-		sfdb.putCharacterOffstage("clara");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOffstage("reggie");
+		socialRecord.putCharacterOffstage("clara");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 3, "Didn't register when we added additional characters to the offstage list.");
 
 		test.finish();
 	};
 
 	var testPutCharacterOnstage = function(){
-		test.start("SFDB", "testPutCharacterOnstage");
-		var offstageCharacters = sfdb.getOffstageCharacters();
+		test.start("socialRecord", "testPutCharacterOnstage");
+		var offstageCharacters = socialRecord.getOffstageCharacters();
 
 		//TEST 1 -- it should start off as 0, go up to 1, then back to 0 as we add, then remove, a character from offstage.
 		test.assert(offstageCharacters.length,0, "Offstage characters should have been empty at first");
-		sfdb.putCharacterOffstage("doc");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOffstage("doc");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 1, "Adding character to the offstage list didn't work.");
-		sfdb.putCharacterOnstage("doc");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOnstage("doc");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 0, "Character should have been removed from offstage list but they weren't");
 		
 
 		//TEST 2 -- Then if we ADD that character BACK to the offstage list, that should be fine as well.
-		sfdb.putCharacterOffstage("doc");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOffstage("doc");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 1, "Re-adding a character that was removed from the offstage list didn't work.");
 		test.assert(offstageCharacters[0], "doc", "Regardless of the length, the character that was added was incorrect");
 
 		//TEST 3 -- removing characters from the middle of the list shouldn't break anything.
-		sfdb.putCharacterOffstage("clara"); //clara is now "in the middle"
-		sfdb.putCharacterOffstage("reggie");
+		socialRecord.putCharacterOffstage("clara"); //clara is now "in the middle"
+		socialRecord.putCharacterOffstage("reggie");
 		//Ok, so we're going to remove clara from being offstage...
-		sfdb.putCharacterOnstage("clara");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOnstage("clara");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 2, "removing a character from the 'middle' of the offstage list messed something up.");
 		test.assert(offstageCharacters[0], "doc", "The first index in the array got messed up as part of removing someone from the middle of it.");
 		test.assert(offstageCharacters[1], "reggie", "Removing a character from the middle messed up an index that came after it.");
@@ -855,29 +804,29 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 	};
 
 	var testEliminateCharacter = function(){
-		test.start("SFDB", "testEliminateCharacter");
-		sfdb.setupNextTimeStep(0); // just to get things started.
+		test.start("socialRecord", "testEliminateCharacter");
+		socialRecord.setupNextTimeStep(0); // just to get things started.
 		//TEST 1 -- the list of eliminated characters should start off as 0.
-		var eliminatedCharacters = sfdb.getEliminatedCharacters();
+		var eliminatedCharacters = socialRecord.getEliminatedCharacters();
 		var offstageCharacters;
 		test.assert(eliminatedCharacters.length, 0, "We should always start off with no characters being eliminated.");
 		
 		//TEST 2 -- eliminate a character.
-		sfdb.eliminateCharacter("doc");
-		eliminatedCharacters = sfdb.getEliminatedCharacters();
+		socialRecord.eliminateCharacter("doc");
+		eliminatedCharacters = socialRecord.getEliminatedCharacters();
 		test.assert(eliminatedCharacters.length, 1, "We tried eliminated a character, but they weren't added to the list");
 		test.assert(eliminatedCharacters[0], "doc", "The wrong character was added to the eliminated character list.");
 
 		//TEST 3 -- Taking a character that was 'offstage' and then making them 'eliminated' should take them off of the offtage list
-		sfdb.putCharacterOffstage("clara");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.putCharacterOffstage("clara");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 1, "Character was not successfully added to the offstage list.");
-		sfdb.eliminateCharacter("clara");
-		offstageCharacters = sfdb.getOffstageCharacters();
+		socialRecord.eliminateCharacter("clara");
+		offstageCharacters = socialRecord.getOffstageCharacters();
 		test.assert(offstageCharacters.length, 0, "After eliminating a character who was on the offstage list, they should be moved off of of the offstage list.");
 
 		//TEST 4 -- Eliminating a character removes all of the recipricol relationships that they might have.
-		sfdb.clearEverything(); // fresh slate (clears out offStage/eliminated Characters)
+		socialRecord.clearEverything(); // fresh slate (clears out offStage/eliminated Characters)
 		ensemble.loadBaseBlueprints(testSocial);
 		
 		var relationshipPredicate = {
@@ -888,29 +837,29 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		};
 
 		ensemble.set(relationshipPredicate);
-		var timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 2, "Recipricol predicate should have made two entries in the sfdb.");
-		sfdb.eliminateCharacter("clara");
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 0, "Eliminating the character should have removed both reciprocol references to them in the sfdb.");
+		var timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 2, "Recipricol predicate should have made two entries in the socialRecord.");
+		socialRecord.eliminateCharacter("clara");
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 0, "Eliminating the character should have removed both reciprocol references to them in the socialRecord.");
 
 		//TEST 5 -- Eliminating a character removes all of the recipricol relationships that they  might have had, but it preserves the PREVIOUS timesteps.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(relationshipPredicate);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		ensemble.setupNextTimeStep(1);
-		var timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		var timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep1.length, 2, "Before any eliminating, things got cloned over just as you would expect.");
-		sfdb.eliminateCharacter("clara");
-		timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		socialRecord.eliminateCharacter("clara");
+		timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep1.length, 0, "Eliminating Clara at timestep 1 failed to removed reciprocol references to her at timestep 1");
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 2, "Eliminating Clara at timestep 1 removed references to her at timestep 0 when it shouldn't have.");
 
 
 		//TEST 6 -- Eliminatig a character removes directed statuses TO them!
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var directedStatusPredicate = {
@@ -921,24 +870,24 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		};
 		
 		ensemble.set(directedStatusPredicate);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 1, "Base case for 6; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("clara");
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 0, "Eliminating clara when she was the recipient of a directed status didn't remove the status from the sfdb.");
+		socialRecord.eliminateCharacter("clara");
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 0, "Eliminating clara when she was the recipient of a directed status didn't remove the status from the socialRecord.");
 
 		//TEST 6.5 -- Eliminating a character removes directed statuses that THEY are the 'first' of.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(directedStatusPredicate);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 1, "Base case for 6.5; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("doc");
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 0, "Eliminating doc when he was the first of a directed status didn't remove the status from the sfdb.");
+		socialRecord.eliminateCharacter("doc");
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 0, "Eliminating doc when he was the first of a directed status didn't remove the status from the socialRecord.");
 
 		//TEST 7 -- Eliminating a character can remove multiple directed statuses (regardless of if they are first or second.)
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var directedStatusPredicate2 = {
@@ -951,42 +900,42 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.set(directedStatusPredicate);
 		ensemble.set(directedStatusPredicate2);
 
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 2, "Base case for 7; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("clara"); // she is 'second' in the first predicate, and 'first' in the second; should remove everything.
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		socialRecord.eliminateCharacter("clara"); // she is 'second' in the first predicate, and 'first' in the second; should remove everything.
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 0, "Eliminating clara when she was referenced in two different roles in different predicates didn't work.");
 
 		//TEST 7.5 -- Eliminating a character will remove the correct directed statuses, but preserve ones that they aren't involved with.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(directedStatusPredicate);
 		ensemble.set(directedStatusPredicate2);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 2, "Base case for 7.5; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("doc"); // she is 'second' in the first predicate, and 'first' in the second; should remove everything.
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 1, "Eliminating doc when she was referenced in a single directed status shouldn't have removed the other one in the sfdb");
+		socialRecord.eliminateCharacter("doc"); // she is 'second' in the first predicate, and 'first' in the second; should remove everything.
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 1, "Eliminating doc when she was referenced in a single directed status shouldn't have removed the other one in the socialRecord");
 		test.assert(timestep0[0].first, "clara");
 
-		//TEST 8 -- Eliminating a character will remove the correct directed statuses, but preserve things that have happened previously in the sfdb.
-		sfdb.clearEverything();
+		//TEST 8 -- Eliminating a character will remove the correct directed statuses, but preserve things that have happened previously in the socialRecord.
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(directedStatusPredicate);
 		ensemble.set(directedStatusPredicate2);
 		ensemble.setupNextTimeStep(1);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 2, "Base case for 8; something is super wrong if inserting a directed status didn't even work.");
-		timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep0.length, 2, "2nd Base case for 8; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("clara"); // should remove both from current timestep, preserve everything from past.
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		socialRecord.eliminateCharacter("clara"); // should remove both from current timestep, preserve everything from past.
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 2, "Timestep 0 shouldn't have been affected by eliminating a character at timestep 1");
-		timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep1.length, 0, "Eliminating a character should have removed all predicates they were involved with at timestep 1.");
 
 		//TEST 9 -- Eliminating a character will remove non-directed things pertaining to them as well.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 
 		var traitPredicate = {
@@ -996,30 +945,30 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		};
 
 		ensemble.set(traitPredicate);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 1, "Base case for 9; something is super wrong if inserting a trait didn't even work.");
-		sfdb.eliminateCharacter("clara");
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
-		test.assert(timestep0.length, 0, "Eliminating a character should have removed a non-directed social fact from the sfdb.");
+		socialRecord.eliminateCharacter("clara");
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
+		test.assert(timestep0.length, 0, "Eliminating a character should have removed a non-directed social fact from the socialRecord.");
 
-		//TEST 9.5 -- Eliminating a character at timestep 1 will preserve their previous entries in the SFDB.
-		sfdb.clearEverything();
+		//TEST 9.5 -- Eliminating a character at timestep 1 will preserve their previous entries in the socialRecord.
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(traitPredicate);
 		ensemble.setupNextTimeStep(1);
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 1, "Base case for 9.5; something is super wrong if inserting a directed status didn't even work.");
-		timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep0.length, 1, "2nd Base case for 9.5; something is super wrong if inserting a directed status didn't even work.");
-		sfdb.eliminateCharacter("clara"); // should remove both from current timestep, preserve everything from past.
-		timestep0 = sfdb.getSFDBCopyAtTimestep(0);
+		socialRecord.eliminateCharacter("clara"); // should remove both from current timestep, preserve everything from past.
+		timestep0 = socialRecord.getSocialRecordCopyAtTimestep(0);
 		test.assert(timestep0.length, 1, "UNDIRECTED CASE Timestep 0 shouldn't have been affected by eliminating a character at timestep 1");
-		timestep1 = sfdb.getSFDBCopyAtTimestep(1);
+		timestep1 = socialRecord.getSocialRecordCopyAtTimestep(1);
 		test.assert(timestep1.length, 0, "UNDIRECTED CASE Eliminating a character should have removed all predicates they were involved with at timestep 1.");
 
 
-		//TEST 10 -- Everything should still work even if you have have a bunch of different types of things in the sfdb 
-		sfdb.clearEverything();
+		//TEST 10 -- Everything should still work even if you have have a bunch of different types of things in the socialRecord 
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(traitPredicate); // clara is handy at T=0
 		ensemble.setupNextTimeStep(1);
@@ -1029,9 +978,9 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.set(directedStatusPredicate2); // clara is upset with Reggie at T=2
 
 		//If we eliminate Doc, then clara should still be handy, and clara should still be upset with reggie, but nothing else at T=2.
-		sfdb.eliminateCharacter("doc");
-		var timestep2 = sfdb.getSFDBCopyAtTimestep(2);
-		test.assert(timestep2.length, 2, "MIXED TOGETHER CASE -- removing doc should have preserved clara and reggie's sfdb entries together.");
+		socialRecord.eliminateCharacter("doc");
+		var timestep2 = socialRecord.getSocialRecordCopyAtTimestep(2);
+		test.assert(timestep2.length, 2, "MIXED TOGETHER CASE -- removing doc should have preserved clara and reggie's socialRecord entries together.");
 		var results = ensemble.get(traitPredicate);
 		test.assert(results.length, 1, "MIXED TOGETHER CASE -- clara's trait somehow got removed");
 		results = ensemble.get(directedStatusPredicate2);
@@ -1044,7 +993,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		test.assert(results.length, 1, "Expanding the window should have let us see their past directed status.");
 
 		//TEST 11 -- same as test 10, but eliminating a different character -- clara this time.
-		sfdb.clearEverything();
+		socialRecord.clearEverything();
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.set(traitPredicate); // clara is handy at T=0
 		ensemble.setupNextTimeStep(1);
@@ -1053,8 +1002,8 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		ensemble.setupNextTimeStep(2);
 		ensemble.set(directedStatusPredicate2); // clara is upset with Reggie at T=2
 
-		sfdb.eliminateCharacter("clara");
-		timestep2 = sfdb.getSFDBCopyAtTimestep(2);
+		socialRecord.eliminateCharacter("clara");
+		timestep2 = socialRecord.getSocialRecordCopyAtTimestep(2);
 		test.assert(timestep2.length, 0, "MIXED TOGETHER CASE 2 -- removing clara should remove everything.");
 
 		//TEST 11.5 -- but again, everything should still exist in the past.
@@ -1074,7 +1023,7 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 	};
 
 	var testAddHistory = function(){
-		test.start("SFDB" , "testAddHistory");
+		test.start("socialRecord" , "testAddHistory");
 
 		ensemble.loadBaseBlueprints(testSocial);
 		ensemble.addHistory(testHistory);
@@ -1109,12 +1058,12 @@ define(["underscore", "util", "jquery", "ensemble", "sfdb", "test", "validate", 
 		test.finish();
 	}
 
-	var sfdbUnitTestInterface = {
+	var socialRecordUnitTestInterface = {
 		runTests	: runTests
 	};
 	// See comment at top of Tests.js for explanation of below.
 
-	return sfdbUnitTestInterface;
+	return socialRecordUnitTestInterface;
 
 
 });

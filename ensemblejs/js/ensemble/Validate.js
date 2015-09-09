@@ -3,8 +3,8 @@
  *
  */
 
-define(["util", "underscore", "jquery", "sfdb"], 
-function(util, _, $, sfdb) {
+define(["util", "underscore", "jquery", "socialRecord"], 
+function(util, _, $, socialRecord) {
 
 	var allowedDirTypes = ["directed", "undirected", "reciprocal"];
 	var allowedOpsConditions = [">", "<", "="];
@@ -174,8 +174,8 @@ function(util, _, $, sfdb) {
 		// Create a variable to store information about what went wrong with the predicate.
 		var msg = "";
 
-		// Skip SFDBLabel predicates for now.
-		if (predicate.category === "SFDBLabel" || predicate.category === "SFDBLabelUndirected") return false;
+		// Skip socialRecordLabel predicates for now.
+		if (predicate.category === "socialRecordLabel" || predicate.category === "socialRecordLabelUndirected") return false;
 
 		// Verify that the contents of a particular key exist and are of the expected type. If isRequired is false, it's okay for the given key to be missing. Add problem details to the isPredBad scoped "msg" variable.
 		var isTypeWrong = function(pred, key, type, isRequired) {
