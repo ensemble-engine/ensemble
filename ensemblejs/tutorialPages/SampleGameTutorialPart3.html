@@ -479,7 +479,7 @@ Volition rules look very similar to trigger rules, with a single major differenc
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -495,16 +495,16 @@ This should largely look similar to the trigger rule introduced above. The diffe
 </p>
 
 <p>
-So we dive into the effects of this rule, and we see a couple of properties here that we haven't seen in predicaes before. One is the "weight" field, which here is set to 5. The other is the "intentDirection" field, which is set to true. The weight refers to the effect it has on the character's volition -- positive numbers raise volition, and negative numbers lower it. The larger the absolute value of the number, the greater the effect. The intentDirection refers to whether or not the character wants to increase the value of the type, or decrease it. This means that there are essentially four different combinations of volitions. We'll use the term 'closeness' for convenience in this table, but the type closeness (and the category "feeling") could of course be substituted for anything that you've set actionable to be true for in your schema.
+So we dive into the effects of this rule, and we see a couple of properties here that we haven't seen in predicaes before. One is the "weight" field, which here is set to 5. The other is the "intentType" field, which is set to true. The weight refers to the effect it has on the character's volition -- positive numbers raise volition, and negative numbers lower it. The larger the absolute value of the number, the greater the effect. The intentType refers to whether or not the character wants to increase the value of the type, or decrease it. This means that there are essentially four different combinations of volitions. We'll use the term 'closeness' for convenience in this table, but the type closeness (and the category "feeling") could of course be substituted for anything that you've set actionable to be true for in your schema.
 </p>
 
-<a name="intentDirection"><table>
-<tr><td><b>Positive Weight, Negative intentDirection</b>:<BR> Character WANTS to DECREASE closeness.</td><td><b>Positive Weight, Positive intentDirection</b>:<br> Character WANTS to INCREASE closeness.</td> </tr>
-<tr><td><b>Negative Weight, Negative intentDirection</b>:<BR> Character DOESN'T WANT to DECREASE closeness</td><td><b>Negative Weight, Positive intentDirection</b>:<BR> Character DOESN'T WANT to INCREASE closeness.</td></tr>
+<a name="intentType"><table>
+<tr><td><b>Positive Weight, False intentType</b>:<BR> Character WANTS to DECREASE closeness.</td><td><b>Positive Weight, True intentType</b>:<br> Character WANTS to INCREASE closeness.</td> </tr>
+<tr><td><b>Negative Weight, False intentType</b>:<BR> Character DOESN'T WANT to DECREASE closeness</td><td><b>Negative Weight, True intentType</b>:<BR> Character DOESN'T WANT to INCREASE closeness.</td></tr>
 </table></a>
 
 <p>
-So, see, not too crazy, right? And of course, ultimately you'll have lots of rules in your system, with everything kind of competing with each other to determine what your characters want to do. Some rules might have a character want to increase their volition to do something towards a character, while another rule might decrease that same volition towards that same character. In the end, the character's volition is the sum of all of the weights from rules that held true for a given intentDirection. Depending on how you author your system, this means that it would be possible for characters to both simultaneously want to increase and decrease closeness towards the same person--a conflict not alltogether dissimilar from the contradictions of real life.
+So, see, not too crazy, right? And of course, ultimately you'll have lots of rules in your system, with everything kind of competing with each other to determine what your characters want to do. Some rules might have a character want to increase their volition to do something towards a character, while another rule might decrease that same volition towards that same character. In the end, the character's volition is the sum of all of the weights from rules that held true for a given intentType. Depending on how you author your system, this means that it would be possible for characters to both simultaneously want to increase and decrease closeness towards the same person--a conflict not alltogether dissimilar from the contradictions of real life.
 </p>
 
 <p>
@@ -537,7 +537,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -567,7 +567,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "x",
 					"second": "y",
 					"weight": 20,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "volitionRules",
@@ -596,7 +596,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "love",
 					"second": "hero",
 					"weight": -10,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "volitionRules",
@@ -619,7 +619,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -649,7 +649,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "hero",
 					"second": "rival",
 					"weight": -10,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -680,7 +680,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "onlooker",
 					"second": "Smarty",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -711,7 +711,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"first": "onlooker",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -734,7 +734,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"type": "intelligence",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -757,7 +757,7 @@ Now that we're clearly all experts on volition rules, we'll present to you the r
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -807,7 +807,7 @@ So, we start off with an intent. We've talked about intents above when covering 
 			"intent" : {
 				"category" : "attribute",
 				"type" : "intelligence",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator"
 			},
 			"conditions" : [],
@@ -822,7 +822,7 @@ The entire actions file is just going to be a lot of entries in the actions arra
 </p>
 
 <p>
-We see that we have defined a name, an array of conditions and an array of influenceRules. Besides the name (RAISEINTELLIGENCE, here), the others aren't defined, demonstrating that they are, in fact, optional! We'll show an example of them filled in later on. The "intent" field ties the action to a specific intent, and it does it through something that should look a little bit like a predicate. As the name of the action might have clued you in, this intent is about characters wanting to raise the value of their strength attribute. The "category" and the "type" is how we specify that we're talking about the strength attribute in particular. An explanation of what intentDirection means can be found <a name="#intentDirection">here</a>. And although the notion of "first" has been discussed above along with predicates, <b>they are different here</b>. How are they different? <b>In the intent property of an action, first <i> must </i> have the value of <i>initiator</i>, and if you have a <i>second</i>, it must have the value of <i> responder </i></b>.
+We see that we have defined a name, an array of conditions and an array of influenceRules. Besides the name (RAISEINTELLIGENCE, here), the others aren't defined, demonstrating that they are, in fact, optional! We'll show an example of them filled in later on. The "intent" field ties the action to a specific intent, and it does it through something that should look a little bit like a predicate. As the name of the action might have clued you in, this intent is about characters wanting to raise the value of their strength attribute. The "category" and the "type" is how we specify that we're talking about the strength attribute in particular. An explanation of what intentType means can be found <a name="#intentType">here</a>. And although the notion of "first" has been discussed above along with predicates, <b>they are different here</b>. How are they different? <b>In the intent property of an action, first <i> must </i> have the value of <i>initiator</i>, and if you have a <i>second</i>, it must have the value of <i> responder </i></b>.
 
 </p>
 
@@ -988,7 +988,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"intent" : {
 				"category" : "feeling",
 				"type"  : "closeness",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
@@ -1001,7 +1001,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"intent" : {
 				"category" : "attribute",
 				"type" : "strength",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator"
 			},
 			"conditions" : [],
@@ -1013,7 +1013,7 @@ We'll have one last code dump, and then we'll finally be ready to move on to the
 			"intent" : {
 				"category" : "attribute",
 				"type" : "intelligence",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator"
 			},
 			"conditions" : [],

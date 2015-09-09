@@ -359,8 +359,8 @@ function(util, _, $, socialRecord) {
 					if (isTypeWrong(pred, "weight", "number", true)) return msg;
 					delete pred.weight;
 
-					if (isTypeWrong(pred, "intentDirection", "boolean", true)) return msg;
-					delete pred.intentDirection;
+					if (isTypeWrong(pred, "intentType", "boolean", true)) return msg;
+					delete pred.intentType;
 
 					delete pred.value
 				}

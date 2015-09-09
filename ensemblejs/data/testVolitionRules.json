@@ -20,7 +20,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -47,7 +47,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 
@@ -76,7 +76,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 10,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 
@@ -97,7 +97,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": -5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -119,7 +119,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 10,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -141,14 +141,14 @@
 					"first": "x",
 					"second": "y",
 					"weight": 10,
-					"intentDirection": false
+					"intentType": false
 				},{
 					"category": "network",
 					"type": "trust",
 					"first": "x",
 					"second": "y",
 					"weight": -10,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -170,7 +170,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": -5,
-					"intentDirection": true
+					"intentType": true
 				},
 				{
 					"category": "relationship",
@@ -178,7 +178,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": false
+					"intentType": false
 				}
 			]
 		},
@@ -199,7 +199,7 @@
 					"first": "y",
 					"second": "x",
 					"weight": 2,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -220,7 +220,7 @@
 					"first": "y",
 					"second": "x",
 					"weight": 2,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -241,7 +241,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 4,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -265,7 +265,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -296,7 +296,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -322,7 +322,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 3,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -348,7 +348,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 3,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -374,7 +374,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 3,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -393,7 +393,7 @@
 				{
 					"category": "network",
 					"type": "trust",
-					"intentDirection": true,
+					"intentType": true,
 					"weight": -20,
 					"first": "x",
 					"second": "y"
@@ -401,7 +401,7 @@
 				{
 					"category": "network",
 					"type": "trust",
-					"intentDirection": false,
+					"intentType": false,
 					"weight": 20,
 					"first": "x",
 					"second": "y"
@@ -424,7 +424,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": true,
+					"intentType": true,
 					"weight": -10,
 					"first": "x",
 					"second": "y"
@@ -432,7 +432,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": false,
+					"intentType": false,
 					"weight": 10,
 					"first": "x",
 					"second": "y"
@@ -440,7 +440,7 @@
 				{
 					"category": "relationship",
 					"type": "friends",
-					"intentDirection": true,
+					"intentType": true,
 					"weight": -15,
 					"first": "x",
 					"second": "y"
@@ -448,7 +448,7 @@
 				{
 					"category": "relationship",
 					"type": "friends",
-					"intentDirection": false,
+					"intentType": false,
 					"weight": 10,
 					"first": "x",
 					"second": "y"
@@ -470,7 +470,7 @@
 				{
 					"category": "relationship",
 					"type": "friends",
-					"intentDirection": false,
+					"intentType": false,
 					"weight": 20,
 					"first": "x",
 					"second": "y"
@@ -492,7 +492,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": true,
+					"intentType": true,
 					"weight": -20,
 					"first": "x",
 					"second": "y"
@@ -500,7 +500,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": false,
+					"intentType": false,
 					"weight": 20,
 					"first": "x",
 					"second": "y"
@@ -526,7 +526,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": false
+					"intentType": false
 				}
 			]
 		}

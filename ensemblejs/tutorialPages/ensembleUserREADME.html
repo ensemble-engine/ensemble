@@ -323,7 +323,7 @@ An example intent would be:
 <pre class="prettyprint">
 "category" : "relationship",
 "type"  : "involved with",
-"intentDirection" : true,
+"intentType" : true,
 "first" : "initiator",
 "second" : "responder"
 </pre>
@@ -334,7 +334,7 @@ Where category and type are terms that are defined in your schema.
 First and second for intents need to be "initiator" and "responder" (we'll see examples of other names being used in the first and second fields of other actions, but the intent should have the initiator (i.e. the person doing the intent) and a responder (the person the initiator is doing the intent towards).
 
 <p>
-intentDirection, is the least intuitive. What it's trying to get at is whether this is an intent to START dating or STOP dating. To RAISE affinity or LOWER affinity. An intent direction of "true" is referring to 'positive' things (e.g, START dating, RAISE affinity), and an intent dirction of "false" is referring to 'negative' things (e.g., STOP dating, LOWER affinity).
+intentType, is the least intuitive. What it's trying to get at is whether this is an intent to START dating or STOP dating. To INCREASE affinity or DECREASE affinity. An intent direction of "true" is referring to 'positive' things (e.g, START dating, INCREASE affinity), and an intent dirction of "false" is referring to 'negative' things (e.g., STOP dating, DECREASE affinity). If you prefer, in lieue of "true" and "false" you can use the words START/INCREASE (for boolean and numeric categories, respectively) or STOP/DECREASE (for bollean and numeric categories, respectively) when authoring them.
 
 <p>
 <b>conditions</b>

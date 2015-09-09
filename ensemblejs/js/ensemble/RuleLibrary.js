@@ -586,7 +586,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 		// "category": a category of abstract predicate ("relationship", "trait", etc.)
 		// "type": The kind within that category ("friend", "shy", etc.)
 		// "weight": The amount to adjust the weight up or down
-		// "intentDirection": true or false, for a desire to adjust this network up
+		// "intentType": true or false, for a desire to adjust this network up
 		// or down. (or to make true or false, for booleans).
 		var adjustWeight = function (effect, condition, rule) {
 			
@@ -1011,9 +1011,9 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 			addPhrase(directionWord, "direction");
 		}
 		if (predType === "volition") {
-			var intentWord = pred.intentDirection === true ? "become" : "stop being";
+			var intentWord = pred.intentType === true ? "become" : "stop being";
 			if (!isBoolean) {
-				intentWord = pred.intentDirection === true ? "increase" : "decrease";
+				intentWord = pred.intentType === true ? "increase" : "decrease";
 			}
 			addPhrase(nameFirst, "first");
 			addPhrase(hasWord, "beVerb");
@@ -1024,7 +1024,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 			addPhrase(sign+pred.weight, "weight");
 			addPhrase(")");
 			addPhrase("to");
-			addPhrase(intentWord, "intentDirection");
+			addPhrase(intentWord, "intentType");
 		}
 
 		addPhrase(pred.type, "type", pred.category);

@@ -107,15 +107,15 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, voli
 		var sampleVolitions = {
 			"simon": {
 				"monica": [
-					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 19 },
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
+					{ "category": "relationship", "type": "involved with", "intentType": true, "weight": 19 },
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 20 }
 				]
 			},
 			"monica": {
 				"simon": [
-					{ "category": "network", "type": "affinity", "intentDirection": false, "weight": -12 },
-					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 981 }
+					{ "category": "network", "type": "affinity", "intentType": false, "weight": -12 },
+					{ "category": "relationship", "type": "involved with", "intentType": true, "weight": -5 },
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 981 }
 				]
 			}
 		};
@@ -394,15 +394,15 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, voli
 		var sampleVolitions = {
 			"simon": {
 				"monica": [
-					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": 30 },
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 20 }
+					{ "category": "relationship", "type": "involved with", "intentType": true, "weight": 30 },
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 20 }
 				]
 			},
 			"monica": {
 				"simon": [
-					{ "category": "network", "type": "affinity", "intentDirection": false, "weight": 12 },
-					{ "category": "relationship", "type": "involved with", "intentDirection": true, "weight": -5 },
-					{ "category": "network", "type": "buddy", "intentDirection": true, "weight": 1 }
+					{ "category": "network", "type": "affinity", "intentType": false, "weight": 12 },
+					{ "category": "relationship", "type": "involved with", "intentType": true, "weight": -5 },
+					{ "category": "network", "type": "buddy", "intentType": true, "weight": 1 }
 				]
 			}
 		};
@@ -453,12 +453,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, voli
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 		};
@@ -660,12 +660,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, voli
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 		};
@@ -902,12 +902,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, ensemble, test, voli
 		var sampleVolitions = {
 			"MisterInit": {
 				"MadamRespond": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 			"MadamRespond": {
 				"MisterInit": [
-					{ "category": "network", "type": "affinity", "intentDirection": true, "weight": 60 }
+					{ "category": "network", "type": "affinity", "intentType": true, "weight": 60 }
 				]
 			},
 		};
@@ -1360,7 +1360,7 @@ var testGetAction = function(){
 			"intent" : {
 				"category" : "network",
 				"type"  : "trust",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
@@ -1380,7 +1380,7 @@ var testGetAction = function(){
 			"intent" : {
 				"category" : "network",
 				"type"  : "trust",
-				"intentDirection" : false,
+				"intentType" : false,
 				"first" : "initiator",
 				"second" : "responder"
 			},

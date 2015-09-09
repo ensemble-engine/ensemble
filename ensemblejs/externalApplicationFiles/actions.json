@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "attribute",
 				"type"  : "intelligence",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
@@ -43,7 +43,7 @@
 			"intent" : {
 				"category" : "bonds",
 				"type"  : "kinship",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},

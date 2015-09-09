@@ -21,7 +21,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -51,7 +51,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 20,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "volitionRules",
@@ -80,7 +80,7 @@
 					"first": "love",
 					"second": "hero",
 					"weight": -10,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "volitionRules",
@@ -103,7 +103,7 @@
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -133,7 +133,7 @@
 					"first": "hero",
 					"second": "rival",
 					"weight": -10,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -164,7 +164,7 @@
 					"first": "onlooker",
 					"second": "Smarty",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -195,7 +195,7 @@
 					"first": "onlooker",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -218,7 +218,7 @@
 					"type": "intelligence",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -241,7 +241,7 @@
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],

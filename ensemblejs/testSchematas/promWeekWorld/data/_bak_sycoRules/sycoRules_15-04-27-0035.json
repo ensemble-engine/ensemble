@@ -19,7 +19,7 @@
 					"first": "someone",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -43,7 +43,7 @@
 					"first": "someone",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -67,7 +67,7 @@
 					"first": "someone",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -92,7 +92,7 @@
 					"first": "Chloe",
 					"second": "Doug",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -117,7 +117,7 @@
 					"first": "Doug",
 					"second": "Chloe",
 					"weight": -5,
-					"intentDirection": false,
+					"intentType": false,
 					"value": true
 				}
 			],

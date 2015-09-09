@@ -34,7 +34,7 @@
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "samsVolition",
@@ -58,7 +58,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -79,7 +79,7 @@
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		}

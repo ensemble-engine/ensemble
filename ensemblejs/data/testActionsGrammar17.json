@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "network",
 				"type"  : "trust",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},

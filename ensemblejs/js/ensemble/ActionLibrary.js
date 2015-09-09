@@ -144,7 +144,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 				var existingStartSymbol = startSymbols[i].intent;
 				if(existingStartSymbol.category === newStartSymbolIntent.category &&
 					existingStartSymbol.type === newStartSymbolIntent.type &&
-					existingStartSymbol.intentDirection === newStartSymbolIntent.intentDirection &&
+					existingStartSymbol.intentType === newStartSymbolIntent.intentType &&
 					existingStartSymbol.first === newStartSymbolIntent.first &&
 					existingStartSymbol.second === newStartSymbolIntent.second){
 						return true;
@@ -266,7 +266,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			actionIntent = startSymbols[i].intent;
 			if(actionIntent.category === volition.category &&
 				actionIntent.type === volition.type &&
-				actionIntent.intentDirection === volition.intentDirection){
+				actionIntent.intentType === volition.intentType){
 					//it appears that this is an action pertaining to this volition!
 					var rootAction = util.clone(startSymbols[i]);
 					rootAction.goodBindings = [];

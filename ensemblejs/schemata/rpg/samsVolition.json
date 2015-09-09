@@ -33,7 +33,7 @@
 					"type": "intelligence",
 					"first": "x",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		}

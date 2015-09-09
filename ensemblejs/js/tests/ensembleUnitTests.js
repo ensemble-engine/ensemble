@@ -181,7 +181,7 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 						'"first": "x",' +
 						'"second": "z",' +
 						'"weight": 5,' +
-						'"intentDirection" : false' +
+						'"intentType" : false' +
 					'}' +
 				']' +
 			'}'+
@@ -218,7 +218,7 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 						'"first": "x",' +
 						'"second": "z",' +
 						'"weight": 5,' +
-						'"intentDirection" : false' +
+						'"intentType" : false' +
 					'}' +
 				']' +
 			'}'+

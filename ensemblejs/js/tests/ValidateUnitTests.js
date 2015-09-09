@@ -213,14 +213,14 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 		test.assert(rejected, true, "A numeric trigger condition should have a recognized operator.");
 
 		badPred = util.clone(samplePredicate);
-		badPred.intentDirection = true;
+		badPred.intentType = true;
 		rejected = false;
 		try {
 			validate.triggerCondition(badPred, "");
 		} catch(e) {
 			rejected = true;
 		}
-		test.assert(rejected, true, "A numeric trigger condition should not have an intentDirection.");
+		test.assert(rejected, true, "A numeric trigger condition should not have an intentType.");
 
 		badPred = util.clone(samplePredicate);
 		badPred.turnsAgoBetween = 10;

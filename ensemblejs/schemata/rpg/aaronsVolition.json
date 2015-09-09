@@ -25,7 +25,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			],
 			"origin": "aaronsVolition",
@@ -47,7 +47,7 @@
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],
@@ -70,7 +70,7 @@
 					"type": "strength",
 					"first": "someone",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],

@@ -443,7 +443,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 		triggerEffectOne.type = "involved with";
 		triggerEffectOne.first = "x";
 		triggerEffectOne.second = "y";
-		triggerEffectOne.intentDirection = true;
+		triggerEffectOne.intentType = true;
 
 		var triggerConditions = [];
 		triggerConditions.push(triggerConditionOne);
@@ -1438,7 +1438,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "y",
 						"weight": 5,
-						"intentDirection": true
+						"intentType": true
 					}
 				]
 
@@ -1460,7 +1460,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "y",
 						"weight": -5,
-						"intentDirection": true
+						"intentType": true
 					}
 				]
 			},
@@ -1482,7 +1482,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "y",
 						"weight": 5,
-						"intentDirection": false
+						"intentType": false
 					}
 				]
 			},
@@ -1561,7 +1561,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "y",
 						"weight": 5,
-						"intentDirection": true
+						"intentType": true
 					}
 				]
 
@@ -1577,7 +1577,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 		var intent = volitionTest.getNext("Simon", "Monica");
 		test.assert(intent.category, "network", "secondary intent between Simon and Monica was wrong.");
 		test.assert(intent.type, "affinity", "secondary type between Simon and Monica was wrong.");
-		test.assert(intent.intentDirection, false, "secondary intentDirection between Simon and Monica was wrong.");
+		test.assert(intent.intentType, false, "secondary intentType between Simon and Monica was wrong.");
 		test.assert(intent.weight, 5, "secondary weight between Simon and Monica was wrong.");
 
 		/*
@@ -1788,7 +1788,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "y",
 						"weight": 5,
-						"intentDirection": true
+						"intentType": true
 					},
 					{
 						"category": "network",
@@ -1796,7 +1796,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 						"first": "x",
 						"second": "z",
 						"weight": 5,
-						"intentDirection": false
+						"intentType": false
 					}
 				]
 
@@ -2902,7 +2902,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 			"first": "bob",
 			"second": "al",
 			"weight": "5",
-			"intentDirection": true
+			"intentType": true
 		}).text, "bob has more volition ( +5 ) to become involved with al", "Directed/reciprocal boolean, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"category": "relationship",
@@ -2910,7 +2910,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 			"first": "bob",
 			"second": "al",
 			"weight": "-5",
-			"intentDirection": false
+			"intentType": false
 		}).text, "bob has less volition ( -5 ) to stop being involved with al", "Directed/reciprocal boolean, negative intent");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"category": "network",
@@ -2918,7 +2918,7 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 			"first": "bob",
 			"second": "al",
 			"weight": "7",
-			"intentDirection": true
+			"intentType": true
 		}).text, "bob has more volition ( +7 ) to increase affinity for al", "Directed/reciprocal numeric, positive intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"category": "network",
@@ -2926,14 +2926,14 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 			"first": "bob",
 			"second": "al",
 			"weight": "7",
-			"intentDirection": false
+			"intentType": false
 		}).text, "bob has more volition ( +7 ) to decrease affinity for al", "Directed/reciprocal numeric, negative intent.");
 		test.assert(ruleLibrary.predicateToEnglish({
 			"category": "status",
 			"type": "lonely",
 			"first": "bob",
 			"weight": "2",
-			"intentDirection": true
+			"intentType": true
 		}).text, "bob has more volition ( +2 ) to become lonely", "Undirected boolean, positive intent.");
 
 		test.assert(ruleLibrary.predicateToEnglish({

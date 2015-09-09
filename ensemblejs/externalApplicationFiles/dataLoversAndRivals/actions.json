@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "feeling",
 				"type"  : "closeness",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},
@@ -19,7 +19,7 @@
 			"intent" : {
 				"category" : "attribute",
 				"type" : "strength",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator"
 			},
 			"conditions" : [],
@@ -31,7 +31,7 @@
 			"intent" : {
 				"category" : "attribute",
 				"type" : "intelligence",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator"
 			},
 			"conditions" : [],

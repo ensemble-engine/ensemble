@@ -19,7 +19,7 @@
 					"first": "someone",
 					"second": "other",
 					"weight": 5,
-					"intentDirection": true,
+					"intentType": true,
 					"value": true
 				}
 			],

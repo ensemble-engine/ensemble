@@ -6,7 +6,7 @@
 				{
 					"category": "relationship",
 					"type": "friends",
-					"intentDirection": true
+					"intentType": true
 				}
 			,
 			"conditions": [
@@ -44,7 +44,7 @@
 				{
 					"category": "relationship",
 					"type": "friends",
-					"intentDirection": false
+					"intentType": false
 				}
 			,
 			"acceptEffects": [
@@ -73,7 +73,7 @@
 				{
 					"category": "relationship",
 					"type": "involved with",
-					"intentDirection": true
+					"intentType": true
 				}
 			,
 			"acceptEffects": [
@@ -116,7 +116,7 @@
 				{
 					"category": "relationship",
 					"type": "involved with",
-					"intentDirection": false
+					"intentType": false
 				}
 			,
 			"acceptEffects": [
@@ -145,7 +145,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": true
+					"intentType": true
 				}
 			,
 			"acceptEffects": [
@@ -175,7 +175,7 @@
 				{
 					"category": "network",
 					"type": "affinity",
-					"intentDirection": false
+					"intentType": false
 				}
 			,
 			"acceptEffects": [
@@ -205,7 +205,7 @@
 				{
 					"category": "network",
 					"type": "trust",
-					"intentDirection":true
+					"intentType":true
 				}
 			,
 			"acceptEffects": [
@@ -235,7 +235,7 @@
 				{
 					"category": "network",
 					"type": "trust",
-					"intentDirection":false
+					"intentType":false
 				}
 			,
 			"acceptEffects": [

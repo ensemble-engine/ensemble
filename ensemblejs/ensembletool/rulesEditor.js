@@ -235,7 +235,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			if (phrase.label === "first" || phrase.label === "second") {
 				classList += " edchar_" + phrase.text;
 			}
-			if (phrase.label === "beVerb" || phrase.label === "intentDirection") {
+			if (phrase.label === "beVerb" || phrase.label === "intentType") {
 				if (["is", "was", "has", "has been", "did", "increase", "become", "more"].indexOf(phrase.text) >= 0) {
 					classList += " edBePos";
 				} else {
@@ -407,7 +407,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		// OK, now that we've created all the elements, let's style them with instrumented jQuery UI components!
 		replaceWithClickable(".edconditionsP .edbeVerb", beVerbToggle);
-		replaceWithClickable(".edintentDirection", intentDirectionToggle);
+		replaceWithClickable(".edintentType", intentTypeToggle);
 		var allowableTypes, dirArray;
 		if (activeRuleType === "volition") {
 			allowableTypes = intentTypes;
@@ -949,7 +949,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		if (predType === "effects") {
 			if (activeRuleType === "volition") {
 				newPred.weight = 5;
-				newPred.intentDirection = true;			
+				newPred.intentType = true;			
 			}
 		}
 		if (desc.isBoolean === true || (activeRuleType === "volition" && predType === "effects")) {
@@ -1045,9 +1045,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		activeRule[predType][predNum].value = !activeRule[predType][predNum].value;
 	}
 
-	// Update the intentDirection field of a predicate in activeRule.
-	var intentDirectionToggle = function(predType, predNum) {
-		activeRule[predType][predNum].intentDirection = !activeRule[predType][predNum].intentDirection;
+	// Update the intentType field of a predicate in activeRule.
+	var intentTypeToggle = function(predType, predNum) {
+		activeRule[predType][predNum].intentType = !activeRule[predType][predNum].intentType;
 	}
 
 	// Update the role name field of a predicate in activeRule.

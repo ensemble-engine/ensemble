@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "network",
 				"type"  : "affinity",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "x",
 				"second" : "y"
 			},
@@ -33,7 +33,7 @@
 			"intent" : {
 				"category" : "relationship",
 				"type"  : "friends",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "x",
 				"second" : "y"
 			},
@@ -58,7 +58,7 @@
 			"intent" : {
 				"category" : "relationship",
 				"type"  : "involved with",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "x",
 				"second" : "y"
 			},
@@ -92,7 +92,7 @@
 			"intent" : {
 				"category" : "network",
 				"type"  : "affinity",
-				"intentDirection" : false,
+				"intentType" : false,
 				"first" : "x",
 				"second" : "y"
 			},
@@ -119,7 +119,7 @@
 			"intent" : {
 				"category" : "relationship",
 				"type"  : "friends",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "x",
 				"second" : "y"
 			},

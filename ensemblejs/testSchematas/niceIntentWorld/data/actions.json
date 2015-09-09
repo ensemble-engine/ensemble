@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "networks",
 				"type"  : "respect",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},

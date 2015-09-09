@@ -6,7 +6,7 @@
 			"intent" : {
 				"category" : "relationship",
 				"type"  : "friends",
-				"intentDirection" : true,
+				"intentType" : true,
 				"first" : "initiator",
 				"second" : "responder"
 			},

@@ -19,7 +19,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 5,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 
@@ -45,7 +45,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 3,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -70,7 +70,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": -3,
-					"intentDirection": true
+					"intentType": true
 				}
 			]
 		},
@@ -95,7 +95,7 @@
 					"first": "x",
 					"second": "y",
 					"weight": 3,
-					"intentDirection": false
+					"intentType": false
 				}
 			]
 		}
