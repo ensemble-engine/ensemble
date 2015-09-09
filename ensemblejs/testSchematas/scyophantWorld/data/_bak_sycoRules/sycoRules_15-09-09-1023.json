@@ -1,0 +1,54 @@
+{
+	"fileName": "sycoRules",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "networks",
+					"type": "respect",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentType": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_2"
+		},
+		{
+			"name": "New Volition Rule",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "humble",
+					"first": "someone",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"category": "networks",
+					"type": "respect",
+					"first": "someone",
+					"second": "other",
+					"weight": 5,
+					"intentType": true,
+					"value": true
+				}
+			],
+			"origin": "sycoRules",
+			"id": "volitionRules_3"
+		}
+	]
+}
