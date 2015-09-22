@@ -283,7 +283,13 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 		var condition;
 		var orderCounter = - 9999;
 		var timeStart = 0;
-		var timeEnd = socialRecord.getCurrentTimeStep();
+		var timeEnd;
+		if(params !== undefined && params.timeStep !== undefined){
+			timeEnd = params.timeStep;
+		}
+		else{
+			timeEnd = socialRecord.getCurrentTimeStep();
+		}
 		var timeOfLastMatch = -1;
 		var currentTimeStep = timeEnd;
 		var results;
@@ -549,7 +555,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
  * @param {Array} cast - an array of the cast of characters to calculate volition for
  * @return {Object} calculatedVolitions a dictionary containing the cast and their volitions
  */
-	var calculateVolition = function (cast) {
+	var calculateVolition = function (cast, params) {
 
 		// We punt most of the work of dealing with the volitions object to the Volitions module. More documentation is there. The object we get below is a dictionary with a [first][second] structure for every combination of cast pairs, with the contents initially an empty array which we will add volition predicates to.
 		var calculatedVolitions = volition.newSet(cast);
@@ -686,7 +692,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 				}
 			}
 		};
-		var params = {}; // TODO: Remove params from runRules entirely? 
+		//var params = {}; // TODO: Remove params from runRules entirely? 
 		
 
 		runRules("volitionRules", cast, adjustWeight, params, charactersToSkipVolitionCalculation);
