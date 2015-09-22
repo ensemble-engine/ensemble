@@ -305,7 +305,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	* @return {Array} matchedResults	the array holding the found predicates which match the query
 	*/
 	//ensemble.get() should be called by public, this should only be used internally.
-	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue) {
+	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue, params) {
 
 		var searchValue = searchPredicate.value;
 		var defaultValue = defaultValues[searchPredicate.category];
@@ -340,8 +340,14 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		}
 
 		// Convert relative to absolute time steps.
-		mostRecentTime = currentTimeStep - mostRecentTime;
-		lessRecentTime = currentTimeStep - lessRecentTime;
+		// doing a special check to verify that we aren't 'pretending' that the
+		//end of the sfdb is maybe a little earier than it would be otherwise.
+		var currentTimeStepToUse = currentTimeStep;
+		if(params !== undefined && params.timeStep !== undefined){
+			currentTimeStepToUse = params.timeStep; // pretend that the 'current time step' (i.e. the end of the sfdb) was the value that was passed in.
+		}
+		mostRecentTime = currentTimeStepToUse - mostRecentTime;
+		lessRecentTime = currentTimeStepToUse - lessRecentTime;
 
 		var foundAnySocialRecordTimesteps = false;
 
@@ -782,8 +788,8 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	//TODO: this is now redundant with ensemble.get()
-	var publicGet = function (predicate, earliestTime, latestTime) {
-		return get(predicate, earliestTime, latestTime, true);
+	var publicGet = function (predicate, earliestTime, latestTime, useDefaultValue, params) {
+		return get(predicate, earliestTime, latestTime, useDefaultValue, params);
 	};
 
 	var init = function(initialTimeStep) {

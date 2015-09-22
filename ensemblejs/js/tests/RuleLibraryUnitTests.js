@@ -51,6 +51,9 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 		testResults += testPredicateToEnglish();
 		socialRecord.clearEverything();
 		testResults += testPredicateDefaults();
+		socialRecord.clearEverything();
+		testResults += testCalculateVolitionWithParams();
+		socialRecord.clearEverything();
 
 		//the above functions assume that rules have the following two things:
 		//rule.conditions
@@ -3119,6 +3122,111 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 
 		test.finish();
 	};
+
+	var testCalculateVolitionWithParams = function(){
+		test.start("RuleLibrary", "calcVolitionW/Params");
+		
+		var rules = [
+			{
+				"name": "Attraction makes people want to start dating.",
+				"conditions": [
+					{
+						"category": "directedStatus",
+						"type": "attracted to",
+						"first": "x",
+						"second": "y",
+						"value" : true
+					}
+				],
+				"effects": [
+					{
+						"category": "relationship",
+						"type": "involved with",
+						"first": "x",
+						"second": "y",
+						"weight": 5,
+						"intentType": true
+					}
+				]
+
+			}
+			];
+		ensemble.loadBaseBlueprints(testSocial);
+		ruleLibrary.clearRuleLibrary(); // Let's first clear out everything from the rule set, and start afresh.
+		ruleLibrary.addRuleSet("volitionRules", rules);
+
+
+		//TEST 1 -- specifying timeStep in the params
+		//We'll test this by making people attracted to each other time step 0, taking it away time step 1.
+		//so when we calculate volition (with no params, there should be one entry at first, and no entries second.
+		//Then we'll do it again, setting the timeStep param to be 0 at first (which should return a volition), and then 1 (which shouldn't)
+
+
+		var attractedTo = {
+			"category": "status",
+			"type": "injured",
+			"first": "brick"
+		};
+		var attractedToTimestep0 = {
+			"category": "directedStatus",
+			"type" : "attracted to",
+			"first": "alex",
+			"second": "brick",
+			"value" : true
+		};
+		var attractedToTimestep1 = {
+			"category": "directedStatus",
+			"type" : "attracted to",
+			"first": "alex",
+			"second": "brick",
+			"value" : false
+		};
+
+		//set up the next time step (going from 0 to 1)
+		//socialRecord.setupNextTimeStep();
+
+		var newCast = ["alex", "brick", "clyde"];
+
+		socialRecord.set(attractedToTimestep0);
+		var volitionTest = ruleLibrary.calculateVolition(newCast);
+		var alexToBrickVolition = volitionTest.getFirst("alex", "brick");
+		console.log("ALEX TO BRICK VOLITIOON " , alexToBrickVolition);
+		test.assert(alexToBrickVolition.weight, 5, "TEST 1 phase 1 - weight was unexpected.");
+		test.assert(alexToBrickVolition.type, "involved with", "TEST 1 phase 1 - type was unexpected.");
+
+		//set up the next time step (going from 0 to 1)
+		socialRecord.setupNextTimeStep();
+
+		//TEST 1 PHASE 2
+		//add our new predicate (alex is no longer attracted to brick) - no volitionsn should fire.
+		socialRecord.set(attractedToTimestep1);
+		volitionTest = ruleLibrary.calculateVolition(newCast);
+		alexToBrickVolition = volitionTest.getFirst("alex", "brick");
+		console.log("ALEX AT STAGE TWO: " , alexToBrickVolition);
+		test.assert(alexToBrickVolition, undefined, "TEST 1 phase 2 alex had a volition towards brick, even when they shouldn't have");
+		
+		var params = {};
+		params.timeStep = 0;
+
+		//TEST 1 PHASE 3
+		//Now we're going to try the same thing with the same social record, but hopefully only look up to timestep 0!
+		volitionTest = ruleLibrary.calculateVolition(newCast, params);
+		alexToBrickVolition = volitionTest.getFirst("alex", "brick");
+		console.log("ALEX AT STAGE THREE: " , alexToBrickVolition);
+		test.assert(alexToBrickVolition.weight, 5, "TEST 1 phase 3 - weight was unexpected.");
+		test.assert(alexToBrickVolition.type, "involved with", "TEST 1 phase 3 type was unexpected.");
+
+		//TEST 1 PHASE 4
+		//Now, finally we're going to set the params timestep to 1, which should make it undefined again.
+		params.timeStep = 1;
+		volitionTest = ruleLibrary.calculateVolition(newCast, params);
+		alexToBrickVolition = volitionTest.getFirst("alex", "brick");
+		console.log("ALEX AT STAGE FOUR: " , alexToBrickVolition);
+		test.assert(alexToBrickVolition, undefined, "TEST 1 phase 4 alex had a volition towards brick, even when they shouldn't have");
+
+
+		test.finish();
+	}
 
 	/***************************************************************/
 	/* INTERFACE */

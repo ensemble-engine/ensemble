@@ -347,7 +347,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 
 			if(searchCondition.order === undefined){
 				//Normal Evaluation. 
-				results = socialRecord.get(searchCondition, smallerRelTime, largerRelTime);	//zeros signify currentTimeStep
+				results = socialRecord.get(searchCondition, smallerRelTime, largerRelTime, true, params);	//zeros signify currentTimeStep
 				// If no match was found, this condition is false; so this
 				// whole predicate must be false..
 				if (results.length === 0) {
