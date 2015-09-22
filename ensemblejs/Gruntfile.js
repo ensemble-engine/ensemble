@@ -21,7 +21,7 @@ module.exports = function(grunt) {
       files: [
           // a list of files you want to strip code from
           {src: 'js/ensemble/ensemble.js', dest: 'dist/ensemble.js'},
-          {src: 'js/ensemble/SFDB.js', dest: 'dist/SFDB.js'},
+          {src: 'js/ensemble/socialRecord.js', dest: 'dist/socialRecord.js'},
           {src: 'js/ensemble/RuleLibrary.js', dest: 'dist/RuleLibrary.js'},
           {src: 'js/ensemble/Volition.js', dest: 'dist/Volition.js'}
         ],

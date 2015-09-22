@@ -3,6 +3,7 @@ cifjs-EVERYTHING-not-for-distribution.zip
 ensemblejs/.DS_Store
 ensemblejs/build
 ensemblejs/cache
+ensemblejs/dist
 ensemblejs/doc
 ensemblejs/nwjs-v0.12.0-win-x64/pythonOutput-ignore.nw
 ensemblejs/nwjs-v0.12.0-win-x64/pythonOutput.nw
@@ -10,10 +11,9 @@ ensemblejs/nwjs-v0.12.0-win-x64/pythonOutput.nw
 ensemblejs/NotesToSelf
 ensemblejs/manualWebkitTest
 ensemblejs/TechnicalAlpha1
-ensemblejs/TechnicalAlphaReleas
 ensemblejs/js/CiF.zip
 ensemblejs/jslib.zip
-ensemblejs/TechnicalAlphaRelease
+ensemblejs/TechnicalAlphaRelease/
 ensemblejs/TechnicalAlphaReleaseToolFix1-9-2015.zip
 ensemblejs/TechnicalAlphaRelease-1-21-2015.zip
 ensemblejs/TechnicalAlphaRelease-1-21-2015

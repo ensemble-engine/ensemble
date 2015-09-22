@@ -20,7 +20,7 @@ require.config({
 		,"log": "jslib/log"
 
 		// ensemble
-		,"sfdb": "js/ensemble/SFDB"
+		,"socialRecord": "js/ensemble/socialRecord"
 		,"ruleLibrary": "js/ensemble/RuleLibrary"
 		,"actionLibrary":"js/ensemble/ActionLibrary"
 		,"volition": "js/ensemble/Volition"
@@ -32,7 +32,7 @@ require.config({
 		,"test": "js/tests/Tests"
 		// Unit Test Files
 		,"ensembleUnitTests": "js/tests/ensembleUnitTests"
-		,"sfdbUnitTests": "js/tests/SFDBUnitTests"
+		,"socialRecordUnitTests": "js/tests/socialRecordUnitTests"
 		,"ruleLibraryUnitTests": "js/tests/RuleLibraryUnitTests"
 		,"actionLibraryUnitTests": "js/tests/ActionLibraryUnitTests"
 		,"volitionUnitTests": "js/tests/VolitionUnitTests" 
