@@ -689,7 +689,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		ruleToEnglish			: ruleLibrary.ruleToEnglish,
 		predicateToEnglish		: ruleLibrary.predicateToEnglish,
 		
-		dumpSocialRecord				: socialRecord.dumpSocialRecord,
+		dumpSocialRecord		: socialRecord.dumpSocialRecord,
+		dumpActionLibrary		: actionLibrary.dumpActions,
 		set						: socialRecord.set,
 		get						: getSocialRecord,
 		setCharacterOffstage	: setCharacterOffstage,

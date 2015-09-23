@@ -26,6 +26,15 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return actions;
 	};
 
+	var dumpActions = function(){
+		console.log("***DUMPING ACTIONS***");
+		console.log("There are " + actions.length + " actions.");
+		for(var i = 0; i < actions.length; i += 1){
+			console.log("1.) " + actions[i]);
+		}
+		console.log("***END DUMPING ACTIONS***");
+	}
+
 	/**
 	 * @method getStartSymbols 
 	 * @private
@@ -1092,7 +1101,9 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		getBestTerminalFromActionList : getBestTerminalFromActionList,
 
 		getAction : getAction,
-		getActions : getActions
+		getActions : getActions,
+
+		dumpActions : dumpActions
 	};
 
 
