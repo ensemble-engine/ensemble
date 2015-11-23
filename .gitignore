@@ -2,6 +2,7 @@ node_modules
 cifjs-EVERYTHING-not-for-distribution.zip
 ensemblejs/.DS_Store
 ensemblejs/build
+ensemblejs/bin
 ensemblejs/cache
 ensemblejs/dist
 ensemblejs/doc
