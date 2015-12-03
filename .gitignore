@@ -4,6 +4,7 @@ ensemblejs/.DS_Store
 ensemblejs/media
 ensemblejs/cache
 ensemblejs/dist
+ensemble/schemata/yarn
 ensemble/data/base.json
 ensemble/data/events.json
 ensemble/data/actionData.json
