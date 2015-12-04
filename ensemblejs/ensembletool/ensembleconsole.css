@@ -687,3 +687,23 @@ select optgroup { font-weight:bold; }
 #characterList ul {
 	padding-left: 1em;
 }
+#projectControls {
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	height: 36px;
+	width: 350px;
+	text-align: right;
+}
+#projectControls button {
+	background-color: rgb(255, 198, 94);
+	border: none;
+	color: white;
+	font-size: 120%;
+	margin-left: 1em;
+	padding: 3px 11px;
+	text-align: right;
+	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.35);
+	border: 1px solid gray;
+}
+

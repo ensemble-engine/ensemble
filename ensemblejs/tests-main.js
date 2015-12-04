@@ -10,12 +10,8 @@ require.config({
 
 		// JS libraries
 		,"jquery": "jslib/jquery-2.1.0"
-		,"react": "jslib/react-with-addons"
-		,"jsx": "jslib/jsx"
 		,"text": "jslib/text"	// Lets require load plain text, used by jsx
-		,"JSXTransformer": "jslib/JSXTransformer"
 		,"underscore" : "jslib/underscore-min"
-		,"inheritance" : "jslib/inheritance"
 		,"util": "jslib/util"
 		,"log": "jslib/log"
 
@@ -52,9 +48,6 @@ require.config({
 	shim : {
 		"underscore" : {
 			exports : "_"
-		},
-		"inheritance" : {
-			exports : "Inheritance"
 		}
 	}
 });
