@@ -319,7 +319,7 @@
 				"operator" : "+",
 				"value" : 10
 			},{
-				"category" : "SFDBLabel",
+				"category" : "socialRecordLabel",
 				"type" : "romantic-failure",
 				"first" : "initiator",
 				"second" : "responder",

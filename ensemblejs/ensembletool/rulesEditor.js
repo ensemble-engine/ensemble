@@ -182,6 +182,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 				activeRule.origin = activeFile;
 			}
+			activeRule.origin = activeFile;
 		}
 
 		activeRule = util.clone(rule);
@@ -191,7 +192,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
 			newPredicate("effects");
 		}
-		activeRule.origin = activeFile;
+		
 		addCurrentToUndoHistory();
 
 		activeFile = activeRule.origin;

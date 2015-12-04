@@ -47,7 +47,7 @@
 			"duration": 0
 		},
 		{
-			"category": "SFDBLabelUndirected",
+			"category": "socialRecordLabelUndirected",
 			"types": ["embarrassing", "self-involved"],
 			"isBoolean": true,
 			"directionType": "undirected",
