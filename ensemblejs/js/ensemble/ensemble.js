@@ -705,6 +705,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
 		addHistory				: socialRecord.addHistory,
+		clearHistory			: socialRecord.clearHistory,
 		getSocialRecordCopyAtTimestep	: socialRecord.getSocialRecordCopyAtTimestep,
 		getCurrentTimeStep		: socialRecord.getCurrentTimeStep,
 		
