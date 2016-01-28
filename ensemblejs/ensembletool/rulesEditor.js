@@ -95,7 +95,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 	//if optSkipBackpu is true, it won't create a backup file.
 	var save = function(optSkipBackup) {
-		console.log("beginning saving process...", activeFile);
+		console.log("beginning saving process... active file is", activeFile);
+		console.log("saving process... active rule is " , activeRule);
 		var results = ensemble.setRuleById(activeRule.id, activeRule);
 		if (!results) {
 			messages.showAlert("Unable to save rule.");
@@ -167,25 +168,42 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		// Close the bindings window if open.
 		ruleTester.hide(0);
 
+		//Used to be after the 'if (rule.origin === "__NEWRULE__") block, but I moved it up here.
+		activeRule = util.clone(rule);
+
 		if (rule.origin === "__NEWRULE__") {
 			if (activeFileRefByRuleType[rule.type] === undefined) {
 				// TODO: If we don't have an activeFile set for this rule type, we need to ask the user what active file to use.
 				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
 				if (ruleOrigins.length > 0) {
+					console.log("setting activeFile to ruleOrigins[0]: " , ruleOrigins[0]);
 					activeFile = ruleOrigins[0];
 				} else {
 					getNewRulesFile();
 				}
 			} else {
 				// otherwise, set the active file to the most recently used file for this rule type.
+				console.log("setting active file to " , activeFileRefByRuleType[rule.type]);
 				activeFile = activeFileRefByRuleType[rule.type];
 
 				activeRule.origin = activeFile;
+				console.log("$$$ setting activeRule.origin to " , activeFile);
 			}
 			activeRule.origin = activeFile;
+			console.log("$$$ setting activeRule.origin to " , activeFile);
+			origActiveFile = activeFile;
+			activeFileRefByRuleType[rule.type] = activeFile;
+		}
+		//Moved this entire else block INTO an else block (used to be at the end of the function);
+		else{
+			console.log("Changing active file to " , activeRule.origin);
+			console.log("$$$ ah, okay, I'm about to make my big mistake. What is active rule? " , activeRule);
+			activeFile = activeRule.origin;
+			origActiveFile = activeFile;
+			activeFileRefByRuleType[rule.type] = activeFile;
 		}
 
-		activeRule = util.clone(rule);
+
 		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
 			newPredicate("conditions");
 		}
@@ -195,9 +213,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		
 		addCurrentToUndoHistory();
 
-		activeFile = activeRule.origin;
-		origActiveFile = activeFile;
-		activeFileRefByRuleType[rule.type] = activeFile;
+
+
 		showRule();
 	}
 
@@ -537,7 +554,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		// TODO Check if file already exists.
 		var newFileName = fnParts.join(".");
 
+		console.log("$$$ About to set activeRule.origin to " , newFileName);
 		activeRule.origin = newFileName;
+		console.log("setting active file to be " , newFileName);
 		activeFile = newFileName;
 
 		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
@@ -603,6 +622,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				} else {
 					console.log("changing activeFile to ", activeFile);
 					activeFile = selection;
+					console.log("$$$ changing activeRule.origin to " , activeFile);
 					activeRule.origin = activeFile;
 				}
 			}

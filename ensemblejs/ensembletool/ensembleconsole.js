@@ -138,6 +138,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		
 		//BEN START HERE
 		var newIds = ensemble.addRules(ruleWrapper);
+		console.log("Here is newIds... " , newIds);
 		var ensembleRule = ensemble.getRuleById(newIds[0]);
 		if(ensembleRule === false){
 			//Something bad happened where the rule apparantly wasn't added correctly. Abort and show an error.
