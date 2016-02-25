@@ -146,6 +146,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			return;
 		}
 		var newLoadedRule = ensemble.getRuleById(newIds[0]);
+		newLoadedRule.type = type;
 		rulesEditor.loadRule(newLoadedRule, type);
 		
 

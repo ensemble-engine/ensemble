@@ -560,6 +560,26 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return ruleLibrary.setRuleById(label, rule);
 	}
 
+	//a shortcut to set an array of predicates at once.
+	var setPredicates = function(predicateArray){
+		for(var i = 0; i < predicateArray.length; i += 1){
+			socialRecord.set(predicateArray[i]);
+		}
+	}
+
+	//constructs a search predicate for you, then calls getSocialRecord
+	var getValue = function(first, second, category, type, mostRecentTime, lessRecentTime){
+		var searchPredicate = {};
+		searchPredicate.first = first;
+		searchPredicate.second = second;
+		searchPredicate.category = category;
+		searchPredicate.type = type;
+		var returnArray = getSocialRecord(searchPredicate, mostRecentTime, lessRecentTime);
+		var returnObject = returnArray[0];
+		var value = returnObject.value;
+		return value;
+	};
+
 	// Public-facing function to access the socialRecord. Does verification on input. Internal functions should use socialRecord.get instead.
 	var getSocialRecord = function(searchPredicate, mostRecentTime, lessRecentTime) {
 
@@ -693,6 +713,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		dumpActionLibrary		: actionLibrary.dumpActions,
 		set						: socialRecord.set,
 		get						: getSocialRecord,
+		getValue				: getValue,
+		setPredicates			: setPredicates,
 		setCharacterOffstage	: setCharacterOffstage,
 		getIsCharacterOffstage	: getIsCharacterOffstage,
 		setCharacterOnstage		: setCharacterOnstage,

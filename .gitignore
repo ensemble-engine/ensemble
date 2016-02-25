@@ -4,6 +4,7 @@ ensemblejs/.DS_Store
 ensemblejs/media
 ensemblejs/cache
 ensemblejs/dist
+ensemblejs/.idea
 ensemblejs/data/Chars80K.json
 ensemblejs/data/SFDB80K.json
 ensemblejs/data/Schema80K.json
