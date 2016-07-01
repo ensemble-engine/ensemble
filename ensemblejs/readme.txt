@@ -14,6 +14,4 @@ To install Grunt (on Mac):
 	This should create a "node_modules" folder.
 
 	Then, you need to install all the grunt packages the compiler needs. Do this by typing each of the following:
-		npm install grunt-contrib-uglify --save-dev
-		npm install grunt-strip-code --save-dev
-		npm install grunt-jsdoc --save-dev
+		npm install --save-dev
