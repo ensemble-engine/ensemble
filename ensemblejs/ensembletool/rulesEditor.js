@@ -2,7 +2,7 @@
 
 define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages", "ruleTester", "jquery"], function(util, _, socialRecord, ensemble, validate, messages, ruleTester, $){
 
-	var showTestBindingsButton = false;
+	var showTestBindingsButton = true;
 
 	var activeRule = {};
 	var activeRuleType = "";
