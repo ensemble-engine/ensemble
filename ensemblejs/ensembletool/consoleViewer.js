@@ -12,7 +12,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	var socialStructure;
 	var fullCharacters;
 
-	var init = function(ensembleRef, socialRecordRef, charactersRef, socialStructureRef, fullCharactersRef) {
+	var init = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
 		ensemble = ensembleRef;
 		socialRecord = socialRecordRef;
 		characters = charactersRef;

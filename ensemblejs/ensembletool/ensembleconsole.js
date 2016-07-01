@@ -27,7 +27,7 @@ requirejs.config({
 		,"historyViewer" : "historyViewer"
 		,"rulesViewer" : "rulesViewer"
 		,"rulesEditor" : "rulesEditor"
-		,"console" : "console"
+		,"consoleViewer" : "consoleViewer"
 		,"messages" : "messages"
 		,"ruleTester" : "ruleTester"
 		// ,"ui" : "ui"
@@ -48,8 +48,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "console", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, ensembleConsole, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
@@ -390,7 +390,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 					console.log("loading schema: ", files[schemaPos].source_file);
 					loadSchema(files[schemaPos]);
 				} else {
-					ensembleConsole.cmdLog("No schema file found.");
+					consoleViewer.cmdLog("No schema file found.");
 					console.log("here are the values of files: ", files);
 					return;
 				}
@@ -409,22 +409,22 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 						try {
 							loadRules(content);
 						} catch(e) {
-							ensembleConsole.cmdLog("Problem loading rules. " + e);
+							consoleViewer.cmdLog("Problem loading rules. " + e);
 						}
 					} else if (content.actions !== undefined) {
 						loadActions(content);
 					} else {
-						ensembleConsole.cmdLog("Unrecognized file '" + content.source_file + "': should have found a top level key of 'schema', 'cast', 'history', 'actions', or 'rules'.");
+						consoleViewer.cmdLog("Unrecognized file '" + content.source_file + "': should have found a top level key of 'schema', 'cast', 'history', 'actions', or 'rules'.");
 					}
 				}
 
 				// Update the editor's rule origins.
 				rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
-				ensembleConsole.cmdLog("Schema loaded.", true);
+				consoleViewer.cmdLog("Schema loaded.", true);
 
 			}, function(error) {
 				console.log("Is this the error message I'm getting at?")
-				ensembleConsole.cmdLog("Error " + error);
+				consoleViewer.cmdLog("Error " + error);
 				console.log("Was this the error I just saw? " ,  error);
 			});
 
@@ -566,14 +566,14 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		loadCast(JSON.parse(sampleChars));
 		loadActions(JSON.parse(testActions));
 		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
-		ensembleConsole.cmdLog("Autoloaded default schema.", true);
+		consoleViewer.cmdLog("Autoloaded default schema.", true);
 	}
 	else{
 		//ask the user to specify a schema.
 		// loadPackage();
 	}
 
-	ensembleConsole.init(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
+	consoleViewer.init(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
 
 	// Handle a keypress on the rule filter text box, forwarding to the function within rulesViewer that filters the view accordingly.
 	var ruleFilterKey = function(e) {
