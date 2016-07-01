@@ -482,7 +482,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			if (d.duration === 0) {
 				duration = "single turn";
 			}
-			exp += "<p class='schemaHeader'><span class='className'>" + categoryName + "</span> <span class='classInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
+			exp += "<p class='schemaHeader'><span class='categoryName'>" + categoryName + "</span> <span class='categoryInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
 			var c = socialStructure[categoryName];
 			exp += "<p class='schemaTypes'>";
 			var types = [];
