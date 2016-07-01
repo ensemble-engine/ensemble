@@ -12,12 +12,15 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	var socialStructure;
 	var fullCharacters;
 
-	var init = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
+	var updateRefs = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
 		ensemble = ensembleRef;
 		socialRecord = socialRecordRef;
 		characters = charactersRef;
 		fullCharacters = fullCharactersRef;
 		socialStructure = socialStructureRef;
+	}
+
+	var init = function() {
 		// Set up console command tooltips.
 		$("#cmdSet").tooltip({content: "<p>Use <b>set</b> to change any social fact. Parameter order doesn't matter except for character order in directed facts:</p><ul><li><b>set(Bob, Al, friends)</b></li><li><b>set(bob, trust, al, 75)</b></li><li><b>set(happy, al)</b></li><li><b>set(carla, attracted to, bob, false)</b></li></ul>"});
 		$("#cmdUnset").tooltip({content: "<p>Use <b>unset</b> to make a boolean value false:</p><ul><li><b>unset(al, happy)</b></li><li><b>unset(al, involved with, veronica)</b></li></ul>"});
@@ -665,6 +668,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 
 	return {
 		init: init,
+		updateRefs: updateRefs,
 		cmdLog: cmdLog
 	}
 

@@ -30,6 +30,7 @@ requirejs.config({
 		,"consoleViewer" : "consoleViewer"
 		,"messages" : "messages"
 		,"ruleTester" : "ruleTester"
+		,"fileio" : "fileio"
 		// ,"ui" : "ui"
 
 
@@ -48,8 +49,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "ruleTester", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, ruleTester, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
@@ -65,6 +66,12 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	var ruleOriginsTrigger = [];
 	var ruleOriginsVolition = [];
 
+	var fs;
+	try {
+		fs = require('fs');
+	} catch (e) {
+		// If running in webbrowser, ignore.
+	}
 
 	// ****************************************************************
 	// UI SETUP
@@ -87,17 +94,11 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
-	// Reset the state of the tool.
-	var resetTool = function() {
-		// Tell user this will delete current schema, ask to confirm.
-
-	}
-
 	var loadSchemaButton = function() {
 		if (fs === undefined) {
+			// TODO move this into fileio
 			alert("File I/O is only possible in the standalone Ensemble app.");
 		} else {
-			resetTool();
 			loadPackage();
 			$("#loadSchema").blur();
 		}
@@ -179,12 +180,6 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	// SAVE / LOAD
 	// ****************************************************************
 
-	var fs;
-	try {
-		fs = require('fs');
-	} catch (e) {
-		// If running in webbrowser, ignore.
-	}
 
 	// Create a timestamped backup file for the given ruleFile, deleting old backups if there are more than maxBackupFiles of them for this file.
 	var backupRulesFile = function(ruleFile) {
@@ -269,6 +264,9 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	};
 
+	var updateConsole = function() {
+		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
+	}
 
 	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
 	// NOTE: must be defined before we call rulesEditor.init()
@@ -295,138 +293,51 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	};
 
-	var loadAllFilesFromFolder = function(allFilesInFolder) {
-		//var files = allFilesInFolder.split(";"); -- fix for when node.js broke, but they seem to have fixed it.
-		var files = allFilesInFolder;
-		return new Promise(function(resolve, reject) {
-			var fileContents;
-			try {
-				fileContents = [];
-				for (var i = 0; i < files.length; i++) {
-					var filename = files[i];
-					// Ignore files without a .json extension.
-					var ext = filename.slice(filename.indexOf(".")+1,filename.length);
-					if (ext.toLowerCase() !== "json") {
-						console.log("Skipping '" + filename + "' because does not appear to have .json extension.");
-						continue;	// i.e. next file
-					}
-
-					// Ignore files that don't appear to BE json.
-					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
-
-					// Ignore files that appear to be backup files.
-					if(filename.indexOf("_bak_") > -1){
-						console.log("Skipping '" + filename + "' because it appears to be a backup file.");
-						continue;
-					}
-
-					content.source_file = filename;
-					fileContents.push(content);
-					console.log("Adding '"+filename+"'; fileContents now ", fileContents);
-				}
-
-				resolve(fileContents);
-		    } catch(e) {
-				reject(Error(e));
-		    }
-
-		});
+	var resetTool = function() {
+		ensemble.reset();
+		ruleOriginsTrigger = [];
+		ruleOriginsVolition = [];
+		historyViewer.reset();
+		rulesViewer.show();
 	}
 
 
-	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
 
 	// Load a folder containing a set of schema package files from disk into the editor and into ensemble.
 	var loadPackage = function() {
-		console.log("inside of loadPackage");
 		var chooser = document.querySelector('#fileDialog');
 
 		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in ensembleconsole.html) and confirmed their selection by clicking OK.
 		chooser.addEventListener("change", function(evt) {
-
-			// Due to annoying bug noted at link below, we have to do string-munging to get the folder selected. Also complicated by forward vs backslashes in paths on Mac vs Windows.
-			// https://github.com/nwjs/nw.js/issues/2961
-			// Based on the above URL, it would appear that they have now fixed this issue.
-		/*
-			var listOfAllFiles = this.value;
-			console.log("Here is listOfAllFiles: ", listOfAllFiles);
-			var firstFile = listOfAllFiles.split(";")[0];
-			var posOfLastSlash = firstFile.lastIndexOf("/");
-			if (posOfLastSlash < 0) {
-				posOfLastSlash = firstFile.lastIndexOf("\\");
-			}
-			*/
-			//var schemaDir = firstFile.substr(0,posOfLastSlash);
-			var schemaDir = this.value;
-			// Finally! Now we can save:
-			lastPath = schemaDir;
-			ensemble.reset();
-			ruleOriginsTrigger = [];
-			ruleOriginsVolition = [];
-			historyViewer.reset();
-			rulesViewer.show();
-
-			var arrayOfAllFiles = fs.readdirSync(schemaDir);
-			for(var i = 0; i < arrayOfAllFiles.length; i+=1){
-				var nameOfFile = arrayOfAllFiles[i];
-				arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
-			}
-
-			// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
-			// http://www.html5rocks.com/en/tutorials/es6/promises/		
-			loadAllFilesFromFolder(arrayOfAllFiles).then(function(files) {
-				// "files" is now an array of objects, the parsed contents of the files. First find the schema definition.
-				var i;
-				var schemaPos = -1;
-				for (i = 0; i < files.length; i++) {
-					if (files[i].schema !== undefined) {
-						if (schemaPos !== -1) {
-							throw new Error("More than one schema file detected: files '" + files[schemaPos].source_file + "' and '" + files[i].source_file + "'. You can have only one file with a top level key of 'schema'.");
-						}
-						schemaPos = i;
+			resetTool();
+			var pkg;
+			try {
+				pkg = fileio.loadSchemaFromFolder(this.value, function(pkg) {
+					loadSchema(pkg.schema);
+					if (pkg.cast) {
+						loadCast(pkg.cast);
 					}
-				}
-				if (schemaPos >= 0) {
-					console.log("loading schema: ", files[schemaPos].source_file);
-					loadSchema(files[schemaPos]);
-				} else {
-					consoleViewer.cmdLog("No schema file found.");
-					console.log("here are the values of files: ", files);
-					return;
-				}
-
-				// Remove the schema file from the file list.
-				files.splice(schemaPos, 1);
-
-				// Now, process the rest of the files. The order here should not matter.
-				for (i = 0; i < files.length; i++) {
-					var content = files[i];
-					if (content.cast !== undefined) {
-						loadCast(content);
-					} else if (content.history !== undefined) {
-						loadHistory(content)
-					} else if (content.rules !== undefined) {
-						try {
-							loadRules(content);
-						} catch(e) {
-							consoleViewer.cmdLog("Problem loading rules. " + e);
-						}
-					} else if (content.actions !== undefined) {
-						loadActions(content);
-					} else {
-						consoleViewer.cmdLog("Unrecognized file '" + content.source_file + "': should have found a top level key of 'schema', 'cast', 'history', 'actions', or 'rules'.");
+					if (pkg.history) {
+						loadHistory(pkg.history);
 					}
-				}
-
-				// Update the editor's rule origins.
-				rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
-				consoleViewer.cmdLog("Schema loaded.", true);
-
-			}, function(error) {
-				console.log("Is this the error message I'm getting at?")
-				consoleViewer.cmdLog("Error " + error);
-				console.log("Was this the error I just saw? " ,  error);
-			});
+					if (pkg.rules) {
+						// Should be an array of contents of rules files.
+						pkg.rules.forEach(function(ruleObj) {
+							loadRules(ruleObj);
+						});
+					}
+					if (pkg.actions) {
+						loadActions(pkg.actions);
+					}
+					rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
+					updateConsole();
+					consoleViewer.cmdLog("Schema loaded.", true);
+				});
+			} catch(e) {
+				console.trace();
+				consoleViewer.cmdLog(e);
+				return;
+			}
 
 		}, false);
 		chooser.click();  
@@ -552,6 +463,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	};
 
 	ensemble.init();
+	fileio.init();
 	rulesViewer.init();
 
 	if (autoLoad === false && fs === undefined) {
@@ -573,7 +485,8 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		// loadPackage();
 	}
 
-	consoleViewer.init(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
+	consoleViewer.init();
+	updateConsole();
 
 	// Handle a keypress on the rule filter text box, forwarding to the function within rulesViewer that filters the view accordingly.
 	var ruleFilterKey = function(e) {
