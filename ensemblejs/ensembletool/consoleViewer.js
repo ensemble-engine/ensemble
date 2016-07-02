@@ -1,24 +1,25 @@
+/*
+This module handles the Ensemble Tool's console view, where commands can be typed to display info about the current social state.
+*/
+
 /*global console */
 
 define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _, util){
 
+	// Configurable params
 	var maxValidNumberOfIntents = 10;
 	var maxValidNumberOfActionsPerIntent = 10;
 	var maxActionsPerGroup = 1;
 
+	// Internal variables
 	var ensemble;
 	var socialRecord;
 	var characters;
 	var socialStructure;
 	var fullCharacters;
-
-	var updateRefs = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
-		ensemble = ensembleRef;
-		socialRecord = socialRecordRef;
-		characters = charactersRef;
-		fullCharacters = fullCharactersRef;
-		socialStructure = socialStructureRef;
-	}
+	var consoleHistory = [];
+	var historyPos = -1;
+	var storedVolitions;
 
 	var init = function() {
 		// Set up console command tooltips.
@@ -35,6 +36,16 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 
 	}
 
+	// Hook up the console's local variables to the main tool's data structure holding the current Ensemble state.
+	var updateRefs = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
+		ensemble = ensembleRef;
+		socialRecord = socialRecordRef;
+		characters = charactersRef;
+		fullCharacters = fullCharactersRef;
+		socialStructure = socialStructureRef;
+	}
+
+
 	// Show the results of a console command on the screen.
 	var cmdLog = function(msg, notAnError) {
 		var cr = $("#consoleResults");
@@ -46,12 +57,8 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 
 
 	// ****************************************************************
-	// ensemble CONSOLE
+	// CONSOLE COMMANDS 
 	// ****************************************************************
-
-	var consoleHistory = [];
-	var historyPos = -1;
-
 
 	// Handle the "next" console command (advance timestep)
 	var doNext = function() {
@@ -147,7 +154,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 
 	// Handle the "actions" console command (show the current actions that the first character wants to take towards the second.)
 	var doActions = function(char1, char2){
-		//console.log("Doing actions for " + char1 + " and " + char2 + " with numIntents: " + numIntents + " actionsPerIntent: " + numActionsPerIntent + " numActionsPerGroup " + numActionsPerGroup);
 		var i;
 		var logMsg = "<table>";
 		var actions = [];
@@ -156,7 +162,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		}
 
 		//Right now, we specify a large number for maximum intents, and maximum actions per intent.
-		actions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup);
+		actions = ensemble.getActions(char1, char2, storedVolitions, characters, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup);
 
 		//Go through each action, and add a row in a table to display to the user saying the name of the action
 		//the effects that would transpire if they were to do it.
@@ -172,13 +178,12 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		}
 		
 		logMsg += "</table>";
-		console.log("logMsg: " + logMsg);
 		return cmdLog(logMsg);
 	};
 
 	// Handle the "doAction" console command, performing the given action from the first character to the second.
 	var doDoAction = function(char1, char2, action, isAccepted){
-		//Print out some nice things to the console letting the user know what action is taking place
+
 		isAccepted = false;
 		if(action.isAccept === undefined || action.isAccepted === true){
 			isAccepted = true;
@@ -186,7 +191,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		cmdLog("<b>" + char1 + "</b> is doing action <b>" + action.name + "</b> with <b>" +char2+ "</b> accepted: <b>" + isAccepted + "</b>", true);
 		cmdLog("<b> CHANGED SOCIAL STATE: </b><BR>-----------------", true);
 	
-
 		//Let's grab the appropriate set of effects.
 		var effects = action.effects;
 
@@ -251,6 +255,10 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	};
 
 
+	// ****************************************************************
+	// CONSOLE OPERATIONS 
+	// ****************************************************************
+
 	// Take a raw string and attempt to process it as a console command, rejecting it or calling an appropriate function to actually carry out the results of a valid command.
 	var processCommand = function(cmd) {
 
@@ -302,10 +310,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 				var foundThisTime = 0;
 				for (var i = 0; i < charKeys.length; i++) {
 					//we want either their printed name OR their id name to be acceptable...
-					console.log("charKeys, i", charKeys, i);
-					console.log("charDict", charDict);
-					if (charDict[charKeys[i]].name.toLowerCase() === params[pos]
-						|| charKeys[i].toLowerCase() === params[pos]) {
+					if (charDict[charKeys[i]].name.toLowerCase() === params[pos] || charKeys[i].toLowerCase() === params[pos]) {
 						found.push(charKeys[i]);
 						params.splice(pos, 1);
 						foundThisTime += 1;
@@ -325,7 +330,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 
 		var value = true;
 		var chars;
-		var res;
 		var logMsg;
 		var i;
 
@@ -370,7 +374,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		}
 
 		if (command === "actions") {
-			var validNumbers = [];
 			
 			//This currently doesn't allow the user to specify 'numIntents' and 'numActionsPerIntent'
 			//It makes the 'sorting' of actions a lot easier, and it also is less parameters for the user to keep track of.
@@ -412,28 +415,20 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			}
 
 			//just get ALL the potential actions, by passing in the maximum possible values of everything.
-			var potentialActions = getActionList(char1, char2, storedVolitions, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup)
-			//console.log("Okay! Here are potentialActions -- these should be the only valid things entered, yeah?", potentialActions);
+			var potentialActions = ensemble.getActions(char1, char2, storedVolitions, characters, maxValidNumberOfIntents, maxValidNumberOfActionsPerIntent, maxActionsPerGroup);
 
 			//Get the list of all possible action names that exist.
-			//var actionNames = [];
-			//var actions = actionLibrary.getAllActions();
 			var validEntries = [];
 			for(var i = 0; i < potentialActions.length; i+= 1){
-				//actionNames.push(actions[i].name.toLowerCase());
 				validEntries.push(potentialActions[i].name.toLowerCase());
 				validEntries.push(i.toString());
 			}
-
-			//console.log("Here are the valid entries someone can type in!", validEntries);
 
 			//So, this will catch two things:
 			//1.) If they typed in a nonsense action that doesn't exist
 			//2.) They typed in an 'action number' that is invalid (i.e. bigger than the numuber of actions the 
 			//characters had volitions for.)
-			//var actionMatch = extract(allCandidates, "recognized action", 1, 1);
 			var actionMatch = extract(validEntries, "recognized action", 1, 1);
-			console.log("This is what actionMatch looks like: ", actionMatch);
 			if (!actionMatch){
 				return;
 			} 
@@ -442,7 +437,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			//So, at this point, we still don't actually quite know if they typed in 
 			//an action name or an action number. However, we do know the list of all
 			//acceptable names and numbers. Check to see if what they typed IS acceptable!
-			//var nameIndex = potentialActions.indexOf(actionSearch);
 			var desiredAction;
 			for(i = 0; i < potentialActions.length; i += 1){
 				if(potentialActions[i].name.toLowerCase() === actionSearch || i.toString() === actionSearch){
@@ -585,51 +579,12 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			cmdLog("Not a valid command.");
 		}
 	};
-
-	var getActionList = function(char1, char2, storedVolitions, numberOfIntents, numActionPerIntent, numActionsPerGroup){
-		//Ok... because we want consistency, what we are going to do is GET the best action always, but then
-		//ALSO do more if numActions is > 1. we'll then compare the two, and make sure that the best action is 
-		//the 'first' entry in the list of best actions. Perfect, right?
-		//var actions = [];
-		//var bestAction = ensemble.getAction(char1, char2, storedVolitions, characters);
-
-
-		var bestActions = ensemble.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
-
-
-		//I think we might need to reverse sort these guys.
-
-		/*
-		if(numberOfActions > 1){
-			//I think it makes the most sense to just get a *slew* of actions, and then pair it down based on score.
-			//UGH, does it? No, of course not. It makes more sense to let the user speensembley each attribute, if they want.
-			actions = ensemble.getActions(char1, char2, storedVolitions, characters, numberOfIntents, numActionPerIntent, numActionsPerGroup);
-			if(actions[0].name !== bestAction.name){
-				//Uh oh, ok. we'll have to do a little bit of re-sorting here!
-				for(var swapIndex = 1; swapIndex < actions.length; swapIndex += 1){
-					if(actions[swapIndex].name === bestAction.name){
-						//Ok, we found where we need to swap!
-						var tempAction = actions[0];
-						actions[0] = actions[swapIndex];
-						actions[swapIndex] = tempAction;
-					}
-				}
-			}
-		}
-		
-		else{ // ok, we are dealing with an easy case. Thank goodness.
-			actions[0] = bestAction;
-		}
-		*/
-		return bestActions;
-	}
 	
 	// Handle a keypress on the console, which might be a letter, enter (to submit) or up/down arrow (to scroll through command history).
 	var keyPress = function(e) {
 		var raw = document.getElementById("command").value;
 		var keyPressed = e.which;
 
-		// If key pressed was enter, process.
 		if (keyPressed === 38) { // up arrow
 			if (historyPos >= 0) {
 				$("#command").val(consoleHistory[historyPos]);
@@ -640,8 +595,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 				$("#command").val(consoleHistory[historyPos]);
 				if (historyPos < consoleHistory.length) historyPos++;
 			}
-		}
-		if (keyPressed === 13) {	// ASCII 'enter'
+		} else if (keyPressed === 13) {	// ASCII 'enter'
 			processCommand(raw);
 			$("#command").val("");
 			consoleHistory.push(raw);
@@ -649,7 +603,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		}
 	}
 
-	var storedVolitions;
 	var runVolitionRules = function() {
 		var logMsg = "Recalculating volitions.";
 		storedVolitions = ensemble.calculateVolition(characters);

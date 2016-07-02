@@ -1,6 +1,17 @@
 /*
 Main entry function for the Ensemble Tool.
 Startup happens in init() function below.
+
+Individual tabs of the tool are broken out into their own modules:
+	consoleViewer.js		Console Tab
+	historyViewer.js		Social Record Viewer Tab
+	rulesViewer.js			Rules Viewer Tab
+	rulesEditor.js			Rules Editor Tab
+	--> ruleTester.js		Rule diagnostic panel ("Test Rule" button)
+
+A few other modules help the tool function:
+	fileio.js				Loading/saving files
+	messages.js				Pop-up messages and errors
 */
 
 /*global console, require, requirejs, document */
@@ -36,8 +47,6 @@ requirejs.config({
 		,"messages" : "messages"
 		,"ruleTester" : "ruleTester"
 		,"fileio" : "fileio"
-		// ,"ui" : "ui"
-
 
 },
 
@@ -59,6 +68,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
+	// These module variables will hold the active schemata info.
 	var socialStructure;
 	var characters;
 	var fullCharacters;
@@ -89,7 +99,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
-	// "Load New Schema" button
+	// "Load New Schema" button wrapper
 	$("button#loadSchema").click(function() {
 		if (!fileio.enabled()) {
 			messages.showAlert("File I/O is only possible in the standalone Ensemble app.");
@@ -99,32 +109,18 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		$("#loadSchema").blur();
 	});
 
-	// ****************************************************************
-	// UTILITY FUNCTIONS
-	// ****************************************************************
-
-	var updateConsole = function() {
-		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
-	}
-
-	var resetTool = function() {
-		ensemble.reset();
-		ruleOriginsTrigger = [];
-		ruleOriginsVolition = [];
-		historyViewer.reset();
-		rulesViewer.show();
-	}
-
-	// Load a folder containing a set of schema package files from disk into the editor and into ensemble.
+	// Handle loading a new schema package. 
 	var loadPackage = function() {
 		var chooser = document.querySelector('#fileDialog');
 
 		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in ensembleconsole.html) and confirmed their selection by clicking OK.
-		chooser.addEventListener("change", function(evt) {
+		chooser.addEventListener("change", function() {
 			resetTool();
-			var pkg;
 			try {
-				pkg = fileio.loadSchemaFromFolder(this.value, function(pkg) {
+				// We'll let the fileio module deal with the nitty gritty of loading in the files in the schemata, passing in a callback function. If the load is successful, the callback will have a "pkg" variable that's an object with keys for each part of the schemata. For each matching part found, we'll load the data into Ensemble and the editor.
+				fileio.loadSchemaFromFolder(this.value, function(pkg) {
+					// callback function
+					
 					loadSchema(pkg.schema);
 					if (pkg.cast) {
 						loadCast(pkg.cast);
@@ -133,7 +129,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 						loadHistory(pkg.history);
 					}
 					if (pkg.rules) {
-						// Should be an array of contents of rules files.
+						// Should be an array, one rules object for each rules file found.
 						pkg.rules.forEach(function(ruleObj) {
 							loadRules(ruleObj);
 						});
@@ -141,6 +137,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 					if (pkg.actions) {
 						loadActions(pkg.actions);
 					}
+
 					rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
 					updateConsole();
 					consoleViewer.cmdLog("Schema loaded.", true);
@@ -154,6 +151,24 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		chooser.click();  
 
 	};
+
+	// ****************************************************************
+	// UTILITY FUNCTIONS
+	// ****************************************************************
+
+	// Shortcut for sending details to the console.
+	var updateConsole = function() {
+		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
+	}
+
+	// Reset everything in the tool, including Ensemble, back to its initial state.
+	var resetTool = function() {
+		ensemble.reset();
+		ruleOriginsTrigger = [];
+		ruleOriginsVolition = [];
+		historyViewer.reset();
+		rulesViewer.show();
+	}
 
 
 	// ****************************************************************

@@ -31,26 +31,34 @@ define([], function(){
 		return stamp;
 	};
 
+	// Return true if we're in an environment with file i/o (we won't be if running in a standard web browser, for instance)
 	var enabled = function() {
 		return fs !== undefined;
 	}
 
+	// Retrieve, filter, and catalogue a list of schema files from a given directory, and return their contents in a labeled object. 
 	var loadSchemaFromFolder = function(schemaDir, callback) {
+
+		// Set up our return object.
+		var pkg = {
+			rules: []
+		};
+		
+		// Remember the most recently opened folder.
 		lastPath = schemaDir;
 
+		// Get an array of all files found in this directory.
 		var arrayOfAllFiles = fs.readdirSync(schemaDir);
 		for(var i = 0; i < arrayOfAllFiles.length; i+=1){
 			var nameOfFile = arrayOfAllFiles[i];
 			arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
 		}
-		var pkg = {
-			rules: []
-		};
 
-		// Need to make sure we load all files, then process them in the right order: schema first, then everything else. We'll use fancy new Javascript Promises to do this.
-		// http://www.html5rocks.com/en/tutorials/es6/promises/		
+		// Use Javascript Promises to load all files, then run a function once they're all processed.
 		loadAllFilesFromFolder(arrayOfAllFiles).then(function(files) {
-			// "files" is now an array of objects, the parsed contents of the files. First find the schema definition.
+			// "files" is now an array of objects, the parsed contents of the files.
+
+			// First find the schema definition, since none of the other files make sense if this isn't here.
 			var i;
 			var schemaPos = -1;
 			for (i = 0; i < files.length; i++) {
@@ -62,16 +70,13 @@ define([], function(){
 				}
 			}
 			if (schemaPos >= 0) {
-				console.log("loading schema: ", files[schemaPos].source_file);
 				pkg.schema = files[schemaPos];
 			} else {
 				throw new Error("No schema file found.");
 			}
 
-			// Remove the schema file from the file list.
+			// Remove the schema file from the file list, then add any other matching file found to our return object.
 			files.splice(schemaPos, 1);
-
-			// Now, process the rest of the files. The order here should not matter.
 			for (i = 0; i < files.length; i++) {
 				var content = files[i];
 				if (content.cast !== undefined) {
@@ -91,6 +96,7 @@ define([], function(){
 				}
 			}
 
+			// Now run the callback function we passed in with the catalogued object. (This function is defined in ensembleconsole.loadPackage.)
 			callback(pkg);	
 
 		}, function(error) {
@@ -98,8 +104,8 @@ define([], function(){
 		});
 	}
 
+	// This is used by loadSchemaFromFolder above to filter a list of valid files from a directory. Specifically, reject backups, and anything else that doesn't look like a schema file.
 	var loadAllFilesFromFolder = function(allFilesInFolder) {
-		//var files = allFilesInFolder.split(";"); -- fix for when node.js broke, but they seem to have fixed it.
 		var files = allFilesInFolder;
 		return new Promise(function(resolve, reject) {
 			var fileContents;
@@ -114,7 +120,7 @@ define([], function(){
 						continue;	// i.e. next file
 					}
 
-					// Ignore files that don't appear to BE json.
+					// Ignore files that don't appear to BE json (the line below will throw an error to be caught below if the file isn't json).
 					var content = JSON.parse(fs.readFileSync(filename, 'utf-8'));
 
 					// Ignore files that appear to be backup files.
@@ -147,9 +153,7 @@ define([], function(){
 		//Make this path that we've found equal to 'lastPath'
 		//Also might be helpful with setting a 'default' schema package location.
 		var path2 = process.execPath;
-		console.log("PATH: " , path2);
 		path2 = path2.split("ensemble Tool")[0];
-		console.log("nicer path: " , path2);
 
 		var path = lastPath;
 		var backupFolderName = "_bak_" + ruleFile;
@@ -179,7 +183,6 @@ define([], function(){
 			// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
 			backupFiles.sort();
 			var oldestFileName = backupFiles[0];
-			// console.log("More than maxBackupFiles files (" + maxBackupFiles + "), so deleting oldest file: " + oldestFileName);
 			// "unlink" means delete
 			fs.unlinkSync(backupPath + "/" + oldestFileName);
 		}
@@ -210,7 +213,6 @@ define([], function(){
 	}
 
 	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
-	// NOTE: must be defined before we call rulesEditor.init()
 	var saveRules = function(ruleType, rules, ruleFile, optOrigActiveFile, optSkipBackup) {
 
 		if(!optSkipBackup){
