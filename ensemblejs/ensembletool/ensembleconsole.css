@@ -225,6 +225,9 @@ margin-left: 6em;
 	border-bottom: thin dotted blue;
 }
 
+#infoOnSocialTypes {
+    padding: 0.25em;
+}
 .schemaHeader {
 	padding-bottom: 0;
 	margin-bottom: 0 !important;
@@ -251,6 +254,15 @@ margin-left: 6em;
 	 text-decoration: underline; 
 	font-size: 120%;
 	font-family: Arial;
+}
+#actionList ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#actionList li {
+	float: left;
+	padding: 0 0.25em 0 0.25em;
 }
 
 
@@ -360,7 +372,7 @@ margin-left: 6em;
 	position: relative;
 	top: -4px;
 }
-.edvalue input, {
+.edvalue input {
 	width: 2em;
 	text-align: center;
 }
