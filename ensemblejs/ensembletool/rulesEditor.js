@@ -1,6 +1,6 @@
 /*global console */
 
-define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages", "ruleTester", "jquery"], function(util, _, socialRecord, ensemble, validate, messages, ruleTester, $){
+define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages", "ruleTester", "fileio", "jquery"], function(util, _, socialRecord, ensemble, validate, messages, ruleTester, fileio, $){
 
 	var showTestBindingsButton = true;
 
@@ -24,13 +24,11 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	var undoSize = 100;
 
 	var rulesViewer;
-	var saveRules; // When we init, store a reference to ensembleconsole.js saveRules function here.
 
-	var init = function(refToViewer, _ruleOriginsTrigger, _ruleOriginsVolition, _saveRules) {
+	var init = function(refToViewer, _ruleOriginsTrigger, _ruleOriginsVolition) {
 		rulesViewer = refToViewer;
 		ruleOriginsTrigger = _ruleOriginsTrigger;
 		ruleOriginsVolition = _ruleOriginsVolition;
-		saveRules = _saveRules;
 		buildIntentOptions();
 		activeFileRefByRuleType = {};
 	}
@@ -108,8 +106,22 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				return; // don't save if we aren't working with an actual file.
 			}
 			var ruleType = activeRule.id.split("_")[0];
-			saveRules(ruleType, activeRule.origin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in ensembleconsole.js on init.
+			saveRules(ruleType, activeRule.origin, optSkipBackup);			
 		}
+	}
+
+	var saveRules = function(ruleType, ruleOrigin, optSkipBackup) {
+		if (ruleType === "triggerRules") {
+			ruleType = "trigger";
+		}
+		if (ruleType === "volitionRules") {
+			ruleType = "volition";
+		}
+		var rulesOfThisType = ensemble.getRules(ruleType);
+		var filteredRules = rulesOfThisType.filter(function(rule) {
+			return rule.origin === activeRule.origin;
+		});
+		fileio.saveRules(ruleType, filteredRules, ruleOrigin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in ensembleconsole.js on init.
 	}
 
 	var deleteRule = function() {
@@ -128,8 +140,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 						$("#tabLiRulesViewer a").click();
 						rulesViewer.show();
 						messages.showAlert("Deleted rule " + activeRule.id + ".");
-						saveRules(activeRuleType, activeRule.origin); // Note: we passed in a ref to this function in ensembleconsole.js on init.
-
+						saveRules(activeRuleType, activeRule.origin);
 					} else {
 						messages.showAlert("Unable to delete rule " + activeRule.id + ".");
 					}
@@ -456,7 +467,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		$("#undoButton").click(undo);
 		$("#redoButton").click(redo);
 
-		$("#saveRule").click(save);
+		$("#saveRule").click(function() {
+			save();
+		});
 		$("#deleteRule").click(deleteRule);
 		$("#testBindings").click(activateTestBindings);
 

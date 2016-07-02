@@ -4,6 +4,13 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 	var timeStepDisplay = $("#timestep");
 	var historyTableArea = $("#sfdbtable");
 
+	var init = function() {
+		// Setup interface buttons.
+		$("button#timeStepForward").click(stepForward);
+		$("button#timeStepBack").click(stepBack);
+		$("button#resetSFDBHistory").click(reset);
+	}
+
 	var stepForward = function() {
 		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
 			return;
@@ -51,6 +58,7 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 	}
 
 	return {
+		init: init,
 		stepForward: stepForward,
 		stepBack: stepBack,
 		refresh: refresh,

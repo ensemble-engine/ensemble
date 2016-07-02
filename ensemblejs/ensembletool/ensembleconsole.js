@@ -1,4 +1,4 @@
-/*global console, require, requirejs, document, Promise */
+/*global console, require, requirejs, document */
 require.nodeRequire = window.requireNode;
 requirejs.config({
 	paths: {
@@ -57,9 +57,6 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	var socialStructure;
 	var characters;
 	var fullCharacters;
-	var skipBackup = "skip"; // helper variable to skip backuping up files when creating a new rule.
-
-	var maxBackupFiles = 10;
 
 	// stores the origins of all loaded rules.
 	// For now, we assume that the fileName field within the rule matches the filename of the file it came from. TODO: possible to do this automatically?
@@ -94,22 +91,14 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
-	var loadSchemaButton = function() {
-		if (fs === undefined) {
-			// TODO move this into fileio
-			alert("File I/O is only possible in the standalone Ensemble app.");
-		} else {
-			loadPackage();
-			$("#loadSchema").blur();
+	$("button#loadSchema").click(function() {
+		if (!fileio.enabled()) {
+			messages.showAlert("File I/O is only possible in the standalone Ensemble app.");
+			return;
 		}
-	}
-
-	// Setup interface buttons.
-	$("button#timeStepForward").click(historyViewer.stepForward);
-	$("button#timeStepBack").click(historyViewer.stepBack);
-	$("button#resetSFDBHistory").click(historyViewer.reset);
-
-	$("button#loadSchema").click(loadSchemaButton);
+		loadPackage();
+		$("#loadSchema").blur();
+	});
 
 	// Handle clicking on the "New Rule" button: create a new stub rule, register it with ensemble, load it into the editor, and switch to that tab.
 	var newRule = function() {
@@ -142,7 +131,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		//BEN ALSO START HERE!
 		//Try to programmatically click the 'update rule eset button' here...
 		//pass in 'true' to signify we should opt out of making a backup file.
-		rulesEditor.save(skipBackup);
+		rulesEditor.save(true);
 		$("#tabLiRulesEditor a").click();
 	};
 
@@ -159,21 +148,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 
 
 
-	// Return a string uniquely identifying this date and time with minute accuracy, to be part of a filename timestamp, a la:
-	// 14-03-26-1130
-	var getDateTimeStamp = function() {
-		var d = new Date();
-		var stamp = (d.getFullYear() - 2000) + "-";
-		var m = d.getMonth() + 1;
-		stamp += (m < 10 ? ("0" + m) : m) + "-";
-		var day = d.getDate();
-		stamp += (day < 10 ? ("0" + day) : day) + "-";
-		var h = d.getHours();
-		stamp += (h < 10 ? ("0" + h) : h);
-		var min = d.getMinutes();
-		stamp += (min < 10 ? ("0" + min) : min);
-		return stamp;
-	};
+
 
 
 	// ****************************************************************
@@ -181,117 +156,14 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	// ****************************************************************
 
 
-	// Create a timestamped backup file for the given ruleFile, deleting old backups if there are more than maxBackupFiles of them for this file.
-	var backupRulesFile = function(ruleFile) {
-
-		// If we don't have filesystem access (perhaps because we're running in a browser), skip.
-		if (fs === undefined) {
-			return;
-		}
-
-		//Make this path that we've found equal to 'lastPath'
-		//Also might be helpful with setting a 'default' schema package location.
-		var path2 = process.execPath;
-		console.log("PATH: " , path2);
-		path2 = path2.split("ensemble Tool")[0];
-		console.log("nicer path: " , path2);
-
-		var path = lastPath;
-		var backupFolderName = "_bak_" + ruleFile;
-		var backupPath = path + "/" + backupFolderName;
-		var origFilePath = path + "/" + ruleFile + ".json";
-		var backupFilePath = backupPath + "/" + ruleFile + "_" + getDateTimeStamp() + ".json";
-
-		// If we can't find the original ruleFile, bail.
-		if (!fs.existsSync(origFilePath)) {
-			console.log("Can't create backup file for '" + origFilePath + "' because can't find the original file.");
-			return;
-		}
-
-		// Create a backup folder for the current schema package, if none exists
-		if (!fs.existsSync(backupPath)) {
-			fs.mkdirSync(backupPath);
-			// console.log("Making folder at ", backupPath);
-		}
-
-		// Cycle backup files if we have too many.
-		var backupFiles = fs.readdirSync(backupPath);
-		// Only consider files in this directory as counting towards the maximum if they start with the master filename and end with .json
-		backupFiles = backupFiles.filter(function(f) {
-			return f.split("_")[0] === ruleFile && f.substr(f.length - 5) === ".json";
-		});
-		if (backupFiles.length > maxBackupFiles) {
-			// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
-			backupFiles.sort();
-			var oldestFileName = backupFiles[0];
-			// console.log("More than maxBackupFiles files (" + maxBackupFiles + "), so deleting oldest file: " + oldestFileName);
-			// "unlink" means delete
-			fs.unlinkSync(backupPath + "/" + oldestFileName);
-		}
-
-		// Copy the current version of the rules file to the backup folder, giving it a named timestamp.
-		// console.log("copying '" + origFilePath + "' to '" + backupFilePath);		
-		var f = fs.readFileSync(origFilePath);
-		fs.writeFileSync(backupFilePath, f);
-	};
 
 
-	// Take a rules type (like "volition" etc.) and a filename, and write out all the rules ensemble has of that type and matching that filename origin to the file in question.
-	var writeRulesForFileToDisk = function(ruleTypeShort, ruleFile) {
-		
-		var rules = ensemble.getRules(ruleTypeShort);
 
-		// Filter rules to only contain rules from the target file.
-		var filteredRules = rules.filter(function(rule) {
-			return rule.origin === ruleFile;
-		});
 
-		// console.log(filteredRules.length + " matching rules from this file");
-
-		// Create a human-readable JSON string encoding the rules in the proper format.
-		var preparedRulesObj = {};
-		preparedRulesObj.fileName = ruleFile;
-		preparedRulesObj.type = ruleTypeShort;
-		preparedRulesObj.rules = filteredRules;
-		// Convert to a string, using tabs to keep human readable.
-		var serializedRules = JSON.stringify(preparedRulesObj, null, '\t');
-
-		// Write the serialized rules to disk.
-		var path = lastPath + "/" + ruleFile + ".json";
-		if (fs !== undefined) {
-			fs.writeFileSync(path, serializedRules);
-			// console.log("writing to '" + path + "':");
-		}
-	};
 
 	var updateConsole = function() {
 		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
 	}
-
-	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
-	// NOTE: must be defined before we call rulesEditor.init()
-	var saveRules = function(ruleType, ruleFile, optOrigActiveFile, optSkipBackup) {
-
-		if(optSkipBackup !== skipBackup){
-			backupRulesFile(ruleFile);
-		}
-
-		var ruleTypeShort;
-		if (ruleType === "triggerRules" || ruleType === "trigger") {
-			ruleTypeShort = "trigger";
-		} else {
-			ruleTypeShort = "volition";
-		}
-
-		writeRulesForFileToDisk(ruleTypeShort, ruleFile);
-
-		// If we've moved a rule from one active file to another, we need to update the old file, too (to remove the moved file).
-		if (optOrigActiveFile !== undefined && optOrigActiveFile.trim() !== "" && optOrigActiveFile != ruleFile) {
-			// console.log("optOrigActiveFile is " + optOrigActiveFile + " and is different from ruleFile: " + ruleFile + ", so let's back it up too.")
-			backupRulesFile(optOrigActiveFile);
-			writeRulesForFileToDisk(ruleTypeShort, optOrigActiveFile);
-		}
-	};
 
 	var resetTool = function() {
 		ensemble.reset();
@@ -329,7 +201,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 					if (pkg.actions) {
 						loadActions(pkg.actions);
 					}
-					rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
+					rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
 					updateConsole();
 					consoleViewer.cmdLog("Schema loaded.", true);
 				});
@@ -465,6 +337,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	ensemble.init();
 	fileio.init();
 	rulesViewer.init();
+	historyViewer.init();
 
 	if (autoLoad === false && fs === undefined) {
 		autoLoad = true; // let's have it use autoload when using the webpage version of the console.
@@ -477,12 +350,8 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		loadHistory(JSON.parse(testSfdbData));
 		loadCast(JSON.parse(sampleChars));
 		loadActions(JSON.parse(testActions));
-		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition, saveRules);
+		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
 		consoleViewer.cmdLog("Autoloaded default schema.", true);
-	}
-	else{
-		//ask the user to specify a schema.
-		// loadPackage();
 	}
 
 	consoleViewer.init();
