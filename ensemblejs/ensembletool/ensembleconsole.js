@@ -1,3 +1,8 @@
+/*
+Main entry function for the Ensemble Tool.
+Startup happens in init() function below.
+*/
+
 /*global console, require, requirejs, document */
 require.nodeRequire = window.requireNode;
 requirejs.config({
@@ -63,15 +68,8 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	var ruleOriginsTrigger = [];
 	var ruleOriginsVolition = [];
 
-	var fs;
-	try {
-		fs = require('fs');
-	} catch (e) {
-		// If running in webbrowser, ignore.
-	}
-
 	// ****************************************************************
-	// UI SETUP
+	// TABBED INTERFACE SETUP
 	// ****************************************************************
 
 	// Refresh the history view pane whenever we switch to it.
@@ -91,6 +89,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
+	// "Load New Schema" button
 	$("button#loadSchema").click(function() {
 		if (!fileio.enabled()) {
 			messages.showAlert("File I/O is only possible in the standalone Ensemble app.");
@@ -100,66 +99,9 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		$("#loadSchema").blur();
 	});
 
-	// Handle clicking on the "New Rule" button: create a new stub rule, register it with ensemble, load it into the editor, and switch to that tab.
-	var newRule = function() {
-		var type = $("#tabstrigger").is(":visible") ? "trigger" : "volition";
-
-		var newRule = {};
-		newRule.name = "New " + util.iCap(type) + " Rule";
-		newRule.conditions = [];
-		newRule.effects = [];
-		
-		var ruleWrapper = {};
-		ruleWrapper.fileName = "__NEWRULE__";
-		ruleWrapper.rules = [newRule];
-		ruleWrapper.type = type;
-		
-		//BEN START HERE
-		var newIds = ensemble.addRules(ruleWrapper);
-		console.log("Here is newIds... " , newIds);
-		var ensembleRule = ensemble.getRuleById(newIds[0]);
-		if(ensembleRule === false){
-			//Something bad happened where the rule apparantly wasn't added correctly. Abort and show an error.
-			messages.showError("Canceling New Rule: Error adding empty new rule to ensemble");
-			return;
-		}
-		var newLoadedRule = ensemble.getRuleById(newIds[0]);
-		newLoadedRule.type = type;
-		rulesEditor.loadRule(newLoadedRule, type);
-		
-
-		//BEN ALSO START HERE!
-		//Try to programmatically click the 'update rule eset button' here...
-		//pass in 'true' to signify we should opt out of making a backup file.
-		rulesEditor.save(true);
-		$("#tabLiRulesEditor a").click();
-	};
-
-	$("#newRuleButton").click(newRule);
-
-	// Handle message block.
-	$("#msgBlock").click(function(){
-		$(this).stop(true,true).fadeOut();
-	});
-
 	// ****************************************************************
 	// UTILITY FUNCTIONS
 	// ****************************************************************
-
-
-
-
-
-
-	// ****************************************************************
-	// SAVE / LOAD
-	// ****************************************************************
-
-
-
-
-
-
 
 	var updateConsole = function() {
 		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
@@ -172,8 +114,6 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		historyViewer.reset();
 		rulesViewer.show();
 	}
-
-
 
 	// Load a folder containing a set of schema package files from disk into the editor and into ensemble.
 	var loadPackage = function() {
@@ -206,7 +146,6 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 					consoleViewer.cmdLog("Schema loaded.", true);
 				});
 			} catch(e) {
-				console.trace();
 				consoleViewer.cmdLog(e);
 				return;
 			}
@@ -217,11 +156,9 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	};
 
 
-
 	// ****************************************************************
-	// INIT / REGISTRATION
+	// ENSEMBLE I/O 
 	// ****************************************************************
-
 
 	// Take a schema definition object, register it with ensemble, and display its details in the UI.
 	var loadSchema = function(schema) {
@@ -334,37 +271,38 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		$("#actionList").html(txt);
 	};
 
-	ensemble.init();
-	fileio.init();
-	rulesViewer.init();
-	historyViewer.init();
+	// ****************************************************************
+	// INIT 
+	// ****************************************************************
 
-	if (autoLoad === false && fs === undefined) {
-		autoLoad = true; // let's have it use autoload when using the webpage version of the console.
+	var init = function() {
+		messages.init();
+		ensemble.init();
+		fileio.init();
+		rulesViewer.init();
+		historyViewer.init();
+
+		if (autoLoad === false && !fileio.enabled()) {
+			autoLoad = true; // let's have it use autoload when using the webpage version of the console.
+		}
+
+		if (autoLoad) {
+			loadSchema(JSON.parse(sampleData));
+			loadRules(JSON.parse(testVolitionRules));
+			loadRules(JSON.parse(testTriggerRules));
+			loadHistory(JSON.parse(testSfdbData));
+			loadCast(JSON.parse(sampleChars));
+			loadActions(JSON.parse(testActions));
+			rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
+			consoleViewer.cmdLog("Autoloaded default schema.", true);
+		}
+
+		consoleViewer.init();
+		updateConsole();
 	}
 
-	if (autoLoad) {
-		loadSchema(JSON.parse(sampleData));
-		loadRules(JSON.parse(testVolitionRules));
-		loadRules(JSON.parse(testTriggerRules));
-		loadHistory(JSON.parse(testSfdbData));
-		loadCast(JSON.parse(sampleChars));
-		loadActions(JSON.parse(testActions));
-		rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
-		consoleViewer.cmdLog("Autoloaded default schema.", true);
-	}
 
-	consoleViewer.init();
-	updateConsole();
+	init();
 
-	// Handle a keypress on the rule filter text box, forwarding to the function within rulesViewer that filters the view accordingly.
-	var ruleFilterKey = function(e) {
-		var raw = document.getElementById("inputRuleFilter").value;
-		rulesViewer.filterWithout("tabstrigger", raw);
-		rulesViewer.filterWithout("tabsvolition", raw);
-	}
-
-	document.getElementById("inputRuleFilter").onkeyup = ruleFilterKey;
-	document.getElementById("inputRuleFilter").onchange = ruleFilterKey;
 
 });

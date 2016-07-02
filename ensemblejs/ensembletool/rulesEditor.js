@@ -208,7 +208,6 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		//Moved this entire else block INTO an else block (used to be at the end of the function);
 		else{
 			console.log("Changing active file to " , activeRule.origin);
-			console.log("$$$ ah, okay, I'm about to make my big mistake. What is active rule? " , activeRule);
 			activeFile = activeRule.origin;
 			origActiveFile = activeFile;
 			activeFileRefByRuleType[rule.type] = activeFile;
@@ -482,10 +481,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			var predId = $(this).attr('id').split("_"); // clock_conditions_0
 			var connectedControlBlock = $("#timeControls_"+predId[1]+"_"+predId[2]);
 			if (connectedControlBlock.length > 0) {
-				console.log("click should delete and hide control block.");
 				$(this).on("click", {"type": predId[1], "num": predId[2]}, deleteTimeAndHideControl);
 			} else {
-				console.log("click should add and show control block.");
 				$(this).on("click", {"type": predId[1], "num": predId[2]}, addTimeAndShowControl);
 			}
 		});

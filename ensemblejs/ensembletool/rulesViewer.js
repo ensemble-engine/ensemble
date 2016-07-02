@@ -9,6 +9,7 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 	var init = function() {
 		document.getElementById("inputRuleFilter").onkeyup = ruleFilterKey;
 		document.getElementById("inputRuleFilter").onchange = ruleFilterKey;
+		$("#newRuleButton").click(newRule);
 	}
 
 	var loadRule = function(id, ruleSet) {
@@ -80,6 +81,37 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 			$("#filterWarning").hide();
 		}
 	}
+
+	// Handle clicking on the "New Rule" button: create a new stub rule, register it with ensemble, load it into the editor, and switch to that tab.
+	var newRule = function() {
+		var type = $("#tabstrigger").is(":visible") ? "trigger" : "volition";
+
+		var newRule = {};
+		newRule.name = "New " + util.iCap(type) + " Rule";
+		newRule.conditions = [];
+		newRule.effects = [];
+		
+		var ruleWrapper = {};
+		ruleWrapper.fileName = "__NEWRULE__";
+		ruleWrapper.rules = [newRule];
+		ruleWrapper.type = type;
+		
+		var newIds = ensemble.addRules(ruleWrapper);
+		var ensembleRule = ensemble.getRuleById(newIds[0]);
+		if(ensembleRule === false){
+			//Something bad happened where the rule apparantly wasn't added correctly. Abort and show an error.
+			messages.showError("Canceling New Rule: Error adding empty new rule to ensemble");
+			return;
+		}
+		var newLoadedRule = ensemble.getRuleById(newIds[0]);
+		newLoadedRule.type = type;
+		rulesEditor.loadRule(newLoadedRule, type);
+		
+		//Try to programmatically click the 'update rule eset button' here...
+		//pass in 'true' to signify we should opt out of making a backup file.
+		rulesEditor.save(true);
+		$("#tabLiRulesEditor a").click();
+	};
 
 
 	return {
