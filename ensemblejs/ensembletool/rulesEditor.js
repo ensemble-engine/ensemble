@@ -1048,7 +1048,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			} else if (newIsBoolean && typeof activeRule[predType][predNum].value !== "boolean") {
 				activeRule[predType][predNum].value = true;
 				activeRule[predType][predNum].operator = undefined;
-			} else if (! newIsBoolean && typeof activeRule[predType][predNum].value === "boolean") {
+			} else if (! newIsBoolean && (!activeRule[predType][predNum].value || typeof activeRule[predType][predNum].value === "boolean")) {
 				activeRule[predType][predNum].value = descriptors.defaultVal;
 				if (predType === "conditions") {
 					activeRule[predType][predNum].operator = ">";
