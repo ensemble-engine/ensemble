@@ -1,7 +1,7 @@
 /*
 This module handles the Ensemble Tool's rule editor view, a rather complex mode that converts rule predicates into editable form fields, and allows editing them to alter/create/delete rules.
 
-The public interface for this module is the "loadRule" function.
+The public interface for this module is the "loadRule" function. The module's functionality is split between a "view" object and a "controller" object.
 */
 
 /*global console */
@@ -31,6 +31,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 	var rulesViewer;
 
+	// A dictionary assigning each key (a unique character binding in this rule) to a number (between 1 and 8). These numbers are used to color the background of the character field a distinct color for each binding.
+	var charBindings = {};
 
 	// INIT STUFF
 
@@ -58,8 +60,55 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		}
 	}
 
+	// When given a rule object and its type (trigger or volition), create a local copy of it. This will be the editor's version of the rule, and we'll make all changes to this version.
+	var loadRule = function(rule, type) {
+		charBindings = {};
+		util.resetIterator("rulesEdCharBindings");
+		util.resetIterator("rulesEdNewChars");
+		undoHistory = [];
+		undoPosition = -1;
+		activeRuleType = type;
+		// Close the bindings window if open.
+		ruleTester.hide(0);
+
+		activeRule = util.clone(rule);
+
+		if (rule.origin === "__NEWRULE__") {
+			if (activeFileRefByRuleType[rule.type] === undefined) {
+				// TODO: If we don't have an activeFile set for this rule type, we need to ask the user what active file to use.
+				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+				if (ruleOrigins.length > 0) {
+					activeFile = ruleOrigins[0];
+				} else {
+					view.newRulesFileDialog();
+				}
+			} else {
+				// otherwise, set the active file to the most recently used file for this rule type.
+				activeFile = activeFileRefByRuleType[rule.type];
+				activeRule.origin = activeFile;
+			}
+			activeRule.origin = activeFile;
+		} else{
+			activeFile = activeRule.origin;
+		}
+		origActiveFile = activeFile;
+		activeFileRefByRuleType[rule.type] = activeFile;
+
+		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
+			controller.addPredicate("conditions");
+		}
+		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
+			controller.addPredicate("effects");
+		}
+		
+		controller.addCurrentToUndoHistory();
+
+		view.showActiveRule();
+	}
+
 
 	var view = {
+
 		// Turns a single predicate of type effects or conditions into a set of HTML describing the predicate, tagged with the metadata we'll need to create editor components from elements of the description.
 		showPredicate: function(pred, type, ruleNum) {
 			var j;
@@ -116,7 +165,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		},
 
 		// Take the rule in the module variable "activeRule" and show it in editable form on the interface.
-		showRule: function() {
+		showActiveRule: function() {
 			var area = $("#tabsEditor");
 			area.html("");
 
@@ -125,7 +174,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				class: "edRuleControls"
 			});
 
-			var possibleRuleOrigins = generateRuleOriginsMenu();
+			var possibleRuleOrigins = view.generateRuleOriginsMenu();
 			var ruleOriginArea = $("<div/>", {
 				id: "ruleOrigin",
 				text: "Source File: "
@@ -167,7 +216,6 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 			area.append(ruleControls);
 
-			// Show Rule Name.
 			var ruleName = $("<input/>").attr({
 				type: "text",
 				class: "edRuleName",
@@ -212,14 +260,12 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				html: activeRuleType === "volition" ? "These character volitions are altered:" : "Make this true:"
 			});
 			effectsArea.append(thisShouldHappen);
-			// effectsArea.append("<br clear='all'>")
 			var activeArea = effectsArea;
 			this.addPredicateGroup("effects", activeArea);
 			area.append(effectsArea);
 
-			// OK, now that we've created all the elements, let's style them with instrumented jQuery UI components!
-			this.replaceWithClickable(".edconditionsP .edbeVerb", controller.beVerbToggle);
-			this.replaceWithClickable(".edintentType", controller.intentTypeToggle);
+			// OK, now that we've created all the elements, let's style them with instrumented jQuery UI components! For each unique type of data (binary toggle button, free text field, etc.) we have a specific function that makes an editor component for it: replaceWithClickable, replaceWithTypeMenu, and so forth. Connect the portion of each predicate to the appropriate generator, and responder function for when this field is edited.
+
 			var allowableTypes, dirArray;
 			if (activeRuleType === "volition") {
 				allowableTypes = intentTypes;
@@ -229,6 +275,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				dirArray = ["more", "exactly", "less"];
 				this.replaceWithClickable(".edeffectsP .edbeVerb", controller.beVerbToggle);
 			}
+			
+			this.replaceWithClickable(".edconditionsP .edbeVerb", controller.beVerbToggle);
+			this.replaceWithClickable(".edintentType", controller.intentTypeToggle);
 			this.replaceWithTypeMenu(".edtype", allowableTypes, controller.changeIntent);
 			this.replaceWithSimpleMenu(".edconditionsP .eddirection", ["more than", "exactly", "less than"], controller.changeDirection, "direction");
 			this.replaceWithSimpleMenu(".edeffectsP .eddirection", dirArray, controller.changeDirection, "direction");
@@ -247,19 +296,28 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			// Add time-ordered rule toggle.
 			this.addTimeOrderedToggle(".clock");
 
-			$("#undoButton").click(undo);
-			$("#redoButton").click(redo);
+			// Finally, establish handlers for various other buttons and fields.
+			$("#undoButton").click(controller.undo);
+			$("#redoButton").click(controller.redo);
 
-			$("#saveRule").click(function() {
-				save();
-			});
-			$("#deleteRule").click(deleteRule);
-			$("#testBindings").click(activateTestBindings);
+			$("#saveRule").click(controller.updateActiveRule);
+			$("#deleteRule").click(view.deleteRuleDialog);
+			$("#testBindings").click(view.activateTestBindings);
 
 			$(".edRuleName").on("input", controller.changeRuleName);
 		},
 
-		// Used by showRule() to draw a group of rules in the editor. Currently the only two possible types are "conditions" and "effects".
+		// Extract the location in the original predicate of a editor component, call the appropriate update function with that data, and redraw the editor interface to show the updated predicate.
+		updateRuleAndRedraw: function(el, func, optSelection) {
+			var ruleSource = $(el).data("rule-source").split("_");
+			var predType = ruleSource[0];
+			var predNum = parseInt(ruleSource[1]);
+			func(predType, predNum, optSelection);
+			view.showActiveRule();
+			controller.addCurrentToUndoHistory();
+		},
+
+		// Used by showActiveRule() to draw a group of rules in the editor. Currently the only two possible types are "conditions" and "effects".
 		addPredicateGroup: function(type, activeArea) {
 			var msg;
 			var i;
@@ -291,7 +349,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		},
 
 
-		// If the predicate is a time ordered rule, the clock should delete it and hide the order area. Otherwise, it should add a timeOrdered predicate and show the order area.
+		// If the predicate has a time ordered component, clicking the clock icon should delete it and hide the order area. Otherwise, it should add a timeOrdered predicate and show the order area.
 		addTimeOrderedToggle: function(selector) {
 			var that = this;
 			$(selector).each(function() {
@@ -304,36 +362,35 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				}
 			});
 		},
-
-		deleteTimeAndHideControl: function(event) {
-			var type = event.data.type;
-			var num = event.data.num;
-			controller.deleteField("turnsAgoBetween", type, num);
-			view.showRule();
-			addCurrentToUndoHistory();
-		},
-
 		addTimeAndShowControl: function(event) {
 			var type = event.data.type;
 			var num = event.data.num;
 			controller.changeField("turnsAgoBetween", type, num, [1, 2]);		
-			view.showRule();
-			addCurrentToUndoHistory();
+			view.showActiveRule();
+			controller.addCurrentToUndoHistory();
+		},
+		deleteTimeAndHideControl: function(event) {
+			var type = event.data.type;
+			var num = event.data.num;
+			controller.deleteField("turnsAgoBetween", type, num);
+			view.showActiveRule();
+			controller.addCurrentToUndoHistory();
 		},
 
-		// Replace all matching components with a clickable toggle button.
+		/* GENERATE EDITOR COMPONENT FUNCTIONS */
+		// Turn a binary value into a clickable toggle button.
 		replaceWithClickable: function(selector, func) {
 			$(selector).each(function() {
 				var that = $(this);
 				var el = $("<button>", {
-					click: function(){ updateRuleAndRedraw(that, func) },
+					click: function(){ view.updateRuleAndRedraw(that, func) },
 					html: that.html()
 				});
 				that.html(el);
 			});
 		},
 
-		// Replace all matching components with a linked text input box.
+		// Replace all matching components with a linked text input box (used for named actors in a predicate, which we want to stay consistent across the entire rule).
 		replaceWithLinkedText: function(selector) {
 			$(selector).each(function() {
 				var that = $(this);
@@ -360,10 +417,10 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 				that.html(inputEl);
 				that.append(personIcon);
-				inputEl.on("keyup", onCharNameKeyPress); // NOTE: event should be "input" if we want to capture all changes i.e. copy/paste
-				inputEl.on("blur", onCharNameConfirm);
+				inputEl.on("keyup", controller.onCharNameKeyPress); // NOTE: event should be "input" if we want to capture all changes i.e. copy/paste
+				inputEl.on("blur", controller.onCharNameConfirm);
 
-				personIcon.on("click", onPersonIconClick);
+				personIcon.on("click", controller.onPersonIconClick);
 
 			});
 		},
@@ -380,7 +437,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					change: function(){
 						var selInd = $(this)[0].selectedIndex;
 						var selection = $(this).context[selInd].value;
-						updateRuleAndRedraw(that, func, selection);
+						view.updateRuleAndRedraw(that, func, selection);
 					 }
 				});
 				for (var i = 0; i < options.length; i++) {
@@ -423,7 +480,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					change: function(){
 						var selInd = $(this)[0].selectedIndex;
 						var selection = $(this).context[selInd].value;
-						updateRuleAndRedraw(that, func, selection);
+						view.updateRuleAndRedraw(that, func, selection);
 					 }
 				});
 				var whichTypes = id.split("_")[0] === "effects" ? options : allTypes;
@@ -453,6 +510,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			});
 		},
 
+		// Add time-ordered rules controls
 		appendWithTimeButtons: function(selector, whichField) {
 			$(selector).each(function() {
 				var that = $(this);
@@ -467,462 +525,106 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					$("#" + whichField + that.data("rule-source")).val("NOW").trigger("blur");
 				});
 			});
-		}
-	}
+		},
 
-
-	// PEOPLE ICONS STUFF
-
-	// A dictionary assigning each key (a unique character binding in this rule) to a number (between 1 and 8). These numbers are used to color the background of the character field a distinct color for each binding.
-	var charBindings = {};
-
-	// Reverse looking up in the charBindings dictionary: we know a color index, we want to get the character that corresponds to.
-	var getBindingFromColorIndex = function(num) {
-		for (var key in charBindings) {
-			if (charBindings[key] === num) {
-				return key;
-			}
-		}
-		console.log("couldn't find charBindings key matching " + num);
-		return "";
-	}
-
-
-	// HISTORY STUFF
-	var addCurrentToUndoHistory = function() {
-
-		// Ensure the new rule is valid.
-		var result = validate.rule(activeRule);
-		if (typeof result === "string") {
-			messages.showError("Canceling update: the resulting rule would be invalid.", result);
-			activeRule = util.clone(undoHistory[undoPosition]);
-			view.showRule();
-			return;
-		}
-
-		// Add it to the end of the undo history and update our position.
-		if (undoHistory.length > undoSize) {
-			undoHistory.shift();
-			undoPosition -= 1;
-		}
-		if (undoPosition < 0) {
-			undoHistory.length = 0;
-		} else {
-			undoHistory.length = undoPosition + 1;
-		}
-		undoHistory.push(util.clone(activeRule));
-		undoPosition += 1;
-		updateRuleTester();
-	}	
-
-	var undo = function() {
-		if (undoPosition > 0) {
-			undoPosition -= 1;
-			activeRule = util.clone(undoHistory[undoPosition]);
-			view.showRule();
-			updateRuleTester();
-		}
-	}
-	var redo = function() {
-		if (undoPosition < undoHistory.length - 1) {
-			undoPosition += 1;
-			activeRule = util.clone(undoHistory[undoPosition]);
-			view.showRule();
-			updateRuleTester();
-		}
-	}
-
-
-	// SAVE/LOAD STUFF
-
-	//if optSkipBackup is true, it won't create a backup file.
-	var save = function(optSkipBackup) {
-		console.log("beginning saving process... active file is", activeFile);
-		console.log("saving process... active rule is " , activeRule);
-		var results = ensemble.setRuleById(activeRule.id, activeRule);
-		if (!results) {
-			messages.showAlert("Unable to save rule.");
-		} else {
-			$("#tabLiRulesViewer a").click();
-			rulesViewer.show();
-			messages.showAlert("Updated Rule " + activeRule.id + ".");
-			if(activeFile === ""){
-				return; // don't save if we aren't working with an actual file.
-			}
-			var ruleType = activeRule.id.split("_")[0];
-			saveRules(ruleType, activeRule.origin, optSkipBackup);			
-		}
-	}
-
-	var saveRules = function(ruleType, ruleOrigin, optSkipBackup) {
-		if (ruleType === "triggerRules") {
-			ruleType = "trigger";
-		}
-		if (ruleType === "volitionRules") {
-			ruleType = "volition";
-		}
-		var rulesOfThisType = ensemble.getRules(ruleType);
-		var filteredRules = rulesOfThisType.filter(function(rule) {
-			return rule.origin === activeRule.origin;
-		});
-		fileio.saveRules(ruleType, filteredRules, ruleOrigin, origActiveFile, optSkipBackup); // Note: we passed in a ref to this function in ensembleconsole.js on init.
-	}
-
-	var deleteRule = function() {
-		$("#dialogBox")
-		.html("Are you sure you want to delete the rule <span style='color:rgb(255, 130, 41)'>" + activeRule.name + "</span> from the file <span style='color:rgb(255, 130, 41)'>" + activeRule.origin + "</span>? This operation cannot be undone.")
-		.dialog({
-			title: "Confirm Delete Rule",
-			resizable: false,
-			modal: true,
-			width: "40%",
-			buttons: {
-				"Delete this rule": function() {
-					console.log("Deleting.");
-					var result = ensemble.deleteRuleById(activeRule.id);
-					if (result === true) {
-						$("#tabLiRulesViewer a").click();
-						rulesViewer.show();
-						messages.showAlert("Deleted rule " + activeRule.id + ".");
-						saveRules(activeRuleType, activeRule.origin);
+		// Make a drop-down menu showing all possible origin files for this type of rule, plus the option to create a new file. The user can use this to move the active rule to another file.
+		generateRuleOriginsMenu: function() {
+			var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+			var menuOpts = ruleOrigins.map(function(o) {
+				return "<option value='" + o + "'>" + o + ".json" + "</option>";
+			});
+			menuOpts.push("<option value='__NEW__'>(New File)</option>");
+			var menu = $("<select>", {
+				id: "ruleOriginSelect",
+				name: "ruleOriginSelect",
+				change: function() {
+					var selInd = $(this)[0].selectedIndex;
+					var selection = $(this).context[selInd].value;
+					if (selection === "__NEW__") {
+						view.newRulesFileDialog("fromMenu");
 					} else {
-						messages.showAlert("Unable to delete rule " + activeRule.id + ".");
-					}
-					$( this ).dialog( "destroy" );
-				},
-				Cancel: function() {
-					$( this ).dialog( "destroy" );
-				}
-			}
-		});
-	}
-
-	// When given a rule object and its type (trigger or volition), create a local copy of it. This will be the editor's version of the rule, and we'll make all changes to this version.
-	var loadRule = function(rule, type) {
-		charBindings = {};
-		util.resetIterator("rulesEdCharBindings");
-		util.resetIterator("rulesEdNewChars");
-		undoHistory = [];
-		undoPosition = -1;
-		var origin;
-		activeRuleType = type;
-		// Close the bindings window if open.
-		ruleTester.hide(0);
-
-		//Used to be after the 'if (rule.origin === "__NEWRULE__") block, but I moved it up here.
-		activeRule = util.clone(rule);
-
-		if (rule.origin === "__NEWRULE__") {
-			if (activeFileRefByRuleType[rule.type] === undefined) {
-				// TODO: If we don't have an activeFile set for this rule type, we need to ask the user what active file to use.
-				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
-				if (ruleOrigins.length > 0) {
-					console.log("setting activeFile to ruleOrigins[0]: " , ruleOrigins[0]);
-					activeFile = ruleOrigins[0];
-				} else {
-					getNewRulesFile();
-				}
-			} else {
-				// otherwise, set the active file to the most recently used file for this rule type.
-				console.log("setting active file to " , activeFileRefByRuleType[rule.type]);
-				activeFile = activeFileRefByRuleType[rule.type];
-
-				activeRule.origin = activeFile;
-				console.log("$$$ setting activeRule.origin to " , activeFile);
-			}
-			activeRule.origin = activeFile;
-			console.log("$$$ setting activeRule.origin to " , activeFile);
-			origActiveFile = activeFile;
-			activeFileRefByRuleType[rule.type] = activeFile;
-		}
-		//Moved this entire else block INTO an else block (used to be at the end of the function);
-		else{
-			console.log("Changing active file to " , activeRule.origin);
-			activeFile = activeRule.origin;
-			origActiveFile = activeFile;
-			activeFileRefByRuleType[rule.type] = activeFile;
-		}
-
-		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
-			controller.addPredicate("conditions");
-		}
-		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
-			controller.addPredicate("effects");
-		}
-		
-		addCurrentToUndoHistory();
-
-		view.showRule();
-	}
-
-	var makeNewRulesFile = function(rawFileName) {
-		var fnParts = rawFileName.split(".");
-		// Remove .json suffix if specified
-		if (fnParts[fnParts.length-1] === "json") {
-			fnParts.length = fnParts.length - 1;
-		}
-		if (rawFileName.length > 64) {
-			// TODO: allow this to generate an appropriate error msg
-			//"File name is too long: please use a shorter file name.";
-			return false;
-		}
-		// TODO Check if file already exists.
-		var newFileName = fnParts.join(".");
-
-		console.log("$$$ About to set activeRule.origin to " , newFileName);
-		activeRule.origin = newFileName;
-		console.log("setting active file to be " , newFileName);
-		activeFile = newFileName;
-
-		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
-		activeFileRefByRuleType[activeRuleType] = activeFile;
-		ruleOrigins.push(newFileName);
-		$("#ruleOriginSelect").replaceWith(generateRuleOriginsMenu());
-
-		//We're going to save the new file automatically once it is created.
-		save();
-
-		return newFileName;
-	}
-
-	var getNewRulesFile = function(placeCalled) {
-		console.log("Called from: ", placeCalled);
-		$("#dialogBox")
-		.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
-		var dialog = $("#dialogBox").dialog({
-			title: "New Rules File",
-			resizable: false,
-			modal: true,
-			width: 350,
-			buttons: {
-				"Create File": function() {
-					makeNewRulesFile($("#newRulesFile").val());
-					$(this).dialog("destroy");
-					$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
-				},
-				Cancel: function() {
-					//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
-					//I believe the rule to remove should be in "activeRule" variable.
-					$(this).dialog("destroy"); //remove the dialog box
-					//The temporary rule really only exists when you are starting a new file from the 'rules viewer' screen. If starting a new file from the rule editor window, we don't want to do the following.
-					if(placeCalled !== "fromMenu"){
-						activeFileRefByRuleType[activeRuleType] = undefined;
-						ensemble.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
-						$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+						activeFile = selection;
+						activeRule.origin = activeFile;
 					}
 				}
-			},
-		});
-		dialog.find("form").on( "submit", function( event ) {
-			event.preventDefault();
-			makeNewRulesFile($("#newRulesFile").val());
-			$(this).dialog("destroy");
-		});
-	}
+			});
+			for (var i = 0; i < menuOpts.length; i++) {
+				menu.append(menuOpts[i]);
+			}
+			menu.val(activeFile);
+			return menu;
+		},
 
-	var generateRuleOriginsMenu = function() {
-		var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
-		var menuOpts = ruleOrigins.map(function(o) {
-			return "<option value='" + o + "'>" + o + ".json" + "</option>";
-		});
-		menuOpts.push("<option value='__NEW__'>(New File)</option>");
-		var menu = $("<select>", {
-			id: "ruleOriginSelect",
-			name: "ruleOriginSelect",
-			change: function() {
-				var selInd = $(this)[0].selectedIndex;
-				var selection = $(this).context[selInd].value;
-				if (selection === "__NEW__") {
-					getNewRulesFile("fromMenu");
-				} else {
-					console.log("changing activeFile to ", activeFile);
-					activeFile = selection;
-					console.log("$$$ changing activeRule.origin to " , activeFile);
-					activeRule.origin = activeFile;
+		// Show a dialog handling the situation where the user is making a new source file for rules.
+		newRulesFileDialog: function(placeCalled) {
+			$("#dialogBox")
+			.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
+			var dialog = $("#dialogBox").dialog({
+				title: "New Rules File",
+				resizable: false,
+				modal: true,
+				width: 350,
+				buttons: {
+					"Create File": function() {
+						controller.makeNewRulesFile($("#newRulesFile").val());
+						$(this).dialog("destroy");
+						$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
+					},
+					Cancel: function() {
+						//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
+						//I believe the rule to remove should be in "activeRule" variable.
+						$(this).dialog("destroy"); //remove the dialog box
+						//The temporary rule really only exists when you are starting a new file from the 'rules viewer' screen. If starting a new file from the rule editor window, we don't want to do the following.
+						if(placeCalled !== "fromMenu"){
+							activeFileRefByRuleType[activeRuleType] = undefined;
+							ensemble.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
+							$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+						}
+					}
+				},
+			});
+			dialog.find("form").on( "submit", function( event ) {
+				event.preventDefault();
+				controller.makeNewRulesFile($("#newRulesFile").val());
+				$(this).dialog("destroy");
+			});
+		},
+
+		// Show a dialog handling the situation where the user wants to delete the active rule.
+		deleteRuleDialog: function() {
+			$("#dialogBox")
+			.html("Are you sure you want to delete the rule <span style='color:rgb(255, 130, 41)'>" + activeRule.name + "</span> from the file <span style='color:rgb(255, 130, 41)'>" + activeRule.origin + "</span>? This operation cannot be undone.")
+			.dialog({
+				title: "Confirm Delete Rule",
+				resizable: false,
+				modal: true,
+				width: "40%",
+				buttons: {
+					"Delete this rule": function() {
+						controller.deleteActiveRule();
+						$( this ).dialog( "destroy" );
+					},
+					Cancel: function() {
+						$( this ).dialog( "destroy" );
+					}
 				}
-			}
-		});
-		for (var i = 0; i < menuOpts.length; i++) {
-			menu.append(menuOpts[i]);
+			});
+		},
+
+		// Handle clicking the "Test Rule" function (most of this functionality is in the ruleTester.js file).
+		activateTestBindings: function() {
+			if (!showTestBindingsButton) return;
+			ruleTester.toggle();
+			controller.updateRuleTester();
 		}
-		menu.val(activeFile);
-		return menu;
-	}
-
-
-	// MISC
-	var updateRuleTester = function() {
-		var bindings = _.keys(charBindings);
-		var characters = ensemble.getCharacters();
-		ruleTester.update(bindings, characters, activeRule);		
-	}
-
-	// BUTTONS
-	var activateTestBindings = function() {
-		if (!showTestBindingsButton) return;
-		ruleTester.toggle();
-		updateRuleTester();
-	}
-
-
-
-
-
-
-
-
-
-	// EDITOR VALIDATION STUFF
-
-
-
-
-	// For a linked text field,
-	var onCharNameKeyPress = function(e) {
-		// Treat an enter as a confirm.
-		var keyPressed = e.which;
-		if (keyPressed === 13) {
-			onCharNameConfirm.call(this);
-		}
-
-		 // whenever the field changes, also update all other linked texts fields. DISABLED for now.
-		// var val = $(this).val();
-		// var origVal = $(this).parent().data("type");
-		// $(".edchar_" + origVal).each(function() {
-		// 	$(this).children("input").val(val);
-		// })
-	}
-
-	// For a linked text field, when the field is confirmed (loses focus), update the predicate for each occurrence of that name.
-	var onCharNameConfirm = function() {
-		var val = $(this).val().trim();
-		if (val === "") { 
-			return;
-		}
-
-		var source = $(this).parent().data("rule-source").split("_");
-		var isFirst = $(this).parent().hasClass("edfirst");
-		controller.changeRoleName(source[0], source[1], isFirst, val);
-
-		var result = validate.rule(activeRule);
-		if (typeof result === "string") {
-			// New rule is invalid.
-			$(this).val("")
-				.css({"background-color": "white"})
-				.focus();
-		} else {
-			view.showRule();
-			addCurrentToUndoHistory()
-		}
-	}
-
-	// When the person icon in a name field is clicked, advance it to the next character who does not already appear in this rule.
-	var onPersonIconClick = function() {
-
-		var relatedInput = $(this).parent().children("input");
-		var container = relatedInput.parent();
-		var binding = relatedInput.val().trim();
-		var numBindings = _.keys(charBindings).length;
-
-		var rs = container.data("rule-source").split("_");
-		var thisType = rs[0];
-		var thisPos = rs[1];
-		var thisPred = activeRule[thisType][thisPos];
-		var isFirst = container.hasClass("edfirst");
-
-		var colorIndex = charBindings[binding];
-		if (colorIndex === undefined) {
-			// If the field was empty, start with the first character.
-			console.log("resetting colorIndex");
-			colorIndex = 0;
-		}
-
-		// Get the next character.
-		colorIndex += 1;
-
-		// If we've reached the end of the number of unique characters in this rule, remove the color so the user can type in a new character name.
-		if (colorIndex > numBindings) {
-			console.log("colorIndex > numBindings, so new:")
-			relatedInput
-				.val("")
-				.css({"background-color": "white"})
-				.focus();
-			container.children(".personIcon").children(".personHead, .personBody").css({"background-color": "black"});
-			var origVal = container.data("type");
-			var cl = "edchar_" + origVal;
-			container.removeClass(cl);
-			container.data("type", "");
-			return;
-		}
-
-		var newChar = getBindingFromColorIndex(colorIndex);
-		relatedInput.val(newChar);
-		console.log("setting val to " + newChar);
-
-		// If this character already appears in this rule, skip ahead.
-		if (( isFirst  && thisPred.second === newChar ) || 
-			( !isFirst && thisPred.first === newChar )) {
-			console.log("-->but this char already appears in the predicate, so skipping ahead.");
-			onPersonIconClick.call(this);
-			return;
-		}
-
-		// Otherwise, confirm (as if we'd just typed this in. 
-		console.log("confirming.");
-		onCharNameConfirm.call(relatedInput);
 
 	}
 
-	// Extract the location in the original predicate of a editor component, call the appropriate update function with that data, and redraw the editor interface to show the updated predicate.
-	var updateRuleAndRedraw = function(el, func, optSelection) {
-		var ruleSource = $(el).data("rule-source").split("_");
-		var predType = ruleSource[0];
-		var predNum = parseInt(ruleSource[1]);
-		func(predType, predNum, optSelection);
-		view.showRule();
-		addCurrentToUndoHistory();
-	}
-
-	// Return a character binding for a newly created predicate or binding slot that will 
-	var getOrMakeAppropriateBinding = function(position, optPredicate) {
-		var charBindingsLen = _.keys(charBindings).length;
-		// Is this the first position? Go with the first character in our store.
-		if (position === 1 && charBindingsLen >= 1) {
-			return getBindingFromColorIndex(1);
-		}
-		// Is this the second position? If we didn't provide an optional predicate, go with the second character, if available.
-		if (position === 2) {
-			if (!optPredicate && charBindingsLen >= 2) {
-				return getBindingFromColorIndex(2);
-			}
-			// If we did provide a predicate, choose the first character who isn't in the first position.
-			if (optPredicate) {
-				var candidate = optPredicate.first;
-				var i = 1;
-				while (candidate === optPredicate.first) {
-					candidate = getBindingFromColorIndex(i);
-					i += 1;
-				}
-				if (candidate !== undefined) {
-					return candidate;
-				}
-			}
-		}
-		// Otherwise, make up a new character name.
-		var baseName = "someone";
-		if (charBindings[baseName]) {
-			baseName = "other";
-			if (charBindings[baseName]) {
-				baseName += " (" + util.iterator("rulesEdNewChars") + ")";
-			}
-		}
-		charBindings[baseName] = util.iterator("rulesEdCharBindings");
-		return baseName;
-	}
 
 
 	var controller = {
 
+		// Handle the user changing a value in an editor field.
 		onValueChangeConfirm: function() {
 			var val = $(this).val().trim();
 			var $parent = $(this).parent();
@@ -935,6 +637,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 			var field = "value";
 			var oldVal = activeRule[source[0]][source[1]][field];		
+
+			// For time-ordered rules, ensure the entered values are sensible and in the right format.
 			if (isMoreRecent || isLessRecent) {
 				var valOfOther;
 				field = "turnsAgoBetween";
@@ -976,8 +680,11 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			} else {
 				val = parseInt(val);		
 			}
-			this.changeField(field, source[0], source[1], val);
 
+			// Now, do the actual change.
+			controller.changeField(field, source[0], source[1], val);
+
+			// Ensure that the changed rule is valid, and revert the edited field to the old value if not.
 			var result = validate.rule(activeRule);
 			if (typeof result === "string") {
 				// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
@@ -985,30 +692,31 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				$(this).val(oldVal)
 					.focus();
 			} else {
-				view.showRule();
-				addCurrentToUndoHistory();
+				view.showActiveRule();
+				controller.addCurrentToUndoHistory();
 			}
 		},
 
-		// Create a new template predicate (either an effect or condition) and add it to activeRule. Generate appropriate templates from the active social schema package.
+		// Create a new predicate (either an effect or condition) and add it to activeRule. Generate appropriate defaults from the active social schema package.
 		addPredicate: function(predType, predNum) {
 			var whichTypeList = predType === "effects" ? intentTypes : allTypes;
 			var typeInfo = whichTypeList[0].split("_");
 			var categoryName = typeInfo[0];
 			var type = typeInfo[1];
+
 			var desc = ensemble.getCategoryDescriptors(categoryName);
 
 			var newPred = {};
 			newPred.category = categoryName;
 			newPred.type = type;
-			newPred.first = getOrMakeAppropriateBinding(1);
+			newPred.first = controller.getOrMakeAppropriateBinding(1);
 			if (desc.directionType !== "undirected") {
-				newPred.second = getOrMakeAppropriateBinding(2);
+				newPred.second = controller.getOrMakeAppropriateBinding(2);
 			}
 
 			if (predType === "effects") {
 				if (activeRuleType === "volition") {
-					newPred.weight = 5;
+					newPred.weight = 5; // TODO magic number
 					newPred.intentType = true;			
 				}
 			}
@@ -1029,7 +737,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			activeRule[predType].splice(predNum, 1);
 		},
 
-		// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing the operator field.
+		// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing various fields. (I.e. if we're changing from boolean to numeric, we need an operator field.)
 		changeIntent: function(predType, predNum, selection) {
 			var categoryName = selection.split("_")[0];
 			var type = selection.split("_")[1];
@@ -1064,7 +772,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 			// If we're changing to directed or reciprocal, add a second.
 			if (newDirType !== "undirected" && newDirType !== oldDirType) {
-				activeRule[predType][predNum].second = getOrMakeAppropriateBinding(2, activeRule[predType][predNum]);
+				activeRule[predType][predNum].second = controller.getOrMakeAppropriateBinding(2, activeRule[predType][predNum]);
 			}
 		},
 
@@ -1096,10 +804,6 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			activeRule[predType][predNum][field] = selection;
 		},
 
-		deleteField: function(field, predType, predNum) {
-			delete activeRule[predType][predNum][field];
-		},
-
 		// Update a boolean field of a predicate in activeRule.
 		beVerbToggle: function(predType, predNum) {
 			activeRule[predType][predNum].value = !activeRule[predType][predNum].value;
@@ -1116,9 +820,283 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			activeRule[predType][predNum][whichRole] = val;
 		},
 
+		// Change the free-text rule name field.
 		changeRuleName: function() {
 			var newName = $(this).val();
 			activeRule.name = newName;
+		},
+
+		// Delete a field from a predicate.
+		deleteField: function(field, predType, predNum) {
+			delete activeRule[predType][predNum][field];
+		},
+
+
+		// Handle the user pressing keys in a role name field.
+		onCharNameKeyPress: function(e) {
+			// Treat an enter as a confirm.
+			var keyPressed = e.which;
+			if (keyPressed === 13) {
+				controller.onCharNameConfirm.call(this);
+			}
+
+			 // whenever the field changes, also update all other linked texts fields. (Disabled for now, because it means you can't make a new role name. Would be nice to have an ability to auto-rename a role, but requires more UI thinking.)
+			// var val = $(this).val();
+			// var origVal = $(this).parent().data("type");
+			// $(".edchar_" + origVal).each(function() {
+			// 	$(this).children("input").val(val);
+			// })
+		},
+
+		// For a linked text field, when the field is confirmed (loses focus), update the predicate for each occurrence of that name.
+		onCharNameConfirm:  function() {
+			var val = $(this).val().trim();
+			if (val === "") { 
+				return;
+			}
+
+			var source = $(this).parent().data("rule-source").split("_");
+			var isFirst = $(this).parent().hasClass("edfirst");
+			controller.changeRoleName(source[0], source[1], isFirst, val);
+
+			var result = validate.rule(activeRule);
+			if (typeof result === "string") {
+				// New rule is invalid.
+				$(this).val("")
+					.css({"background-color": "white"})
+					.focus();
+			} else {
+				view.showActiveRule();
+				controller.addCurrentToUndoHistory();
+			}
+		},
+
+		// When the person icon in a name field is clicked, advance it to the next character who does not already appear in this rule.
+		onPersonIconClick: function() {
+
+			var relatedInput = $(this).parent().children("input");
+			var container = relatedInput.parent();
+			var binding = relatedInput.val().trim();
+			var numBindings = _.keys(charBindings).length;
+
+			var rs = container.data("rule-source").split("_");
+			var thisType = rs[0];
+			var thisPos = rs[1];
+			var thisPred = activeRule[thisType][thisPos];
+			var isFirst = container.hasClass("edfirst");
+
+			var colorIndex = charBindings[binding];
+			if (colorIndex === undefined) {
+				// If the field was empty, start with the first character.
+				console.log("resetting colorIndex");
+				colorIndex = 0;
+			}
+
+			// Get the next character.
+			colorIndex += 1;
+
+			// If we've reached the end of the number of unique characters in this rule, remove the color so the user can type in a new character name.
+			if (colorIndex > numBindings) {
+				console.log("colorIndex > numBindings, so new:")
+				relatedInput
+					.val("")
+					.css({"background-color": "white"})
+					.focus();
+				container.children(".personIcon").children(".personHead, .personBody").css({"background-color": "black"});
+				var origVal = container.data("type");
+				var cl = "edchar_" + origVal;
+				container.removeClass(cl);
+				container.data("type", "");
+				return;
+			}
+
+			var newChar = controller.getBindingFromColorIndex(colorIndex);
+			relatedInput.val(newChar);
+			console.log("setting val to " + newChar);
+
+			// If this character already appears in this rule, skip ahead.
+			if (( isFirst  && thisPred.second === newChar ) || 
+				( !isFirst && thisPred.first === newChar )) {
+				console.log("-->but this char already appears in the predicate, so skipping ahead.");
+				controller.onPersonIconClick.call(this);
+				return;
+			}
+
+			// Otherwise, confirm (as if we'd just typed this in. 
+			console.log("confirming.");
+			controller.onCharNameConfirm.call(relatedInput);
+
+		},
+
+		// Return an appropriate character binding for a newly created predicate or binding slot.
+		getOrMakeAppropriateBinding: function(position, optPredicate) {
+			var charBindingsLen = _.keys(charBindings).length;
+			// Is this the first position? Go with the first character in our store.
+			if (position === 1 && charBindingsLen >= 1) {
+				return controller.getBindingFromColorIndex(1);
+			}
+			// Is this the second position? If we didn't provide an optional predicate, go with the second character, if available.
+			if (position === 2) {
+				if (!optPredicate && charBindingsLen >= 2) {
+					return controller.getBindingFromColorIndex(2);
+				}
+				// If we did provide a predicate, choose the first character who isn't in the first position.
+				if (optPredicate) {
+					var candidate = optPredicate.first;
+					var i = 1;
+					while (candidate === optPredicate.first) {
+						candidate = controller.getBindingFromColorIndex(i);
+						i += 1;
+					}
+					if (candidate !== undefined) {
+						return candidate;
+					}
+				}
+			}
+			// Otherwise, make up a new character name.
+			var baseName = "someone";
+			if (charBindings[baseName]) {
+				baseName = "other";
+				if (charBindings[baseName]) {
+					baseName += " (" + util.iterator("rulesEdNewChars") + ")";
+				}
+			}
+			charBindings[baseName] = util.iterator("rulesEdCharBindings");
+			return baseName;
+		},
+
+		// Reverse looking up in the charBindings dictionary: we know a color index, we want to get the character that corresponds to.
+		getBindingFromColorIndex: function(num) {
+			for (var key in charBindings) {
+				if (charBindings[key] === num) {
+					return key;
+				}
+			}
+			console.log("couldn't find charBindings key matching " + num);
+			return "";
+		},
+
+		// Updates the active rule in Ensemble.
+		//if optSkipBackup is true, it won't create a backup file.
+		updateActiveRule: function(optSkipBackup) {
+			var results = ensemble.setRuleById(activeRule.id, activeRule);
+			if (!results) {
+				messages.showAlert("Unable to save rule.");
+			} else {
+				$("#tabLiRulesViewer a").click();
+				rulesViewer.show();
+				messages.showAlert("Updated Rule " + activeRule.id + ".");
+				if(activeFile === ""){
+					return; // don't save if we aren't working with an actual file.
+				}
+				var ruleType = activeRule.id.split("_")[0];
+				controller.saveRulesToDisk(ruleType, activeRule.origin, optSkipBackup);
+			}
+		},
+
+		// Prepare to save the rules in the active file to disk. (The dirty work is passed off to the fileio module.)
+		saveRulesToDisk: function(ruleType, ruleOrigin, optSkipBackup) {
+			if (ruleType === "triggerRules") {
+				ruleType = "trigger";
+			}
+			if (ruleType === "volitionRules") {
+				ruleType = "volition";
+			}
+			var rulesOfThisType = ensemble.getRules(ruleType);
+			var filteredRules = rulesOfThisType.filter(function(rule) {
+				return rule.origin === activeRule.origin;
+			});
+			fileio.saveRules(ruleType, filteredRules, ruleOrigin, origActiveFile, optSkipBackup); 
+		},
+
+		// Set up a new rules file (type based on the active rule). When we're finished we'll call updateActiveRule which will in turn save the rules and the new file to disk.
+		makeNewRulesFile: function(rawFileName) {
+			var fnParts = rawFileName.split(".");
+			// Remove .json suffix if specified
+			if (fnParts[fnParts.length-1] === "json") {
+				fnParts.length = fnParts.length - 1;
+			}
+			if (rawFileName.length > 64) {
+				// TODO: allow this to generate an appropriate error msg
+				//"File name is too long: please use a shorter file name.";
+				return false;
+			}
+			// TODO Check if file already exists.
+			var newFileName = fnParts.join(".");
+
+			activeRule.origin = newFileName;
+			activeFile = newFileName;
+
+			var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
+			activeFileRefByRuleType[activeRuleType] = activeFile;
+			ruleOrigins.push(newFileName);
+			$("#ruleOriginSelect").replaceWith(view.generateRuleOriginsMenu());
+
+			//We're going to save the new file automatically once it is created.
+			controller.updateActiveRule();
+
+			return newFileName;
+		},
+
+		// Delete the active rule.
+		deleteActiveRule: function() {
+			var result = ensemble.deleteRuleById(activeRule.id);
+			if (result === true) {
+				$("#tabLiRulesViewer a").click();
+				rulesViewer.show();
+				messages.showAlert("Deleted rule " + activeRule.id + ".");
+				controller.saveRulesToDisk(activeRuleType, activeRule.origin);
+			} else {
+				messages.showAlert("Unable to delete rule " + activeRule.id + ".");
+			}
+		},
+
+		// Update the information in the "Test Rule" window.
+		updateRuleTester: function() {
+			ruleTester.update(_.keys(charBindings), ensemble.getCharacters(), activeRule);		
+		},
+
+		// Run whenever we do an action we'd like to be undo-able. Assuming the rule state is valid, add it to the history; otherwise revert back to the last valid history step.
+		addCurrentToUndoHistory: function() {
+			// Ensure the new rule is valid.
+			var result = validate.rule(activeRule);
+			if (typeof result === "string") {
+				messages.showError("Canceling update: the resulting rule would be invalid.", result);
+				activeRule = util.clone(undoHistory[undoPosition]);
+				view.showActiveRule();
+				return;
+			}
+
+			// Add it to the end of the undo history and update our position.
+			if (undoHistory.length > undoSize) {
+				undoHistory.shift();
+				undoPosition -= 1;
+			}
+			if (undoPosition < 0) {
+				undoHistory.length = 0;
+			} else {
+				undoHistory.length = undoPosition + 1;
+			}
+			undoHistory.push(util.clone(activeRule));
+			undoPosition += 1;
+			controller.updateRuleTester();
+		},	
+
+		undo: function() {
+			if (undoPosition > 0) {
+				undoPosition -= 1;
+				activeRule = util.clone(undoHistory[undoPosition]);
+				view.showActiveRule();
+				controller.updateRuleTester();
+			}
+		},
+		redo: function() {
+			if (undoPosition < undoHistory.length - 1) {
+				undoPosition += 1;
+				activeRule = util.clone(undoHistory[undoPosition]);
+				view.showActiveRule();
+				controller.updateRuleTester();
+			}
 		}
 	}
 
@@ -1126,7 +1104,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	return {
 		init: init,
 		loadRule: loadRule,
-		save : save
+		updateActiveRule: controller.updateActiveRule
 	}
 
 });

@@ -109,7 +109,7 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 		
 		//Try to programmatically click the 'update rule eset button' here...
 		//pass in 'true' to signify we should opt out of making a backup file.
-		rulesEditor.save(true);
+		rulesEditor.updateActiveRule(true);
 		$("#tabLiRulesEditor a").click();
 	};
 
