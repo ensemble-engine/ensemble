@@ -31,12 +31,31 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 	var rulesViewer;
 
+
+	// INIT STUFF
+
 	var init = function(refToViewer, _ruleOriginsTrigger, _ruleOriginsVolition) {
 		rulesViewer = refToViewer;
 		ruleOriginsTrigger = _ruleOriginsTrigger;
 		ruleOriginsVolition = _ruleOriginsVolition;
 		buildIntentOptions();
 		activeFileRefByRuleType = {};
+	}
+
+	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where actionable is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
+	var buildIntentOptions = function() {
+		intentTypes = [];
+		allTypes = [];
+		var structure = ensemble.getSocialStructure();
+		for (var categoryKey in structure) {
+			var categoryRoster = structure[categoryKey];
+			for (var typeKey in categoryRoster) {
+				allTypes.push(categoryKey + "_" + typeKey);
+				if (structure[categoryKey][typeKey].actionable === true) {
+					intentTypes.push(categoryKey + "_" + typeKey);
+				}
+			}
+		}
 	}
 
 
@@ -199,8 +218,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			area.append(effectsArea);
 
 			// OK, now that we've created all the elements, let's style them with instrumented jQuery UI components!
-			this.replaceWithClickable(".edconditionsP .edbeVerb", beVerbToggle);
-			this.replaceWithClickable(".edintentType", intentTypeToggle);
+			this.replaceWithClickable(".edconditionsP .edbeVerb", controller.beVerbToggle);
+			this.replaceWithClickable(".edintentType", controller.intentTypeToggle);
 			var allowableTypes, dirArray;
 			if (activeRuleType === "volition") {
 				allowableTypes = intentTypes;
@@ -208,13 +227,13 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			} else {
 				allowableTypes = allTypes;
 				dirArray = ["more", "exactly", "less"];
-				this.replaceWithClickable(".edeffectsP .edbeVerb", beVerbToggle);
+				this.replaceWithClickable(".edeffectsP .edbeVerb", controller.beVerbToggle);
 			}
-			this.replaceWithTypeMenu(".edtype", allowableTypes, changeIntent);
-			this.replaceWithSimpleMenu(".edconditionsP .eddirection", ["more than", "exactly", "less than"], changeDirection, "direction");
-			this.replaceWithSimpleMenu(".edeffectsP .eddirection", dirArray, changeDirection, "direction");
+			this.replaceWithTypeMenu(".edtype", allowableTypes, controller.changeIntent);
+			this.replaceWithSimpleMenu(".edconditionsP .eddirection", ["more than", "exactly", "less than"], controller.changeDirection, "direction");
+			this.replaceWithSimpleMenu(".edeffectsP .eddirection", dirArray, controller.changeDirection, "direction");
 			this.replaceWithLinkedText(".edfirst, .edsecond");
-			this.replaceWithSimpleMenu(".edweight", ["+10", "+5", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-5", "-10"], changeWeight, "weight");
+			this.replaceWithSimpleMenu(".edweight", ["+10", "+5", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-5", "-10"], controller.changeWeight, "weight");
 			this.replaceWithTextEntry(".edvalue", "value");
 
 			this.replaceWithTextEntry(".edmoreRecent", "moreRecent"); 
@@ -222,8 +241,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			this.replaceWithTextEntry(".edlessRecent", "lessRecent");
 			this.appendWithTimeButtons(".edlessRecent", "lessRecent");
 
-			this.replaceWithClickable(".newPredicate span", newPredicate);
-			this.replaceWithClickable(".remove", removePred);
+			this.replaceWithClickable(".newPredicate span", controller.addPredicate);
+			this.replaceWithClickable(".remove", controller.removePredicate);
 
 			// Add time-ordered rule toggle.
 			this.addTimeOrderedToggle(".clock");
@@ -237,7 +256,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			$("#deleteRule").click(deleteRule);
 			$("#testBindings").click(activateTestBindings);
 
-			$(".edRuleName").on("input", changeRuleName);
+			$(".edRuleName").on("input", controller.changeRuleName);
 		},
 
 		// Used by showRule() to draw a group of rules in the editor. Currently the only two possible types are "conditions" and "effects".
@@ -289,7 +308,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		deleteTimeAndHideControl: function(event) {
 			var type = event.data.type;
 			var num = event.data.num;
-			deleteField("turnsAgoBetween", type, num);
+			controller.deleteField("turnsAgoBetween", type, num);
 			view.showRule();
 			addCurrentToUndoHistory();
 		},
@@ -297,7 +316,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		addTimeAndShowControl: function(event) {
 			var type = event.data.type;
 			var num = event.data.num;
-			changeField("turnsAgoBetween", type, num, [1, 2]);		
+			controller.changeField("turnsAgoBetween", type, num, [1, 2]);		
 			view.showRule();
 			addCurrentToUndoHistory();
 		},
@@ -389,7 +408,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				});
 
 				that.html(inputEl);
-				inputEl.on("blur", onValueChangeConfirm);
+				inputEl.on("blur", controller.onValueChangeConfirm);
 			});
 		},
 
@@ -452,6 +471,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	}
 
 
+	// PEOPLE ICONS STUFF
 
 	// A dictionary assigning each key (a unique character binding in this rule) to a number (between 1 and 8). These numbers are used to color the background of the character field a distinct color for each binding.
 	var charBindings = {};
@@ -468,6 +488,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	}
 
 
+	// HISTORY STUFF
 	var addCurrentToUndoHistory = function() {
 
 		// Ensure the new rule is valid.
@@ -475,7 +496,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		if (typeof result === "string") {
 			messages.showError("Canceling update: the resulting rule would be invalid.", result);
 			activeRule = util.clone(undoHistory[undoPosition]);
-			showRule();
+			view.showRule();
 			return;
 		}
 
@@ -510,6 +531,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			updateRuleTester();
 		}
 	}
+
+
+	// SAVE/LOAD STUFF
 
 	//if optSkipBackup is true, it won't create a backup file.
 	var save = function(optSkipBackup) {
@@ -573,20 +597,6 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		});
 	}
 
-	var updateRuleTester = function() {
-		var bindings = _.keys(charBindings);
-		var characters = ensemble.getCharacters();
-		ruleTester.update(bindings, characters, activeRule);		
-	}
-
-
-	var activateTestBindings = function() {
-		if (!showTestBindingsButton) return;
-		ruleTester.toggle();
-		updateRuleTester();
-	}
-
-
 	// When given a rule object and its type (trigger or volition), create a local copy of it. This will be the editor's version of the rule, and we'll make all changes to this version.
 	var loadRule = function(rule, type) {
 		charBindings = {};
@@ -634,31 +644,15 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		}
 
 		if (activeRule.conditions === undefined || activeRule.conditions.length === 0) {
-			newPredicate("conditions");
+			controller.addPredicate("conditions");
 		}
 		if (activeRule.effects === undefined || activeRule.effects.length === 0) {
-			newPredicate("effects");
+			controller.addPredicate("effects");
 		}
 		
 		addCurrentToUndoHistory();
 
 		view.showRule();
-	}
-
-	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where actionable is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
-	var buildIntentOptions = function() {
-		intentTypes = [];
-		allTypes = [];
-		var structure = ensemble.getSocialStructure();
-		for (var categoryKey in structure) {
-			var categoryRoster = structure[categoryKey];
-			for (var typeKey in categoryRoster) {
-				allTypes.push(categoryKey + "_" + typeKey);
-				if (structure[categoryKey][typeKey].actionable === true) {
-					intentTypes.push(categoryKey + "_" + typeKey);
-				}
-			}
-		}
 	}
 
 	var makeNewRulesFile = function(rawFileName) {
@@ -755,72 +749,32 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		return menu;
 	}
 
-	var onValueChangeConfirm = function() {
-		var val = $(this).val().trim();
-		var $parent = $(this).parent();
-		var source = $parent.data("rule-source").split("_");
-		var isMoreRecent = $parent.hasClass("edmoreRecent");
-		var isLessRecent = $parent.hasClass("edlessRecent");
-		if (val === "" && !isMoreRecent) { 
-			return;
-		}
 
-		var field = "value";
-		var oldVal = activeRule[source[0]][source[1]][field];		
-		if (isMoreRecent || isLessRecent) {
-			var valOfOther;
-			field = "turnsAgoBetween";
-			if (isMoreRecent) {
-				valOfOther = $parent.parent().find(".edlessRecent").children("input").val();
-				val = [val, valOfOther];
-			} else {
-				valOfOther = $parent.parent().find(".edmoreRecent").children("input").val();
-				val = [valOfOther, val];
-			}
-			val[0] = val[0].toUpperCase();	
-			val[1] = val[1].toUpperCase();	
-			if (val[0] !== "NOW" && val[0] !== "START") {
-				val[0] = parseInt(val[0]);
-			}
-			if (val[1] !== "NOW" && val[1] !== "START") {
-				val[1] = parseInt(val[1]);
-			}
-			if (isNaN(val[0]) || isNaN(val[1])) {
-				activeRule[source[0]][source[1]].value = oldVal;
-				$(this).val(oldVal)
-					.focus();
-			}
-			// Need to swap into proper order?
-			var tMoreRecent = val[0];
-			var tLessRecent = val[1];
-			if (tMoreRecent === "NOW") tMoreRecent = 0;
-			if (tLessRecent === "NOW") tLessRecent = 0;
-			if (tMoreRecent === "START") tMoreRecent = Infinity;
-			if (tLessRecent === "START") tLessRecent = Infinity;
-			// TODO: It's awkward visually to have these values swap in the editor, but predicateToEnglish expects them to be in the proper order. 
-			if (tMoreRecent > tLessRecent) {
-				var t;
-				t = val[0];
-				val[0] = val[1];
-				val[1] = t;
-			}
-
-		} else {
-			val = parseInt(val);		
-		}
-		changeField(field, source[0], source[1], val);
-
-		var result = validate.rule(activeRule);
-		if (typeof result === "string") {
-			// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
-			activeRule[source[0]][source[1]].value = oldVal;
-			$(this).val(oldVal)
-				.focus();
-		} else {
-			view.showRule();
-			addCurrentToUndoHistory();
-		}
+	// MISC
+	var updateRuleTester = function() {
+		var bindings = _.keys(charBindings);
+		var characters = ensemble.getCharacters();
+		ruleTester.update(bindings, characters, activeRule);		
 	}
+
+	// BUTTONS
+	var activateTestBindings = function() {
+		if (!showTestBindingsButton) return;
+		ruleTester.toggle();
+		updateRuleTester();
+	}
+
+
+
+
+
+
+
+
+
+	// EDITOR VALIDATION STUFF
+
+
 
 
 	// For a linked text field,
@@ -848,7 +802,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		var source = $(this).parent().data("rule-source").split("_");
 		var isFirst = $(this).parent().hasClass("edfirst");
-		updateRoleName(source[0], source[1], isFirst, val);
+		controller.changeRoleName(source[0], source[1], isFirst, val);
 
 		var result = validate.rule(activeRule);
 		if (typeof result === "string") {
@@ -967,138 +921,206 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	}
 
 
-	// Create a new template predicate (either an effect or condition) and add it to activeRule. Generate appropriate templates from the active social schema package.
-	var newPredicate = function(predType, predNum) {
-		var whichTypeList = predType === "effects" ? intentTypes : allTypes;
-		var typeInfo = whichTypeList[0].split("_");
-		var categoryName = typeInfo[0];
-		var type = typeInfo[1];
-		var desc = ensemble.getCategoryDescriptors(categoryName);
+	var controller = {
 
-		var newPred = {};
-		newPred.category = categoryName;
-		newPred.type = type;
-		newPred.first = getOrMakeAppropriateBinding(1);
-		if (desc.directionType !== "undirected") {
-			newPred.second = getOrMakeAppropriateBinding(2);
-		}
-
-		if (predType === "effects") {
-			if (activeRuleType === "volition") {
-				newPred.weight = 5;
-				newPred.intentType = true;			
+		onValueChangeConfirm: function() {
+			var val = $(this).val().trim();
+			var $parent = $(this).parent();
+			var source = $parent.data("rule-source").split("_");
+			var isMoreRecent = $parent.hasClass("edmoreRecent");
+			var isLessRecent = $parent.hasClass("edlessRecent");
+			if (val === "" && !isMoreRecent) { 
+				return;
 			}
-		}
-		if (desc.isBoolean === true || (activeRuleType === "volition" && predType === "effects")) {
-			newPred.value = true;
-		} else {
-			newPred.value = desc.defaultVal;
-		}
 
-		if (activeRule[predType] === undefined) {
-			activeRule[predType] = [];
-		}
-		activeRule[predType].push(newPred);
-	}
+			var field = "value";
+			var oldVal = activeRule[source[0]][source[1]][field];		
+			if (isMoreRecent || isLessRecent) {
+				var valOfOther;
+				field = "turnsAgoBetween";
+				if (isMoreRecent) {
+					valOfOther = $parent.parent().find(".edlessRecent").children("input").val();
+					val = [val, valOfOther];
+				} else {
+					valOfOther = $parent.parent().find(".edmoreRecent").children("input").val();
+					val = [valOfOther, val];
+				}
+				val[0] = val[0].toUpperCase();	
+				val[1] = val[1].toUpperCase();	
+				if (val[0] !== "NOW" && val[0] !== "START") {
+					val[0] = parseInt(val[0]);
+				}
+				if (val[1] !== "NOW" && val[1] !== "START") {
+					val[1] = parseInt(val[1]);
+				}
+				if (isNaN(val[0]) || isNaN(val[1])) {
+					activeRule[source[0]][source[1]].value = oldVal;
+					$(this).val(oldVal)
+						.focus();
+				}
+				// Need to swap into proper order?
+				var tMoreRecent = val[0];
+				var tLessRecent = val[1];
+				if (tMoreRecent === "NOW") tMoreRecent = 0;
+				if (tLessRecent === "NOW") tLessRecent = 0;
+				if (tMoreRecent === "START") tMoreRecent = Infinity;
+				if (tLessRecent === "START") tLessRecent = Infinity;
+				// TODO: It's awkward visually to have these values swap in the editor, but predicateToEnglish expects them to be in the proper order. 
+				if (tMoreRecent > tLessRecent) {
+					var t;
+					t = val[0];
+					val[0] = val[1];
+					val[1] = t;
+				}
 
-	// Remove a predicate from the activeRule.
-	var removePred = function(predType, predNum) {
-		activeRule[predType].splice(predNum, 1);
-	}
-
-	// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing the operator field.
-	var changeIntent = function(predType, predNum, selection) {
-		var categoryName = selection.split("_")[0];
-		var type = selection.split("_")[1];
-		var oldcategory = activeRule[predType][predNum].category;
-		activeRule[predType][predNum].category = categoryName;
-		activeRule[predType][predNum].type = type;
-		// If we've changed value type, give a new default.
-		var descriptors = ensemble.getCategoryDescriptors(categoryName)
-		var newIsBoolean = descriptors.isBoolean;
-		var newDirType = descriptors.directionType;
-		var oldDirType = ensemble.getCategoryDescriptors(oldcategory).directionType;
-
-		if (activeRuleType === "volition" && predType === "effects") {
-			activeRule[predType][predNum].value = true;
-			activeRule[predType][predNum].operator = undefined;
-		} else if (newIsBoolean && typeof activeRule[predType][predNum].value !== "boolean") {
-			activeRule[predType][predNum].value = true;
-			activeRule[predType][predNum].operator = undefined;
-		} else if (! newIsBoolean && typeof activeRule[predType][predNum].value === "boolean") {
-			activeRule[predType][predNum].value = descriptors.defaultVal;
-			if (predType === "conditions") {
-				activeRule[predType][predNum].operator = ">";
-			} else if (activeRuleType !== "volition") {
-				activeRule[predType][predNum].operator = "+";
+			} else {
+				val = parseInt(val);		
 			}
+			this.changeField(field, source[0], source[1], val);
+
+			var result = validate.rule(activeRule);
+			if (typeof result === "string") {
+				// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
+				activeRule[source[0]][source[1]].value = oldVal;
+				$(this).val(oldVal)
+					.focus();
+			} else {
+				view.showRule();
+				addCurrentToUndoHistory();
+			}
+		},
+
+		// Create a new template predicate (either an effect or condition) and add it to activeRule. Generate appropriate templates from the active social schema package.
+		addPredicate: function(predType, predNum) {
+			var whichTypeList = predType === "effects" ? intentTypes : allTypes;
+			var typeInfo = whichTypeList[0].split("_");
+			var categoryName = typeInfo[0];
+			var type = typeInfo[1];
+			var desc = ensemble.getCategoryDescriptors(categoryName);
+
+			var newPred = {};
+			newPred.category = categoryName;
+			newPred.type = type;
+			newPred.first = getOrMakeAppropriateBinding(1);
+			if (desc.directionType !== "undirected") {
+				newPred.second = getOrMakeAppropriateBinding(2);
+			}
+
+			if (predType === "effects") {
+				if (activeRuleType === "volition") {
+					newPred.weight = 5;
+					newPred.intentType = true;			
+				}
+			}
+			if (desc.isBoolean === true || (activeRuleType === "volition" && predType === "effects")) {
+				newPred.value = true;
+			} else {
+				newPred.value = desc.defaultVal;
+			}
+
+			if (activeRule[predType] === undefined) {
+				activeRule[predType] = [];
+			}
+			activeRule[predType].push(newPred);
+		},
+
+		// Remove a predicate from the activeRule.
+		removePredicate: function(predType, predNum) {
+			activeRule[predType].splice(predNum, 1);
+		},
+
+		// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing the operator field.
+		changeIntent: function(predType, predNum, selection) {
+			var categoryName = selection.split("_")[0];
+			var type = selection.split("_")[1];
+			var oldcategory = activeRule[predType][predNum].category;
+			activeRule[predType][predNum].category = categoryName;
+			activeRule[predType][predNum].type = type;
+			// If we've changed value type, give a new default.
+			var descriptors = ensemble.getCategoryDescriptors(categoryName)
+			var newIsBoolean = descriptors.isBoolean;
+			var newDirType = descriptors.directionType;
+			var oldDirType = ensemble.getCategoryDescriptors(oldcategory).directionType;
+
+			if (activeRuleType === "volition" && predType === "effects") {
+				activeRule[predType][predNum].value = true;
+				activeRule[predType][predNum].operator = undefined;
+			} else if (newIsBoolean && typeof activeRule[predType][predNum].value !== "boolean") {
+				activeRule[predType][predNum].value = true;
+				activeRule[predType][predNum].operator = undefined;
+			} else if (! newIsBoolean && typeof activeRule[predType][predNum].value === "boolean") {
+				activeRule[predType][predNum].value = descriptors.defaultVal;
+				if (predType === "conditions") {
+					activeRule[predType][predNum].operator = ">";
+				} else if (activeRuleType !== "volition") {
+					activeRule[predType][predNum].operator = "+";
+				}
+			}
+
+			// If we're changing to undirected, remove second.
+			if (newDirType === "undirected" && newDirType !== oldDirType) {
+				activeRule[predType][predNum].second = undefined;
+			}
+
+			// If we're changing to directed or reciprocal, add a second.
+			if (newDirType !== "undirected" && newDirType !== oldDirType) {
+				activeRule[predType][predNum].second = getOrMakeAppropriateBinding(2, activeRule[predType][predNum]);
+			}
+		},
+
+		// Update the direction field of a predicate in activeRule.
+		changeDirection: function(predType, predNum, selection) {
+			var op;
+			if (selection === "more than") {
+				op = ">";
+			} else if (selection === "less than") {
+				op = "<";
+			} else if (selection === "more") {
+				op = "+";
+			} else if (selection === "less") {
+				op = "-";
+			} else {
+				op = "=";
+			}
+			activeRule[predType][predNum].operator = op;
+		},
+
+		// Update the weight field of a predicate in activeRule.
+		changeWeight: function(predType, predNum, selection) {
+			var sel = parseInt(selection)
+			activeRule[predType][predNum].weight = sel;
+		},
+
+		// Update the value field of a predicate in activeRule.
+		changeField: function(field, predType, predNum, selection) {
+			activeRule[predType][predNum][field] = selection;
+		},
+
+		deleteField: function(field, predType, predNum) {
+			delete activeRule[predType][predNum][field];
+		},
+
+		// Update a boolean field of a predicate in activeRule.
+		beVerbToggle: function(predType, predNum) {
+			activeRule[predType][predNum].value = !activeRule[predType][predNum].value;
+		},
+
+		// Update the intentType field of a predicate in activeRule.
+		intentTypeToggle: function(predType, predNum) {
+			activeRule[predType][predNum].intentType = !activeRule[predType][predNum].intentType;
+		},
+
+		// Update the role name field of a predicate in activeRule.
+		changeRoleName: function(predType, predNum, isFirst, val) {
+			var whichRole = isFirst ? "first" : "second";
+			activeRule[predType][predNum][whichRole] = val;
+		},
+
+		changeRuleName: function() {
+			var newName = $(this).val();
+			activeRule.name = newName;
 		}
-
-		// If we're changing to undirected, remove second.
-		if (newDirType === "undirected" && newDirType !== oldDirType) {
-			activeRule[predType][predNum].second = undefined;
-		}
-
-		// If we're changing to directed or reciprocal, add a second.
-		if (newDirType !== "undirected" && newDirType !== oldDirType) {
-			activeRule[predType][predNum].second = getOrMakeAppropriateBinding(2, activeRule[predType][predNum]);
-		}
 	}
-
-	// Update the direction field of a predicate in activeRule.
-	var changeDirection = function(predType, predNum, selection) {
-		var op;
-		if (selection === "more than") {
-			op = ">";
-		} else if (selection === "less than") {
-			op = "<";
-		} else if (selection === "more") {
-			op = "+";
-		} else if (selection === "less") {
-			op = "-";
-		} else {
-			op = "=";
-		}
-		activeRule[predType][predNum].operator = op;
-	}
-
-	// Update the weight field of a predicate in activeRule.
-	var changeWeight = function(predType, predNum, selection) {
-		var sel = parseInt(selection)
-		activeRule[predType][predNum].weight = sel;
-	}
-
-	// Update the value field of a predicate in activeRule.
-	var changeField = function(field, predType, predNum, selection) {
-		activeRule[predType][predNum][field] = selection;
-	}
-
-	var deleteField = function(field, predType, predNum) {
-		delete activeRule[predType][predNum][field];
-	}
-
-	// Update a boolean field of a predicate in activeRule.
-	var beVerbToggle = function(predType, predNum) {
-		activeRule[predType][predNum].value = !activeRule[predType][predNum].value;
-	}
-
-	// Update the intentType field of a predicate in activeRule.
-	var intentTypeToggle = function(predType, predNum) {
-		activeRule[predType][predNum].intentType = !activeRule[predType][predNum].intentType;
-	}
-
-	// Update the role name field of a predicate in activeRule.
-	var updateRoleName = function(predType, predNum, isFirst, val) {
-		var whichRole = isFirst ? "first" : "second";
-		activeRule[predType][predNum][whichRole] = val;
-	}
-
-	var changeRuleName = function() {
-		var newName = $(this).val();
-		activeRule.name = newName;
-	}
-
-
 
 
 	return {
