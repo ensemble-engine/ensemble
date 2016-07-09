@@ -205,6 +205,10 @@ margin-left: 6em;
 	font-size: 65%;
 	color: rgb(129, 129, 129);
 }
+.inactive {
+	background-color: #825858 !important;
+    color: #967871 !important;
+}
 .volitionType {
 	font-weight:bold;
 }

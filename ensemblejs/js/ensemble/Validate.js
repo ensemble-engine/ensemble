@@ -122,6 +122,9 @@ function(util, _, $, socialRecord) {
 				var condition = rule.conditions[i];
 				conditionValidator(condition, "" + (isVolition ? "Volition" : "Trigger") + " Rule Condition #" + i);
 			}
+			if (rule.isActive !== undefined && typeof rule.isActive !== "boolean") {
+				throw new Error("isActive, if present, must be a boolean");
+			}
 		} catch(e) {
 			return e.message;
 		}

@@ -50,8 +50,9 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 			// Was this true on prior timestep?
 			var wasTrueLastTurn = pred.timeHappened !== interfaceTimestep;
 			var descClass = wasTrueLastTurn ? "" : "newEntry";
+			var rowClass = pred.isActive === false ? "inactive": "";
 			var predObj = util.objToText(pred);
-			table += "<tr><td><span title='" + predObj + "' class='" + descClass + "'>" + desc + "</span></td></tr>"
+			table += "<tr class='" + rowClass + "'><td><span title='" + predObj + "' class='" + descClass + "'>" + desc + "</span></td></tr>"
 		}
 		table += "</table>";
 		historyTableArea.html(table);

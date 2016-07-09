@@ -33,14 +33,15 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 		}
 
 		var rules = ensemble.getRules(ruleSet);
-		var table = "<table class='rules'>";
 		var table = $("<table/>", {
 			class: "rules"
 		});
 
-		var makeRow = function(origRule, name, origin, desc, id) {
+		var makeRow = function(origRule, name, origin, desc, id, isActive) {
+			var ruleClass = "ruleOrigin";
+			var rowClass = isActive === false ? "inactive": "";
 			var row = $("<tr/>", {
-				html: "<td><p class='ruleOrigin'>" + origin + "</p><span class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
+				html: "<td class='" + rowClass + "'><p class='" + ruleClass + "'>" + origin + "</p><span class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
 			});
 			row.click(function() {
 				console.log("calling loadRule(" + id + ", " + ruleSet + ")");
@@ -53,7 +54,7 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 			var rule = rules[i];
 			var desc = ensemble.ruleToEnglish(rule);
 			var origRule = util.objToText(rule);
-			table.append(makeRow(origRule, rule.name, rule.origin, desc, rule.id));
+			table.append(makeRow(origRule, rule.name, rule.origin, desc, rule.id, rule.isActive));
 		}
 		if (rules.length === 0) {
 			var row = $("<tr/>", {
