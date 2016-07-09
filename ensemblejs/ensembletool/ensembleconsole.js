@@ -44,6 +44,7 @@ requirejs.config({
 		,"rulesViewer" : "rulesViewer"
 		,"rulesEditor" : "rulesEditor"
 		,"consoleViewer" : "consoleViewer"
+		,"schemaViewer" : "schemaViewer"
 		,"messages" : "messages"
 		,"ruleTester" : "ruleTester"
 		,"fileio" : "fileio"
@@ -63,8 +64,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
@@ -188,31 +189,8 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			return;
 		}
 
-		// Generate explanatory text.
-		var exp = "";
-		for (var categoryName in socialStructure) {
-			var d = ensemble.getCategoryDescriptors(categoryName);
-			var direction = d.directionType;
-			var dataType = d.isBoolean ? "boolean" : "numeric";
-			var duration = d.duration > 0 ? "duration " + d.duration : "";
-			if (!d.isBoolean) {
-				dataType += " " + d.min + "-->" + d.max + " (default " + d.defaultVal + ")";
-			}
-			if (d.duration === 0) {
-				duration = "single turn";
-			}
-			exp += "<p class='schemaHeader'><span class='categoryName'>" + categoryName + "</span> <span class='categoryInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
-			var c = socialStructure[categoryName];
-			exp += "<p class='schemaTypes'>";
-			var types = [];
-			for (var typeName in c) {
-				types.push("<span class='schemaType'>" + typeName + "</span>");
-			}
-			var typeList = types.join(" &bull; ");
-			exp += typeList + "<br/>"
-		}
+		schemaViewer.show(socialStructure);
 
-		$("#infoOnSocialTypes").html(exp);
 	};
 
 
@@ -299,6 +277,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		fileio.init();
 		rulesViewer.init();
 		historyViewer.init();
+		schemaViewer.init();
 
 		if (autoLoad === false && !fileio.enabled()) {
 			autoLoad = true; // let's have it use autoload when using the webpage version of the console.
