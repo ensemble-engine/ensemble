@@ -193,6 +193,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		// The details for every type within a category should be the same, so just go with the first one.
 		for (var typeName in c) {
 			var t = c[typeName];
+			var representativeType = Object.keys(c)[0];
+			descriptors.actionable = c[representativeType].actionable;
 			descriptors.directionType = t.directionType;
 			descriptors.isBoolean = t.isBoolean;
 			descriptors.cloneEachTimeStep = t.cloneEachTimeStep === undefined ? true : t.cloneEachTimeStep;

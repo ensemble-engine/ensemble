@@ -235,10 +235,16 @@ margin-left: 6em;
 #infoOnSocialTypes {
     padding: 0.25em;
 }
+.schemaCategory {
+	margin-top: 7px;
+}
+.actionable {
+	background-color: #fff6af;
+    border: thin dotted gold;
+}
 .schemaHeader {
 	padding-bottom: 0;
 	margin-bottom: 0 !important;
-	margin-top: 0.5em;
 }
 .categoryName {
 	font-weight: bold;
@@ -246,6 +252,9 @@ margin-left: 6em;
 }
 .categoryInfo {
 	font-size: 80%;
+}
+.categoryActionable {
+	font-weight: bold;
 }
 .schemaTypes {
 	margin: 0;

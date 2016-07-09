@@ -28,15 +28,24 @@ define(["ensemble", "jquery"], function(ensemble, $){
 			if (d.duration === 0) {
 				duration = "single turn";
 			}
-			exp += "<p class='schemaHeader'><span class='categoryName'>" + categoryName + "</span> <span class='categoryInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></p>";
+			var thisBlock = "<div class='schemaHeader'><span class='categoryName'>" + categoryName + "</span> ";
+			if (d.actionable) {
+				thisBlock += "<span class='categoryInfo categoryActionable'>actionable</span>, ";
+			}
+			thisBlock += "<span class='categoryInfo'>" + direction + ", " + dataType + (duration !== "" ? ", " + duration : "") + "</span></div>";
 			var c = socialStructure[categoryName];
-			exp += "<p class='schemaTypes'>";
+			thisBlock += "<div class='schemaTypes'>";
 			var types = [];
 			for (var typeName in c) {
 				types.push("<span class='schemaType'>" + typeName + "</span>");
 			}
 			var typeList = types.join(" &bull; ");
-			exp += typeList + "<br/>"
+			thisBlock += typeList + "</div>";
+			var catClass = "schemaCategory";
+			if (d.actionable) {
+				catClass += " actionable";
+			}
+			exp += "<div class='" + catClass + "'>" + thisBlock + "</div>";
 		}
 
 		$("#infoOnSocialTypes").html(exp);
