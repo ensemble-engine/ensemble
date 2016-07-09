@@ -133,7 +133,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			var acceptedObj = storedVolitions.isAccepted(char1, char2, vol);
 			logMsg += acceptedObj.accepted ? "<span class='accepted'>accept</span>" : "<span class='rejected'>reject</span>";
 			logMsg += " (" + acceptedObj.weight + ")</b>, because:<br/>";
-			console.log("rw", acceptedObj, acceptedObj.reasonsWhy);
 			if (acceptedObj.reasonsWhy.length > 0) {
 				var reasons = acceptedObj.reasonsWhy[0].englishInfluences;
 				for (i = 0; i < reasons.length; i++) {
@@ -619,8 +618,13 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		return logMsg;
 	}
 
+	var refreshVolitions = function() {
+		storedVolitions = ensemble.calculateVolition(characters);
+	}
+
 	return {
 		init: init,
+		refreshVolitions: refreshVolitions,
 		updateRefs: updateRefs,
 		cmdLog: cmdLog
 	}

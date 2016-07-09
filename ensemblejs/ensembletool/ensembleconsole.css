@@ -205,6 +205,9 @@ margin-left: 6em;
 	font-size: 65%;
 	color: rgb(129, 129, 129);
 }
+.ruleActiveBoxCol {
+	width: 25px;
+}
 .inactive {
 	background-color: #825858 !important;
     color: #967871 !important;

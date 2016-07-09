@@ -978,20 +978,29 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		// Updates the active rule in Ensemble.
 		//if optSkipBackup is true, it won't create a backup file.
-		updateActiveRule: function(optSkipBackup) {
-			var results = ensemble.setRuleById(activeRule.id, activeRule);
+		updateRule: function(ruleId, rule, optSkipBackup) {
+			var results = ensemble.setRuleById(ruleId, rule);
 			if (!results) {
 				messages.showAlert("Unable to save rule.");
 			} else {
 				$("#tabLiRulesViewer a").click();
 				rulesViewer.show();
-				messages.showAlert("Updated Rule " + activeRule.id + ".");
-				if(activeFile === ""){
+				messages.showAlert("Updated Rule " + ruleId + ".");
+				if(fileio.enabled()){
+					if (activeFile === "") {
+						// Perhaps we're toggling a rule on/off.
+						activeFile = rule.origin;
+						origActiveFile = activeFile;
+					}
+					var ruleType = ruleId.split("_")[0];
+					controller.saveRulesToDisk(ruleType, rule.origin, optSkipBackup);
 					return; // don't save if we aren't working with an actual file.
 				}
-				var ruleType = activeRule.id.split("_")[0];
-				controller.saveRulesToDisk(ruleType, activeRule.origin, optSkipBackup);
 			}
+		},
+
+		updateActiveRule: function(optSkipBackup) {
+			controller.updateRule(activeRule.id, activeRule, optSkipBackup);
 		},
 
 		// Prepare to save the rules in the active file to disk. (The dirty work is passed off to the fileio module.)
@@ -1004,7 +1013,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			}
 			var rulesOfThisType = ensemble.getRules(ruleType);
 			var filteredRules = rulesOfThisType.filter(function(rule) {
-				return rule.origin === activeRule.origin;
+				return rule.origin === ruleOrigin;
 			});
 			fileio.saveRules(ruleType, filteredRules, ruleOrigin, origActiveFile, optSkipBackup); 
 		},
@@ -1104,6 +1113,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 	return {
 		init: init,
 		loadRule: loadRule,
+		updateRule: controller.updateRule,
 		updateActiveRule: controller.updateActiveRule
 	}
 

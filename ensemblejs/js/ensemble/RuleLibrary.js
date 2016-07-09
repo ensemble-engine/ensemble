@@ -35,7 +35,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 				throw new Error("runRules called for ruleSet '" + ruleSet + "' (length " + rules.length + ") but there are no conditions in rule " + i + ".");
 			}
 			if (rules[i].isActive === false) {
-				return;
+				continue;
 			}
 			var allPredicates = rules[i].conditions.concat(rules[i].effects);
 			var uniqueBindings = getUniqueBindings(allPredicates);

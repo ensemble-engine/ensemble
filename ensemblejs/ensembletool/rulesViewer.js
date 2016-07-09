@@ -37,16 +37,24 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 			class: "rules"
 		});
 
-		var makeRow = function(origRule, name, origin, desc, id, isActive) {
+		var makeRow = function(ruleAsTxt, rl, desc) {
 			var ruleClass = "ruleOrigin";
-			var rowClass = isActive === false ? "inactive": "";
+			var rowClass = rl.isActive === false ? "inactive": "";
 			var row = $("<tr/>", {
-				html: "<td class='" + rowClass + "'><p class='" + ruleClass + "'>" + origin + "</p><span class='ruleName'>" + name + "</span><br/><span title=\"" + origRule + "\" class='ruleDetails'>" + desc + "</span></td>"
+				class: rowClass,
+				html: "<td class='ruleActiveBoxCol'><input type='checkbox' name='vehicle' class='ruleActiveBox' value='Bike'></td><td class='ruleCol'><p class='" + ruleClass + "'>" + rl.origin + "</p><span class='ruleName'>" + rl.name + "</span><br/><span title=\"" + ruleAsTxt + "\" class='ruleDetails'>" + desc + "</span></td>"
 			});
-			row.click(function() {
-				console.log("calling loadRule(" + id + ", " + ruleSet + ")");
-				loadRule(id, ruleSet);
-			})
+			row.find(".ruleActiveBox")
+				.prop('checked', rl.isActive !== false)
+				.click(function() {
+					rl.isActive = $(this).prop('checked');
+					rulesEditor.updateRule(rl.id, rl);
+					show(ruleSet);
+				});
+			row.find(".ruleCol")
+				.click(function() {
+					loadRule(rl.id, ruleSet);
+				});
 			return row;
 		}
 
@@ -54,7 +62,7 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 			var rule = rules[i];
 			var desc = ensemble.ruleToEnglish(rule);
 			var origRule = util.objToText(rule);
-			table.append(makeRow(origRule, rule.name, rule.origin, desc, rule.id, rule.isActive));
+			table.append(makeRow(origRule, rule, desc));
 		}
 		if (rules.length === 0) {
 			var row = $("<tr/>", {

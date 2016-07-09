@@ -88,6 +88,9 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			if (ui.newPanel[0].id === "tabsSfdb") {
 				historyViewer.refresh(socialRecord.getCurrentTimeStep());
 			}
+			if (ui.newPanel[0].id === "tabsConsole") {
+				consoleViewer.refreshVolitions();
+			}
 		}
 	});
 
