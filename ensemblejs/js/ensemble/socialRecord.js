@@ -361,7 +361,9 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 					var socialRecordPredicate = socialRecord[i][j];
 
 					// Skip any predicates that don't match the search predicate's specification. 
-
+					if (socialRecordPredicate.isActive === false) {
+						continue;
+					}
 					if (searchPredicate.category !== undefined && searchPredicate.category !== socialRecordPredicate.category) {
 						continue;
 					}
@@ -524,6 +526,9 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		if (searchResult.length === 0) {
 			socialRecordPredicate = pattern;
 			socialRecordPredicate.value = defaultValue;
+			if (socialRecordPredicate.isActive === undefined && setPredicate.isActive !== undefined) {
+				socialRecordPredicate.isActive = setPredicate.isActive;
+			}
 			socialRecord[timeStep].push(socialRecordPredicate);
 		} else if (searchResult.length === 1) {
 			socialRecordPredicate = searchResult[0];
@@ -564,6 +569,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			recipPredicate.second = recipPredicate.first;
 			recipPredicate.first = temp;
 			recipPredicate.value = undefined;
+			recipPredicate.isActive = setPredicate.isActive;
 
 			var rPred;
 			var recipSearchResult = get(recipPredicate, 0, 0, false);

@@ -584,6 +584,11 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @return {[Boolean]}                 [Returns true if the action is still appropriate, false otherwise. Returning false here halts continuation down the action tree, as this being false means all subsequent actions will also be false.]
 	 */
 	var actionIsAppropriate = function(action, isAccepted, uniqueBindings){
+		
+		if(action.isActive === false) {
+			return false;
+		}
+		
 		if(action.isAccept !== undefined){
 			if(isAccepted !== action.isAccept){
 				return false; // oops, looking for one truth value but found another!

@@ -30,13 +30,16 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 	var runRules = function (ruleSet, cast, onMatchFunction, params, unaffectedCharacters) {
 		var rules = ruleLibrary[ruleSet];
 		for (var i = 0 ; i < rules.length ; i += 1) {
-				//ASK -- leaving this in fow now until the 'additive addRuleSet' issue is resolved
-				if(rules[i].conditions === undefined){
-					throw new Error("runRules called for ruleSet '" + ruleSet + "' (length " + rules.length + ") but there are no conditions in rule " + i + ".");
-				}
-				var allPredicates = rules[i].conditions.concat(rules[i].effects);
-				var uniqueBindings = getUniqueBindings(allPredicates);
-				matchUniqueBindings(uniqueBindings, cast, onMatchFunction, rules[i], params, unaffectedCharacters);
+			//ASK -- leaving this in fow now until the 'additive addRuleSet' issue is resolved
+			if(rules[i].conditions === undefined){
+				throw new Error("runRules called for ruleSet '" + ruleSet + "' (length " + rules.length + ") but there are no conditions in rule " + i + ".");
+			}
+			if (rules[i].isActive === false) {
+				return;
+			}
+			var allPredicates = rules[i].conditions.concat(rules[i].effects);
+			var uniqueBindings = getUniqueBindings(allPredicates);
+			matchUniqueBindings(uniqueBindings, cast, onMatchFunction, rules[i], params, unaffectedCharacters);
 		}
 	};
 
