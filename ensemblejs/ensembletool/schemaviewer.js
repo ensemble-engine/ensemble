@@ -40,15 +40,21 @@ define(["ensemble", "jquery"], function(ensemble, $){
 				types.push("<span class='schemaType'>" + typeName + "</span>");
 			}
 			var typeList = types.join(" &bull; ");
-			thisBlock += typeList + "</div>";
+			thisBlock += typeList;
+			thisBlock += "</div><div class='editIcon'><div class='edit1'>&nbsp;</div><div class='edit2'>&nbsp;</div></div>"
 			var catClass = "schemaCategory";
 			if (d.actionable) {
 				catClass += " actionable";
 			}
 			exp += "<div class='" + catClass + "'>" + thisBlock + "</div>";
 		}
-
+		exp += "<div class='schemaCategory'><div class='schemaHeader'><span class='categoryNew'>+ New</span></div><div class='editIcon'><div class='edit1'>&nbsp;</div><div class='edit2'>&nbsp;</div></div></div>";
 		$("#infoOnSocialTypes").html(exp);
+		$(".schemaCategory").hover(function() {
+			$(this).children(".editIcon").show();
+		}, function() {
+			$(this).children(".editIcon").hide();
+		});
 	}
 
 	return {

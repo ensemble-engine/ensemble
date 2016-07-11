@@ -237,7 +237,13 @@ margin-left: 6em;
 }
 .schemaCategory {
 	margin-top: 7px;
+	padding: 0px 3px;
+	position: relative;
 }
+.schemaCategory:hover {
+	outline: thin dotted black;
+}
+
 .actionable {
 	background-color: #fff6af;
     border: thin dotted gold;
@@ -249,6 +255,10 @@ margin-left: 6em;
 .categoryName {
 	font-weight: bold;
 	font-size: 120%;
+}
+.categoryNew {
+	font-size: 120%;
+	color: gray;
 }
 .categoryInfo {
 	font-size: 80%;
@@ -577,6 +587,54 @@ select optgroup { font-weight:bold; }
     background:transparent;
 }
 
+/* EDIT */
+
+.editIcon {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	width: 15px;
+	height: 15px;
+	display: none;
+}
+.edit1 {
+    left: 1px;
+    width: 5px;
+    height: 5px;
+    margin-top: 9px;
+    -webkit-transform: skew(-10deg, -10deg);
+    -moz-transform: skew(-10deg, -10deg);
+    -ms-transform: skew(-10deg, -10deg);
+    -o-transform: skew(-10deg, -10deg);
+    transform: skew(-10deg, -10deg);
+    position: absolute;
+}
+.edit2 {
+    left: 2px;
+    width: 13px;
+    height: 6px;
+    border-left: 1px solid #fff;
+    margin-top: -3px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 6px;
+}
+.edit1, .edit2 {
+	background: #888888;
+}
+
+.edit:hover:before,
+.edit:focus:before,
+.edit:active:before,
+.edit:hover:after,
+.edit:focus:after,
+.edit:active:after {
+    background:#730800;
+}
 
 
 
