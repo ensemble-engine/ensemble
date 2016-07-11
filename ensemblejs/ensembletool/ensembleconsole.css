@@ -291,6 +291,30 @@ margin-left: 6em;
 	padding: 0 0.25em 0 0.25em;
 }
 
+/* schema editor */
+
+.schemaEdType {
+	width: 7em;
+}
+.schemaEdNewType {
+
+}
+#schemaEditForm div {
+    padding: 5px 0px;
+    border-bottom: thin dotted gray;
+}
+#schemaEditForm div label {
+    font-size: 85%;
+    color: gray;
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+}
+#editorCategoryName {
+	font-size: 140%;
+	font-weight: bold;
+	padding-left: 6px;
+}
 
 
 /*editor*/
