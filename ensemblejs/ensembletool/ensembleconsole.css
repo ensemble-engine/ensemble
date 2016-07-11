@@ -292,7 +292,8 @@ margin-left: 6em;
 }
 
 /* schema editor */
-
+#schemaEdNormTypes {
+}
 .schemaEdType {
 	width: 7em;
 }
@@ -310,6 +311,12 @@ margin-left: 6em;
     display: inline-block;
     text-align: right;
 }
+#schemaEditForm div label.edSubtype {
+	width: 150px !important;
+	font-size: 75%;
+	font-style: italic;
+}
+
 #editorCategoryName {
 	font-size: 140%;
 	font-weight: bold;

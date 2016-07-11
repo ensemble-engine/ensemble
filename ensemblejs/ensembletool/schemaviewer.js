@@ -9,7 +9,11 @@ define(["ensemble", "jquery"], function(ensemble, $){
 	var socialStructure;
 
 	var init = function() {
+		
+	}
 
+	var initSchemaEdTooltips = function() {
+		$("#schemaEditForm label").tooltip();
 	}
 
 	var show = function(_socialStructure) {
@@ -66,44 +70,12 @@ define(["ensemble", "jquery"], function(ensemble, $){
 		var category = $(this).attr("id").split("_")[1]; // i.e. "cat_trait"
 		var cat = socialStructure[category];
 		var catDescriptors = ensemble.getCategoryDescriptors(category);
-		var html = "<div id='schemaEditForm'>";
-		html += "<div><label for='editorCategoryName'>Category Name</label> <input id='editorCategoryName' type='text' value='" + category + "'/></div>";
-		html += "<div><label for='editorIsBoolean'>Data Type</label> <input type='radio' id='isBooleanT' name='isBoolean' value='T'>True/False <input type='radio' id='isBooleanF' name='isBoolean' value='F'>Number</div>";
-		html += "<div><label for='editorDirection'>Direction</label> <input type='radio' id='dirUn' name='directionType' value='undirected'>Undirected <input type='radio' id='dirDir' name='directionType' value='directed'>Directed <input type='radio' id='dirRecip' name='directionType' value='reciprocal'>Reciprocal</div>";
-		html += "<div><label for='editorDefaultValue'>Default</label> ";
-		if (catDescriptors.isBoolean) {
-			html += "<input type='radio' id='defaultValT' name='defaultValue' value='T'>True <input type='radio' id='defaultValF' name='defaultValue' value='F'>False";
-		} else {
-			html += "<input id='editorDefaultValue' type='text' value='" + catDescriptors.defaultVal + "'/>"
-		}
-		html += "</div>";
 
-		// min/max
-		if (!catDescriptors.isBoolean) {
-			html += "<div><label for='editorMin'>Min/Max</label> <input id='editorMin' type='text' value='" + catDescriptors.min + "'/> <input id='editorMax' type='text' value='" + catDescriptors.max + "'/></div>";
-		}
+		// Populate form with this category's values.
+		// ==> Category Name
+		$("#editorCategoryName").val(category);
 
-		// Duration
-		html += "<div><label for='editorShowDuration'>Duration?</label> <input id='editorShowDuration' type='checkbox'/> <span id='editorDurationNumArea'><input id='editorDuration' type='text' value='" + (catDescriptors.duration || 3) + "'/></span></div>";
-
-		// actionable
-		html += "<div><label for='editorActionable'>Actionable?</label> <input id='editorActionable' type='checkbox'/></div>";
-
-		// Types
-		html += "<div><label>Types</label> ";
-		var types = Object.keys(cat);
-		types.forEach(function(type) {
-			html += "<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/> ";
-		});
-		html += "<span class='schemaEdType schemaEdNewType'>(new)</span> ";
-		html += "</div>"
-
-		$("#dialogBox").html(html);
-
-		// Set proper values
-		var correctIsBooleanButton = catDescriptors.isBoolean ? "isBooleanT" : "isBooleanF";
-		$("#" + correctIsBooleanButton).prop("checked", true);
-
+		// ==> Direction
 		var correctDirectionButton;
 		if (catDescriptors.directionType === "directed") {
 			correctDirectionButton = "dirDir";
@@ -114,22 +86,50 @@ define(["ensemble", "jquery"], function(ensemble, $){
 		}
 		$("#" + correctDirectionButton).prop("checked", true);
 
+		// ==> isBoolean, default, min, max
+		var correctIsBooleanButton = catDescriptors.isBoolean ? "isBooleanT" : "isBooleanF";
+		$("#" + correctIsBooleanButton).prop("checked", true);
 		if (catDescriptors.isBoolean) {
 			var correctDefaultValButton = catDescriptors.defaultVal ? "defaultValT" : "defaultValF";
+			$("#" + correctDefaultValButton).prop("checked", true);
+			$("#edDefBoolean").show();
+			$("#editorDefaultValue").hide();
+			$("#schemaEdMinMax").hide();
+		} else {
+			$("#edDefBoolean").hide();
+			$("#editorDefaultValue").show().val(catDescriptors.defaultVal);
+			$("#schemaEdMinMax").show();
+			$("#editorMin").val(catDescriptors.min);
+			$("#editorMax").val(catDescriptors.max);
 		}
-		$("#" + correctDefaultValButton).prop("checked", true);
 
+		// ==> Duration
 		if (catDescriptors.duration === undefined) {
 			$("#editorShowDuration").prop("checked", false);
 			$("#editorDurationNumArea").hide();
 		} else {
 			$("#editorShowDuration").prop("checked", true);
 			$("#editorDurationNumArea").prop("value", catDescriptors.duration);
+			if (catDescriptors.duration !== undefined) {
+				$("#editorDuration").val(catDescriptors.duration);
+			} else {
+				$("#editorDuration").val(3); // some generic starting value.
+			}
 		}
+
+		// ==> Actionable
 		if (catDescriptors.actionable) {
 			$("#editorActionable").prop("checked", true);
 		}
 
+		// Generate editable field for each category type
+		var types = Object.keys(cat);
+		$("#schemaEdNormTypes").html("");
+		types.forEach(function(type) {
+			$("#schemaEdNormTypes").append("<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/> ");
+		});
+
+		// Set change handlers for form UI
 		$("#editorShowDuration").change(function() {
 			if (this.checked) {
 				$("#editorDurationNumArea").show();
@@ -139,7 +139,9 @@ define(["ensemble", "jquery"], function(ensemble, $){
 			}
 		});
 
-		var editor = $("#dialogBox").dialog({
+
+		// Create and show the Schema Editor dialog box.
+		var editor = $("#schemaEditForm").dialog({
 			title: "Edit Schema Category",
 			resizable: false,
 			modal: true,
@@ -152,7 +154,9 @@ define(["ensemble", "jquery"], function(ensemble, $){
 					$(this).dialog("destroy");
 				}
 			}
-		})
+		});
+
+		initSchemaEdTooltips();
 	}
 
 	return {

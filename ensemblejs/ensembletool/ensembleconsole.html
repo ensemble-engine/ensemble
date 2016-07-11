@@ -125,5 +125,50 @@ socialRecord History viewer
 
 <div id="dialogBox" style="display:none;"></div>
 
+<div id="schemaEditForm">
+  <div>
+    <label for="editorCategoryName" title="A human-readable name for this schema category.">Category Name</label> 
+    <input id="editorCategoryName" type="text" value=""/>
+  </div>
+  <div>
+    <label for="editorDirection" title="Whether this category's types are about a single person (undirected), one person's attitude towards another (directed), or a mutual social state between two people (reciprocal).">Direction</label> 
+    <input type="radio" id="dirUn" name="directionType" value="undirected">Undirected 
+    <input type="radio" id="dirDir" name="directionType" value="directed">Directed 
+    <input type="radio" id="dirRecip" name="directionType" value="reciprocal">Reciprocal
+  </div>
+  <div>
+    <label for="editorIsBoolean" title="Whether this category's types are simple on/off flags (true or not), or represented with a numeric strength.">Data Type</label> 
+    <input type="radio" id="isBooleanT" name="isBoolean" value="T">True/False 
+    <input type="radio" id="isBooleanF" name="isBoolean" value="F">Numeric
+  </div>
+  <div>
+    <label for="editorDefaultValue" class="edSubtype" title="Defines the value that Ensemble should assume if there are no social records that relate to a type in this category.">Default</label> 
+    <span id="edDefBoolean">
+      <input type="radio" id="defaultValT" name="defaultValue" value="T">True 
+      <input type="radio" id="defaultValF" name="defaultValue" value="F">False
+    </span>
+    <input id="editorDefaultValue" type="text" value=""/>
+  </div>
+  <div id="schemaEdMinMax">
+    <label for="editorMin" class="edSubtype" title="The minimum and maximum possible numeric values this category's types should have.">Min/Max</label> 
+    <input id="editorMin" type="text" value=""/> 
+    <input id="editorMax" type="text" value=""/>
+  </div>
+  <div>
+    <label for="editorShowDuration" title="Whether or not this category's types should revert back to the default value after the given number of turns, or remain at the new value until changed again.">Duration?</label> 
+    <input id="editorShowDuration" type="checkbox"/> 
+    <span id="editorDurationNumArea"><input id="editorDuration" type="text" value=""/></span>
+  </div>
+  <div>
+    <label for="editorActionable" title="Whether or not characters can form volitions (desires) to take actions directly changing types in this category. If actionable, you'll need to write actions to support all types in this category becoming true (or rising) and becoming false (or dropping). If not actionable, this category's types can appear in rule preconditions and effects, but characters may not directly reason about taking action to change them.">Actionable?</label> 
+    <input id="editorActionable" type="checkbox"/>
+  </div>
+  <div>
+    <label title="The specific social types matching this category's description. Each type shares the template defined by this category, but is otherwise a distinct type of social record. For example, a category like 'Ability Scores' might have types of 'Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', and 'Charisma'.">Types</label> 
+    <span id="schemaEdNormTypes"></span>
+    <span class="schemaEdType schemaEdNewType">(new)</span> 
+  </div>
+</div>
+
 </body>
 </html>
