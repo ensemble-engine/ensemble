@@ -121,19 +121,36 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		if (blueprints === undefined) {
 			throw new Error("Error: social structure data file must be JSON that defines a top-level key 'schema'");
 		}
-		var atLeastOneCategoryAllowsIntent = false;
-		for (var i = 0; i < blueprints.length; i++) {
-			var categoryBlueprint = blueprints[i];
 
-			// Error Checking
-			if (categoryBlueprint.actionable === true) {
+		var atLeastOneCategoryAllowsIntent = false;
+		var i;
+		for (i = 0; i < blueprints.length; i++) {
+			if (blueprints[i].actionable === true) {
 				atLeastOneCategoryAllowsIntent = true;
+				break;
 			}
+		}
+		if (!atLeastOneCategoryAllowsIntent) {
+			throw new Error("SCHEMA ERROR: A schema must include at least one category where actionable is true, otherwise there are no possible actions for characters to take.");
+		}
+
+		for (i = 0; i < blueprints.length; i++) {
+			loadBlueprint(structure, blueprints[i], i);
+			}
+
+		socialStructure = structure;
+		validate.registerSocialStructure(socialStructure);
+		return socialStructure;
+	};
+
+	var loadBlueprint = function(structure, categoryBlueprint, num) {
+
+		// Error Checking
 			if (structure[categoryBlueprint.category]) {
 				throw new Error("DATA ERROR in ensemble.loadSocialStructure: the category '" + categoryBlueprint.category + "' is defined more than once.");
 			}
 
-			validate.blueprint(categoryBlueprint, "Examining blueprint  #" + i);
+		validate.blueprint(categoryBlueprint, "Examining blueprint  #" + num);
 
 			socialRecord.registerDuration(categoryBlueprint);
 			socialRecord.registerDefault(categoryBlueprint);
@@ -150,17 +167,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 				typeBlueprint.type = type;
 				structure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
 			}
-
 		}
-
-		if (!atLeastOneCategoryAllowsIntent) {
-			throw new Error("SCHEMA ERROR: A schema must include at least one category where actionable is true, otherwise there are no possible actions for characters to take.");
-		}
-
-		socialStructure = structure;
-		validate.registerSocialStructure(socialStructure);
-		return socialStructure;
-	};
 
 	/**
 	 * @method getSocialStructure
