@@ -296,9 +296,27 @@ margin-left: 6em;
 }
 .schemaEdType {
 	width: 7em;
+	margin: 4px 2px;
+	font-size: 95% !important;
+}
+.schemaEdType:hover {
+	outline: thin dotted green;
+	background-color: #edffed;	
+	border-style: groove;
 }
 .schemaEdNewType {
 
+}
+.edTypeDelete {
+	font-size: 65%;
+	font-weight: bold;
+	color: red;
+	margin-right: 10px;
+	cursor: pointer;
+}
+#edTypesGroup {
+	margin-left: 110px;
+	margin-top: -1.2em;
 }
 #schemaEditForm div {
     padding: 5px 0px;
@@ -332,10 +350,10 @@ margin-left: 6em;
     border: thin dotted gray;
     padding: 5px 27px;
     background-color: #fffbde;
-    width: 67%;
+    width: 86%;
     display: inline-block;
     vertical-align: top;
-    margin: 5px 5px 0px 110px;
+    margin: 5px 5px 0px 10px;
     position: relative;
 }
 #ruleExamples li {
@@ -356,6 +374,9 @@ margin-left: 6em;
 }
 .tooltipRuleExamples {
 	font-size: 75%;
+}
+.no-close .ui-dialog-titlebar-close { /* hide jQueryUI default Close button */
+  display: none;
 }
 
 

@@ -140,28 +140,32 @@ define(["ensemble", "jquery"], function(ensemble, $){
 		var types = Object.keys(cat);
 		$("#schemaEdNormTypes").html("");
 		types.forEach(function(type) {
-			$("#schemaEdNormTypes").append("<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/> ");
+			$("#schemaEdNormTypes").append("<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/><span class='edTypeDelete' id='schemaEdDelete_" + type + "'>x</span>");
 		});
 
 		// Look up matching records.
 		lookupCategoryRecords(category);
 		updateExamples(category);
 
-		// Create and show the Schema Editor dialog box.
-		var editor = $("#schemaEditForm").dialog({
+		// Create and show the Schema Editor dialog box, if it's not already open.
+		if ($(".ui-dialog").length === 0) {
+			$("#schemaEditForm").dialog({
 			title: "Edit Schema Category",
+				dialogClass: "no-close", // don't show default close bttn
 			resizable: false,
 			modal: true,
 			width: 550,
 			buttons: {
-				"Save Changes": function() {
-					alert("Not yet implemented.");
-				},
-				Cancel: function() {
+					// "Save Changes": function() {
+					// 	alert("Not yet implemented.");
+					// },
+					"Close": function() {
+						// TODO: Check to see if there are any input fields with focus that have not been resolved.
 					$(this).dialog("destroy");
 				}
 			}
 		});
+		}
 
 		initSchemaEdTooltips();
 	}
