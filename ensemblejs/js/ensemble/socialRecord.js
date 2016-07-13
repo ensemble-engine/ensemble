@@ -82,9 +82,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	}
 	
 	var registerMaxValue = function (predicate) {
-		if (maxValues[predicate.category] === undefined) {
-			maxValues[predicate.category] = predicate.maxValue !== undefined ? predicate.maxValue : 100;
-		}
+		maxValues[predicate.category] = predicate.maxValue !== undefined ? predicate.maxValue : 100;
 	};
 
 	var getRegisteredMaxValue = function (predicate) {
@@ -95,9 +93,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};	
 	
 	var registerMinValue = function (predicate) {
-		if (minValues[predicate.category] === undefined) {
-			minValues[predicate.category] = predicate.minValue !== undefined ? predicate.minValue : 0;
-		}
+		minValues[predicate.category] = predicate.minValue !== undefined ? predicate.minValue : 0;
 	};
 
 	var getRegisteredMinValue = function (predicate) {
@@ -105,9 +101,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	var registerDuration = function (predicate) {
-		if (durations[predicate.category] === undefined) {
-			durations[predicate.category] = predicate.duration;
-		}
+		durations[predicate.category] = predicate.duration;
 	};
 
 	var getRegisteredDuration = function (predicate) {
@@ -115,9 +109,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	var registerDirection = function (predicate) {
-		if (directions[predicate.category] === undefined) {
-			directions[predicate.category] = predicate.directionType;
-		}
+		directions[predicate.category] = predicate.directionType;
 	};
 
 	var getRegisteredDirection = function (predicate) {
@@ -125,9 +117,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	var registerDefaultValue = function (predicate) {
-		if (defaultValues[predicate.category] === undefined) {
-			defaultValues[predicate.category] = predicate.defaultValue;
-		}
+		defaultValues[predicate.category] = predicate.defaultValue;
 	};
 
 	var getRegisteredDefaultValue = function (predicate) {
@@ -135,9 +125,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 	var registerIsBoolean = function(predicate){
-		if(isBooleans[predicate.category] === undefined){
-			isBooleans[predicate.category] = predicate.isBoolean;
-		}
+		isBooleans[predicate.category] = predicate.isBoolean;
 	};
 
 	var getRegisteredIsBoolean = function(predicate){
