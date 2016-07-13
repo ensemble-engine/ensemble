@@ -136,38 +136,66 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 
 		for (i = 0; i < blueprints.length; i++) {
 			loadBlueprint(structure, blueprints[i], i);
-			}
+		}
 
 		socialStructure = structure;
 		validate.registerSocialStructure(socialStructure);
 		return socialStructure;
 	};
 
+	/**
+	 * @method loadBlueprint
+	 * @memberOf ensemble
+	 * @private
+	 * @description Internal function to handle loading a single schema
+	 * blueprint.
+	 *
+	 * @param  {Object} structure A reference to the module's social structure variable, which will be updated with the details of the newly loaded blueprint.
+	 * @param	{Object}	categoryBlueprint	The blueprint object to load
+	 * @param	{Number}	When loading multiple blueprints, can pass an ID number to be printed if necessary for diagnostics.
+	 * 
+	 */
 	var loadBlueprint = function(structure, categoryBlueprint, num) {
 
 		// Error Checking
-			if (structure[categoryBlueprint.category]) {
-				throw new Error("DATA ERROR in ensemble.loadSocialStructure: the category '" + categoryBlueprint.category + "' is defined more than once.");
-			}
+		if (structure[categoryBlueprint.category]) {
+			throw new Error("DATA ERROR in ensemble.loadSocialStructure: the category '" + categoryBlueprint.category + "' is defined more than once.");
+		}
 
 		validate.blueprint(categoryBlueprint, "Examining blueprint  #" + num);
 
-			socialRecord.registerDuration(categoryBlueprint);
-			socialRecord.registerDefault(categoryBlueprint);
-			socialRecord.registerDirection(categoryBlueprint);
-			socialRecord.registerIsBoolean(categoryBlueprint);
-			socialRecord.registerMaxValue(categoryBlueprint);
-			socialRecord.registerMinValue(categoryBlueprint);
+		socialRecord.registerDuration(categoryBlueprint);
+		socialRecord.registerDefault(categoryBlueprint);
+		socialRecord.registerDirection(categoryBlueprint);
+		socialRecord.registerIsBoolean(categoryBlueprint);
+		socialRecord.registerMaxValue(categoryBlueprint);
+		socialRecord.registerMinValue(categoryBlueprint);
 
-			// Create an interface for each type within this category.
-			structure[categoryBlueprint.category] = {};
-			for (var j = 0; j < categoryBlueprint.types.length; j++) {
-				var type = categoryBlueprint.types[j].toLowerCase();
-				var typeBlueprint = util.clone(categoryBlueprint);
-				typeBlueprint.type = type;
-				structure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
-			}
+		// Create an interface for each type within this category.
+		structure[categoryBlueprint.category] = {};
+		for (var j = 0; j < categoryBlueprint.types.length; j++) {
+			var type = categoryBlueprint.types[j].toLowerCase();
+			var typeBlueprint = util.clone(categoryBlueprint);
+			typeBlueprint.type = type;
+			structure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
 		}
+	}
+
+	/**
+	 * @method updateCategory
+	 * @memberOf ensemble
+	 * @public
+	 * @description Refresh the definition of a schema category. NOTE: This will not automatically check for conflicts with existing rules, social records, etc.: probably useful only in the context of a schema editor program that is taking care of that stuff.
+	 *
+ 	 * @param  {String} categoryKey The social category to update.
+ 	 * @param  {Object} blueprint	A new specification for this category, in the same format as blueprints passed into loadSocialStructure.
+ 	 *
+	 */
+	var updateCategory = function(categoryKey, blueprint) {
+		delete socialStructure[categoryKey];
+		loadBlueprint(socialStructure, blueprint, 0);
+		// TODO: Technically, if the name of the category changes, this is leaving behind old duration, direction, default etc. values in the socialRecord internals. I don't believe this harms anything, but it's a bit messy.
+	}
 
 	/**
 	 * @method getSocialStructure
@@ -747,6 +775,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getCategoryDescriptors		: getCategoryDescriptors,
 		getCategoryFromType		: getCategoryFromType,
 		isValidTypeForCategory		: isValidTypeForCategory,
+		updateCategory			: updateCategory,
 		addCharacters			: addCharacters,
 		getCharacters			: getCharacters,
 		getCharactersWithMetadata : getCharactersWithMetadata,

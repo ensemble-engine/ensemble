@@ -4,15 +4,17 @@ This module handles the viewer and editor for the currently loaded social schema
 
 /*global console */
 
-define(["ensemble", "jquery"], function(ensemble, $){
+define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, rulesEditor, rulesViewer, $){
 
 	var socialStructure;
+	var editorCategory;
 	var recordsForActiveCategory = {};
 
 	var init = function() {
 		// Set up editor change events.
 		$("#editorCategoryName").change(function() {
-			console.log("editorCategoryName change", this);
+			var newVal = this.value;
+			findAndReplace("category", editorCategory, newVal);
 		})
 
 		// Set change handlers for form UI
@@ -77,11 +79,13 @@ define(["ensemble", "jquery"], function(ensemble, $){
 			$(this).children(".editIcon").hide();
 		});
 
-		$(".schemaCategory").click(editSchemaCategory);
+		$(".schemaCategory").click(function() {
+			editSchemaCategory($(this).attr("id").split("_")[1]); // i.e. "cat_trait"
+		});
 	}
 
-	var editSchemaCategory = function() {
-		var category = $(this).attr("id").split("_")[1]; // i.e. "cat_trait"
+	var editSchemaCategory = function(category) {
+		editorCategory = category;
 		var cat = socialStructure[category];
 		var catDescriptors = ensemble.getCategoryDescriptors(category);
 
@@ -150,21 +154,21 @@ define(["ensemble", "jquery"], function(ensemble, $){
 		// Create and show the Schema Editor dialog box, if it's not already open.
 		if ($(".ui-dialog").length === 0) {
 			$("#schemaEditForm").dialog({
-			title: "Edit Schema Category",
+				title: "Edit Schema Category",
 				dialogClass: "no-close", // don't show default close bttn
-			resizable: false,
-			modal: true,
-			width: 550,
-			buttons: {
+				resizable: false,
+				modal: true,
+				width: 550,
+				buttons: {
 					// "Save Changes": function() {
 					// 	alert("Not yet implemented.");
 					// },
 					"Close": function() {
 						// TODO: Check to see if there are any input fields with focus that have not been resolved.
-					$(this).dialog("destroy");
+						$(this).dialog("destroy");
+					}
 				}
-			}
-		});
+			});
 		}
 
 		initSchemaEdTooltips();
@@ -205,6 +209,59 @@ define(["ensemble", "jquery"], function(ensemble, $){
 			$("#edCat_" + itemType + "_" + category).tooltip({content: "<p class='tooltipRuleExamples'>" + allItems + "</p>"});
 		} else {
 			el.html("No matching <span class='edMatchType'>" + itemName + "</span>.");
+		}
+	}
+
+	var findAndReplace = function(key, oldVal, newVal) {
+		var oldName = editorCategory;
+		var category = socialStructure[oldName];
+		var descriptors = ensemble.getCategoryDescriptors(oldName);
+
+		// TODO Validation of new value.
+
+		// Update schema in Ensemble
+		var blueprint = newBlueprint(descriptors, newVal, category);
+		ensemble.updateCategory(oldName, blueprint);
+
+		// Update matching rules
+		["trigger", "volition"].forEach(function(ruleSet) {
+			recordsForActiveCategory[ruleSet].forEach(function(rule) {
+				rule.conditions.forEach(function(condition) {
+					if (condition[key] === oldVal) {
+						condition[key] = newVal;
+					}
+				});
+				rule.effects.forEach(function(effect) {
+					if (effect[key] === oldVal) {
+						effect[key] = newVal;
+					}
+				});
+				var result = ensemble.setRuleById(rule.id, rule);
+			});
+		});
+
+		// TODO: Trigger an update to all affected files.
+
+		// Refresh the editor.
+		socialStructure = ensemble.getSocialStructure();
+		editSchemaCategory(newVal); // refresh view
+		show(socialStructure);
+		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
+		rulesViewer.show();    // to do this by hand from here.
+
+	}
+
+	var newBlueprint = function(descriptors, newName, category) {
+		return {
+			"category": newName,
+			"isBoolean": descriptors.isBoolean,
+			"directionType": descriptors.directionType,
+			"duration": descriptors.duration,
+			"defaultValue": descriptors.defaultVal, // hmm
+			"actionable": descriptors.actionable,
+			"maxValue": descriptors.max, // well
+			"minValue": descriptors.min, // yep
+			"types": Object.keys(category)
 		}
 	}
 

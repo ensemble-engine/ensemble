@@ -40,8 +40,12 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		rulesViewer = refToViewer;
 		ruleOriginsTrigger = _ruleOriginsTrigger;
 		ruleOriginsVolition = _ruleOriginsVolition;
-		buildIntentOptions();
 		activeFileRefByRuleType = {};
+		refresh();
+	}
+
+	var refresh = function() {
+		buildIntentOptions();
 	}
 
 	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where actionable is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
@@ -1112,6 +1116,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 	return {
 		init: init,
+		refresh: refresh,
 		loadRule: loadRule,
 		updateRule: controller.updateRule,
 		updateActiveRule: controller.updateActiveRule
