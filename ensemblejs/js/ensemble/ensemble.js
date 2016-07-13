@@ -541,6 +541,49 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return [];
 	}
 
+	/**
+	 *@method filterRules
+	 *@memberof ensemble
+	 *@public
+	 * 
+	 * @description When given a ruleset and an object specifying search criteria, return only the rules from the ruleset that match. The object passed in is the same as a search object you'd use with ensemble.get() i.e., { category: "traits" }. All rules having any conditions or effects that match the request are returned.
+	 *
+	 * @param {String} ruleSet -- The ruleset to search (probably "trigger" or "volition").
+	 *
+	 * @param {Object} criteria -- Currently supports a single key-value pair matching one aspect of a predicate.
+	 * @return {Array}      An array of matching rules. 
+	 * 
+	 */
+	var filterRules = function(ruleSet, criteria) {
+		return getRules(ruleSet).filter(function(rule) {
+			var matchFound;
+			for (var key in criteria) {
+				matchFound = false;
+				if (rule.conditions) {
+					for (var i = 0; i < rule.conditions.length; i++) {
+						if (rule.conditions[i][key] === criteria[key]) {
+							matchFound = true;
+							break;
+						}
+					}
+				}
+				if (!matchFound && rule.effects) {
+					for (var i = 0; i < rule.effects.length; i++) {
+						if (rule.effects[i][key] === criteria[key]) {
+							matchFound = true;
+							break;
+						}
+					}
+				}
+				// Must find at least one match for each search term.
+				if (!matchFound) {
+					break;
+				}
+			}
+			return matchFound;
+		});
+	}
+
 	var setRuleById = function(label, rule) {
 
 		var ruleSet = label.split("_")[0];
@@ -735,6 +778,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		
 		addRules				: addRules,
 		getRules				: getRules,
+		filterRules				: filterRules,
 		setRuleById				: setRuleById,
 		getRuleById				: ruleLibrary.getRuleById,
 		deleteRuleById			: ruleLibrary.deleteRuleById,

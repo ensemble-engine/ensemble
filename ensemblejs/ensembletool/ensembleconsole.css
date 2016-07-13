@@ -322,6 +322,41 @@ margin-left: 6em;
 	font-weight: bold;
 	padding-left: 6px;
 }
+#ruleExamples, #edExHeader {
+	font-size: 80%;
+}
+#edExHeader {
+
+}
+#ruleExamples {
+    border: thin dotted gray;
+    padding: 5px 27px;
+    background-color: #fffbde;
+    width: 67%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 5px 5px 0px 110px;
+    position: relative;
+}
+#ruleExamples li {
+	margin-bottom: 5px;
+}
+.edHowMany {
+	color: red;
+	text-decoration: underline;
+}
+.edSampleMatch {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 90%;
+    color: #6363ff;
+}
+.edMatchType {
+	color: green;
+}
+.tooltipRuleExamples {
+	font-size: 75%;
+}
 
 
 /*editor*/

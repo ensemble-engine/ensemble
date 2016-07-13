@@ -163,6 +163,15 @@ socialRecord History viewer
     <label for="editorActionable" title="Whether or not characters can form volitions (desires) to take actions directly changing types in this category. If actionable, you'll need to write actions to support all types in this category becoming true (or rising) and becoming false (or dropping). If not actionable, this category's types can appear in rule preconditions and effects, but characters may not directly reason about taking action to change them.">Actionable?</label> 
     <input id="editorActionable" type="checkbox"/>
   </div>
+  <div id="edExamples">
+    <label>Statistics</label>
+    <span id="edExHeader">These schema entries involve this category:</span>
+    <ul id="ruleExamples">
+      <li id="triggerExample"><span class="edSampleMatch">People aren't interesting in dating people who have been mean to them in the past</span> and <span class="edOthers" title=""><span class="edHowMany">17 other</span> <span class="edMatchType">trigger</span> rules</li>
+      <li id="volitionExample"><span class="edHowMany">4</span> <span class="edMatchType">volition</span> rules</li>
+      <li id="socialRecordsExample"><span class="edHowMany">9</span> <span class="edMatchType">social records</span> referncing a member of this category</li>
+      <li id="actionsExample"><span class="edHowMany">??</span> <span class="edMatchType">actions</span> referncing a member of this category</li>
+  </div>
   <div>
     <label title="The specific social types matching this category's description. Each type shares the template defined by this category, but is otherwise a distinct type of social record. For example, a category like 'Ability Scores' might have types of 'Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', and 'Charisma'.">Types</label> 
     <span id="schemaEdNormTypes"></span>

@@ -7,9 +7,23 @@ This module handles the viewer and editor for the currently loaded social schema
 define(["ensemble", "jquery"], function(ensemble, $){
 
 	var socialStructure;
+	var recordsForActiveCategory = {};
 
 	var init = function() {
-		
+		// Set up editor change events.
+		$("#editorCategoryName").change(function() {
+			console.log("editorCategoryName change", this);
+		})
+
+		// Set change handlers for form UI
+		$("#editorShowDuration").change(function() {
+			if (this.checked) {
+				$("#editorDurationNumArea").show();
+			} else {
+				$("#editorDurationNumArea").hide();
+				// TODO: Set model to have no duration
+			}
+		});
 	}
 
 	var initSchemaEdTooltips = function() {
@@ -129,16 +143,9 @@ define(["ensemble", "jquery"], function(ensemble, $){
 			$("#schemaEdNormTypes").append("<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/> ");
 		});
 
-		// Set change handlers for form UI
-		$("#editorShowDuration").change(function() {
-			if (this.checked) {
-				$("#editorDurationNumArea").show();
-			} else {
-				$("#editorDurationNumArea").hide();
-				// TODO: Set model to have no duration
-			}
-		});
-
+		// Look up matching records.
+		lookupCategoryRecords(category);
+		updateExamples(category);
 
 		// Create and show the Schema Editor dialog box.
 		var editor = $("#schemaEditForm").dialog({
@@ -157,6 +164,44 @@ define(["ensemble", "jquery"], function(ensemble, $){
 		});
 
 		initSchemaEdTooltips();
+	}
+
+	// Ask Ensemble to get a list of all records for the given category.
+	var lookupCategoryRecords = function(category) {
+		recordsForActiveCategory.trigger = ensemble.filterRules("trigger", { "category": category} );
+		recordsForActiveCategory.volition = ensemble.filterRules("volition", { "category": category} );
+		recordsForActiveCategory.socialRecords = ensemble.get({"category": category});
+	}
+
+	// Show an example for each of the schema items this category might be involved with. (Punt the work to the updateExample function below.)
+	var updateExamples = function(category) {
+		updateExample("trigger", "trigger rules", category, function(rule) {
+			return rule.name;
+		});
+		updateExample("volition", "volition rules", category, function(rule) {
+			return rule.name;
+		});
+		updateExample("socialRecords", "social records", category, function(record) {
+			console.log("record", record);
+			return "At time " + record.timeHappened + ": " + ensemble.predicateToEnglish(record).text;
+		});
+		$("#actionsExample").html("?? matching actions.");
+	}
+
+	// Show an example for a particular schema item.
+	var updateExample = function(itemType, itemName, category, toEnglishFunc) {
+		var items = recordsForActiveCategory[itemType];
+		var el = $("#" + itemType + "Example");
+		if (items && items.length > 0) {
+			var sampleItem = items[0];
+			var allItems = items.map(toEnglishFunc).map(function(item) {
+				return "&bull; " + item;
+			}).join("<br>");
+			el.html("<span class='edSampleMatch'>" + toEnglishFunc(sampleItem) + "</span> and <span class='edOthers'><span id='edCat_" + itemType + "_" + category + "' title='' class='edHowMany'>" + (items.length-1) + " other</span> <span class='edMatchType'>" + itemName + "</span>");
+			$("#edCat_" + itemType + "_" + category).tooltip({content: "<p class='tooltipRuleExamples'>" + allItems + "</p>"});
+		} else {
+			el.html("No matching <span class='edMatchType'>" + itemName + "</span>.");
+		}
 	}
 
 	return {
