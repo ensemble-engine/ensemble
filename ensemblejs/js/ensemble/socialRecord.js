@@ -165,7 +165,9 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 						//ONLY clone if the duration is 0.
 						//Otherwise we are dealing with something like an socialRecord label, and we don't want to copy it
 						//to this new timestep.
-						socialRecord[i].push(util.clone(socialRecord[i-1][k]));
+						var newRec = util.clone(socialRecord[i-1][k]);
+						newRec.id = util.iterator("socialRecords");
+						socialRecord[i].push(newRec);
 					}
 				}
 			}
@@ -208,6 +210,9 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	// Helper function for newGet(). Checks whether two predicates have a compatible value, taking into account an optional operator and passed-in expected values.
 	var checkValueMatch = function(socialRecordValue, searchValue, operator) {
+		if (searchValue === "any") {
+			return true;
+		}
 		if (typeof searchValue === "boolean" && socialRecordValue !== searchValue) {
 			return false;
 		}
@@ -517,9 +522,11 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			if (socialRecordPredicate.isActive === undefined && setPredicate.isActive !== undefined) {
 				socialRecordPredicate.isActive = setPredicate.isActive;
 			}
+			socialRecordPredicate.id = util.iterator("socialRecords");
 			socialRecord[timeStep].push(socialRecordPredicate);
 		} else if (searchResult.length === 1) {
 			socialRecordPredicate = searchResult[0];
+			socialRecordPredicate.id = util.iterator("socialRecords");
 		} else {
 			console.log("bad predicate: ", setPredicate);
 			throw new Error("Expected any pattern get to the socialRecord to return either an existing record or make a new one w/the default value and return that.")			
@@ -558,6 +565,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			recipPredicate.first = temp;
 			recipPredicate.value = undefined;
 			recipPredicate.isActive = setPredicate.isActive;
+			recipPredicate.id = util.iterator("socialRecords");
 
 			var rPred;
 			var recipSearchResult = get(recipPredicate, 0, 0, false);
@@ -574,6 +582,21 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 		}
 
+	}
+
+	var setById = function(id, newRecord) {
+		if (id === undefined || id === null) {
+			return false;
+		}
+		for (var timeStep = 0; timeStep < socialRecord.length; timeStep++) {
+			for (var j = 0; j < socialRecord[timeStep].length; j++) {
+				if (socialRecord[timeStep][j].id === id) {
+					socialRecord[timeStep][j] = newRecord;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 /**
@@ -817,6 +840,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		clearEverything			: clearEverything,
 		set 					: set,
 		get 					: publicGet,
+		setById					: setById,
 		addHistory				: addHistory,
 		socialRecordHistoryToString 	: socialRecordHistoryToString,
 		socialRecordFullHistoryToString	: socialRecordFullHistoryToString,

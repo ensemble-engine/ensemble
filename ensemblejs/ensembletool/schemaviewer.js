@@ -4,7 +4,7 @@ This module handles the viewer and editor for the currently loaded social schema
 
 /*global console */
 
-define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, rulesEditor, rulesViewer, $){
+define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, $){
 
 	var socialStructure;
 	var editorCategory;
@@ -178,7 +178,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, 
 	var lookupCategoryRecords = function(category) {
 		recordsForActiveCategory.trigger = ensemble.filterRules("trigger", { "category": category} );
 		recordsForActiveCategory.volition = ensemble.filterRules("volition", { "category": category} );
-		recordsForActiveCategory.socialRecords = ensemble.get({"category": category});
+		recordsForActiveCategory.socialRecords = ensemble.get({"category": category, "value": "any"}, -10000, 1000); // get all records, not just those at most recent timestep
 		recordsForActiveCategory.actions = ensemble.filterActions({ "category": category} );
 	}
 
@@ -242,6 +242,14 @@ define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, 
 			});
 		});
 
+		// Update matching social records
+		recordsForActiveCategory.socialRecords.forEach(function(record) {
+			record[key] = newVal;
+			ensemble.setSocialRecordById(record.id, record);
+		})
+
+		// Update matching actions
+
 		// TODO: Trigger an update to all affected files.
 
 		// Refresh the editor.
@@ -250,6 +258,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, 
 		show(socialStructure);
 		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
 		rulesViewer.show();    // to do this by hand from here.
+		historyViewer.refresh();
 
 	}
 
