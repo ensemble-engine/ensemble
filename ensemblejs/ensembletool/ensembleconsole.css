@@ -292,6 +292,9 @@ margin-left: 6em;
 }
 
 /* schema editor */
+#schemaEditForm {
+	display: none;
+}
 #schemaEdNormTypes {
 }
 .schemaEdType {

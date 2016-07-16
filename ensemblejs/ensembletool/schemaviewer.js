@@ -179,6 +179,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, 
 		recordsForActiveCategory.trigger = ensemble.filterRules("trigger", { "category": category} );
 		recordsForActiveCategory.volition = ensemble.filterRules("volition", { "category": category} );
 		recordsForActiveCategory.socialRecords = ensemble.get({"category": category});
+		recordsForActiveCategory.actions = ensemble.filterActions({ "category": category} );
 	}
 
 	// Show an example for each of the schema items this category might be involved with. (Punt the work to the updateExample function below.)
@@ -190,10 +191,11 @@ define(["ensemble", "rulesEditor", "rulesViewer", "jquery"], function(ensemble, 
 			return rule.name;
 		});
 		updateExample("socialRecords", "social records", category, function(record) {
-			console.log("record", record);
 			return "At time " + record.timeHappened + ": " + ensemble.predicateToEnglish(record).text;
 		});
-		$("#actionsExample").html("?? matching actions.");
+		updateExample("actions", "actions", category, function(action) {
+			return action.name;
+		});
 	}
 
 	// Show an example for a particular schema item.

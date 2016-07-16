@@ -590,27 +590,47 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * 
 	 */
 	var filterRules = function(ruleSet, criteria) {
-		return getRules(ruleSet).filter(function(rule) {
+		var itemsToFilter = getRules(ruleSet);
+		var predicateArrays = ["conditions", "effects"];
+		return _filter(itemsToFilter, predicateArrays, criteria);
+	}
+
+	/**
+	 *@method filterActions
+	 *@memberof ensemble
+	 *@public
+	 * 
+	 * @description When given an object specifying search criteria, return only the actions that match the given terms. The object passed in is the same as a search object you'd use with ensemble.get() i.e., { category: "traits" }. All actions having any conditions, effects, or influenceRules that match the request are returned.
+	 *
+	 * @param {Object} criteria -- Currently supports a single key-value pair matching one aspect of a predicate.
+	 * @return {Array}      An array of matching actions. 
+	 * 
+	 */
+	var filterActions = function(criteria) {
+		var itemsToFilter = actionLibrary.getAllActions();
+		var predicateArrays = ["conditions", "effects", "influenceRules"];
+		return _filter(itemsToFilter, predicateArrays, criteria);
+	}
+
+	// Internal function used by filterRules and filterActions. Given an array of records and a list of fields to check, iterates through records in those fields excluding any that don't match the given criteria.
+	var _filter = function(set, fields, criteria) {
+		return set.filter(function(record) {
 			var matchFound;
 			for (var key in criteria) {
 				matchFound = false;
-				if (rule.conditions) {
-					for (var i = 0; i < rule.conditions.length; i++) {
-						if (rule.conditions[i][key] === criteria[key]) {
-							matchFound = true;
-							break;
+				var fieldPos = 0;
+				while (!matchFound && fieldPos < fields.length) {
+					var field = fields[fieldPos];
+					if (record[field]) {
+						for (var i = 0; i < record[field].length; i++) {
+							if (record[field][i][key] === criteria[key]) {
+								matchFound = true;
+								break;
+							}
 						}
 					}
+					fieldPos += 1;
 				}
-				if (!matchFound && rule.effects) {
-					for (var i = 0; i < rule.effects.length; i++) {
-						if (rule.effects[i][key] === criteria[key]) {
-							matchFound = true;
-							break;
-						}
-					}
-				}
-				// Must find at least one match for each search term.
 				if (!matchFound) {
 					break;
 				}
@@ -618,6 +638,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 			return matchFound;
 		});
 	}
+
 
 	var setRuleById = function(label, rule) {
 
@@ -815,6 +836,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		addRules				: addRules,
 		getRules				: getRules,
 		filterRules				: filterRules,
+		filterActions			: filterActions,
 		setRuleById				: setRuleById,
 		getRuleById				: ruleLibrary.getRuleById,
 		deleteRuleById			: ruleLibrary.deleteRuleById,
