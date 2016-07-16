@@ -828,6 +828,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
+		setActionById			: actionLibrary.setActionById,
 		addHistory				: socialRecord.addHistory,
 		clearHistory			: socialRecord.clearHistory,
 		getSocialRecordCopyAtTimestep	: socialRecord.getSocialRecordCopyAtTimestep,

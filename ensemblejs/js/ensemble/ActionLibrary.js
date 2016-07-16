@@ -108,6 +108,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		for (var i = 0; i < parsedActions.length; i++) {
 			var action = parsedActions[i];
 			action.fileName = fileName;
+			action.id = util.iterator("actions");
 
 			// Error Checking
 			validate.action(action, "Examining action  #" + i);
@@ -989,6 +990,17 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundActions;
 	};
 
+	var setActionById = function(id, newAction) {
+		for (var i = 0; i < actions.length; i++) {
+			var action = actions[i];
+			if (action.id === id) {
+				actions[i] = newAction;
+				return true;
+			}
+		}
+		return false;	
+	}
+
 	//for each action in the action list, go through and find how many total terminal actions we have.
 	var getNumberOfTerminalsReachablebyAnActionList = function(actionList){	
 		var sum = 0;
@@ -1107,6 +1119,7 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 
 		getAction : getAction,
 		getActions : getActions,
+		setActionById: setActionById,
 
 		dumpActions : dumpActions
 	};

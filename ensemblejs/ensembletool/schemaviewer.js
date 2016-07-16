@@ -246,9 +246,27 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
 			ensemble.setSocialRecordById(record.id, record);
-		})
+		});
 
 		// Update matching actions
+		recordsForActiveCategory.actions.forEach(function(action) {
+			action.conditions.forEach(function(condition) {
+				if (condition[key] === oldVal) {
+					condition[key] = newVal;
+				}
+			});
+			action.effects.forEach(function(effect) {
+				if (effect[key] === oldVal) {
+					effect[key] = newVal;
+				}
+			});
+			action.influenceRules.forEach(function(rule) {
+				if (rule[key] === oldVal) {
+					rule[key] = newVal;
+				}
+			});
+			var result = ensemble.setActionById(action.id, action);
+		});
 
 		// TODO: Trigger an update to all affected files.
 
