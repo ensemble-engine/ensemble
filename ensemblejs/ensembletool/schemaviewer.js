@@ -4,7 +4,7 @@ This module handles the viewer and editor for the currently loaded social schema
 
 /*global console */
 
-define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, $){
+define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, util, $){
 
 	var socialStructure;
 	var editorCategory;
@@ -25,6 +25,26 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 				$("#editorDurationNumArea").hide();
 				// TODO: Set model to have no duration
 			}
+		});
+
+		$("#schemaEdNewType").click(function() {
+			var html = $("<div/>", {
+				html: "<input id='newTypeInput' />"
+			});
+			$(html).dialog({
+				title: "Create New " + editorCategory + " Type",
+				modal: true,
+				buttons: {
+					"Create": function() {
+						var newType = $("#newTypeInput").val();
+						addType(newType);
+						$(this).dialog("destroy");
+					},
+					"Cancel": function() {
+						$(this).dialog("destroy");
+					}
+				}
+			});
 		});
 	}
 
@@ -158,10 +178,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 		});
 		$(".schemaEdType").focus(function() {
 			lookupCategoryRecords(category, this.value);
-		})
+		});
 		$(".schemaEdType").blur(function() {
 			lookupCategoryRecords(category);
-		})
+		});
+		$(".schemaEdType").change(function() {
+			var newVal = this.value;
+			var oldVal = this.id.split("_")[1];
+			findAndReplace("type", oldVal, newVal);
+		});
 
 		// Look up matching records.
 		lookupCategoryRecords(category);
@@ -241,18 +266,27 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 	}
 
 	var findAndReplace = function(key, oldVal, newVal) {
-		var oldName = editorCategory;
-		var category = socialStructure[oldName];
-		var descriptors = ensemble.getCategoryDescriptors(oldName);
+		var category = socialStructure[editorCategory];
+		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
 
 		// TODO Validation of new value.
 		if (oldVal.trim() === newVal.trim()) {
 			return;
 		}
 
+		if (key === "type") {
+			category[newVal] = category[oldVal];
+			delete category[oldVal];
+			category[newVal].type = newVal;
+		}
+		var categoryNameToEdit = editorCategory;
+		if (key === "category") {
+			editorCategory = newVal;
+		}
+
 		// Update schema in Ensemble
-		var blueprint = newBlueprint(descriptors, newVal, category);
-		ensemble.updateCategory(oldName, blueprint);
+		var blueprint = newBlueprint(descriptors, editorCategory, category);
+		ensemble.updateCategory(categoryNameToEdit, blueprint);
 
 		// Update matching rules
 		["trigger", "volition"].forEach(function(ruleSet) {
@@ -297,21 +331,49 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 			var result = ensemble.setActionById(action.id, action);
 		});
 
+		saveToDiskAndRefresh();
+	}
+
+	var saveToDiskAndRefresh = function() {
 		// TODO: Trigger an update to all affected files.
 
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
-		editSchemaCategory(newVal); // refresh view
+		editSchemaCategory(editorCategory); // refresh view
 		show(socialStructure);
 		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
 		rulesViewer.show();    // to do this by hand from here.
 		historyViewer.refresh();
-
 	}
 
-	var newBlueprint = function(descriptors, newName, category) {
+	var addType = function(typeName) {
+		typeName = typeName.trim();
+		if (socialStructure[editorCategory][typeName]) {
+			$("<div/>", {html: "Already a type with this name."}).dialog({
+				title: "Not Created",
+				modal: true,
+				buttons: {
+					"Ok": function() {
+						$(this).dialog("destroy");
+					}
+				}
+			});
+			return;
+		}
+		var descriptors = ensemble.getCategoryDescriptors(editorCategory)
+		socialStructure[editorCategory][typeName] = util.clone(descriptors);
+		socialStructure[editorCategory][typeName].type = typeName;
+
+		// Update schema in Ensemble
+		var blueprint = newBlueprint(descriptors, editorCategory, socialStructure[editorCategory]);
+		ensemble.updateCategory(editorCategory, blueprint);
+
+		saveToDiskAndRefresh();
+	}
+
+	var newBlueprint = function(descriptors, catName, category) {
 		return {
-			"category": newName,
+			"category": catName,
 			"isBoolean": descriptors.isBoolean,
 			"directionType": descriptors.directionType,
 			"duration": descriptors.duration,

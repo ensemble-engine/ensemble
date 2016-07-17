@@ -307,8 +307,11 @@ margin-left: 6em;
 	background-color: #edffed;	
 	border-style: groove;
 }
-.schemaEdNewType {
-
+#schemaEdNewType {
+	border: thin solid gray;
+    font-size: 80% !important;
+    padding: 3px 7px;
+    cursor: pointer;
 }
 .edTypeDelete {
 	font-size: 65%;
