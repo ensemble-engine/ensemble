@@ -147,9 +147,24 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 			$("#schemaEdNormTypes").append("<input class='schemaEdType' id='schemaEd_" + type + "' value='" + type + "'/><span class='edTypeDelete' id='schemaEdDelete_" + type + "'>x</span>");
 		});
 
+		// Setup handlers for generated items.
+		$(".schemaEdType").mouseover(function() {
+			lookupCategoryRecords(category, this.value);
+		});
+		$(".schemaEdType").mouseout(function() {
+			if (!$(this).is(':focus')) {
+				lookupCategoryRecords(category);
+			}
+		});
+		$(".schemaEdType").focus(function() {
+			lookupCategoryRecords(category, this.value);
+		})
+		$(".schemaEdType").blur(function() {
+			lookupCategoryRecords(category);
+		})
+
 		// Look up matching records.
 		lookupCategoryRecords(category);
-		updateExamples(category);
 
 		// Create and show the Schema Editor dialog box, if it's not already open.
 		if ($(".ui-dialog").length === 0) {
@@ -175,11 +190,17 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 	}
 
 	// Ask Ensemble to get a list of all records for the given category.
-	var lookupCategoryRecords = function(category) {
-		recordsForActiveCategory.trigger = ensemble.filterRules("trigger", { "category": category} );
-		recordsForActiveCategory.volition = ensemble.filterRules("volition", { "category": category} );
-		recordsForActiveCategory.socialRecords = ensemble.get({"category": category, "value": "any"}, -10000, 1000); // get all records, not just those at most recent timestep
-		recordsForActiveCategory.actions = ensemble.filterActions({ "category": category} );
+	var lookupCategoryRecords = function(category, optType) {
+		var pred = { "category": category };
+		if (optType) {
+			pred.type = optType;
+		}
+		recordsForActiveCategory.trigger = ensemble.filterRules("trigger", pred);
+		recordsForActiveCategory.volition = ensemble.filterRules("volition", pred);
+		recordsForActiveCategory.actions = ensemble.filterActions({ "category": category, "type": optType} );
+		pred.value = "any"
+		recordsForActiveCategory.socialRecords = ensemble.get(pred, -1000, 1000); // get all records, not just those at most recent timestep
+		updateExamples(category);
 	}
 
 	// Show an example for each of the schema items this category might be involved with. (Punt the work to the updateExample function below.)
@@ -202,15 +223,20 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 	var updateExample = function(itemType, itemName, category, toEnglishFunc) {
 		var items = recordsForActiveCategory[itemType];
 		var el = $("#" + itemType + "Example");
+		var noMatch = "No matching <span class='edMatchType'>" + itemName + "</span>."
 		if (items && items.length > 0) {
 			var sampleItem = items[0];
+			if (items.length === 1 && itemType === "socialRecords" && !sampleItem.first) {
+				el.html(noMatch);
+				return; // Don't show an empty (i.e. default false) predicate as an example
+			}
 			var allItems = items.map(toEnglishFunc).map(function(item) {
 				return "&bull; " + item;
 			}).join("<br>");
 			el.html("<span class='edSampleMatch'>" + toEnglishFunc(sampleItem) + "</span> and <span class='edOthers'><span id='edCat_" + itemType + "_" + category + "' title='' class='edHowMany'>" + (items.length-1) + " other</span> <span class='edMatchType'>" + itemName + "</span>");
 			$("#edCat_" + itemType + "_" + category).tooltip({content: "<p class='tooltipRuleExamples'>" + allItems + "</p>"});
 		} else {
-			el.html("No matching <span class='edMatchType'>" + itemName + "</span>.");
+			el.html(noMatch);
 		}
 	}
 
@@ -220,6 +246,9 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "jquery"], fu
 		var descriptors = ensemble.getCategoryDescriptors(oldName);
 
 		// TODO Validation of new value.
+		if (oldVal.trim() === newVal.trim()) {
+			return;
+		}
 
 		// Update schema in Ensemble
 		var blueprint = newBlueprint(descriptors, newVal, category);

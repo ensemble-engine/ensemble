@@ -302,7 +302,7 @@ margin-left: 6em;
 	margin: 4px 2px;
 	font-size: 95% !important;
 }
-.schemaEdType:hover {
+.schemaEdType:hover, .schemaEdType:focus {
 	outline: thin dotted green;
 	background-color: #edffed;	
 	border-style: groove;
