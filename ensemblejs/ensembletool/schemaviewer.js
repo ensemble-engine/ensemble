@@ -187,6 +187,18 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			var oldVal = this.id.split("_")[1];
 			findAndReplace("type", oldVal, newVal);
 		});
+		$(".edTypeDelete").mouseover(function() {
+			var val = this.id.split("_")[1];
+			lookupCategoryRecords(category, val);
+
+		});
+		$(".edTypeDelete").mouseout(function() {
+			lookupCategoryRecords(category);
+		});
+		$(".edTypeDelete").click(function() {
+			var typeToDelete = this.id.split("_")[1];
+			deleteTypeConfirm(typeToDelete);
+		});
 
 		// Look up matching records.
 		lookupCategoryRecords(category);
@@ -360,7 +372,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			});
 			return;
 		}
-		var descriptors = ensemble.getCategoryDescriptors(editorCategory)
+		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
 		socialStructure[editorCategory][typeName] = util.clone(descriptors);
 		socialStructure[editorCategory][typeName].type = typeName;
 
@@ -369,6 +381,60 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		ensemble.updateCategory(editorCategory, blueprint);
 
 		saveToDiskAndRefresh();
+	}
+
+	var deleteType = function(typeName) {
+		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
+		delete socialStructure[editorCategory][typeName];
+
+		// Update schema in Ensemble
+		var blueprint = newBlueprint(descriptors, editorCategory, socialStructure[editorCategory]);
+		ensemble.updateCategory(editorCategory, blueprint);
+
+		saveToDiskAndRefresh();
+	}
+
+	var deleteTypeConfirm = function(typeName) {
+		// Make sure nothing uses this type.
+		lookupCategoryRecords(editorCategory, typeName);
+		var numTrigger = recordsForActiveCategory.trigger.length;
+		var numVolition = recordsForActiveCategory.volition.length;
+		var numSocialRecords = recordsForActiveCategory.socialRecords.length;
+		var numActions = recordsForActiveCategory.actions.length;
+		if (numTrigger > 0 || numVolition > 0 || numSocialRecords > 1 || numActions > 0) {
+			var reasons = [];
+			if (numTrigger > 0) reasons.push(numTrigger + " trigger rules");
+			if (numVolition > 0) reasons.push(numVolition + " volition rules");
+			if (numSocialRecords > 1) reasons.push(numSocialRecords + " social records"); // TODO it's "1" b/c of bug where a default gets returned
+			if (numActions > 0) reasons.push(numActions + " actions");
+			console.log("reasons, reasons.join(',')", reasons, reasons.join(','));
+			var msg = "You can't delete the type '" + typeName + "' from the category '" + editorCategory + "' because your schema still references this type:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records before removing the type.";
+			$("<div/>", {html: msg}).dialog({
+				title: "Can't Delete",
+				modal: true,
+				buttons: {
+					"Ok": function() {
+						$(this).dialog("destroy");
+					}
+				}
+			});
+			return;
+		}
+		// For now, since we're requiring people to delete all references to the type first, we don't need a confirmation.
+		// $("<div/>", {html: "Are you sure you want to delete the type '" + typeName + "' from the category '" + editorCategory + "'?"}).dialog({
+		// 	title: "Confirm Delete Type",
+		// 	modal: true,
+		// 	buttons: {
+		// 		"Delete": function() {
+		// 			deleteType(typeName);
+		// 			$(this).dialog("destroy");
+		// 		},
+		// 		"Cancel": function() {
+		// 			$(this).dialog("destroy");
+		// 		}
+		// 	}
+		// });
+		deleteType(typeName);
 	}
 
 	var newBlueprint = function(descriptors, catName, category) {
