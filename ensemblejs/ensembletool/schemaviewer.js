@@ -18,6 +18,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		})
 
 		// Set change handlers for form UI
+		// --> Changing duration
 		$("#editorShowDuration").change(function() {
 			if (this.checked) {
 				$("#editorDurationNumArea").show();
@@ -27,6 +28,8 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			}
 		});
 
+		// --> Creating a new Type
+		// (note: deleting a type is triggered off dynamically created form elements, so we set it up farther down.)
 		$("#schemaEdNewType").click(function() {
 			var html = $("<div/>", {
 				html: "<input id='newTypeInput' />"
@@ -45,6 +48,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 					}
 				}
 			});
+		});
+
+		// --> Changing Direction
+		$("input[name=edDirectionType]").change(function() {
+			console.log(this.value);
+			if (countConflictingRecords() > 0) {
+				rejectChange("change the direction of");
+				return;
+			}
 		});
 	}
 
@@ -394,30 +406,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		saveToDiskAndRefresh();
 	}
 
+	var countConflictingRecords = function() {
+		return recordsForActiveCategory.trigger.length + recordsForActiveCategory.volition.length + (recordsForActiveCategory.socialRecords.length-1) + recordsForActiveCategory.actions.length;
+	}
+
 	var deleteTypeConfirm = function(typeName) {
 		// Make sure nothing uses this type.
 		lookupCategoryRecords(editorCategory, typeName);
-		var numTrigger = recordsForActiveCategory.trigger.length;
-		var numVolition = recordsForActiveCategory.volition.length;
-		var numSocialRecords = recordsForActiveCategory.socialRecords.length;
-		var numActions = recordsForActiveCategory.actions.length;
-		if (numTrigger > 0 || numVolition > 0 || numSocialRecords > 1 || numActions > 0) {
-			var reasons = [];
-			if (numTrigger > 0) reasons.push(numTrigger + " trigger rules");
-			if (numVolition > 0) reasons.push(numVolition + " volition rules");
-			if (numSocialRecords > 1) reasons.push(numSocialRecords + " social records"); // TODO it's "1" b/c of bug where a default gets returned
-			if (numActions > 0) reasons.push(numActions + " actions");
-			console.log("reasons, reasons.join(',')", reasons, reasons.join(','));
-			var msg = "You can't delete the type '" + typeName + "' from the category '" + editorCategory + "' because your schema still references this type:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records before removing the type.";
-			$("<div/>", {html: msg}).dialog({
-				title: "Can't Delete",
-				modal: true,
-				buttons: {
-					"Ok": function() {
-						$(this).dialog("destroy");
-					}
-				}
-			});
+		if (countConflictingRecords() > 0) {
+			rejectChange("delete the type '" + typeName + "' from");
 			return;
 		}
 		// For now, since we're requiring people to delete all references to the type first, we don't need a confirmation.
@@ -435,6 +432,28 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		// 	}
 		// });
 		deleteType(typeName);
+	}
+
+	var rejectChange = function(attemptedAction) {
+		var numTrigger = recordsForActiveCategory.trigger.length;
+		var numVolition = recordsForActiveCategory.volition.length;
+		var numSocialRecords = recordsForActiveCategory.socialRecords.length;
+		var numActions = recordsForActiveCategory.actions.length;
+		var reasons = [];
+		if (numTrigger > 0) reasons.push(numTrigger + " trigger rules");
+		if (numVolition > 0) reasons.push(numVolition + " volition rules");
+		if (numSocialRecords > 1) reasons.push(numSocialRecords + " social records"); // TODO it's "1" b/c of bug where a default gets returned
+		if (numActions > 0) reasons.push(numActions + " actions");
+		var msg = "You can't " + attemptedAction + " the category '" + editorCategory + "' because your schema still references this type:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records before removing the type.";
+		$("<div/>", {html: msg}).dialog({
+			title: "Can't Delete",
+			modal: true,
+			buttons: {
+				"Ok": function() {
+					$(this).dialog("destroy");
+				}
+			}
+		});
 	}
 
 	var newBlueprint = function(descriptors, catName, category) {
