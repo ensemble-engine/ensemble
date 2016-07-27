@@ -166,7 +166,6 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 						//Otherwise we are dealing with something like an socialRecord label, and we don't want to copy it
 						//to this new timestep.
 						var newRec = util.clone(socialRecord[i-1][k]);
-						newRec.id = util.iterator("socialRecords");
 						socialRecord[i].push(newRec);
 					}
 				}
