@@ -46,8 +46,11 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	/**
 	 * @method getCurrentTimeStep
+	 * @memberOf ensemble
+	 * @public
 	 * @description return the value of currentTimeStep.
-	 * @return {[int]} [the currentTimeStep stored in the socialRecord]
+	 * @example console.log("The currentTimestep is : " , ensemble.getCurrentTimestep());
+	 * @return {Int} the currentTimeStep stored in the socialRecord
 	 */
 	var getCurrentTimeStep = function(){
 		return currentTimeStep;
@@ -55,20 +58,28 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	
 	/**
 	 * @method  dumpSocialRecord
-	 * @description Debugging function: Dumps the whole socialRecord object to the console.
+	 * @description A debugging function. Dumps the whole socialRecord object to the console, to enable reviewing of both the current state of the simulation, and its history.
 	 * @public
+	 @example ensemble.dumpSocialRecord();
 	 * @memberOf ensemble
 	 */
 	var dumpSocialRecord = function() {
 		console.log("socialRecord:", socialRecord);
 	};
 
+
 	/**
-	 * Returns a copy of the socialRecord at the given timestep.
+	 * @method getSocialRecordCopyAtTimestep
+	 * @memberOf ensemble
+	 * @public
+
+	 * @description Returns a copy of the socialRecord at the given timestep.
 	 *
 	 * @param  {Number} timeStep The timestep to retrieve.
-	 *
+	 * @example var historyAtTimestepTwo = ensemble.getSocialRecordCopyAtTimestep(2);
 	 * @return {Object} A copy of an socialRecord timeslice, an array of predicate objects.
+	 *
+	 * 
 	 */
 	var getSocialRecordCopyAtTimestep = function(timeStep) {
 		if (timeStep === undefined) {
@@ -112,6 +123,16 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		directions[predicate.category] = predicate.directionType;
 	};
 
+	/**
+	 * @method getRegisteredDirection
+	 * @public
+	 * @memberOf ensemble
+	 * @description Given a predicate with a category specified, checks to see what "direction" is associated with the category (undirected, directed, or reciprocal)
+	 * @param {Object} predicate An ensemble predicate that, at the very least, has a category defined.
+	 * @example var directionType = ensemble.getRegisteredDirection(myPredicate);
+	 * @return {String} Returns a success message upon initialization.
+	 *
+	 */
 	var getRegisteredDirection = function (predicate) {
 		return directions[predicate.category];
 	};
@@ -133,12 +154,14 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	};
 
 /**
-* @description  Catches the socialRecord's currentTimeStep to the timeStep specified.
+* @description  Catches the socialRecord's currentTimeStep up to the timeStep specified.
 *
 * @method setUpNextTimeStep
 * @memberof ensemble
 * @return {int} The current timestep. 
-* @param {Number} timeStep - the timeStep to catch up the socialRecord to. If omitted, assumes the currentTimeStep + 1.
+* @example ensemble.setupNextTimeStep(10); // sets the current timestep of the social history to 10.
+* @example ensemble.setupNextTimeStep(); // increments the current timestep by one.
+* @param {Number} timeStep The timeStep to catch up the socialRecord to. If omitted, assumes the currentTimeStep + 1.
 */
 	var setupNextTimeStep = function (timeStep) {
 		if (currentTimeStep === -1) {
@@ -286,17 +309,6 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		}
 	};
 
-	/**
-	* @description  Search the socialRecord for a desired searchPredicate within a provided time period. We assume that mostRecentTime and leastRecentTime exist and are formatted properly. 
-	*
-	* @method get
-	* @memberof ensemble
-	* @param {Object} searchPredicate - a predicate we want to search the socialRecord for
-	* @param {Number} mostRecentTime - the lower bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
-	* @param {Number} leastRecentTime - the upper bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
-	* @param {Bool} useDefaultValue - If true, then if the searchPredicate is not explicitly found in the socialRecord it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
-	* @return {Array} matchedResults	the array holding the found predicates which match the query
-	*/
 	//ensemble.get() should be called by public, this should only be used internally.
 	var get = function(searchPredicate, mostRecentTime, lessRecentTime, useDefaultValue, params) {
 
@@ -401,9 +413,11 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	/**
 	 * @method addHistory 
-	 * @description  Take a history definition object, and load it into ensemble. See sampleGame/data/history.json for an example.
+	 * @description  Load backstory/starting history into Ensemble. This function takes a history definition object (such as that which is returned from a call to loadFile) and uses it to initializing the starting state of the social record.
 	 * @public
 	 * @memberOf ensemble
+	 @example var rawHistory = ensemble.loadFile("data/history.json");
+ var history = ensemble.addHistory(rawHistory);
 	 * @return {object} A Parsed JSON file representing the history that was just loaded in.
 	 * @param  {object} content - A javascript object detailing the social history to populate the socialRecord with.
 	 */
@@ -481,6 +495,8 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
  * @method set
  * @memberof ensemble
  * @public
+ * @example var predicateToSet = {"category":"trait", "type":"kind", "first":"Bob", "value":"true"};
+ ensemble.set(predicateToSet); // will give the character Bob the trait "kind".
  * @param {Object} setPredicate - the predicate that we would like to save to the socialRecord
  */
 	var set = function(setPredicate) {
@@ -584,6 +600,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	}
 
+	/**
+	 * @method setById
+	 * @memberOf ensemble
+	 * @private
+	 * @description A means to update a social record by ID. Primarily meant to be used by the uathoring tool
+	 */
 	var setById = function(id, newRecord) {
 		if (id === undefined || id === null) {
 			return false;
@@ -600,11 +622,12 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	}
 
 /**
- * Clears out the history of the socialRecord. Note that all registered things from blueprints, such as
- * defaultValues and directions, are NOT removed, so there is no need to re-register
- *
  * @method clearHistory
- * @memberof socialRecord
+ * @memberOf ensemble
+ * @public
+ * @description Clears out the history of the socialRecord, and sets the current timestep back to the start. Note that all registered things from blueprints, such as
+ * defaultValues and directions, are NOT removed, so there is no need to re-register
+ * @example ensemble.clearHistory(); // all entries in the social record have now been removed, and the currentTimeStep has been reinitialized.
  */
 	var clearHistory = function(){
 		socialRecord = [];

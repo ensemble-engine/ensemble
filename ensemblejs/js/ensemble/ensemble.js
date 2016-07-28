@@ -1,6 +1,9 @@
 /*global define */
 /**
- * This class is the top level interface into ensemble.
+ * This class is the top level interface into ensemble. By including ensemble.js in your project, and adding the event listener:  <BR><BR>
+ document.addEventListener('ensembleLoaded', function (e){} <BR><BR>
+  you should be given access to an ensemble singleton object, which you can then use to call each of these methods. <BR><BR>
+  Inside of this event listener you will want to call ensemble.init(), ensemble.loadFile() for your schema, trigger rules, volition rules, characters, history, and actions.
  *
  *
  * @class ensemble
@@ -32,9 +35,11 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @memberof ensemble
 	 * @public
 	 * 
-	 * @description Will load in a file representing some data object for the ensemble world. This function will need to be called with your triggerRules, volitionRules, and socialSchema, among others.
+	 * @description Will load in a JSON file that represents one of the following aspects of your social world: Volition Rules, Trigger Rules, Characters, Schema, Actions, History. This function needs to be called once for each file. It returns a JSON object representing the parsed contents of the file referenced via the passed in filename.
 	 *
-	 * @param {Object} filename - The relative path to the data file.
+	 * @param {String} filename - The relative path to the data file.
+	 *
+	 * @example var rawSchema = ensemble.loadFile(data/schema.json) // Assuming that, relative to the file this function is being called from, there is a data directory with the file schema.json, the schema will be loaded into Ensemble, and rawSchema will have the contents of the json file.
 	 * 
 	 * @return {Object} A JSON object representing the parsed contents of the filename.
 	 */
@@ -94,12 +99,14 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method loadSocialStructure
 	 * @memberOf ensemble
 	 * @public
-	 * @description Take an object specifying a set of social relation types, and generate a
-	 * set of factories with interfaces into that specification. See
-	 * sampleGame/data/schema.json for an example of structure.
+	 * @description Take a JSON object specifying a Schema, and generates a
+	 * set of factories with interfaces into that specification, allowing other aspects of ensemble
+	 * (history, rules, actions, etc.) to reference them. This should be called before loading in any
+	 * other aspects of ensemble (history, rules, actions, etc.).
 	 *
-	 * @param  {Object} data The object to load
-	 * 
+	 * @param  {Object} data The JSON object to load, representing the social world's schema.
+	 * @example var rawSchema = ensemble.loadFile("data/schema.json");
+ var schema = ensemble.loadSocialStructure(rawSchema);
 	 * @return {Object} An object with parameters for each category name specified in the data file.
 	 */
 	var loadSocialStructure = function(data) {
@@ -184,7 +191,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	/**
 	 * @method updateCategory
 	 * @memberOf ensemble
-	 * @public
+	 * @private
 	 * @description Refresh the definition of a schema category. NOTE: This will not automatically check for conflicts with existing rules, social records, etc.: probably useful only in the context of a schema editor program that is taking care of that stuff.
 	 *
  	 * @param  {String} categoryKey The social category to update.
@@ -202,21 +209,21 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @memberOf ensemble
 	 * @public
 	 * @description Returns an object reference describing the social structure loaded into ensemble. 
-	 *
-	 * @return {Object} A dictionary with top level keys will be each of the social "categoryes" (a la "relationship", "network", etc.). Each of these contains a dictionary of its subtypes. 
+	 * @example ensemble.getSocialStructure();
+	 * @return {Object} A dictionary with top level keys will be each of the social "categories" (a la "relationship", "network", etc.). Each of these contains a dictionary of its subtypes. 
 	 */
 	var getSocialStructure = function() {
 		return socialStructure;
 	}
 
 	/**
-	 * @method getGategoryDescriptors
+	 * @method getCategoryDescriptors
 	 * @memberOf ensemble
 	 * @public
 	 * @description Returns an object containing fields describing the properties of a given category registered with ensemble
 	 *
 	 * @param  {String} categoryName The social category to get information about.
-	 *
+	 * @example var categoryDescriptors = ensemble.getCategoryDescriptors("traits");
 	 * @return {Object} A dictionary with keys for each piece of metadata about the social category: "directionType" will be directed, undirected, or reciprocal; "isBoolean" will be true or false (false = numeric). 
 	 */
 	var getCategoryDescriptors = function(categoryName) {
@@ -243,16 +250,17 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return false;
 	}
 
-	/**
-	 * @method getCategoryFromType
-	 * @memberOf ensemble
-	 * @public
-	 * @description Returns the category name associated with a particular type. TODO: This method is unreliable if we allow the same type name to appear in multiple categoryes, which we currently do.
-	 *
-	 * @param  {String} type A type from a social scheme (i.e. "friends").
-	 *
-	 * @return {String} The name of the social category to which that type belongs (i.e. "relationships"), or false if none was found. 
-	 */
+
+	//TODO: This method is unreliable if we allow the same type name to appear in multiple categoryes, which we currently do.
+	//@method getCategoryFromType
+	//@memberOf ensemble
+	//@public
+	//@description Returns the category name associated with a particular type. 
+	//
+	// @param  {String} type A type from a social scheme (i.e. "friends").
+	//
+	// @return {String} The name of the social category to which that type belongs (i.e. "relationships"), or false if none was found. 
+	//
 	var getCategoryFromType = function(type) {
 		for (var categoryName in socialStructure) {
 			if (socialStructure[categoryName][type] !== undefined) {
@@ -262,6 +270,18 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return false;
 	}
 
+	/**
+	 * @method isValidTypeForCategory
+	 * @memberOf ensemble
+	 * @public
+	 * @description Given a type and a category name, checks to see if the type is in fact specified by the scema as being a potential type for that category.
+	 * @param {String} type The Type to validate existing inside of the specified category.
+	 * @param  {String} categoryName The social category to verify the type's membership of.
+	 * @example if(ensemble.isValidTypeForCategory("kindness", "trait"){
+  //do stuff if kindness is a type of trait in your schema.
+}
+	 * @return {Boolean} True if the type is in the category, false otherwise.
+	 */
 	var isValidTypeForCategory = function(type, categoryName) {
 		var cn = socialStructure[categoryName];
 		if (cn === undefined) return false;
@@ -300,11 +320,14 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @public
 	 * @memberOf ensemble
 	 * 
-	 * @description Load a character definition object.
+	 * @description Load from file the characters 
 	 *
+@example var rawCast = ensemble.loadFile("data/cast.json"); 
+ var cast = ensemble.addCharacters(rawCast);
+
 	 * @param {Object} data A file defining the characters in this story. Should contain a single top-level key, "cast", which holds a dictionary of character identifiers, each containing an object with character metadata. If the object contains a key "name" with the printed name of the character, the getCharName function can be used to quickly return this.
 	 *
-	 * @return {Array}      An array of strings with all character keys (same as will be used in socialRecord entries, etc..
+	 * @return {Array}      An array of strings with all character keys.
 	 */
 	var addCharacters = function(data) {
 		// STUB: For the moment we aren't doing anything with this data,
@@ -319,8 +342,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method getCharacters
 	 * @public
 	 * @memberOf ensemble
-	 * Returns an array of character IDs for all registered characters.
-	 *
+	 * @description Returns an array of character IDs for all registered characters.
+	 * @example myCharacters = ensemble.getCharacters();
 	 * @return {Array}      An array of strings with all character keys (same as will be used in socialRecord entries, etc..
 	 */
 	var getCharacters = function() {
@@ -331,8 +354,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method getCharactersWithMetadata
 	 * @public
 	 * @memberOf ensemble
-	 * Returns the full dictionary of all character info.
-	 *
+	 * @description Returns the full dictionary of all character info.
+	 * @example myCharacters = ensemble.getCharactersWithMetadata();
 	 * @return {Object}      A dictionary with the full record of all registered characters.
 	 */
 	var getCharactersWithMetadata = function() {
@@ -343,11 +366,11 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method getCharData
 	 * @public
 	 * @memberOf ensemble
-	 * Returns a specific piece of metadata for a registered character.
+	 * @description Returns a specific piece of metadata for a registered character.
 	 *
 	 * @param {String} char The ID of a registered character.
 	 * @param {String} key The metadata field requested.
-	 *
+	 * @exampe var bobNickname = ensemble.getCharData("bob", "name");
 	 * @return {Object}      The metadata value for the requested character and key, or undefined if no such key or character were found. The type of the return result is dependent on the type of the requested metadata field.
 	 */
 	var getCharData = function(char, key) {
@@ -361,7 +384,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method getCharName
 	 * @public
 	 * @memberOf ensemble
-	 * Shorthand function to return the printed name of a registered character. getCharName("sarah") is identical to getCharData("sarah", "name"). Returns the character key if no "name" field was found, or undefined if the requested character ID was not found.
+	 * @description Shorthand function to return the printed name of a registered character. getCharName("sarah") is identical to getCharData("sarah", "name"). Returns the character key if no "name" field was found, or undefined if the requested character ID was not found.
 	 *
 	 * @param {String} char The ID of a registered character.
 	 *
@@ -516,16 +539,22 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	}
 
 	
+
+	//TODO: To fully support custom rulesets, we will need to add another function to RuleLibrary: getRulesByKey(key) that takes in a key, and returns the ruleset specified by that key.
 	/**
 	 *@method addRules
 	 *@memberof ensemble
 	 *@public
 	 * 
-	 * @description Takes raw rules data, parses out metadata and verifies everything expected is there, then calls the private function addProcessedRules to validate and register these rules. This function should be the only one used to add rules.
+	 * @description Takes raw rules data, parses out metadata and verifies the data is structured correctly, then calls the private function addProcessedRules to validate and register these rules into ensemble. This function should be the only one used to add rules. It should be called for each separate rule file that needs to be loaded in. You should expect to call this function at least twice: once for volition rules, and once for trigger rules.
 	 * 
-	 * TODO: To fully support custom rulesets, we will need to add another function to RuleLibrary: getRulesByKey(key) that takes in a key, and returns the ruleset specified by that key.
 	 *
-	 * @param {Object} data -- Stringified JSON or Object which should define top level keys "fileName", "ruleType", and "rules".
+	 @example var rawTriggerRules = ensemble.loadFile("data/triggerRules.json");
+ var triggerRules = ensemble.addRules(rawTriggerRules);
+			
+ var rawVolitionRules = ensemble.loadFile("data/volitionRules.json");
+ var volitionRules = ensemble.addRules(rawVolitionRules);
+	 * @param {Object} data Stringified JSON or Object which should define top level keys "fileName", "ruleType", and "rules".
 	 *
 	 * @return {Array}      An array of strings, unique IDs for each rule added, in the form type_num (i.e. triggerRules_14). 
 	 * 
@@ -565,6 +594,25 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 
 	};
 
+
+	/**
+	 *@method getRules
+	 *@memberof ensemble
+	 *@public
+	 * 
+	 * @description Given a string representation of a rule set (either "trigger" or "volition"), returns
+	 * all of the rules that are registered to that rule set. At present there is no functionalit for 
+	 * rules outside of these two rulesets. This function is intended for reviewing what rules have been
+	 * registered to ensemble. 
+	 * 
+	 *
+	 * @example var triggerRules = ensemble.getRules("trigger");
+	 * @example var volitionRules = ensemble.getRules("volition");
+	 * @param {String} The ruleset you wish to collect all of the rules from. "trigger" or "volition" are the only accepted answers.
+	 *
+	 * @return {Object} A collection of rules registered to the specified rule set.
+	 * 
+	 */
 	var getRules = function(ruleSet) {
 		if (ruleSet === "trigger") {
 			return ruleLibrary.getTriggerRules();
@@ -583,9 +631,13 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * 
 	 * @description When given a ruleset and an object specifying search criteria, return only the rules from the ruleset that match. The object passed in is the same as a search object you'd use with ensemble.get() i.e., { category: "traits" }. All rules having any conditions or effects that match the request are returned.
 	 *
-	 * @param {String} ruleSet -- The ruleset to search (probably "trigger" or "volition").
+	 * @param {String} ruleSet The ruleset to search (probably "trigger" or "volition").
 	 *
-	 * @param {Object} criteria -- Currently supports a single key-value pair matching one aspect of a predicate.
+	 * @param {Object} criteria Currently supports a single key-value pair matching one aspect of a predicate.
+	 * 
+	 * @example var ruleSet = "volition";
+ var criterea = {"type":"kind"};
+ var filteredRules = ensemble.filterRules(ruleSet, criterea);
 	 * @return {Array}      An array of matching rules. 
 	 * 
 	 */
@@ -600,10 +652,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 *@memberof ensemble
 	 *@public
 	 * 
-	 * @description When given an object specifying search criteria, return only the actions that match the given terms. The object passed in is the same as a search object you'd use with ensemble.get() i.e., { category: "traits" }. All actions having any conditions, effects, or influenceRules that match the request are returned.
+	 * @description When given an object specifying search criteria, return only the actions that match the given terms. The object passed in is the same as a search object you'd use with ensemble.get() e.g., { "category": "traits" }. All actions having any conditions, effects, or influenceRules that match the request are returned.
 	 *
-	 * @param {Object} criteria -- Currently supports a single key-value pair matching one aspect of a predicate.
-	 * @return {Array}      An array of matching actions. 
+	 * @param {Object} criteria Currently supports a single key-value pair matching one aspect of a predicate.
+	 * @example var criteria = {"type": "kind"}; 
+ var filteredActions = ensemble.filterActions(criteria)
+	 *@return {Array}      An array of matching actions. 
 	 * 
 	 */
 	var filterActions = function(criteria) {
@@ -661,14 +715,34 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return ruleLibrary.setRuleById(label, rule);
 	}
 
-	//a shortcut to set an array of predicates at once.
+		/**
+	* @description A shortcut to set a full array of predicates (useful to be called with the effects array of a rule!)
+	*
+	* @method setPredicates
+	* @memberof ensemble
+	* @param {String} predicateArray an array of predicates to be added to the social record.
+	@example ensemble.setPredicates(myTriggerRule.effects);
+	*/
 	var setPredicates = function(predicateArray){
 		for(var i = 0; i < predicateArray.length; i += 1){
 			socialRecord.set(predicateArray[i]);
 		}
 	}
 
-	//constructs a search predicate for you, then calls getSocialRecord
+	/**
+	* @description constructs a search predicate for you, then calls getSocialRecord
+	*
+	* @method getValue
+	* @memberof ensemble
+	* @param {String} first the name of the character to occupy the "first" role in our search predicate.
+	* @param {String} second the name of the character to occupy the "second" role in our search predicate.
+	* @param {String} category the category from our social schema that the social record of interest is from.
+	* @param {String} type the specific type of the specified category that we are interested in learning the value of.
+	* @param {Int} mostRecentTime establishes the upper bound of the window into the history to look. 0 (or undefined) means the current timestep.
+	* @param {Int} lessRecentTime establishes the lower bound of the window into the history to look. undefined will simply only look at the current timestep.
+	@example var predicateValue = ensemble.getValue("bob", "carol", "relationship", "dating", 0, 0); 
+	*@return {Number or Boolean} the value of the specified type between the specified characters. Could either be a number of boolean, as the value might be referring to a boolean type or a numeric one.
+	*/
 	var getValue = function(first, second, category, type, mostRecentTime, lessRecentTime){
 		var searchPredicate = {};
 		searchPredicate.first = first;
@@ -682,6 +756,23 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	};
 
 	// Public-facing function to access the socialRecord. Does verification on input. Internal functions should use socialRecord.get instead.
+	/**
+	* @description  Search the socialRecord for a desired searchPredicate within a provided time period. 
+	If mostRecentTime and leastRecentTime exist but are formatted improperly 
+	(i.e., mostRecentTime is a higher number than lessRecentTime), 
+	then the function will automatically swap the vaues between the two. If msotRecentTime and lessRecentTime
+	are not provided, the system will only look at the current timestep.
+	*
+	* @method get
+	* @memberof ensemble
+	* @param {Object} searchPredicate  a predicate we want to search the socialRecord for
+	* @param {Number} mostRecentTime  the lower bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
+	* @param {Number} leastRecentTime  the upper bound time that we want to look within (turns ago: 2 = currentTimeStep-2)
+	* @param {Bool} useDefaultValue  If true, then if the searchPredicate is not explicitly found in the socialRecord it will check the searchPredicate against the predicate's default value. If false, it will not. Defaults to true.
+	* @example var searchPredicate =  {"category" : "trait", "type":"kind", "first":"x", "value":"true"};
+ var matchedRecords = ensemble.getSocialRecord(searchPredicate, 2, 5);
+	*@return {Array} matchedResults	the array holding the found predicates which match the query
+	*/
 	var getSocialRecord = function(searchPredicate, mostRecentTime, lessRecentTime) {
 
 		// TODO: Make sure operator is not + or -
@@ -711,39 +802,104 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		return socialRecord.get(searchPredicate, mostRecentTime, lessRecentTime);
 	};
 
-	//public facing function to put a character offstage.
 	
+	
+	/**
+	 * @method setCharacterOffstage
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing function to put a character offstage. A character being offstage means that they will not have volition rules computed for them, nor are they eligible to take actions (or be acted upon).
+	 * @param characterName the name of the character to put off stage.
+	 * @example ensemble.setCharacterOffstage("bob");
+	 */
 	var setCharacterOffstage = function(characterName){
 		socialRecord.putCharacterOffstage(characterName);
 	};
 
-	//public facing function to see if a character is offstage or not.
+	/**
+	 * @method setCharacterOffstage
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing function to see if a character is offstage or not.
+	 * @param characterName the name of the character to verify their presence on the stage.
+	 * @example var isBobOffstage = ensemble.getIsCharacterOffstage("bob");
+	 * @return {Boolean} true if the character is offstage, false otherwise.
+	 */
+	//
 	var getIsCharacterOffstage = function(characterName){
 		return(socialRecord.getIsCharacterOffstage(characterName));
 	};
 
-	//public facing function to place a character onstage.
+	/**
+	 * @method setCharacterOffstage
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing function to place a character onstage.
+	 * @param characterName the name of the character to place on stage.
+	  Characters are considered "on stage" by default; this function should 
+	  only need to be called if a character had been manually placed off stage,
+	   but now needs return to it.
+	 * @example  ensemble.setCharacterOnstage("bob");
+	 */
 	var setCharacterOnstage = function(characterName){
 		socialRecord.putCharacterOnstage(characterName);
 	};
 
-	//public facing function to see if a character is onstage or not.
+
+	/**
+	 * @method getIsCharacterOnStage
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing function to check if a character is on stage.
+	 * @param characterName the name of the character to verify if they are on stage.
+	 * @example  var isBobOnstage = ensemble.getIsCharacterOnstage("bob");
+	 * @return {Boolean} true if the character is on stage, false otherwise.
+	 */
 	var getIsCharacterOnstage	= function(characterName){
 		var characterOffstage = socialRecord.getIsCharacterOffstage(characterName);
 		return (!characterOffstage);
 	};
 
-	//public facing function to see if a character has been eliminated.
+	
+	/**
+	 * @method getIsCharacterOnStage
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing fuction to make a character eliminated. Eliminated characters are completely ignored by the system.
+	 * @param characterName the name of the character to verify if they are on stage.
+	 * @example  ensemble.setCharacterEliminated("bob"); // Bob is now eliminated.
+	 */
 	var setCharacterEliminated = function(characterName){
 		socialRecord.eliminateCharacter(characterName);
 	};
 
-	//public facing function to see if a character has been eliminated or not.
+	//
+	/**
+	 * @method getIsCharacterEliminated
+	 * @public
+	 * @memberOf ensemble
+	 * @description public facing function to see if a character has been eliminated or not.
+	 * @param characterName the name of the character to verify if they are eliminated.
+	 * @example  var isBobEliminated = ensemble.getIsCharacterEliminated("bob");
+	 * @return {Boolean} true if the character is eliminated, false otherwise.
+	 */
 	var getIsCharacterEliminated  = function(characterName){
 		socialRecord.getIsCharacterEliminated(characterName);
 	};
 
 	//public facing function to make two characters perform an action.
+	//TODO: doActon doesn't seem to exist anymore?
+	/**
+	 * @method doAction
+	 * @private
+	 * @memberOf ensemble
+	 * @description In theory this is a means to just run an action... though it seems as if the corresponding function in ActionLibrary.js hasn't actually been written? Very odd...
+	 * @param {String} actionName the name of the action to perform.
+	 * @param {String} initiator the name of the character to perform the action.
+	 * @param {String} responder The name of the character who will be the recipient of the action.
+	 * @param {Object} registeredVolitions A calculated volitions object (created after calling ensemble.calculateVolitions)
+	 * @example  ensemble.doAction("AskOut", "Bob", "Carol", volitionObject)
+	 */
 	var doAction = function(actionName, initiator, responder, registeredVolitions){
 		actionLibrary.doAction(actionName, initiator, responder, registeredVolitions);
 	};
@@ -753,8 +909,10 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method reset
 	 * @public
 	 * @memberOf ensemble
-	 * @description Completely resets ensemble to a blank-slate state. 
-	 *
+	 * @description Clear out the history and the rules currently loaded into Ensemble. 
+	 CAUTION: once you call this, you will have to reload in more rules/history, 
+	 or else calculating volition or running trigger rules will do nothing!
+	 * @example ensemble.reset();
 	 */
 	var reset = function() {
 		// Clear all social structure info.
@@ -780,7 +938,8 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method init
 	 * @public
 	 * @memberOf ensemble
-	 * @description initializes ensemble to be ready for use.
+	 * @description initializes ensemble to be ready for use. This should be the first thing called before any other usage of ensemble.
+	 * @example var loadResult = ensemble.init(); // loadResult should be "Ok";
 	 * @return {String} Returns a success message upon initialization.
 	 *
 	 */
@@ -815,7 +974,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		dumpActionLibrary		: actionLibrary.dumpActions,
 		set						: socialRecord.set,
 		get						: getSocialRecord,
-		getValue				: getValue,
+		getValue				: getValue, 
 		setPredicates			: setPredicates,
 		setCharacterOffstage	: setCharacterOffstage,
 		getIsCharacterOffstage	: getIsCharacterOffstage,
@@ -828,12 +987,10 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
 		addActions				: actionLibrary.parseActions,
-		setActionById			: actionLibrary.setActionById,
 		addHistory				: socialRecord.addHistory,
 		clearHistory			: socialRecord.clearHistory,
 		getSocialRecordCopyAtTimestep	: socialRecord.getSocialRecordCopyAtTimestep,
 		getCurrentTimeStep		: socialRecord.getCurrentTimeStep,
-		setSocialRecordById		: socialRecord.setById,
 		
 		addRules				: addRules,
 		getRules				: getRules,
@@ -843,15 +1000,26 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getRuleById				: ruleLibrary.getRuleById,
 		deleteRuleById			: ruleLibrary.deleteRuleById,
 
+		setActionById			: actionLibrary.setActionById,
 		doAction				: doAction,
+		setSocialRecordById		: socialRecord.setById,
+		
 
 		reset					: reset
+
+
 
 	
 	};
 
 	/* test-code */
 	/* end-test-code */
+
+	//*********
+	//Lines from interface removed due to them seeming to be obsolete?
+	// AH, the
+
+	//**********
 
 //EXPERIMENT: don't think we want these to be public.
 	//addTriggerRules			: addTriggerRules,

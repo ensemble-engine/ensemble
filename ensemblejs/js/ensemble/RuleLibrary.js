@@ -468,12 +468,16 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 	};
 
 /**
- * @description  Run the socialRecord's appropriate trigger rules with a given cast. Trigger rules always run at the current timeStep.
+ * @description  Run the socialRecord's appropriate trigger rules with a given cast. The effects of trigger rules are always applied to the current timestep.
  *
  * @method runTriggerRules
  * @memberof ensemble
  * @param {Array} cast - the array of cast members
- * @param {Object} params - Debugging info to pass down the chain to runRules. Can be safely ignored.
+ * @param {Object} params A means of passing down additional debugging information, as well as alter the default behavior of calculating volition. The key/value pairs for params are: <BR>
+  <b>timestep (Number):</b> This tells ensemble to consider the number assigned to the 'timestep' attribute as the "current turn" for the purposes of volition calculation.
+@example var params = {}; params.timestep = 3;
+ var cast = ["Bob", "Carol", "Xander"];
+ var triggerResults = ensemble.runTriggerRules(cast, params); //the act of calling runTriggerRules has now changed the state.
  * @return {Object} An object representing the changes made to the social state as a result of running these trigger rules.
  */
 	var runTriggerRules = function (cast, params) {
@@ -550,13 +554,15 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 	};
 
 /**
- * @description Calculate the volition of each character in the given cast, i.e determine all of their possible actions, and
- * how badly they want to do those actions (how much weight they have).
+ * @description Calculate the volitions of each character in the given cast. Each character in the cast will form volitions for every other character in the cast, for each intent.
  *
  * @method calculateVolition
  * @memberof ensemble
- * @param {Array} cast - an array of the cast of characters to calculate volition for
- * @return {Object} calculatedVolitions a dictionary containing the cast and their volitions
+ * @param {Array} cast An array of the cast of characters to calculate volition for.
+  @param {Object} params A means of passing down additional debugging information, as well as alter the default behavior of calculating volition. The key/value pairs for params are: <BR>
+  <b>timestep (Number):</b> This tells ensemble to consider the number assigned to the 'timestep' attribute as the "current turn" for the purposes of volition calculation.
+ * @example var storedVolitions = ensemble.calculateVolition(cast); 
+ *@return {Object} A dictionary containing the cast and their volitions
  */
 	var calculateVolition = function (cast, params) {
 
@@ -894,6 +900,19 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 		return true;
 	};
 
+	/**
+	 *@method ruleToEnglish
+	 *@memberof ensemble
+	 *@public
+	 * 
+	 * @description Given a rule, return a string that is a rough english description of what the rule is by converting each of its 
+	 component predicates to english.
+	 *
+	 * @param {Object} rule An ensemble rule (likely either a volition rule or a trigger rule) that you would like to be roughly converted into english.
+     * @example var englishRule = ensemble.ruleToEnglish(myRule);
+	 *@return {String}      A string with an english description of the contents of the rule.
+	 * 
+	 */
 	var ruleToEnglish = function(rule){
 		var returnString = "If: ";
 		returnString += predicateArrayToEnglish(rule.conditions, false);
@@ -916,11 +935,17 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 	};
 
 	/**
-	 * Turns a predicate into an English language definition.
+	 *@method predicatetoEnglish
+	 *@memberof ensemble
+	 *@public
+	 * 
+	 * @description Given a predicate (such as you might find in the conditions or effects of a rule)
+	 * return an english description of it.
 	 *
-	 * @param  {[type]}  realPredicate
-	 *
-	 * @return {[type]}
+	 * @param {Object} pred An ensemble predicate that you would like to be roughly converted into english.
+     * @example var englishPredicate = ensemble.predicateToEnglish(myPredicate);
+	 *@return {String}      A string with an english description of the contents of the predicate.
+	 * 
 	 */
 	var predicateToEnglish = function(pred) {
 		var result = [];

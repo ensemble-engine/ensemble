@@ -26,6 +26,13 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 		return actions;
 	};
 
+	 /**
+	 * @method  dumpActions
+	 * @description A debugging function. Dumps the whole actionLibrary object to the console, to enable reviewing all of the actions currently loaded into Ensemble.
+	 * @public
+	 @example ensemble.dumpActions();
+	 * @memberOf ensemble
+	 */
 	var dumpActions = function(){
 		console.log("***DUMPING ACTIONS***");
 		console.log("There are " + actions.length + " actions.");
@@ -79,9 +86,10 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 	 * @method addActions
 	 * @public
 	 * @memberOf ensemble 
-	 * @description Takes in either a JSON file or a JSON string representing the definition of an action or actions and stores it in the action library. This effect is cumulative; calling this function on multiple files will lead to the actions from both files being stored in the action library.]
-	 * @param  {JSON} data - Either a JSON string or a JSON file defining an action or actions.
-	 * @return {array}      [An array of every action currently stored in the action library.]
+	 * @description Takes in either a JSON file or a JSON string representing the definition of an action or actions and stores it in the action library. This effect is cumulative; calling this function on multiple files will lead to the actions from both files being stored in the action library.
+	 * @param  {JSON} data - Either a JSON string or a JSON file defining an action or actions. This will typically be the output of the result of a call to loadFile().
+	 * @example var rawActions = ensemble.loadFile("data/actions.json"); <BR> ensemble.addActions(rawActions);
+	 * @return {array}      An array of every action currently stored in the action library.
 	 */
 	var parseActions = function(data){
 		var parsedActions;
@@ -887,12 +895,15 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	//using the best binding. if multiple best bindings exist, just picks one at random.
 	/**
 	 * @method getAction 
+	 * @memberOf ensemble
+	 * @public
 	 * @description ensemble Interface function. Given a volition object, returns the single 'best' action for that volition using the best binding. If multiple best bindings exist, it will pick one at random.
 	 * @param  {[String]} initiator          [The name of the character initiating the action]
 	 * @param  {[String]} responder          [The name of the 'recipient of the action']
 	 * @param  {[Object]} volition           [A registered volition object]
 	 * @param  {[Array]} cast               [The cast of characters to be used for consideration of the filling in of roles.]
 	 * @param  {[Number]} numActionsPerGroup [How many terminals from a single 'actionGroup' should be returned. Defaults to 1 if unspecified.]
+	 * @example var bestActionFromBobToJane = ensemble.getAction("bob", "jane", volitionObject, cast);
 	 * @return {[Object]}                    [Returns the best, bound action for this particular initiator, responder, and cast.]
 	 */
 	var getAction = function(initiator, responder, volition, cast, numActionsPerGroup){
@@ -927,6 +938,9 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 	 * @param  {Number} numIntents - The total number of different intents to pull actions from.
 	 * @param  {Number} numActionsPerIntent - How many actions should come from each intent.
 	 * @param  {Number} numActionsPerGroup - How many terminals should come from any given 'action group'
+	 * @example var cast = ["bob", "carol", "xander"];
+ var calculatedVolitions = ensemble.calculateVolitions(cast);
+ var bobToCarolActions = ensemble.getActions("bob", "carol", calculatedVolitions, cast, 1, 1, 1)
 	 * @return {Array} A list of terminals, with roles bound with characters, that represent what the initiator most wants to do with the responder.
 	 */
 	var getActions = function(initiator, responder, volition, cast, numIntents, numActionsPerIntent, numActionsPerGroup){
@@ -990,6 +1004,13 @@ var getWorkingBindingCombinations = function(action, uniqueBindings, availableCa
 		return boundActions;
 	};
 
+	/**
+	 * @method setActionById 
+	 * @memberOf ensemble
+	 * @private
+	 * @description Meant to be used by the authoring tool, if ever actions need to be stored by a special id.
+	 * @return {Boolean} Returns true on successfully setting an action, false otherwise.
+	 */
 	var setActionById = function(id, newAction) {
 		for (var i = 0; i < actions.length; i++) {
 			var action = actions[i];
