@@ -355,10 +355,10 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			var result = ensemble.setActionById(action.id, action);
 		});
 
-		saveToDiskAndRefresh();
+		saveToDiskAndRefresh("Name changed.");
 	}
 
-	var saveToDiskAndRefresh = function() {
+	var saveToDiskAndRefresh = function(msg) {
 		// TODO: Trigger an update to all affected files.
 
 		// Refresh the editor.
@@ -368,6 +368,8 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
 		rulesViewer.show();    // to do this by hand from here.
 		historyViewer.refresh();
+
+		$("#editorMsg").stop(true, true).html(msg).show().fadeOut(3000);
 	}
 
 	var addType = function(typeName) {
@@ -392,7 +394,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		var blueprint = newBlueprint(descriptors, editorCategory, socialStructure[editorCategory]);
 		ensemble.updateCategory(editorCategory, blueprint);
 
-		saveToDiskAndRefresh();
+		saveToDiskAndRefresh("New type added.");
 	}
 
 	var deleteType = function(typeName) {
@@ -403,7 +405,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		var blueprint = newBlueprint(descriptors, editorCategory, socialStructure[editorCategory]);
 		ensemble.updateCategory(editorCategory, blueprint);
 
-		saveToDiskAndRefresh();
+		saveToDiskAndRefresh("Type deleted.");
 	}
 
 	var countConflictingRecords = function() {

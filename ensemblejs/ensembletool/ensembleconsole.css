@@ -324,7 +324,7 @@ margin-left: 6em;
 	margin-left: 110px;
 	margin-top: -1.2em;
 }
-#schemaEditForm div {
+#schemaEditForm>div {
     padding: 5px 0px;
     border-bottom: thin dotted gray;
 }
@@ -351,6 +351,15 @@ margin-left: 6em;
 }
 #edExHeader {
 
+}
+#editorMsg {
+	font-size: 80%;
+    color: green;
+    text-align: right;
+    float: right;
+    margin-top: 8px;
+    background-color: #effff3;
+    display: none;
 }
 #ruleExamples {
     border: thin dotted gray;
