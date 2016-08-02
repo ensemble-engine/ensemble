@@ -10,10 +10,17 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 	var editorCategory;
 	var recordsForActiveCategory = {};
 
+	var defaultCategoryName = "New Category";
+
+	var proposedCategory;
+
 	var init = function() {
 		// Set up editor change events.
 		$("#editorCategoryName").change(function() {
 			var newVal = this.value;
+			if (proposedCategory === editorCategory) {
+				proposedCategory = newVal;
+			}
 			findAndReplace("category", editorCategory, newVal);
 		})
 
@@ -94,14 +101,14 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			var typeList = types.join(" &bull; ");
 			thisBlock += typeList;
 			thisBlock += "</div><div class='editIcon'><div class='edit1'>&nbsp;</div><div class='edit2'>&nbsp;</div></div>"
-			var catClass = "schemaCategory";
+			var catClass = "schemaCategory existingCategory";
 			if (d.actionable) {
 				catClass += " actionable";
 			}
 			exp += "<div class='" + catClass + "' id='cat_" + categoryName + "'>" + thisBlock + "</div>";
 		}
 		// Add "New Schema Category" button
-		exp += "<div class='schemaCategory'><div class='schemaHeader'><span class='categoryNew'>+ New</span></div><div class='editIcon'><div class='edit1'>&nbsp;</div><div class='edit2'>&nbsp;</div></div></div>"; 
+		exp += "<div class='schemaCategory'><div class='schemaHeader'><span id='categoryNew'>+ New</span></div><div class='editIcon'><div class='edit1'>&nbsp;</div><div class='edit2'>&nbsp;</div></div></div>"; 
 		$("#infoOnSocialTypes").html(exp);
 
 		// Show/Hide edit icon on hover.
@@ -111,15 +118,37 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			$(this).children(".editIcon").hide();
 		});
 
-		$(".schemaCategory").click(function() {
+		$(".existingCategory").click(function() {
 			editSchemaCategory($(this).attr("id").split("_")[1]); // i.e. "cat_trait"
 		});
+
+		$("#categoryNew").click(newSchemaCategory);
+	}
+
+	var newSchemaCategory = function() {
+		// Make a new category with default options. The editor will display different buttons because "proposedCategory" has been set.
+
+		$("#editorCategoryName").val("New Category Name");
+		var categoryBlueprint = {
+			category: defaultCategoryName,
+			isBoolean: true,
+			directionType: "directed",
+			types: ["default type"],
+			defaultValue: false,
+			actionable: false
+		};
+		ensemble.loadBlueprint(categoryBlueprint, 0);
+		editorCategory = defaultCategoryName;
+		proposedCategory = defaultCategoryName;
+		saveToDiskAndRefresh(""); // Will trigger showing editor
 	}
 
 	var editSchemaCategory = function(category) {
 		editorCategory = category;
 		var cat = socialStructure[category];
 		var catDescriptors = ensemble.getCategoryDescriptors(category);
+
+		var newCategoryMode = (proposedCategory === category);
 
 		// Populate form with this category's values.
 		// ==> Category Name
@@ -217,21 +246,59 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 		// Create and show the Schema Editor dialog box, if it's not already open.
 		if ($(".ui-dialog").length === 0) {
+			var buttons;
+			if (newCategoryMode) {
+				buttons = {
+					"Cancel": function() {
+						ensemble.updateCategory(proposedCategory);
+						editorCategory = undefined;
+						$(this).dialog("destroy");
+						saveToDiskAndRefresh("");
+					},
+					"Save": function() {
+						proposedCategory = undefined;
+						$(this).dialog("destroy");
+					}
+				}
+			} else {
+				buttons = {
+					"Delete": function() {
+						if (countConflictingRecords() > 0) {
+							rejectChange("delete");
+							return;
+						}
+						var that = this;
+						$("<div/>", {html: "Are you sure you want to delete the category '" + editorCategory + "'? This operation cannot be undone."}).dialog({
+							title: "Confirm Delete",
+							modal: true,
+							buttons: {
+								"Cancel": function() {
+									$(this).dialog("destroy");
+								},
+								"Delete": function() {
+									ensemble.updateCategory(editorCategory);
+									editorCategory = undefined;
+									$(that).dialog("destroy");
+									$(this).dialog("destroy");
+									saveToDiskAndRefresh("");
+								}
+							}
+						});
+						
+					},
+					"Close": function() {
+						// TODO: Check to see if there are any input fields with focus that have not been resolved.
+						$(this).dialog("destroy");
+					}
+				};
+			}
 			$("#schemaEditForm").dialog({
 				title: "Edit Schema Category",
 				dialogClass: "no-close", // don't show default close bttn
 				resizable: false,
 				modal: true,
 				width: 550,
-				buttons: {
-					// "Save Changes": function() {
-					// 	alert("Not yet implemented.");
-					// },
-					"Close": function() {
-						// TODO: Check to see if there are any input fields with focus that have not been resolved.
-						$(this).dialog("destroy");
-					}
-				}
+				buttons: buttons
 			});
 		}
 
@@ -363,7 +430,9 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
-		editSchemaCategory(editorCategory); // refresh view
+		if (editorCategory) {
+			editSchemaCategory(editorCategory); // refresh view
+		}
 		show(socialStructure);
 		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
 		rulesViewer.show();    // to do this by hand from here.
@@ -446,7 +515,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		if (numVolition > 0) reasons.push(numVolition + " volition rules");
 		if (numSocialRecords > 1) reasons.push(numSocialRecords + " social records"); // TODO it's "1" b/c of bug where a default gets returned
 		if (numActions > 0) reasons.push(numActions + " actions");
-		var msg = "You can't " + attemptedAction + " the category '" + editorCategory + "' because your schema still references this type:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records before removing the type.";
+		var msg = "You can't " + attemptedAction + " the category '" + editorCategory + "' because your schema still references it:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records and try again.";
 		$("<div/>", {html: msg}).dialog({
 			title: "Can't Delete",
 			modal: true,
