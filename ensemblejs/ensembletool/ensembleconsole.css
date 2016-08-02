@@ -313,6 +313,10 @@ margin-left: 6em;
     padding: 3px 7px;
     cursor: pointer;
 }
+#edTypesDiv {
+	max-height: 200px;
+    overflow-y: scroll;
+}
 .edTypeDelete {
 	font-size: 65%;
 	font-weight: bold;

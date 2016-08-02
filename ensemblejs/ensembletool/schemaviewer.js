@@ -103,8 +103,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			var c = socialStructure[categoryName];
 			thisBlock += "<div class='schemaTypes'>";
 			var types = [];
+			var typeCtr = 0;
+			var maxTypesToShow = 15;
 			for (var typeName in c) {
+				typeCtr += 1;
 				types.push("<span class='schemaType'>" + typeName + "</span>");
+				if (typeCtr > maxTypesToShow) {
+					types.push("<span style='font-size:80%'>(" + (Object.keys(c).length - maxTypesToShow) + " more)</span>");
+					break;
+				}
 			}
 			var typeList = types.join(" &bull; ");
 			thisBlock += typeList;
