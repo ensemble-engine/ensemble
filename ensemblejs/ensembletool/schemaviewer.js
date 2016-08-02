@@ -444,15 +444,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 	var addType = function(typeName) {
 		typeName = typeName.trim();
 		if (socialStructure[editorCategory][typeName]) {
-			$("<div/>", {html: "Already a type with this name."}).dialog({
-				title: "Not Created",
-				modal: true,
-				buttons: {
-					"Ok": function() {
-						$(this).dialog("destroy");
-					}
-				}
-			});
+			showRejectMsg("Not Created", "Already a type with this name.");
 			return;
 		}
 		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
@@ -488,6 +480,11 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			rejectChange("delete the type '" + typeName + "' from");
 			return;
 		}
+		// Don't allow the last type to be deleted, since Ensemble expects any category to have at least one type.
+		if (Object.keys(socialStructure[editorCategory]).length <= 1) {
+			showRejectMsg("Can't Delete", "You can't delete the last type from a category.");
+			return;
+		}
 		// For now, since we're requiring people to delete all references to the type first, we don't need a confirmation.
 		// $("<div/>", {html: "Are you sure you want to delete the type '" + typeName + "' from the category '" + editorCategory + "'?"}).dialog({
 		// 	title: "Confirm Delete Type",
@@ -505,6 +502,18 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		deleteType(typeName);
 	}
 
+	var showRejectMsg = function(msgHeader, msgBody) {
+		$("<div/>", {html: msgBody}).dialog({
+			title: msgHeader,
+			modal: true,
+			buttons: {
+				"Ok": function() {
+					$(this).dialog("destroy");
+				}
+			}
+		});
+	}
+
 	var rejectChange = function(attemptedAction) {
 		var numTrigger = recordsForActiveCategory.trigger.length;
 		var numVolition = recordsForActiveCategory.volition.length;
@@ -516,15 +525,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		if (numSocialRecords > 1) reasons.push(numSocialRecords + " social records"); // TODO it's "1" b/c of bug where a default gets returned
 		if (numActions > 0) reasons.push(numActions + " actions");
 		var msg = "You can't " + attemptedAction + " the category '" + editorCategory + "' because your schema still references it:<br><br>" + reasons.join("; ") + "<br><br>Delete all related records and try again.";
-		$("<div/>", {html: msg}).dialog({
-			title: "Can't Delete",
-			modal: true,
-			buttons: {
-				"Ok": function() {
-					$(this).dialog("destroy");
-				}
-			}
-		});
+		showRejectMsg("Can't Delete", msg);
 	}
 
 	var newBlueprint = function(descriptors, catName, category) {
