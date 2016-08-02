@@ -17,7 +17,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 	var init = function() {
 		// Set up editor change events.
 		$("#editorCategoryName").change(function() {
-			var newVal = this.value;
+			var newVal = this.value.trim();
+			if (newVal === "") {
+				showRejectMsg("Can't Rename", "Can't give a category an empty name.");
+				return;
+			}
+			if (socialStructure[newVal]) {
+				showRejectMsg("Can't Rename", "An existing category already has the name '" + newVal + "'.");
+				return;
+			}
 			if (proposedCategory === editorCategory) {
 				proposedCategory = newVal;
 			}
@@ -129,8 +137,12 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		// Make a new category with default options. The editor will display different buttons because "proposedCategory" has been set.
 
 		$("#editorCategoryName").val("New Category Name");
+		var uniqueDefaultName = defaultCategoryName;
+		if (socialStructure[uniqueDefaultName]) {
+			uniqueDefaultName += "-" + util.iterator("defaultCatName");
+		}
 		var categoryBlueprint = {
-			category: defaultCategoryName,
+			category: uniqueDefaultName,
 			isBoolean: true,
 			directionType: "directed",
 			types: ["default type"],
@@ -138,8 +150,8 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			actionable: false
 		};
 		ensemble.loadBlueprint(categoryBlueprint, 0);
-		editorCategory = defaultCategoryName;
-		proposedCategory = defaultCategoryName;
+		editorCategory = uniqueDefaultName;
+		proposedCategory = uniqueDefaultName;
 		saveToDiskAndRefresh(""); // Will trigger showing editor
 	}
 
@@ -224,9 +236,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			lookupCategoryRecords(category);
 		});
 		$(".schemaEdType").change(function() {
-			var newVal = this.value;
-			var oldVal = this.id.split("_")[1];
-			findAndReplace("type", oldVal, newVal);
+			editType(this);
 		});
 		$(".edTypeDelete").mouseover(function() {
 			var val = this.id.split("_")[1];
@@ -303,6 +313,22 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		}
 
 		initSchemaEdTooltips();
+	}
+
+	var editType = function(el) {
+		var newVal = el.value.trim();
+		var oldVal = el.id.split("_")[1];
+		if (newVal === "") {
+			showRejectMsg("Can't Rename", "Can't rename a type to an empty string.");
+			el.value = oldVal;
+			return;
+		}
+		if (socialStructure[editorCategory][newVal]) {
+			showRejectMsg("Can't Rename", "A type in this category already has the name '" + newVal + "'.");
+			el.value = oldVal;
+			return;
+		}
+		findAndReplace("type", oldVal, newVal);
 	}
 
 	// Ask Ensemble to get a list of all records for the given category.
@@ -445,6 +471,10 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		typeName = typeName.trim();
 		if (socialStructure[editorCategory][typeName]) {
 			showRejectMsg("Not Created", "Already a type with this name.");
+			return;
+		}
+		if (typeName === "") {
+			showRejectMsg("Invalid Name", "Can't create a type with an empty name.");
 			return;
 		}
 		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
