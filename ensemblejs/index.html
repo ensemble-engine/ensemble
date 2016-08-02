@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<!-- Project Yarn Main Page -->
+<!-- Project Ensemble Main Page -->
 
 <html>
 <head>
 
-	<title>Yarn</title>
+	<title>Ensemble</title>
 
-	<!-- Include Require.js. The data-main field points to the main.js file which configures all additional Javascript and data files to load. -->
-	<script src="jslib/require.js" data-main="yarn-main.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="css/styles.css">
-	<link rel="stylesheet" href="jslib/jquery-ui-1.10.4.custom/css/smoothness/jquery-ui-1.10.4.custom.css">
     <style type="text/css" media="screen">
       .codeBox {
         padding: 7px;
@@ -43,7 +38,7 @@
           '   --args --allow-file-access-from-files --user-data-dir=/tmp';
 
         errorBox.innerText =
-          isChrome ? 'Try running in Firefox, or to run in Chrome, do one of the following:' :
+          isChrome ? 'If you can\'t load these files, it might be because of browser permissions that restrict accessing files on the local system. Try running in Firefox, or start a localhost server to run in Chrome. To do this:' :
           'Errors loading page: Check the console.';
         chromeErrorFooter.innerText =
           isChrome ? 'If page still does not load, check console.' : '';
@@ -67,7 +62,9 @@
 
 
 		<!-- Instructions in case browser can't display. -->
-		<h1>Project Yarn -- Starting Up</h1>
+		<h1>Ensemble &mdash; Project Root</h1>
+
+    <p><a href="tests.html">Ensemble Unit Tests</a><br><br><a href="ensembletool/ensembleconsole.html">Local Ensemble Console (test mode)</a></p>
 
 	    <div id="container">
 	      <p>
