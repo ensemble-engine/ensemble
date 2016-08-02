@@ -141,11 +141,11 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 			throw new Error("SCHEMA ERROR: A schema must include at least one category where actionable is true, otherwise there are no possible actions for characters to take.");
 		}
 
+		socialStructure = structure;
 		for (i = 0; i < blueprints.length; i++) {
-			loadBlueprint(structure, blueprints[i], i);
+			loadBlueprint(blueprints[i], i);
 		}
 
-		socialStructure = structure;
 		validate.registerSocialStructure(socialStructure);
 		return socialStructure;
 	};
@@ -154,18 +154,18 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @method loadBlueprint
 	 * @memberOf ensemble
 	 * @private
-	 * @description Internal function to handle loading a single schema
-	 * blueprint.
+	 * @description Load a single schema blueprint. In most cases, you
+	 * should use loadSocialStructure to load a set at once and do
+	 * some checking on the set as a whole.
 	 *
-	 * @param  {Object} structure A reference to the module's social structure variable, which will be updated with the details of the newly loaded blueprint.
 	 * @param	{Object}	categoryBlueprint	The blueprint object to load
 	 * @param	{Number}	When loading multiple blueprints, can pass an ID number to be printed if necessary for diagnostics.
 	 * 
 	 */
-	var loadBlueprint = function(structure, categoryBlueprint, num) {
+	var loadBlueprint = function(categoryBlueprint, num) {
 
 		// Error Checking
-		if (structure[categoryBlueprint.category]) {
+		if (socialStructure[categoryBlueprint.category]) {
 			throw new Error("DATA ERROR in ensemble.loadSocialStructure: the category '" + categoryBlueprint.category + "' is defined more than once.");
 		}
 
@@ -179,12 +179,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		socialRecord.registerMinValue(categoryBlueprint);
 
 		// Create an interface for each type within this category.
-		structure[categoryBlueprint.category] = {};
+		socialStructure[categoryBlueprint.category] = {};
 		for (var j = 0; j < categoryBlueprint.types.length; j++) {
 			var type = categoryBlueprint.types[j].toLowerCase();
 			var typeBlueprint = util.clone(categoryBlueprint);
 			typeBlueprint.type = type;
-			structure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
+			socialStructure[categoryBlueprint.category][type] = registerSocialType(typeBlueprint);
 		}
 	}
 
@@ -195,12 +195,14 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	 * @description Refresh the definition of a schema category. NOTE: This will not automatically check for conflicts with existing rules, social records, etc.: probably useful only in the context of a schema editor program that is taking care of that stuff.
 	 *
  	 * @param  {String} categoryKey The social category to update.
- 	 * @param  {Object} blueprint	A new specification for this category, in the same format as blueprints passed into loadSocialStructure.
+ 	 * @param  {Object} blueprint	A new specification for this category, in the same format as blueprints passed into loadSocialStructure. If this is undefined, the old category will simply be deleted.
  	 *
 	 */
 	var updateCategory = function(categoryKey, blueprint) {
 		delete socialStructure[categoryKey];
-		loadBlueprint(socialStructure, blueprint, 0);
+		if (blueprint) {
+			loadBlueprint(blueprint, 0);
+		}
 		// TODO: Technically, if the name of the category changes, this is leaving behind old duration, direction, default etc. values in the socialRecord internals. I don't believe this harms anything, but it's a bit messy.
 	}
 
@@ -952,6 +954,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		init					: init,
 		loadSocialStructure		: loadSocialStructure,
 		getSocialStructure		: getSocialStructure,
+		loadBlueprint			: loadBlueprint,
 		getCategoryDescriptors		: getCategoryDescriptors,
 		getCategoryFromType		: getCategoryFromType,
 		isValidTypeForCategory		: isValidTypeForCategory,
