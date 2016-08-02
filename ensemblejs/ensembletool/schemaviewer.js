@@ -67,12 +67,150 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 		// --> Changing Direction
 		$("input[name=edDirectionType]").change(function() {
-			console.log(this.value);
-			if (countConflictingRecords() > 0) {
-				rejectChange("change the direction of");
+			schemaInfoChange(this.value, "directionType", "direction", function(descriptors, newVal) {
+				descriptors.directionType = newVal;
+			});
+		});
+
+		// --> Changing Data Type
+		$("input[name=isBoolean]").change(function() {
+			schemaInfoChange(this.value, "isBoolean", "data type", function(descriptors, newVal) {
+				descriptors.isBoolean = newVal === "true" ? true : false;
+				if (descriptors.isBoolean === true) {
+					// remove numeric fields.
+					delete descriptors.min;
+					delete descriptors.max;
+					descriptors.defaultVal = false;
+				} else {
+					descriptors.min = 0;
+					descriptors.max = 10;
+					descriptors.defaultVal = 0;
+				}
+			});
+		});
+
+		// --> Changing boolean Default
+		$("input[name=defaultValue]").change(function() {
+			schemaInfoChange(this.value, "defaultValue", "default value", function(descriptors, newVal) {
+				descriptors.defaultVal = newVal === "true" ? true : false;
+			});
+		});
+
+		var rejectIfNotNum = function(newVal, requireInt, requirePos) {
+			var tryNum;
+			if (requireInt) {
+				tryNum = parseInt(newVal);
+			} else {
+				tryNum = parseFloat(newVal);
+			}
+			if (isNaN(tryNum)) {
+				showRejectMsg("Invalid Value", "This item must be a valid number.");
+				return false;
+			}
+			if (requirePos === true && tryNum <= 0) {
+				showRejectMsg("Invalid Value", "This item must be a positive number.");
+				return false;
+			}
+			return tryNum;
+		}
+
+		// --> Changing numeric Default
+		$("#editorDefaultValue").change(function() {
+			schemaInfoChange(this.value, "defaultValue", "default value", function(descriptors, newVal) {
+				var tryNum = rejectIfNotNum(newVal, false, false);
+				if (tryNum === false) return false;
+				if (tryNum > descriptors.max || tryNum < descriptors.min) {
+					showRejectMsg("Invalid Default", "The default value for a category with a numeric data type must be between the min and max for that type.");
+					return false;
+				}
+				descriptors.defaultVal = tryNum;
+			});
+		});
+
+		// --> Changing min
+		$("#editorMin").change(function() {
+			schemaInfoChange(this.value, "min", "minimum value", function(descriptors, newVal) {
+				var tryNum = rejectIfNotNum(newVal, false, false);
+				if (tryNum === false) return false;
+				if (tryNum > descriptors.max) {
+					descriptors.max = tryNum;
+				}
+				if (tryNum > descriptors.defaultVal) {
+					descriptors.defaultVal = tryNum;
+				}
+				descriptors.min = tryNum;
+			});
+		});
+
+		// --> Changing max
+		$("#editorMax").change(function() {
+			schemaInfoChange(this.value, "max", "maximum value", function(descriptors, newVal) {
+				var tryNum = rejectIfNotNum(newVal, false, false);
+				if (tryNum === false) return false;
+				if (tryNum < descriptors.min) {
+					descriptors.min = tryNum;
+				}
+				if (tryNum < descriptors.defaultVal) {
+					descriptors.defaultVal = tryNum;
+				}
+				descriptors.max = tryNum;
+			});
+		});
+
+		$("#editorShowDuration").change(function() {
+			schemaInfoChange(this.checked, "duration", "duration", function(descriptors, newVal) {
+				if (newVal) {
+					descriptors.duration = 1;
+				} else {
+					delete descriptors.duration;
+				}
+			});
+		});
+
+		$("#editorDuration").change(function() {
+			schemaInfoChange(this.value, "duration", "duration", function(descriptors, newVal) {
+				var tryNum = rejectIfNotNum(newVal, true, true);
+				if (tryNum === false) return false;
+				descriptors.duration = tryNum;
+			});
+		});
+
+		$("#editorActionable").change(function() {
+			schemaInfoChange(this.checked, "actionable", "actionable property", function(descriptors, newVal) {
+				descriptors.actionable = newVal;
+			})
+		});
+	}
+
+	// Wrapper function to handle changing a schema definition. Rejects change if it's not currently possible, runs a passed-in function to massage the user's value, and handles updates.
+	var schemaInfoChange = function(newVal, descriptorField, name, alterFunc) {
+		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
+		// var oldType = descriptors[descriptorField];
+		var haveConflict = countConflictingRecords() > 0;
+		
+		// special exemption: no problem making something actionable that wasn't previously.
+		if (descriptorField === "actionable" && newVal === true) {
+			haveConflict = false;
+		}
+		// Duration only affects run-time behavior, so OK to change on the fly.
+		if (descriptorField === "duration") {
+			haveConflict = false;
+		}
+		
+		if (haveConflict) {
+			rejectChange("change the " + name + " of");
+			return;
+		}
+		if (alterFunc) {
+			var result = alterFunc(descriptors, newVal);
+			if (result === false) {
 				return;
 			}
-		});
+		}
+		var category = socialStructure[editorCategory];
+		var blueprint = newBlueprint(descriptors, editorCategory, category);
+		ensemble.updateCategory(editorCategory, blueprint);
+		saveToDiskAndRefresh(name + " changed.");
 	}
 
 	var initSchemaEdTooltips = function() {
@@ -463,15 +601,20 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
-		if (editorCategory) {
-			editSchemaCategory(editorCategory); // refresh view
-		}
 		show(socialStructure);
 		rulesEditor.refresh(); // TODO: It would be nice if we didn't have
 		rulesViewer.show();    // to do this by hand from here.
 		historyViewer.refresh();
+		schemaEdWindowRefresh();
+		if (!proposedCategory) { // Skip showing a message if we're creating a new category.
+			$("#editorMsg").stop(true, true).html(msg).show().fadeOut(3000);
+		}
+	}
 
-		$("#editorMsg").stop(true, true).html(msg).show().fadeOut(3000);
+	var schemaEdWindowRefresh = function() {
+		if (editorCategory) {
+			editSchemaCategory(editorCategory); // refresh view
+		}
 	}
 
 	var addType = function(typeName) {
@@ -549,6 +692,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 				}
 			}
 		});
+		schemaEdWindowRefresh();
 	}
 
 	var rejectChange = function(attemptedAction) {

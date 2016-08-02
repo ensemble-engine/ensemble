@@ -317,6 +317,12 @@ margin-left: 6em;
 	max-height: 200px;
     overflow-y: scroll;
 }
+#editorDefaultValue {
+	width: 5em;
+}
+#editorMin, #editorMax {
+	width: 3em;
+}
 .edTypeDelete {
 	font-size: 65%;
 	font-weight: bold;
