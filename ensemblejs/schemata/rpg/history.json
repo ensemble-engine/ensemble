@@ -1,0 +1,17 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"category" : "attribute",
+			"type" : "strength",
+			"first" : "Braz",
+			"value" : 12
+				},{
+			"category" : "alignment",
+			"type" : "lawful",
+			"first" : "Braz",
+			"value" : true
+				}
+		]}
+	]
+}

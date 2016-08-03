@@ -124,8 +124,9 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 				// We'll let the fileio module deal with the nitty gritty of loading in the files in the schemata, passing in a callback function. If the load is successful, the callback will have a "pkg" variable that's an object with keys for each part of the schemata. For each matching part found, we'll load the data into Ensemble and the editor.
 				fileio.loadSchemaFromFolder(this.value, function(pkg) {
 					// callback function
-					
+
 					loadSchema(pkg.schema);
+					socialStructure.schemaOrigin = pkg.schema.source_file;
 					if (pkg.cast) {
 						loadCast(pkg.cast);
 					}

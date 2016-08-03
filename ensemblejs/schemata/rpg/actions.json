@@ -1,0 +1,53 @@
+{
+	"fileName" : "actions.json",
+	"actions" : [
+		{
+			"name" : "INCREASEKINSHIP",
+			"intent" : {
+				"category" : "bonds",
+				"type"  : "kinship",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["SWEAROATH"]
+		},
+		{
+			"name" : "SWEAROATH",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["swearOathSuccess", "swearOathFail"]
+		},
+		{
+			"name" : "swearOathSuccess",
+			"displayName" : "Swear Oath <SUCCESS>",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "bonds",
+				"type" : "kinship",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 2
+			}]
+		},
+		{
+			"name" : "swearOathFail",
+			"displayName" : "Swear Oath <FAIL>",
+			"isAccept" : false,
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "bonds",
+				"type" : "kinship",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "-",
+				"value" : 1
+			}]
+		}
+	]
+}

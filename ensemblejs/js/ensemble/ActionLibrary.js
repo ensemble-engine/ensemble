@@ -117,6 +117,7 @@ function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
 			var action = parsedActions[i];
 			action.fileName = fileName;
 			action.id = util.iterator("actions");
+			action.origin = data.source_file;
 
 			// Error Checking
 			validate.action(action, "Examining action  #" + i);

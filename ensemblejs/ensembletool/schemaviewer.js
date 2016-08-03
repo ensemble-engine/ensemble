@@ -14,6 +14,8 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 	var proposedCategory;
 
+	var dirtyFiles = [];
+
 	var init = function() {
 		// Set up editor change events.
 		$("#editorCategoryName").change(function() {
@@ -527,6 +529,12 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		}
 	}
 
+	var markDirty = function(file) {
+		if (dirtyFiles.indexOf(file) === -1) {
+			dirtyFiles.push(file);
+		}
+	}
+
 	var findAndReplace = function(key, oldVal, newVal) {
 		var category = socialStructure[editorCategory];
 		var descriptors = ensemble.getCategoryDescriptors(editorCategory);
@@ -555,11 +563,13 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			recordsForActiveCategory[ruleSet].forEach(function(rule) {
 				rule.conditions.forEach(function(condition) {
 					if (condition[key] === oldVal) {
+						markDirty(rule.origin);
 						condition[key] = newVal;
 					}
 				});
 				rule.effects.forEach(function(effect) {
 					if (effect[key] === oldVal) {
+						markDirty(rule.origin);
 						effect[key] = newVal;
 					}
 				});
@@ -570,6 +580,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		// Update matching social records
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
+			markDirty(record.origin);
 			ensemble.setSocialRecordById(record.id, record);
 		});
 
@@ -577,16 +588,19 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		recordsForActiveCategory.actions.forEach(function(action) {
 			action.conditions.forEach(function(condition) {
 				if (condition[key] === oldVal) {
+					markDirty(action.origin);
 					condition[key] = newVal;
 				}
 			});
 			action.effects.forEach(function(effect) {
 				if (effect[key] === oldVal) {
+					markDirty(action.origin);
 					effect[key] = newVal;
 				}
 			});
 			action.influenceRules.forEach(function(rule) {
 				if (rule[key] === oldVal) {
+					markDirty(action.origin);
 					rule[key] = newVal;
 				}
 			});
@@ -597,7 +611,11 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 	}
 
 	var saveToDiskAndRefresh = function(msg) {
-		// TODO: Trigger an update to all affected files.
+		// TODO: Trigger an update to all affected files, if file i/o is a thing.
+		// The schema file itself always changes, so update that.
+		markDirty(socialStructure.schemaOrigin);
+		// Iterate through each dirty file and save.
+		console.log("dirtyFiles", dirtyFiles);
 
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
