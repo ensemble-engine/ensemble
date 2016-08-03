@@ -130,7 +130,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 						loadCast(pkg.cast);
 					}
 					if (pkg.history) {
-						loadHistory(pkg.history);
+						ensemble.addHistory(pkg.history);
 					}
 					if (pkg.rules) {
 						// Should be an array, one rules object for each rules file found.
@@ -212,33 +212,6 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	};
 
 
-	// Take a history definition object, and load it into ensemble.
-	var loadHistory = function(content) {
-		var history = content.history;
-		var lastPos = -9999999999;
-		for (var i = 0; i < history.length; i++) {
-			// TODO add more error checking to look for out-of-order history steps, etc.
-			var historyAtTime = history[i];
-			if (historyAtTime.pos <= lastPos) {
-				messages.showError("Tried to load a history file but timeStep " + historyAtTime.pos + " came after timeStep " + lastPos + "; history files must declare timesteps sequentially.");
-				return;
-			}
-			lastPos = historyAtTime.pos;
-			ensemble.setupNextTimeStep(historyAtTime.pos);
-			for (var j = 0; j < historyAtTime.data.length; j++) {
-				var pred = historyAtTime.data[j];
-				try {
-					ensemble.set(pred);
-				} catch(e) {
-					messages.showError("invalid history file! double check  predicate on console");
-					console.log("invalid predicate in history:", pred);
-					return;
-				}
-			}
-		}
-	};
-
-
 	// Take a rules definition object, load it into ensemble, and display it in the appropriate UI tab.
 	var loadRules = function(rules) {
 		ensemble.addRules(rules);
@@ -287,7 +260,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			loadSchema(JSON.parse(sampleData));
 			loadRules(JSON.parse(testVolitionRules));
 			loadRules(JSON.parse(testTriggerRules));
-			loadHistory(JSON.parse(testSfdbData));
+			ensemble.addHistory(JSON.parse(testSfdbData), "testAuto");
 			loadCast(JSON.parse(sampleChars));
 			loadActions(JSON.parse(testActions));
 			rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);

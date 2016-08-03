@@ -447,6 +447,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			setupNextTimeStep(historyAtTime.pos);
 			for (var j = 0; j < historyAtTime.data.length; j++) {
 				var pred = historyAtTime.data[j];
+				pred.origin = content.source_file;
 				try {
 					set(pred);
 				} catch(e) {
@@ -504,6 +505,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 		pattern.type = setPredicate.type;
 		pattern.first = setPredicate.first;
 		pattern.second = setPredicate.second;
+		pattern.origin = setPredicate.origin;
 
 		var value = setPredicate.value;
 		var operator = setPredicate.operator;
