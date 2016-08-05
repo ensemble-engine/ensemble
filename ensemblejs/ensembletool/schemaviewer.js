@@ -4,7 +4,7 @@ This module handles the viewer and editor for the currently loaded social schema
 
 /*global console */
 
-define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, util, $){
+define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "util", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, fileio, util, $){
 
 	var socialStructure;
 	var editorCategory;
@@ -14,7 +14,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 
 	var proposedCategory;
 
-	var dirtyFiles = [];
+	var dirtyFiles = {};
 
 	var init = function() {
 		// Set up editor change events.
@@ -529,9 +529,12 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		}
 	}
 
-	var markDirty = function(file) {
-		if (dirtyFiles.indexOf(file) === -1) {
-			dirtyFiles.push(file);
+	var markDirty = function(file, typeKey) {
+		if (!dirtyFiles[file]) {
+			dirtyFiles[file] = {
+				fileName: file,
+				type: typeKey
+			}
 		}
 	}
 
@@ -563,13 +566,13 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 			recordsForActiveCategory[ruleSet].forEach(function(rule) {
 				rule.conditions.forEach(function(condition) {
 					if (condition[key] === oldVal) {
-						markDirty(rule.origin);
+						markDirty(rule.origin, ruleSet);
 						condition[key] = newVal;
 					}
 				});
 				rule.effects.forEach(function(effect) {
 					if (effect[key] === oldVal) {
-						markDirty(rule.origin);
+						markDirty(rule.origin, ruleSet);
 						effect[key] = newVal;
 					}
 				});
@@ -580,7 +583,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		// Update matching social records
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
-			markDirty(record.origin);
+			markDirty(record.origin, "history");
 			ensemble.setSocialRecordById(record.id, record);
 		});
 
@@ -588,19 +591,19 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		recordsForActiveCategory.actions.forEach(function(action) {
 			action.conditions.forEach(function(condition) {
 				if (condition[key] === oldVal) {
-					markDirty(action.origin);
+					markDirty(action.origin, "actions");
 					condition[key] = newVal;
 				}
 			});
 			action.effects.forEach(function(effect) {
 				if (effect[key] === oldVal) {
-					markDirty(action.origin);
+					markDirty(action.origin, "actions");
 					effect[key] = newVal;
 				}
 			});
 			action.influenceRules.forEach(function(rule) {
 				if (rule[key] === oldVal) {
-					markDirty(action.origin);
+					markDirty(action.origin, "actions");
 					rule[key] = newVal;
 				}
 			});
@@ -613,9 +616,40 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 	var saveToDiskAndRefresh = function(msg) {
 		// TODO: Trigger an update to all affected files, if file i/o is a thing.
 		// The schema file itself always changes, so update that.
-		markDirty(socialStructure.schemaOrigin);
-		// Iterate through each dirty file and save.
+		markDirty(socialStructure.schemaOrigin, "schema");
+
+		// As a quick fix, add the path and extension to any files missing it. TODO is refactor files to consistently either include the path and extension or not.
+		for (var key in dirtyFiles) {
+			if (dirtyFiles[key].fileName.indexOf(".json") === -1) {
+				dirtyFiles[key].fileName = fileio.getLastPath() + "/" + dirtyFiles[key].fileName + ".json";
+			}
+		}
 		console.log("dirtyFiles", dirtyFiles);
+
+		// Iterate through each dirty file and save.
+		for (key in dirtyFiles) {
+			var df = dirtyFiles[key];
+			var preds;
+			if (df.type === "trigger" || df.type === "volition") {
+				preds = ensemble.getRules(df.type);
+			} else if (df.type === "schema") {
+				preds = util.clone(socialStructure);
+			} else if (df.type === "actions") {
+				preds = util.clone(ensemble.getAllActions());
+			} else if (df.type === "history") {
+				preds = ensemble.getSocialRecordCopy();
+			} else {
+				console.log("Unrecognized dirty file type: " + df.type);
+			}
+			if (df.type === "history") {
+				preds = filterHistory(preds, df.fileName, key);
+			} else if (df.type !== "schema") {
+				preds = preds.filter(function(pred) {
+					return pred.origin === df.fileName || pred.origin === key;
+				});
+			}
+			// fileio.saveRules(df.type, preds, df.fileName);
+		}
 
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
@@ -627,6 +661,15 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "util", "jque
 		if (!proposedCategory) { // Skip showing a message if we're creating a new category.
 			$("#editorMsg").stop(true, true).html(msg).show().fadeOut(3000);
 		}
+	}
+
+	var filterHistory = function(history, fn, key) {
+		history.forEach(function(timestep) {
+			timestep = timestep.filter(function(record) {
+				return record.origin === fn || record.origin === key;
+			});
+		});
+		return history;
 	}
 
 	var schemaEdWindowRefresh = function() {

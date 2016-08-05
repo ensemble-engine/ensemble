@@ -989,10 +989,12 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		getRegisteredDirection	: socialRecord.getRegisteredDirection,
 		getAction				: actionLibrary.getAction,
 		getActions				: actionLibrary.getActions,
+		getAllActions			: actionLibrary.getAllActions,
 		addActions				: actionLibrary.parseActions,
 		addHistory				: socialRecord.addHistory,
 		clearHistory			: socialRecord.clearHistory,
 		getSocialRecordCopyAtTimestep	: socialRecord.getSocialRecordCopyAtTimestep,
+		getSocialRecordCopy		: socialRecord.getSocialRecordCopy,
 		getCurrentTimeStep		: socialRecord.getCurrentTimeStep,
 		
 		addRules				: addRules,

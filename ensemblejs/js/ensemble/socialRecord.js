@@ -75,7 +75,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 
 	 * @description Returns a copy of the socialRecord at the given timestep.
 	 *
-	 * @param  {Number} timeStep The timestep to retrieve.
+	 * @param  {Number} timeStep The timestep to retrieve. If undefined, assume the current timestep.
 	 * @example var historyAtTimestepTwo = ensemble.getSocialRecordCopyAtTimestep(2);
 	 * @return {Object} A copy of an socialRecord timeslice, an array of predicate objects.
 	 *
@@ -90,6 +90,10 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 			slice = [];
 		}
 		return slice;
+	}
+
+	var getSocialRecordCopy = function() {
+		return util.clone(socialRecord);
 	}
 	
 	var registerMaxValue = function (predicate) {
@@ -844,6 +848,7 @@ define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
 	var socialRecordInterface = {
 		init: init,
 		dumpSocialRecord: dumpSocialRecord,
+		getSocialRecordCopy: getSocialRecordCopy,
 		getSocialRecordCopyAtTimestep: getSocialRecordCopyAtTimestep,
 
 		getCurrentTimeStep		: getCurrentTimeStep,

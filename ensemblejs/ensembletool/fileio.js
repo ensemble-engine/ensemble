@@ -6,6 +6,10 @@ define([], function(){
 	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
 	var maxBackupFiles = 10;
 
+	var getLastPath = function() {
+		return lastPath;
+	}
+
 
 	var init = function() {
 		try {
@@ -197,6 +201,7 @@ define([], function(){
 	var writeRulesForFileToDisk = function(ruleType, rules, ruleFile) {
 		
 		// Create a human-readable JSON string encoding the rules in the proper format.
+		// TODO: vary the format based on the type.
 		var preparedRulesObj = {};
 		preparedRulesObj.fileName = ruleFile;
 		preparedRulesObj.type = ruleType;
@@ -237,7 +242,8 @@ define([], function(){
 		init: init,
 		enabled: enabled,
 		loadSchemaFromFolder: loadSchemaFromFolder,
-		saveRules: saveRules
+		saveRules: saveRules,
+		getLastPath: getLastPath
 	}
 
 });
