@@ -245,6 +245,7 @@ function(util, _, $, socialRecord) {
 
 			if (isTypeWrong(pred, "actionable", "boolean", false)) return msg;
 			delete pred.actionable;
+			delete pred.cloneEachTimeStep;
 
 			delete pred.isBoolean;
 		} else {// if type is not blueprint

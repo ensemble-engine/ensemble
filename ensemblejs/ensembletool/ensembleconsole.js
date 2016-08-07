@@ -8,6 +8,7 @@ Individual tabs of the tool are broken out into their own modules:
 	rulesViewer.js			Rules Viewer Tab
 	rulesEditor.js			Rules Editor Tab
 	--> ruleTester.js		Rule diagnostic panel ("Test Rule" button)
+	schemaviewer.js			Schema Viewer and Editor
 
 A few other modules help the tool function:
 	fileio.js				Loading/saving files

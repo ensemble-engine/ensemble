@@ -225,6 +225,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		// Generate explanatory text.
 		var exp = "";
 		for (var categoryName in socialStructure) {
+			if (categoryName === "schemaOrigin") continue;
 			var d = ensemble.getCategoryDescriptors(categoryName);
 			var direction = d.directionType;
 			var dataType = d.isBoolean ? "boolean" : "numeric";
@@ -630,17 +631,22 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		for (key in dirtyFiles) {
 			var df = dirtyFiles[key];
 			var preds;
+
+			// Get the raw data based on the type of file. 
 			if (df.type === "trigger" || df.type === "volition") {
 				preds = ensemble.getRules(df.type);
 			} else if (df.type === "schema") {
-				preds = util.clone(socialStructure);
+				preds = ensemble.getSchema();
 			} else if (df.type === "actions") {
 				preds = util.clone(ensemble.getAllActions());
 			} else if (df.type === "history") {
 				preds = ensemble.getSocialRecordCopy();
+				// TODO: Figure out what to do about history items made true during this editor session. Right now these are also being saved to disk, but they probably shouldn't be.
 			} else {
 				console.log("Unrecognized dirty file type: " + df.type);
 			}
+
+			// Now filter for only the data that originated from this file.
 			if (df.type === "history") {
 				preds = filterHistory(preds, df.fileName, key);
 			} else if (df.type !== "schema") {
@@ -648,9 +654,12 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 					return pred.origin === df.fileName || pred.origin === key;
 				});
 			}
-			// fileio.saveRules(df.type, preds, df.fileName);
+
+			// Save the file.
+			fileio.saveRules(df.type, preds, df.fileName);
 		}
 
+		dirtyFiles = {};
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
 		show(socialStructure);

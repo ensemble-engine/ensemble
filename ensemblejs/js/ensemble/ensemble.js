@@ -219,6 +219,38 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 	}
 
 	/**
+	 * @method getSchema
+	 * @memberOf ensemble
+	 * @public
+	 * @description Returns an object describing the active social structure in the same format as the original file: 
+	 * @return {Array} An array of objects, one for each category, with a field "types" with all the type name for that category, etc. (see format for loadSocialStructure)
+	 */
+	var getSchema = function() {
+		var schemaItems = [];
+		for (var catKey in socialStructure) {
+			if (catKey === "schemaOrigin") {
+				continue;
+			}
+			var item = {};
+			item = getCategoryDescriptors(catKey);
+			item.category = catKey;
+			item.types = Object.keys(socialStructure[catKey]);
+			
+			// TODO: Standardize field names between external files and internal representation, so the below isn't necessary.
+			item.defaultValue = item.defaultVal;
+			delete item.defaultVal;
+			item.maxValue = item.max;
+			delete item.max;
+			item.minValue = item.min;
+			delete item.min;
+
+			schemaItems.push(item);
+		}
+		return schemaItems;
+	}
+
+
+	/**
 	 * @method getCategoryDescriptors
 	 * @memberOf ensemble
 	 * @public
@@ -241,6 +273,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 			descriptors.actionable = c[representativeType].actionable;
 			descriptors.directionType = t.directionType;
 			descriptors.isBoolean = t.isBoolean;
+			// TODO: I believe cloneEachTimeStep is deprecated in favor of duration: 0. Verify and refactor.
 			descriptors.cloneEachTimeStep = t.cloneEachTimeStep === undefined ? true : t.cloneEachTimeStep;
 			descriptors.duration = t.duration;
 			descriptors.min = t.min;
@@ -954,6 +987,7 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
 		init					: init,
 		loadSocialStructure		: loadSocialStructure,
 		getSocialStructure		: getSocialStructure,
+		getSchema				: getSchema,
 		loadBlueprint			: loadBlueprint,
 		getCategoryDescriptors		: getCategoryDescriptors,
 		getCategoryFromType		: getCategoryFromType,
