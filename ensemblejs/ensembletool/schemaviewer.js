@@ -584,7 +584,9 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		// Update matching social records
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
+			if (record.origin) {
 			markDirty(record.origin, "history");
+			}
 			ensemble.setSocialRecordById(record.id, record);
 		});
 
