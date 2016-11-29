@@ -54,6 +54,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		allTypes = [];
 		var structure = ensemble.getSocialStructure();
 		for (var categoryKey in structure) {
+			if (categoryKey === "schemaOrigin") continue;
 			var categoryRoster = structure[categoryKey];
 			for (var typeKey in categoryRoster) {
 				allTypes.push(categoryKey + "_" + typeKey);
