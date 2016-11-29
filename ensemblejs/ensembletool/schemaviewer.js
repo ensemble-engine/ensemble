@@ -425,6 +425,11 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 							rejectChange("delete");
 							return;
 						}
+						// socialStructure has one more key than actual fields (schemaOrigin)
+						if (Object.keys(socialStructure).length <= 2) {
+							showRejectMsg("Can't Delete", "You can't delete the last category from a schema. Please edit this category instead.");
+							return;
+						}
 						var that = this;
 						$("<div/>", {html: "Are you sure you want to delete the category '" + editorCategory + "'? This operation cannot be undone."}).dialog({
 							title: "Confirm Delete",
@@ -585,7 +590,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
 			if (record.origin) {
-			markDirty(record.origin, "history");
+				markDirty(record.origin, "history");
 			}
 			ensemble.setSocialRecordById(record.id, record);
 		});
