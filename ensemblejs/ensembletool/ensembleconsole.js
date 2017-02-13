@@ -254,6 +254,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		rulesViewer.init();
 		historyViewer.init();
 		schemaViewer.init();
+		actionEditor.init();
 
 		if (autoLoad === false && !fileio.enabled()) {
 			autoLoad = true; // let's have it use autoload when using the webpage version of the console.
