@@ -7,6 +7,7 @@ Individual tabs of the tool are broken out into their own modules:
 	historyViewer.js		Social Record Viewer Tab
 	rulesViewer.js			Rules Viewer Tab
 	rulesEditor.js			Rules Editor Tab
+	actionEditor.js 		Action Editor Tab
 	--> ruleTester.js		Rule diagnostic panel ("Test Rule" button)
 
 A few other modules help the tool function:
@@ -43,6 +44,7 @@ requirejs.config({
 		,"historyViewer" : "historyViewer"
 		,"rulesViewer" : "rulesViewer"
 		,"rulesEditor" : "rulesEditor"
+		,"actionEditor" : "actionEditor"
 		,"consoleViewer" : "consoleViewer"
 		,"schemaViewer" : "schemaViewer"
 		,"messages" : "messages"
@@ -64,8 +66,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "actionEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, actionEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
