@@ -304,6 +304,10 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 	}
 
 	var editSchemaCategory = function(category) {
+
+		// If we have an active rule in the editor, save it now, so if it's in a partially changed state it won't get out of sync with the new schema.
+		rulesEditor.updateActiveRule();
+
 		editorCategory = category;
 		var cat = socialStructure[category];
 		var catDescriptors = ensemble.getCategoryDescriptors(category);
