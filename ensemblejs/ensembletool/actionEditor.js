@@ -6,13 +6,23 @@ And for each of those, offers a starter "isAccept" and "isReject" answer.
 define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, socialRecord, util, $){
 
 	
-	var intentDisplay = $("#intentArea");
+	var intentDisplay = $("#typesTabs");
 	var authoringArea = $("#authoringArea");
+	var intentTypeList = $("#intentTypeList")
 
 	var init = function() {
 		// Setup interface buttons.
 		$("button#intentAreaButton").click(intentAreaButtonClick);
 		$("button#authoringAreaButton").click(authoringareaButtonClick);
+		intentTypeList.append("<li><a href='#tabstrigger'>Start Dating</a></li>");
+		intentTypeList.append("<li><a href='#tabsvolition'>Stop Dating</a></li>")
+/*
+		intentDisplay.append("<ul>" +
+  			"<li><a href='#tabstrigger'>Start Dating</a></li>" +
+  			"<li><a href='#tabsvolition'>Stop Dating</a></li>" +
+  		"</ul>");
+  		*/
+
 	}
 
 	var intentAreaButtonClick = function() {

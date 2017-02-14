@@ -105,6 +105,15 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 
+	//Activate tabs to switch between intent types in Action Editor panel.
+	// Activate tabs to switch between rulesets in Rules pane.
+	$("#typesTabs").tabs({
+		activate: function(event, ui) {
+			var tabName = ui.newTab[0].innerText;
+			//$("#newRuleButton").html("New " + tabName + " Rule");
+		}
+	}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
+
 	// "Load New Schema" button wrapper
 	$("button#loadSchema").click(function() {
 		if (!fileio.enabled()) {

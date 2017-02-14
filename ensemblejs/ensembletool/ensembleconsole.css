@@ -291,6 +291,16 @@ margin-left: 6em;
 	padding: 0 0.25em 0 0.25em;
 }
 
+
+/* Action Editor */
+#typesTabs .ui-tabs-panel {
+padding: 0 !important;
+float: left;
+width: auto;
+outline: thin solid purple;
+margin-left: 6em;
+}
+
 /* schema editor */
 #schemaEditForm {
 	display: none;
