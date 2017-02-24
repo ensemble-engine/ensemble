@@ -12,10 +12,20 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 
 	var init = function() {
 		// Setup interface buttons.
+		var socialStructure = ensemble.getSocialStructure();
+		console.log("Here is the social structure FROM INIT: " , socialStructure);
+		refresh();
+		intentDisplay.tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+		
+
 		$("button#intentAreaButton").click(intentAreaButtonClick);
 		$("button#authoringAreaButton").click(authoringareaButtonClick);
-		intentTypeList.append("<li><a href='#tabstrigger'>Start Dating</a></li>");
-		intentTypeList.append("<li><a href='#tabsvolition'>Stop Dating</a></li>")
+
+
+
+
+		//intentTypeList.append("<li><a href='#tabstrigger'>Start Dating</a></li>");
+		//intentTypeList.append("<li><a href='#tabsvolition'>Stop Dating</a></li>")
 /*
 		intentDisplay.append("<ul>" +
   			"<li><a href='#tabstrigger'>Start Dating</a></li>" +
@@ -27,6 +37,8 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 
 	var intentAreaButtonClick = function() {
 		console.log("INTENT AREA CLICK!")
+		var socialStructure = ensemble.getSocialStructure();
+		console.log("Umm.. maybe this has made the socialStructure better? " , socialStructure);
 		/*
 		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
 			return;
@@ -38,6 +50,8 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 
 	var authoringareaButtonClick = function() {
 		console.log("AUTHORING AREA CLICK!")
+		var socialStructure = ensemble.getSocialStructure();
+		console.log("Umm.. maybe this has made the socialStructure better? " , socialStructure);
 		/*
 		if (interfaceTimestep <= 0) {
 			return;
@@ -47,14 +61,29 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		*/
 	};
 
-	var reset = function() {
-		socialRecord.clearHistory();
-		interfaceTimestep = undefined;
-		refresh();
-	};
 
+	var refresh = function() {
 
-	var refresh = function(newTimeStep) {
+		console.log("hello! You just clicked the action editor tab! ")
+		var socialStructure = ensemble.getSocialStructure();
+		console.log("Umm.. maybe this has made the socialStructure better? " , socialStructure);
+
+		for(var categoryKey in socialStructure){
+			var category = socialStructure[categoryKey];
+			console.log("A CATEGORY: " , categoryKey)
+			console.log("Here's a category " , category)
+			for (var typeKey in category){
+				console.log("A TYPE: " , typeKey)
+				var type = category[typeKey]
+				console.log("Here's a type" , type)
+				intentTypeList.append("<li><a href='#tabstrigger'>" + typeKey +"</a></li>")
+
+				//<li><a href="#tabstrigger">Trigger</a></li>
+
+			}
+		}
+
+		/*
 		if (newTimeStep !== undefined) {
 			interfaceTimestep = newTimeStep;
 		}
@@ -76,6 +105,8 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		}
 		table += "</table>";
 		historyTableArea.html(table);
+
+		*/
 	}
 
 	return {
@@ -83,7 +114,6 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		refresh: refresh,
 		intentAreaButtonClick : intentAreaButtonClick,
 		authoringareaButtonClick : authoringareaButtonClick,
-		reset: reset
 
 	}
 
