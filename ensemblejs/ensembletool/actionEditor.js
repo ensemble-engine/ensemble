@@ -19,7 +19,10 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		//REFRESH IS AN ARTIFACT OF AN INITIAL ATTEMPT THAT USED TO CALL 
 		//actionEditor.init() IN THE WRONG PLACE.
 		refresh();
-		intentDisplay.tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+		intentDisplay.tabs(
+			{activate: function( event, ui ) {
+				console.log("hi you clicked me!")
+			}}).addClass( "ui-tabs-vertical ui-helper-clearfix" );
 		
 
 		$("button#intentAreaButton").click(intentAreaButtonClick);
