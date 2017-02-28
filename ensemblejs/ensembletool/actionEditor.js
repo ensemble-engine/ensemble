@@ -14,6 +14,10 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		// Setup interface buttons.
 		var socialStructure = ensemble.getSocialStructure();
 		console.log("Here is the social structure FROM INIT: " , socialStructure);
+		
+		//NOTE: WE PROBABLY WANT TO MOVE THE CONTENTS OF REFRESH INTO INIT;
+		//REFRESH IS AN ARTIFACT OF AN INITIAL ATTEMPT THAT USED TO CALL 
+		//actionEditor.init() IN THE WRONG PLACE.
 		refresh();
 		intentDisplay.tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 		
@@ -76,7 +80,7 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 				console.log("A TYPE: " , typeKey)
 				var type = category[typeKey]
 				console.log("Here's a type" , type)
-				intentTypeList.append("<li><a href='#tabstrigger'>" + typeKey +"</a></li>")
+				intentTypeList.append("<li><a href='#tabsActionAuthoringArea'>" + typeKey +"</a></li>")
 
 				//<li><a href="#tabstrigger">Trigger</a></li>
 
