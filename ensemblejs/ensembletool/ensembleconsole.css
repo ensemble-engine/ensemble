@@ -22,7 +22,7 @@ padding: 0;
 }
 #tabs {
 	width: 75%;
-	height: 90%;
+	min-height: 100%;
 	float: left;
 }
 #tabsConsole {
@@ -300,6 +300,61 @@ width: auto;
 outline: thin solid purple;
 margin-left: 6em;
 }
+
+#tabsActionEditor{
+	/*nothing*/
+	border: green;
+	border-style: solid;
+	float: left;
+	max-height: 50%;
+	overflow-y: scroll;
+}
+
+#typesTabs{
+	float: left;
+	border: purple;
+	border-style: dashed;
+}
+
+#actionEditorLeftHandSideDiv {
+	float: left;
+	border: black;
+	border-style: dotted;
+	width: 35%;
+	max-height: 50%;
+	overflow-y: scroll;
+	
+}
+
+#listOfActionsDiv {
+	clear: both;
+	border: purple;
+	border-style: solid;
+	border-width: thin;
+	overflow-y: auto;
+	max-height: 35%;
+	
+	
+}
+
+/*temp temp temp*/
+#tabs{
+	border: orange;
+	border-style: thin;
+	border-width: 1px;
+}
+
+#tabsActionAuthoringArea{
+	float: left;
+	border: blue;
+	border-style: ridge;
+	width: 60%
+}
+.actionEditorButton{
+	border: lawngreen;
+}
+
+/* End Action Editor */
 
 /* schema editor */
 #schemaEditForm {

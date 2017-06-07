@@ -8,7 +8,8 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 	
 	var intentDisplay = $("#typesTabs");
 	var authoringArea = $("#authoringArea");
-	var intentTypeList = $("#intentTypeList")
+	var listOfActionsArea = $("#listOfActionsDiv");
+	var actionEditorArea = $("#tabsActionEditor");
 
 	var init = function() {
 		// Setup interface buttons.
@@ -46,6 +47,7 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		console.log("INTENT AREA CLICK!")
 		var socialStructure = ensemble.getSocialStructure();
 		console.log("Umm.. maybe this has made the socialStructure better? " , socialStructure);
+		console.log("Um, I think this is what was clicked?" + event.target.id);
 		/*
 		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
 			return;
@@ -83,7 +85,15 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 				console.log("A TYPE: " , typeKey)
 				var type = category[typeKey]
 				console.log("Here's a type" , type)
-				intentTypeList.append("<li><a href='#tabsActionAuthoringArea'>" + typeKey +"</a></li>")
+				var noWhiteSpaceTypeKey = typeKey.replace(/\s/g,'')
+				var buttonID = "actionEditorButton-"+noWhiteSpaceTypeKey;
+				console.log("Here is a button id? " + buttonID)
+				listOfActionsArea.append("<div><div id="+buttonID+" class='actionEditorButton'>" + typeKey + "</div></div>");
+				//listOfActionsArea.append("<button id="+buttonID+" class='actionEditorButton'>" +typeKey + "</div>");
+				
+				var myNewButton = $("#" + buttonID);
+				myNewButton.button();
+				myNewButton.click(intentAreaButtonClick);
 
 				//<li><a href="#tabstrigger">Trigger</a></li>
 
