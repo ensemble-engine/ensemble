@@ -47,7 +47,8 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 		console.log("INTENT AREA CLICK!")
 		var socialStructure = ensemble.getSocialStructure();
 		console.log("Umm.. maybe this has made the socialStructure better? " , socialStructure);
-		console.log("Um, I think this is what was clicked?" + event.target.id);
+		console.log("Um, I think this is what was clicked?" , event.target.parentElement.id);
+		console.log("Uh, what about event? " , event);
 		/*
 		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
 			return;
