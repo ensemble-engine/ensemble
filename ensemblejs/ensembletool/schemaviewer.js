@@ -225,6 +225,7 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		// Generate explanatory text.
 		var exp = "";
 		for (var categoryName in socialStructure) {
+			if (categoryName === "schemaOrigin") continue;
 			var d = ensemble.getCategoryDescriptors(categoryName);
 			var direction = d.directionType;
 			var dataType = d.isBoolean ? "boolean" : "numeric";
@@ -303,6 +304,10 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 	}
 
 	var editSchemaCategory = function(category) {
+
+		// If we have an active rule in the editor, save it now, so if it's in a partially changed state it won't get out of sync with the new schema.
+		rulesEditor.updateActiveRule();
+
 		editorCategory = category;
 		var cat = socialStructure[category];
 		var catDescriptors = ensemble.getCategoryDescriptors(category);
@@ -422,6 +427,11 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 					"Delete": function() {
 						if (countConflictingRecords() > 0) {
 							rejectChange("delete");
+							return;
+						}
+						// socialStructure has one more key than actual fields (schemaOrigin)
+						if (Object.keys(socialStructure).length <= 2) {
+							showRejectMsg("Can't Delete", "You can't delete the last category from a schema. Please edit this category instead.");
 							return;
 						}
 						var that = this;
@@ -583,7 +593,9 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		// Update matching social records
 		recordsForActiveCategory.socialRecords.forEach(function(record) {
 			record[key] = newVal;
-			markDirty(record.origin, "history");
+			if (record.origin) {
+				markDirty(record.origin, "history");
+			}
 			ensemble.setSocialRecordById(record.id, record);
 		});
 
@@ -630,17 +642,22 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		for (key in dirtyFiles) {
 			var df = dirtyFiles[key];
 			var preds;
+
+			// Get the raw data based on the type of file. 
 			if (df.type === "trigger" || df.type === "volition") {
 				preds = ensemble.getRules(df.type);
 			} else if (df.type === "schema") {
-				preds = util.clone(socialStructure);
+				preds = ensemble.getSchema();
 			} else if (df.type === "actions") {
 				preds = util.clone(ensemble.getAllActions());
 			} else if (df.type === "history") {
 				preds = ensemble.getSocialRecordCopy();
+				// TODO: Figure out what to do about history items made true during this editor session. Right now these are also being saved to disk, but they probably shouldn't be.
 			} else {
 				console.log("Unrecognized dirty file type: " + df.type);
 			}
+
+			// Now filter for only the data that originated from this file.
 			if (df.type === "history") {
 				preds = filterHistory(preds, df.fileName, key);
 			} else if (df.type !== "schema") {
@@ -648,9 +665,12 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 					return pred.origin === df.fileName || pred.origin === key;
 				});
 			}
-			// fileio.saveRules(df.type, preds, df.fileName);
+
+			// Save the file.
+			fileio.saveRules(df.type, preds, df.fileName);
 		}
 
+		dirtyFiles = {};
 		// Refresh the editor.
 		socialStructure = ensemble.getSocialStructure();
 		show(socialStructure);

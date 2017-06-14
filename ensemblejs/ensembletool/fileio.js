@@ -1,4 +1,4 @@
-/* global require, process */
+/* global require, process, console */
 
 define([], function(){
 
@@ -198,29 +198,60 @@ define([], function(){
 	};
 
 	// Take a rules type (like "volition" etc.) and a filename, and write out all the rules ensemble has of that type and matching that filename origin to the file in question.
-	var writeRulesForFileToDisk = function(ruleType, rules, ruleFile) {
+	var writeFileToDisk = function(fileType, data, fileName) {
 		
 		// Create a human-readable JSON string encoding the rules in the proper format.
-		// TODO: vary the format based on the type.
-		var preparedRulesObj = {};
-		preparedRulesObj.fileName = ruleFile;
-		preparedRulesObj.type = ruleType;
-		preparedRulesObj.rules = rules;
+		// TODO: strip out unnecessary info.
+		var dataObj = {};
+		if (fileType === "trigger" || fileType === "volition") {
+			dataObj.fileName = fileName;
+			dataObj.type = fileType;
+			dataObj.rules = data;
+		} else if (fileType === "schema") {
+			// Single key schema, array of objects
+			dataObj.schema = data;
+		} else if (fileType === "actions") {
+			dataObj.fileName = fileName; // TODO this shouldn't have path...
+			dataObj.actions = data;
+		} else if (fileType === "history") {
+			// Single key history w/ array of objects.
+			// Each object has key pos (timestamp) and data.
+			// data is an array of objects.
+			dataObj.history = [];
+			for (var key in data) {
+				// scrub runtime fields from record. 
+				data[key].forEach(function(pred) {
+					delete pred.origin;
+					delete pred.id;
+					delete pred.timeHappened;
+				});
+				dataObj.history.push({
+					"pos": parseInt(key, 0),
+					"data": data[key]
+				});
+			}
+		}
+		console.log("dataObj:", dataObj);
 		// Convert to a string, using tabs to keep human readable.
-		var serializedRules = JSON.stringify(preparedRulesObj, null, '\t');
+		var serializedRules = JSON.stringify(dataObj, null, '\t');
 
-		// Write the serialized rules to disk.
-		var path = lastPath + "/" + ruleFile + ".json";
+		// Ensure we have a full path.
+		if (fileName.indexOf(".json") < 0) {
+			fileName = lastPath + "/" + fileName + ".json";
+		}
+
+		// Write the serialized data to disk.
 		if (fs !== undefined) {
-			fs.writeFileSync(path, serializedRules);
-			// console.log("writing to '" + path + "':");
+			fs.writeFileSync(fileName, serializedRules);
+			console.log("writing to '" + fileName + "':");
 		}
 	}
 
-	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeRulesForFileToDisk() to do the file i/o.
+	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeFileToDisk() to do the file i/o.
 	var saveRules = function(ruleType, rules, ruleFile, optOrigActiveFile, optSkipBackup) {
 
 		if(!optSkipBackup){
+			// TODO: support various paths, or take out for editor updates.
 			backupRulesFile(ruleFile);
 		}
 
@@ -228,13 +259,13 @@ define([], function(){
 			ruleType = "trigger";
 		}
 
-		writeRulesForFileToDisk(ruleType, rules, ruleFile);
+		writeFileToDisk(ruleType, rules, ruleFile);
 
 		// If we've moved a rule from one active file to another, we need to update the old file, too (to remove the moved file).
 		if (optOrigActiveFile !== undefined && optOrigActiveFile.trim() !== "" && optOrigActiveFile != ruleFile) {
 			// console.log("optOrigActiveFile is " + optOrigActiveFile + " and is different from ruleFile: " + ruleFile + ", so let's back it up too.")
 			backupRulesFile(optOrigActiveFile);
-			writeRulesForFileToDisk(ruleType, rules, optOrigActiveFile);
+			writeFileToDisk(ruleType, rules, optOrigActiveFile);
 		}
 	}
 

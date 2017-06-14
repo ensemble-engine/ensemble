@@ -46,6 +46,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 	var refresh = function() {
 		buildIntentOptions();
+		view.showActiveRule();
 	}
 
 	// Build two arrays storing (in allTypes) all individual social types in the format "category_type" (i.e. "relationship_friends"), and (in intentTypes) the subset of the former where actionable is true. Technically, we should only need to do this when a new social schema package is loaded; for now we run whenever we load a new rule into the editor.
@@ -54,6 +55,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		allTypes = [];
 		var structure = ensemble.getSocialStructure();
 		for (var categoryKey in structure) {
+			if (categoryKey === "schemaOrigin") continue;
 			var categoryRoster = structure[categoryKey];
 			for (var typeKey in categoryRoster) {
 				allTypes.push(categoryKey + "_" + typeKey);
@@ -170,6 +172,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		// Take the rule in the module variable "activeRule" and show it in editable form on the interface.
 		showActiveRule: function() {
+			if (activeRule.id === undefined) return;
 			var area = $("#tabsEditor");
 			area.html("");
 
@@ -1004,7 +1007,10 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		},
 
 		updateActiveRule: function(optSkipBackup) {
+			if (activeRule.id !== undefined) {
 			controller.updateRule(activeRule.id, activeRule, optSkipBackup);
+			}
+			activeRule = {}
 		},
 
 		// Prepare to save the rules in the active file to disk. (The dirty work is passed off to the fileio module.)
