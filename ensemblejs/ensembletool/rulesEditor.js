@@ -170,6 +170,10 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			return msg;
 		},
 
+		clearActiveRule: function() {
+			$("#tabsEditor").html("No Rule Loaded.");
+		},
+
 		// Take the rule in the module variable "activeRule" and show it in editable form on the interface.
 		showActiveRule: function() {
 			if (activeRule.id === undefined) return;
@@ -1065,6 +1069,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				rulesViewer.show();
 				messages.showAlert("Deleted rule " + activeRule.id + ".");
 				controller.saveRulesToDisk(activeRuleType, activeRule.origin);
+				view.clearActiveRule();
 			} else {
 				messages.showAlert("Unable to delete rule " + activeRule.id + ".");
 			}
