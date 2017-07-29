@@ -222,6 +222,7 @@ define(["util", "underscore", "test"], function(util, _, test) {
 	 */
 	var newSet = function(cast) {
 		var volitionShell = {};
+		if (cast === undefined) return volitionShell;
 		for (var i = 0; i < cast.length; i++) {
 			volitionShell[cast[i]] = {};
 			for (var j = 0; j < cast.length; j++) {
