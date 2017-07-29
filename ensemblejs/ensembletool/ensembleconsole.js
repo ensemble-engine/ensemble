@@ -128,53 +128,104 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 			messages.showAlert("File I/O is only possible in the standalone Ensemble app.");
 			return;
 		}
-		loadPackage();
+		selectAndLoadPackage();
 		$("#loadSchema").blur();
 	});
 
+	$("button#newSchema").click(function() {
+		newPackage();
+		$("#newSchema").blur();
+	})
+
+	// Create a new schema.
+	var newPackage = function() {
+		// Create dialog asking for schema folder
+		messages.dialog("Select New Schema Folder", "Select an empty folder to be the root for a new schema.", {cancel: true}, {
+			"OK": function() {
+				var chooser = messages.getFileDialog();
+				chooser.addEventListener("change", function() {
+					var folder = this.value;
+					var numFiles = fileio.getFilesInFolder(folder).length;
+					if (numFiles > 0) {
+						messages.dialog("Confirm Folder Wipe", "This folder contains " + numFiles + " file(s) that will be erased if you start a new schema in it. Are you sure?", {cancel: true}, {
+							"Confirm": function() {
+								fileio.clearFolder(folder);
+								createBlankSchema(folder);
+								$("#modalDialog").dialog("destroy");
+							}
+						});
+					} else {
+						createBlankSchema(folder);
+					}
+					$("#modalDialog").dialog("destroy");
+				}, false);
+				chooser.click();
+			}
+		});
+	}
+
 	// Handle loading a new schema package. 
-	var loadPackage = function() {
-		var chooser = document.querySelector('#fileDialog');
+	var selectAndLoadPackage = function() {
+		var chooser = messages.getFileDialog();
 
 		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in ensembleconsole.html) and confirmed their selection by clicking OK.
 		chooser.addEventListener("change", function() {
-			resetTool();
-			try {
-				// We'll let the fileio module deal with the nitty gritty of loading in the files in the schemata, passing in a callback function. If the load is successful, the callback will have a "pkg" variable that's an object with keys for each part of the schemata. For each matching part found, we'll load the data into Ensemble and the editor.
-				fileio.loadSchemaFromFolder(this.value, function(pkg) {
-					// callback function
-
-					loadSchema(pkg.schema);
-					socialStructure.schemaOrigin = pkg.schema.source_file;
-					if (pkg.cast) {
-						loadCast(pkg.cast);
-					}
-					if (pkg.history) {
-						ensemble.addHistory(pkg.history);
-					}
-					if (pkg.rules) {
-						// Should be an array, one rules object for each rules file found.
-						pkg.rules.forEach(function(ruleObj) {
-							loadRules(ruleObj);
-						});
-					}
-					if (pkg.actions) {
-						loadActions(pkg.actions);
-					}
-
-					rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
-					updateConsole();
-					consoleViewer.cmdLog("Schema loaded.", true);
-				});
-			} catch(e) {
-				consoleViewer.cmdLog(e);
-				return;
-			}
-
+			loadPackage(this.value);
 		}, false);
 		chooser.click();  
 
 	};
+
+	var loadPackage = function(folder) {
+		try {
+			resetTool();
+			// We'll let the fileio module deal with the nitty gritty of loading in the files in the schemata, passing in a callback function. If the load is successful, the callback will have a "pkg" variable that's an object with keys for each part of the schemata. For each matching part found, we'll load the data into Ensemble and the editor.
+			fileio.loadSchemaFromFolder(folder, function(pkg) {
+				loadSchema(pkg.schema);
+				socialStructure.schemaOrigin = pkg.schema.source_file;
+				if (pkg.cast) {
+					loadCast(pkg.cast);
+				}
+				if (pkg.history) {
+					ensemble.addHistory(pkg.history);
+				}
+				if (pkg.rules) {
+					// Should be an array, one rules object for each rules file found.
+					pkg.rules.forEach(function(ruleObj) {
+						loadRules(ruleObj);
+					});
+				}
+				if (pkg.actions) {
+					loadActions(pkg.actions);
+				}
+
+				rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
+				updateConsole();
+				consoleViewer.cmdLog("Schema loaded.", true);
+			});
+		} catch(e) {
+			consoleViewer.cmdLog("Error loading schema: " + e);
+			return;
+		}
+	}
+
+	var createBlankSchema = function(folder) {
+		// Delete everything from target folder.
+		var blankSchema = '{"schema":[{"category":"schema category example","isBoolean": true,"directionType":"directed", "types": ["example type"], "actionable": true}]}';
+		fileio.saveFile(folder + "/schema.json", blankSchema);
+
+		var blankHistory = '{"history":[]}';
+		fileio.saveFile(folder + "/history.json", blankHistory);
+
+		var blankCast = '{"cast":{"Character 1":{"name": "Character 1"},"Character 2":{"name": "Character 2"}}}';
+		fileio.saveFile(folder + "/cast.json", blankCast);
+
+		var blankActions = '{"fileName":"actions.json","actions":[]}';
+		fileio.saveFile(folder + "/actions.json", blankActions);
+		
+		// Load this new empty schema.
+		loadPackage(folder);
+	}
 
 	// ****************************************************************
 	// UTILITY FUNCTIONS

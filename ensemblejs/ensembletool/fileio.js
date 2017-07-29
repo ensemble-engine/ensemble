@@ -52,7 +52,7 @@ define([], function(){
 		lastPath = schemaDir;
 
 		// Get an array of all files found in this directory.
-		var arrayOfAllFiles = fs.readdirSync(schemaDir);
+		var arrayOfAllFiles = getFilesInFolder(schemaDir);
 		for(var i = 0; i < arrayOfAllFiles.length; i+=1){
 			var nameOfFile = arrayOfAllFiles[i];
 			arrayOfAllFiles[i] = schemaDir + "/" + nameOfFile;
@@ -178,7 +178,7 @@ define([], function(){
 		}
 
 		// Cycle backup files if we have too many.
-		var backupFiles = fs.readdirSync(backupPath);
+		var backupFiles = getFilesInFolder(backupPath);
 		// Only consider files in this directory as counting towards the maximum if they start with the master filename and end with .json
 		backupFiles = backupFiles.filter(function(f) {
 			return f.split("_")[0] === ruleFile && f.substr(f.length - 5) === ".json";
@@ -187,14 +187,13 @@ define([], function(){
 			// Since our timestamp will make files sort alphabetically by earliest to latest, we can get the oldest file by just getting the first entry in the sorted file list.
 			backupFiles.sort();
 			var oldestFileName = backupFiles[0];
-			// "unlink" means delete
-			fs.unlinkSync(backupPath + "/" + oldestFileName);
+			deleteFile(backupPath + "/" + oldestFileName);
 		}
 
 		// Copy the current version of the rules file to the backup folder, giving it a named timestamp.
 		// console.log("copying '" + origFilePath + "' to '" + backupFilePath);		
 		var f = fs.readFileSync(origFilePath);
-		fs.writeFileSync(backupFilePath, f);
+		saveFile(backupFilePath, f);
 	};
 
 	// Take a rules type (like "volition" etc.) and a filename, and write out all the rules ensemble has of that type and matching that filename origin to the file in question.
@@ -241,10 +240,34 @@ define([], function(){
 		}
 
 		// Write the serialized data to disk.
-		if (fs !== undefined) {
-			fs.writeFileSync(fileName, serializedRules);
-			console.log("writing to '" + fileName + "':");
+		saveFile(fileName, serializedRules);
+	}
+
+	// Basic function abstracting saving a file.
+	var saveFile = function(fileName, contents) {
+		if (enabled()) {
+			fs.writeFileSync(fileName, contents);
+			console.log("writing to '" + fileName + "'");
 		}
+	}
+
+	var getFilesInFolder = function(folder) {
+		var files = fs.readdirSync(folder);
+		return files.filter(function(f) { 
+			return f !== ".DS_Store";
+		});
+	}
+
+	var deleteFile = function(fileName) {
+		fs.unlinkSync(fileName);
+	}
+
+	var clearFolder = function(folder) {
+		getFilesInFolder(folder).forEach(function(file) {
+			var filePath = folder + "/" + file;
+			console.log(filePath);
+			deleteFile(filePath);
+		});
 	}
 
 	// Save a subset of rules from a particular type and specified origin file back out to that file on disk. Delegate to backupRulesFile() to handle backing up the original file first, and writeFileToDisk() to do the file i/o.
@@ -274,7 +297,10 @@ define([], function(){
 		enabled: enabled,
 		loadSchemaFromFolder: loadSchemaFromFolder,
 		saveRules: saveRules,
-		getLastPath: getLastPath
+		getLastPath: getLastPath,
+		saveFile: saveFile,
+		getFilesInFolder: getFilesInFolder,
+		clearFolder: clearFolder
 	}
 
 });
