@@ -272,12 +272,6 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 		triggerRules = ruleLibrary.getTriggerRules();
 		test.assert(triggerRules.length, 1, "Trigger rule did not get successfully parsed in, sadly");
 		
-		//TEST 2 -- It should be smart enough to NOT add the same rule twice.
-		
-		ensemble.addRules(triggerData);
-		triggerRules = ruleLibrary.getTriggerRules();
-		test.assert(triggerRules.length, 1, "Trigger rules should have remained the same length since we were adding a duplicate.");
-
 		//TEST 3 -- same as TEST 1, but for volition rules
 		var volitionRules = ruleLibrary.getVolitionRules();
 		test.assert(volitionRules.length, 0, "apparantly ruleLibrary had a volition rule in it already. Wanted to start off with it being empty");
@@ -285,12 +279,6 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 		volitionRules = ruleLibrary.getVolitionRules();
 		test.assert(volitionRules.length, 1, "Volition rule did not get successfully parsed in, sadly");
 		
-	
-		//TEST 4 -- same as TEST 2, but for volition rules
-		ensemble.addRules(volitionData);
-		volitionRules = ruleLibrary.getVolitionRules();
-		test.assert(volitionRules.length, 1, "Trigger rules should have remained the same length since we were adding a duplicate.");
-
 		//TEST 5 -- Eh, what happens when we do a user speensembleied set of rules (i.e. NOT trigger nor volition).
 		ensemble.addRules(userSpecifiedData);
 		volitionRules = ruleLibrary.getVolitionRules();

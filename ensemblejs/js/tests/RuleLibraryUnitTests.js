@@ -1956,14 +1956,6 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 		ruleLibrary.addRuleSet("triggerRules", set2); // due to additive nature, total length should now be three!
 		test.assert(_.size(ruleLibrary.getTriggerRules()), 3, "Size of rule library was incorrect -- problem with additive nature");
 
-		//TEST 4 -- Test to make sure that duplicate rules (i.e. rules that already exist in the library) do NOT get added again.
-		//---adding two sets with two rules each -- one rule in set two is the SAME as one rule in set 1. So total should only be 3, not four.
-		ruleLibrary.clearRuleLibrary();
-		set2.push(rule); // this is a rule that exists in "set" as well.
-		ruleLibrary.addRuleSet("triggerRules", set);
-		test.assert(_.size(ruleLibrary.getTriggerRules()), 2, "After inserting the first set, the length of the triggerRules in the ruleLibrary should only be two");
-		ruleLibrary.addRuleSet("triggerRules", set2);
-		test.assert(_.size(ruleLibrary.getTriggerRules()), 3, "Size of rule library was incorrect -- tried to insert 4 rules total, but one was a duplicate, so shouldn't have made it in.'");
 
 		//TEST 5 -- adding 'duplicate rules' to DIFFERENT keys in the ruleLibrary (e.g. triggerRules and volitionRules) are NOT actually duplicate at all.
 		ruleLibrary.clearRuleLibrary();

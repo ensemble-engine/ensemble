@@ -728,17 +728,16 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 		}
 		for(var i = 0; i < set.length; i++){
 			if(isRuleAlreadyInRuleSet(key, set[i])){
-				console.log("ERROR! You are adding the rule " + predicateToEnglish(set[i]).text + " (from " + set[i].origin + ") but that rule already was written!", set[i]);
+				console.log("Warning! You are adding the rule '" + 
+					set[i].id + "' (" + predicateToEnglish(set[i]).text + "), from " + set[i].origin + ", but that rule is identical to one already loaded.", set[i]);
 			}
-			else{
-				addRule(key, set[i]); 
+			addRule(key, set[i]); 
 
-				// Set up a cross-reference so we can look up rules by ID.
-				var rule = set[i];
-				if (rule.id) {
-					var lastPos = ruleLibrary[key].length - 1;
-					ruleIndexes[key][rule.id] = lastPos;
-				}
+			// Set up a cross-reference so we can look up rules by ID.
+			var rule = set[i];
+			if (rule.id) {
+				var lastPos = ruleLibrary[key].length - 1;
+				ruleIndexes[key][rule.id] = lastPos;
 			}
 		}
 	};
