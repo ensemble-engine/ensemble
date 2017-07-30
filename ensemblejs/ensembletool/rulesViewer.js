@@ -96,12 +96,35 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 		var type = $("#tabstrigger").is(":visible") ? "trigger" : "volition";
 
 		var newRule = {};
+		rulesEditor.setActiveRule(newRule, type);
 		newRule.name = "New " + util.iCap(type) + " Rule";
-		newRule.conditions = [];
-		newRule.effects = [];
+		rulesEditor.addPredicate("conditions");
+		rulesEditor.addPredicate("effects");
 		
+		// Try to find the file this new rule should live in, first by seeing if there's an active file already for its type.
+		var bestFile = rulesEditor.getActiveFile(type);
+		if (bestFile === undefined) {
+			// OK, there's not an active file; but do we have a list of valid files for this type from our loaded-in rules?
+			var ruleOrigins = rulesEditor.getKnownFiles(type);
+			if (ruleOrigins.length > 0) {
+				// We do! use that.
+				bestFile = ruleOrigins[0];
+			} else {
+				// We don't! We'll need to ask the user.
+				rulesEditor.newRulesFileDialog(
+					loadAndDisplayNewRule,			// callback on success
+					rulesEditor.deleteActiveRule	// callback on cancel
+				); 
+				return;
+			}
+		}
+		loadAndDisplayNewRule(bestFile, type, newRule);
+	}
+
+
+	var loadAndDisplayNewRule = function(originFile, type, newRule) {
 		var ruleWrapper = {};
-		ruleWrapper.fileName = "__NEWRULE__";
+		ruleWrapper.fileName = originFile;
 		ruleWrapper.rules = [newRule];
 		ruleWrapper.type = type;
 		
@@ -112,9 +135,9 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 			messages.showError("Canceling New Rule: Error adding empty new rule to ensemble");
 			return;
 		}
-		var newLoadedRule = ensemble.getRuleById(newIds[0]);
-		newLoadedRule.type = type;
-		rulesEditor.loadRule(newLoadedRule, type);
+
+		ensembleRule.type = type;
+		rulesEditor.loadRule(ensembleRule, type);
 		
 		//Try to programmatically click the 'update rule eset button' here...
 		//pass in 'true' to signify we should opt out of making a backup file.

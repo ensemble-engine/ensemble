@@ -79,24 +79,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		activeRule = util.clone(rule);
 
-		if (rule.origin === "__NEWRULE__") {
-			if (activeFileRefByRuleType[rule.type] === undefined) {
-				// TODO: If we don't have an activeFile set for this rule type, we need to ask the user what active file to use.
-				var ruleOrigins = activeRuleType === "trigger" ? ruleOriginsTrigger : ruleOriginsVolition;
-				if (ruleOrigins.length > 0) {
-					activeFile = ruleOrigins[0];
-				} else {
-					view.newRulesFileDialog();
-				}
-			} else {
-				// otherwise, set the active file to the most recently used file for this rule type.
-				activeFile = activeFileRefByRuleType[rule.type];
-				activeRule.origin = activeFile;
-			}
-			activeRule.origin = activeFile;
-		} else{
-			activeFile = activeRule.origin;
-		}
+		activeFile = activeRule.origin;
 		origActiveFile = activeFile;
 		activeFileRefByRuleType[rule.type] = activeFile;
 
@@ -552,7 +535,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					var selInd = $(this)[0].selectedIndex;
 					var selection = $(this).context[selInd].value;
 					if (selection === "__NEW__") {
-						view.newRulesFileDialog("fromMenu");
+						view.newRulesFileDialog();
 					} else {
 						activeFile = selection;
 						activeRule.origin = activeFile;
@@ -566,8 +549,8 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			return menu;
 		},
 
-		// Show a dialog handling the situation where the user is making a new source file for rules.
-		newRulesFileDialog: function(placeCalled) {
+		// Show a dialog handling the situation where the user is making a new source file for rules. We might have called this by trying to create a New Rule and having no place to put it, or by changing the location of an existing rule to a New File.
+		newRulesFileDialog: function(onCreate, onCancel) {
 			$("#dialogBox")
 			.html('<p>Enter name for a new file for <b>' + activeRuleType + '</b> rules.</p><p><form><input type="text" name="newRulesFile" id="newRulesFile" value="" style="width:100%" class="text ui-widget-content ui-corner-all"><input type="submit" tabindex="-1" style="position:absolute; top:-1000px"></form>');
 			var dialog = $("#dialogBox").dialog({
@@ -579,17 +562,14 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					"Create File": function() {
 						controller.makeNewRulesFile($("#newRulesFile").val());
 						$(this).dialog("destroy");
-						$("#tabLiRulesEditor a").click(); // attempt to take us directly to the new rule.
+						if (onCreate) {
+							onCreate(activeRule.origin, activeRuleType, activeRule);
+						}
 					},
 					Cancel: function() {
-						//In addition to doing this, it would be great if we could also delete the 'temporary' rule we were kind of in the process of working with...
-						//I believe the rule to remove should be in "activeRule" variable.
 						$(this).dialog("destroy"); //remove the dialog box
-						//The temporary rule really only exists when you are starting a new file from the 'rules viewer' screen. If starting a new file from the rule editor window, we don't want to do the following.
-						if(placeCalled !== "fromMenu"){
-							activeFileRefByRuleType[activeRuleType] = undefined;
-							ensemble.deleteRuleById(activeRule.id); //we created a 'temporary' rule when we pushed the new rule button, but destroy it. 
-							$("#tabLiRulesViewer a").click(); // navigate back to rules viewer page
+						if (onCancel) {
+							onCancel();
 						}
 					}
 				},
@@ -709,7 +689,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		},
 
 		// Create a new predicate (either an effect or condition) and add it to activeRule. Generate appropriate defaults from the active social schema package.
-		addPredicate: function(predType, predNum) {
+		addPredicate: function(predType) {
 			var whichTypeList = predType === "effects" ? intentTypes : allTypes;
 			var typeInfo = whichTypeList[0].split("_");
 			var categoryName = typeInfo[0];
@@ -1012,9 +992,9 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		updateActiveRule: function(optSkipBackup) {
 			if (activeRule.id !== undefined) {
-			controller.updateRule(activeRule.id, activeRule, optSkipBackup);
+				controller.updateRule(activeRule.id, activeRule, optSkipBackup);
 			}
-			activeRule = {}
+			// activeRule = {}
 		},
 
 		// Prepare to save the rules in the active file to disk. (The dirty work is passed off to the fileio module.)
@@ -1124,13 +1104,38 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		}
 	}
 
+	var getActiveFile = function(ruleType) {
+		return activeFileRefByRuleType[ruleType];
+	}
+
+	var getKnownFiles = function(ruleType) {
+		if (ruleType === "trigger") {
+			return ruleOriginsTrigger;
+		} else if (ruleType === "volition") {
+			return ruleOriginsVolition;
+		} else {
+			console.log("Tried to request rule files for unknown type '" + ruleType + "'.");
+			return [];
+		}
+	}
+
+	var setActiveRule = function(rule, ruleType) {
+		activeRule = rule;
+		activeRuleType = ruleType;
+	}
 
 	return {
 		init: init,
 		refresh: refresh,
 		loadRule: loadRule,
 		updateRule: controller.updateRule,
-		updateActiveRule: controller.updateActiveRule
+		setActiveRule: setActiveRule,
+		getActiveFile: getActiveFile,
+		getKnownFiles: getKnownFiles,
+		deleteActiveRule: controller.deleteActiveRule,
+		updateActiveRule: controller.updateActiveRule,
+		newRulesFileDialog: view.newRulesFileDialog,
+		addPredicate: controller.addPredicate
 	}
 
 });
