@@ -1050,7 +1050,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 				messages.showAlert("Deleted rule " + activeRule.id + ".");
 				controller.saveRulesToDisk(activeRuleType, activeRule.origin);
 				view.clearActiveRule();
-			} else {
+			} else if (activeRule.id !== undefined) {
 				messages.showAlert("Unable to delete rule " + activeRule.id + ".");
 			}
 		},

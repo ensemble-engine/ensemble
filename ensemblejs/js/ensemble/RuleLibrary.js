@@ -1245,6 +1245,7 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 	 * @return {Object}	true if the operation is successful, false otherwise.
 	 */
 	var deleteRuleById = function(label) {
+		if (label === undefined) return false;
 		return _alterRule(label, true);
 	}
 
