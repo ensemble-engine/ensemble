@@ -22,12 +22,14 @@ padding: 0;
 }
 #tabs {
 	width: 75%;
-	min-height: 100%;
+	min-height: 90%;
 	float: left;
 }
 #tabsConsole {
 	height: 90%;
-	overflow-y: auto;
+	width: 93%;
+	overflow-y: scroll;
+	position: absolute;
 }
 #reference, #characters {
 	width: 22%;
@@ -222,11 +224,12 @@ margin-left: 6em;
 	font-weight:bold;
 }
 #consoleTips {
-	position: absolute;
-	top: 37px;
+	position: fixed;
+	top: 85px;
+	left: 8px;
 	background-color: white;
-	width: 92%;
-	padding: 5px;
+	width: 74%;
+	padding: 5px 0px;
 }
 #consoleTips span {
 	border-bottom: thin dotted blue;
