@@ -468,6 +468,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			// Look for a type word and determine its category.
 			var allTypes = [];
 			for (var categoryName in socialStructure) {
+				if (categoryName == "schemaOrigin") continue;
 				var c = socialStructure[categoryName];
 				for (var type in c) {
 					allTypes.push(type);
@@ -535,6 +536,12 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 			}
 			if (!categoryDetails.isBoolean && bools.length > 0) {
 				return cmdLog("Oops: " + categoryName + " '" + type + "' is numeric, so a boolean is not valid here.");
+			}
+			if (categoryDetails.isBoolean && bools.length === 0) {
+				bools = [true];
+			}
+			if (!categoryDetails.isBoolean && numbers.length === 0) {
+				return cmdLog("Oops: " + categoryName + " '" + type + "' is numeric, but we didn't see a number.");
 			}
 
 			// We should now have accounted for all params. Otherwise, we have too many.
