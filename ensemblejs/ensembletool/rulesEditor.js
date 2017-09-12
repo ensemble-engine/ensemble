@@ -939,7 +939,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 						candidate = controller.getBindingFromColorIndex(i);
 						i += 1;
 					}
-					if (candidate !== undefined) {
+					if (candidate !== undefined && candidate !== "") {
 						return candidate;
 					}
 				}
