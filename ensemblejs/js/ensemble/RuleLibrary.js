@@ -1020,7 +1020,8 @@ define(["socialRecord", "volition", "underscore", "util", "log", "test"], functi
 		// var directionWord = (pred.operator !== undefined && ["+", ">"].indexOf(pred.operator) >= 0) ? "more" : "less";
 		// directionWord
 		if (pred.weight !== undefined) {
-			directionWord = pred.weight >= 0 ? "more" : "less";
+			if (pred.weight === 0) directionWord = "unchanged";
+			else directionWord = pred.weight > 0 ? "more" : "less";
 		}
 
 		if (predType === "fact" || predType === "compare") {
