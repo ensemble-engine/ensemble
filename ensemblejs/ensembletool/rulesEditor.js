@@ -711,10 +711,10 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 					newPred.intentType = true;			
 				}
 			}
-			if (desc.isBoolean === true || (activeRuleType === "volition" && predType === "effects")) {
-				newPred.value = true;
-			} else {
-				newPred.value = desc.defaultVal;
+
+			// Volition conditions, trigger conditions, and trigger effects have "value" field, but voltion effects do not
+			if ( !( predType === "effects" && activeRuleType === "volition" ) ) {
+				newPred.value = desc.isBoolean || desc.defaultVal;
 			}
 
 			if (activeRule[predType] === undefined) {
