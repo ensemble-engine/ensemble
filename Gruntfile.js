@@ -39,6 +39,11 @@ module.exports = function(grunt) {
         },
         dirList: {
           command: "ls"
+        },
+        clean: {
+          // Add a clean command to remove generated directories that are problematic 
+          // for future grunt building
+          command: "rm -r cache; rm -r build"
         }
     },
     jsdoc : {
@@ -214,7 +219,8 @@ module.exports = function(grunt) {
     "copy:dist"
     ]);
 
-  grunt.registerTask("build", ["nwjs"]);
+  // Clean any generated directories before rebuilding
+  grunt.registerTask("build", ["shell:clean", "nwjs"]);
 
   grunt.registerTask("copyCssFile", ["copy:dist"]);
 
