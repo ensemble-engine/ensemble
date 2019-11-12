@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         end_comment: "end-test-code",
       },
       target: {
-      files: [
+        files: [
           // a list of files you want to strip code from
           {src: 'js/ensemble/ensemble.js', dest: 'dist/ensemble.js'},
           {src: 'js/ensemble/socialRecord.js', dest: 'dist/socialRecord.js'},
@@ -40,7 +40,6 @@ module.exports = function(grunt) {
         dirList: {
           command: "ls"
         }
-
     },
     jsdoc : {
         dist : {
@@ -59,24 +58,26 @@ module.exports = function(grunt) {
       },
       src: ['./nwk-package.json', './ensembletool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
     },
-    nodewebkit: {
+    // This task renamed from 'nodewebkit' to 'nwjs' because the new package, grunt-nw-builder,
+    // which superseded grunt-node-webkit-builder, also renamed its task.
+    nwjs: {
       dist: {
         options: {
-          downloadUrl: "http://dl.nwjs.io/",
-          version: "v0.12.2",
-           platforms: ['osx'],
-            buildDir: './build', // Where the build version of my node-webkit app is saved
+          //downloadUrl: "http://dl.nwjs.io/",
+          version: "0.12.2",
+          platforms: ['osx'], // Can't seem to build a non-empty Windows version with Grunt
+          buildDir: './build', // Where the build version of my node-webkit app is saved
        },
        src: ['./nwk-package.json', './ensembletool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
       },
-      techRelease : {
-        options: {
-           platforms: ['win','osx'],
-           version: "v0.12.2",
-            buildDir: './TechnicalAlphaRelease/authoringToolBuilds', // Where the build version of my node-webkit app is saved
-         },
-         src: ['./nwk-package.json', './ensembletool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
-      }
+      // techRelease : {
+      //   options: {
+      //     platforms: ['win','osx'],
+      //     version: "0.12.2",
+      //     buildDir: './TechnicalAlphaRelease/authoringToolBuilds', // Where the build version of my node-webkit app is saved
+      //    },
+      //    src: ['./nwk-package.json', './ensembletool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+      // }
     },
     copy: {
       dist : {
@@ -187,7 +188,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
 
   // Load the plugin to wrap ensemble Console as a standalone app.
-  grunt.loadNpmTasks('grunt-node-webkit-builder');
+  grunt.loadNpmTasks('grunt-nw-builder');
+  // grunt-node-webkit-builder module has been renamed to grunt-nw-builder
+  // grunt.loadNpmTasks('grunt-node-webkit-builder');
 
   // Load the plugin to copy files
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -211,12 +214,12 @@ module.exports = function(grunt) {
     "copy:dist"
     ]);
 
-  grunt.registerTask("build", ["nodewebkit"]);
+  grunt.registerTask("build", ["nwjs"]);
 
   grunt.registerTask("copyCssFile", ["copy:dist"]);
 
   // Make a folder for 'release'
-  grunt.registerTask("techRelease", ["document", "deploy", "build", "python", "nodewebkit:techRelease", "copy:techRelease"]);
+  grunt.registerTask("techRelease", ["document", "deploy", "build", "python", "nwjs:techRelease", "copy:techRelease"]);
 
   //There is some problem going on where the console seems to not WORK when copied :( -- maybe build a new version from the webkit version?)
   //grunt.registerTask("techRelease", ["copy:techRelease"]);
