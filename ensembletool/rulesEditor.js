@@ -742,8 +742,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			var oldDirType = ensemble.getCategoryDescriptors(oldcategory).directionType;
 
 			if (activeRuleType === "volition" && predType === "effects") {
-				activeRule[predType][predNum].value = true;
-				activeRule[predType][predNum].operator = undefined;
+				// Empty on purpose to prevent later else-if clauses from firing if this does 
 			} else if (newIsBoolean && typeof activeRule[predType][predNum].value !== "boolean") {
 				activeRule[predType][predNum].value = true;
 				activeRule[predType][predNum].operator = undefined;
