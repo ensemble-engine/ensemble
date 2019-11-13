@@ -41,9 +41,9 @@ module.exports = function(grunt) {
           command: "ls"
         },
         clean: {
-          // Add a clean command to remove generated directories that are problematic 
-          // for future grunt building
-          command: "rm -r cache; rm -r build"
+          // Remove generated directories that are problematic for future grunt building
+          // --force to prevent erroring out of the build task if they don't exist
+          command: "rm -rf cache build"
         }
     },
     jsdoc : {
