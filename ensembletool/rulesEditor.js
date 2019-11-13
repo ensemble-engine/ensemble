@@ -730,6 +730,13 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 
 		// Update the "type" of a predicate in the activeRule. This might entail some alterations to the predicate such as adding/removing various fields. (I.e. if we're changing from boolean to numeric, we need an operator field.)
 		changeIntent: function(predType, predNum, selection) {
+			if (predType !== "conditions" && predType !== "effects") {
+				throw Error(`predType must be either 'conditions' or 'effects' (got ${predType})`);
+			}
+			if (activeRuleType !== "trigger" && activeRuleType !== "volition") {
+				throw Error(`activeRuleType must be either 'trigger' or 'volition' (got ${activeRuleType})`);
+			}
+
 			var categoryName = selection.split("_")[0];
 			var type = selection.split("_")[1];
 			var oldcategory = activeRule[predType][predNum].category;
@@ -741,16 +748,32 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			var newDirType = descriptors.directionType;
 			var oldDirType = ensemble.getCategoryDescriptors(oldcategory).directionType;
 
+			var oldIsBoolean = typeof activeRule[predType][predNum].value === "boolean";
+			var oldHasValue = activeRule[predType][predNum].value !== undefined;
+
+			// If-else chain for adding/removing 'value' and 'operator' properties
 			if (activeRuleType === "volition" && predType === "effects") {
 				// Empty on purpose to prevent later else-if clauses from firing if this does 
-			} else if (newIsBoolean && typeof activeRule[predType][predNum].value !== "boolean") {
+				// Because we never have to change 'value' or 'operator' for volition effects
+			} else if (newIsBoolean && !oldIsBoolean) {
+				// Changing a scalar into a boolean
 				activeRule[predType][predNum].value = true;
 				activeRule[predType][predNum].operator = undefined;
-			} else if (! newIsBoolean && (!activeRule[predType][predNum].value || typeof activeRule[predType][predNum].value === "boolean")) {
+			} else if (!newIsBoolean && (!oldHasValue || oldIsBoolean)) {
+				// Changing a boolean into a scalar
+				// Set its value to the default value specified for this schema category
+				// and add the appropriate operator
+				// FIXME We're not sure if !oldHasValue is ever possible at this point
+				// because the only things you can be are a scalar or a boolean
+				// and they both always have values (even if defaulValues). They cannot be undefined
+				// by the time we're changing predicates based on GUI interactions, which is when 
+				// you call changeIntent(). We think this can be if (!newIsBoolean && oldIsBoolean)
 				activeRule[predType][predNum].value = descriptors.defaultVal;
 				if (predType === "conditions") {
+					// Add a default scalar operator for a condition predicate (can be >,<,==)
 					activeRule[predType][predNum].operator = ">";
-				} else if (activeRuleType !== "volition") {
+				} else if (activeRuleType === "trigger" && predType === "effects") {
+					// Add a default boolean operator for a trigger effect (can be +,-)
 					activeRule[predType][predNum].operator = "+";
 				}
 			}
