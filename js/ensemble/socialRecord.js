@@ -3,7 +3,7 @@
 * @class  socialRecord
 * @private
 */
-define(["underscore", "util", "jquery", "test"], function(_, util, $, test) {
+define(["underscore", "util"], function(_, util) {
 
 	var socialRecord = [];
 	var currentTimeStep = -1; //initialize to -1 (assumes we start at time 0 when playings)

@@ -9,8 +9,8 @@
  * @class ensemble
  */
 
-define(["util", "underscore", "ruleLibrary", "actionLibrary", "socialRecord", "test", "validate"],
-function(util, _, ruleLibrary, actionLibrary, socialRecord, test, validate) {
+define(["util", "underscore", "ruleLibrary", "actionLibrary", "socialRecord", "validate"],
+function(util, _, ruleLibrary, actionLibrary, socialRecord, validate) {
 
 
 	/**

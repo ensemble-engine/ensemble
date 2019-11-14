@@ -3,8 +3,8 @@
  *
  */
 
-define(["util", "underscore", "jquery", "socialRecord"], 
-function(util, _, $, socialRecord) {
+define(["util", "underscore", "socialRecord"],
+function(util, _, socialRecord) {
 
 	var allowedDirTypes = ["directed", "undirected", "reciprocal"];
 	var allowedOpsConditions = [">", "<", "="];

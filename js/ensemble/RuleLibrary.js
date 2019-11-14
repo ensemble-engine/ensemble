@@ -9,7 +9,7 @@
  * @private
  */
 
-define(["socialRecord", "volition", "underscore", "util", "log", "test"], function(socialRecord, volition, _, util, log, test) {
+define(["socialRecord", "volition", "underscore", "util"], function(socialRecord, volition, _, util) {
 
 	var ruleLibrary = {
 		triggerRules : [],

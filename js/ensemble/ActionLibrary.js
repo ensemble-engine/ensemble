@@ -7,7 +7,7 @@
  */
 
 define(["util", "underscore", "validate", "volition", "ruleLibrary"],
-function(util, _, validate, volition, ruleLibrary, testSocial, testActions) {
+function(util, _, validate, volition, ruleLibrary) {
 	var actions = []; //An array containing all of the actions available in this social world.
 
 	//Experimenting with having a 'grammar' to define the actions of the world.
