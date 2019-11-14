@@ -2,9 +2,9 @@
 
 A framework for creating socially aware characters. An evolution of the Comme il Faut AI system, which powered the game Prom Week.
 
-# Ensemble.js
+# ensemble.js
 
-[Ensemble.js](https://github.com/ensemble-engine/ensemble/blob/master/ensemblejs/js/ensemble/ensemble.js) is a standalone JavaScript library that you can include in a web project with an HTML script tag: 
+`ensemble.js`, available as part of the [latest release](https://github.com/ensemble-engine/ensemble/releases/latest), is a standalone JavaScript library that you can include in a web project with an HTML script tag:
 
 `<script src="ensemble.js"></script>`
 
