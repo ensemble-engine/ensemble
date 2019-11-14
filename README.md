@@ -62,6 +62,16 @@ grunt deploy
 
 This will generate a directory called `bin` with a standalone version of `ensemble.js` inside.
 
+## Running the Ensemble library unit tests
+
+To run the unit tests, start an HTTP server at the root of the repository and navigate to `localhost:YOUR_PORT/tests.html` in your web browser. For example, if you ran the following command to start a server:
+
+```sh
+python -m SimpleHTTPServer 8080
+```
+
+...then you could navigate to `localhost:8080/tests.html` to run the tests.
+
 # The Ensemble Authoring Tool
 
 It can be difficult and tedious to author Ensemble domains (schema, trigger rules, volition rules, characters, history, and actions) in pure JSON without helper functions. The Ensemble Authoring Tool is a standalone desktop app for macOS and Windows designed to help authors develop and test their domains. 
