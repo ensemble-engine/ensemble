@@ -26,4 +26,4 @@ The latest builds can be found on the [releases](https://github.com/ensemble-eng
 
 ## Developing Ensemble
 
-See the [Contributing](https://github.com/ensemble-engine/ensemble/wiki/Contributing) wiki page for information about how to contribute to the project, how to build the library and the tool from source, etc. 
+See the [Contributing](https://github.com/ensemble-engine/ensemble/wiki/Contributing) wiki page for information about how to contribute to the project, [how to build the library from source](https://github.com/ensemble-engine/ensemble/wiki/Developing-Ensemble-Core), [how to build the tool from source](https://github.com/ensemble-engine/ensemble/wiki/Developing-the-Authoring-Tool), etc. 
