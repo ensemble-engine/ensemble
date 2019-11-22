@@ -164,7 +164,10 @@ module.exports = function(grunt) {
             require: 'jslib/require',
             almond: 'jslib/almond',
             out: 'bin/ensemble.js',
-            wrap: true,
+            wrap: {
+              start: '(function() {',
+              end: 'return require("js/ensemble/ensemble");\n}());'
+            },
             optimize: "none" // 'uglify' (or just removing this line) is the default but I hope this will ease testing.
         },
         dev: {
