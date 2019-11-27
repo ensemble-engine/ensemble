@@ -1,0 +1,74 @@
+{
+	"fileName" : "rpgActions.json",
+	"actions" : [
+		{
+			"name" : "INTUP",
+			"intent" : {
+				"category" : "attribute",
+				"type"  : "intelligence",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["train", "read"]
+		},
+		{
+			"name" : "train",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 2
+			}]
+		},
+		{
+			"name" : "read",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "attribute",
+				"type" : "intelligence",
+				"first" : "initiator",
+				"operator" : "+",
+				"value" : 1
+			}]
+		},
+		{
+			"name" : "KINSHIPUP",
+			"intent" : {
+				"category" : "bonds",
+				"type"  : "kinship",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["PhysicalKinshipUp"]
+		},
+		{
+			"name" : "PhysicalKinshipUp",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["hug"]
+		},
+		{
+			"name" : "hug",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "bonds",
+				"type" : "kinship",
+				"first" : "initiator",
+				"second" : "responder",
+				"operator" : "+",
+				"value" : 1
+			}]
+		}
+	]
+}

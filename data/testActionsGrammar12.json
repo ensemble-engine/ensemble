@@ -1,0 +1,84 @@
+{
+	"fileName" : "testActionsGrammar12.json",
+	"actions" : [
+		{
+			"name" : "STARTDATING",
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "involved with",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["ASKOUT", "PICKUPLINE"]
+		},
+		{
+			"name" : "ASKOUT",
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "initiator",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["askoutTerminal"]
+		},
+		{
+			"name" : "PICKUPLINE",
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "initiator",
+				"value" : true
+			}],
+			"influenceRules" : [
+				{
+					"name": "Happy people are more inclined to do pickuplines.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 542
+				}
+			],
+			"leadsTo" : ["pickupLineTerminal"]
+		},
+		{
+			"name" : "askoutTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "involved with",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}],
+			"isAccept" : true
+		},
+		{
+			"name" : "pickupLineTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "involved with",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}],
+			"isAccept" : true		
+		}
+	]
+}

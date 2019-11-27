@@ -1,0 +1,65 @@
+{
+	"schema": [
+		{
+			"category": "network",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": ["affinity", "trust"],
+			"defaultValue": 50,
+			"actionable": true
+		},
+		{
+			"category": "relationship",
+			"isBoolean": true,
+			"directionType": "reciprocal",
+			"types": ["friends", "involved with"],
+			"defaultValue": false,
+			"actionable": true
+		},
+		{
+			"category": "status",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["injured", "fatigued", "grieving", "happy", "lonely"],
+			"duration": 6,
+			"defaultValue": false,
+			"actionable": false
+		},
+		{
+			"category": "directedStatus",
+			"isBoolean": true,
+			"directionType": "directed",
+			"types": ["attracted to", "worried about", "hates"],
+			"duration": 6,
+			"defaultValue": false,
+			"actionable": false
+		},
+		{
+			"category": "trait",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["liked movies", "liked sports", "liked music", "has a great smile", "has a kind face", "trusting", "jealous", "sound sleeper", "hardy", "eagle-eyed", "lucky", "nimble"],
+			"defaultValue": false,
+			"actionable": false
+		},
+		{
+			"category": "socialRecordLabel",
+			"types": ["romanticFailure", "romantic advance", "embarrassing"],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"actionable": false,
+			"duration": 0
+		},
+		{
+			"category": "attribute",
+			"isBoolean": false,
+			"directionType": "undirected",
+			"types": ["strength"],
+			"defaultValue": 10,
+			"minValue": 3,
+			"maxValue": 18
+		}
+	]
+}
+

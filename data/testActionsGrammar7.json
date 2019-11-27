@@ -1,0 +1,136 @@
+{
+	"fileName" : "testActionsGrammar7.json",
+	"actions" : [
+		{
+			"name" : "AFFINITYUP",
+			"intent" : {
+				"category" : "network",
+				"type"  : "affinity",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["NIMBLEMAKEFRIENDS", "FAKEBRANCH"]
+		},
+		{
+			"name" : "FAKEBRANCH",
+			"conditions" : [
+				{
+					"category" : "trait",
+					"type" : "happy",
+					"first" : "initiator",
+					"value" : true
+				}
+			],
+			"influenceRules" : [],
+			"leadsTo" : ["neverGetHere"]
+		},
+		{
+			"name" : "neverGetHere",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : []
+		},
+		{
+			"name" : "NIMBLEMAKEFRIENDS",
+			"conditions" : [{
+					"category" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble1",
+					"value" : true
+				},{
+					"category" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble2",
+					"value" : true
+				},{
+					"category" : "relationship",
+					"type"  : "friends",
+					"first" : "nimble1",
+					"second" : "nimble2",
+					"value" : true
+				}],
+			"influenceRules" : [
+				{
+					"name": "Happy people make the best nimble1 people.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "nimble1",
+							"value" : true
+						}
+					],
+					"weight" : 542
+				}
+			],
+			"leadsTo" : ["ONELASTSTEP"]
+		},
+		{
+			"name" : "ONELASTSTEP",
+			"conditions" : [],
+			"leadsTo" : ["actualFriends4Degrees"],
+			"influenceRules" : [
+				{
+					"name": "ACTUALLY, you know what, Happy people make the WORST nimble1 people.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "nimble1",
+							"value" : true
+						}
+					],
+					"weight" : -14542
+				}
+			]
+		},
+		{
+			"name" : "actualFriends4Degrees",
+			"conditions" : [
+				{
+					"category" : "status",
+					"type" : "happy",
+					"first" : "nimble1",
+					"value" : true
+				},
+				{
+					"category" : "status",
+					"type" : "happy",
+					"first" : "initiator",
+					"value" : true
+				}
+			],
+			"influenceRules" : [
+				{
+				"name": "Ok, ok, ok, I'm sorry. I know I keep changing my mind, but you know what? Maybe happy people aren't that bad after all for being nimble1.",
+				"conditions": [
+					{
+						"category" : "status",
+						"type" : "happy",
+						"first" : "nimble1",
+						"value" : true
+					}
+				],
+				"weight" : 37
+				}
+			],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}

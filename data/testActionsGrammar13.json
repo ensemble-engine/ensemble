@@ -1,0 +1,164 @@
+{
+	"fileName" : "testActionsGrammar13.json",
+	"actions" : [
+		{
+			"name" : "STARTDATING",
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "involved with",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["ASKOUT", "PICKUPLINE"]
+		},
+		{
+			"name" : "ASKOUT",
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "initiator",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["askoutTerminal"]
+		},
+		{
+			"name" : "PICKUPLINE",
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "initiator",
+				"value" : true
+			}],
+			"influenceRules" : [
+				{
+					"name": "Happy people are more inclined to do pickuplines.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 542
+				}
+			],
+			"leadsTo" : ["pickupLineTerminal"]
+		},
+		{
+			"name" : "askoutTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "involved with",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}],
+			"isAccept" : true
+		},
+		{
+			"name" : "pickupLineTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "involved with",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}],
+			"isAccept" : true		
+		},
+		{
+			"name" : "STARTFRIENDS",
+			"conditions" : [],
+			"influenceRules" : [],
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "friends",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"leadsTo" : ["BOND", "LAUGH"]
+		},
+		{
+			"name" : "BOND",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["bondTerminal"]
+		},
+		{
+			"name" : "LAUGH",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["laughTerminal1", "laughTerminal2"]
+		},
+		{
+			"name" : "bondTerminal",
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "initiator",
+				"value" : true
+				}],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "friends",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}]
+		},
+		{
+			"name" : "laughTerminal1",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "friends",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}]
+		},
+		{
+			"name" : "laughTerminal2",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are a little less inclined to do a laughTerminal2.",
+					"conditions": [
+						{
+							"category" : "trait",
+							"type"	: "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 2
+				}
+
+			],
+			"effects" : [{
+					"category" : "relationship",
+					"type" : "friends",
+					"first" : "initiator",
+					"second" : "responder",
+					"value" : true
+				}]
+		}
+	]
+}

@@ -1,0 +1,32 @@
+{
+	"fileName" : "testActionsGrammar15.json",
+	"actions" : [
+		{
+			"name" : "STARTDATING",
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "involved with",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["nimblemakelovers"]
+		},
+		{
+			"name" : "nimblemakelovers",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}

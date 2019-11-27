@@ -1,0 +1,69 @@
+{
+	"fileName" : "testActionsGrammar4.json",
+	"actions" : [
+		{
+			"name" : "AFFINITYUP",
+			"intent" : {
+				"category" : "network",
+				"type"  : "affinity",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["NIMBLEMAKEFRIENDS"]
+		},
+		{
+			"name" : "NIMBLEMAKEFRIENDS",
+			"conditions" : [{
+					"category" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble1",
+					"value" : true
+				},{
+					"category" : "trait",
+					"type"  : "nimble",
+					"first" : "nimble2",
+					"value" : true
+				},{
+					"category" : "relationship",
+					"type"  : "friends",
+					"first" : "nimble1",
+					"second" : "nimble2",
+					"value" : true
+				}],
+			"influenceRules" : [],
+			"leadsTo" : ["bestFriend"]
+		},
+		{
+			"name" : "bestFriend",
+			"conditions" : [{
+				"category" : "status",
+				"type" : "happy",
+				"first" : "nimble1",
+				"value" : true
+			},{
+				"category" : "status",
+				"type" : "happy",
+				"first" : "happyDude",
+				"value" : true
+			}],
+			"isAccept" : true,
+			"influenceRules" : [],
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}

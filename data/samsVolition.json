@@ -1,0 +1,87 @@
+{
+	"fileName": "samsVolition",
+	"type": "volition",
+	"rules": [
+		{
+			"name": "High magicka link allows intelligence training.",
+			"conditions": [
+				{
+					"category": "bonds",
+					"type": "magicka link",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 66
+				},
+				{
+					"category": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"operator": "<",
+					"value": 10
+				},
+				{
+					"category": "attribute",
+					"type": "intelligence",
+					"first": "y",
+					"operator": ">",
+					"value": 15
+				}
+			],
+			"effects": [
+				{
+					"category": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"weight": 5,
+					"intentType": true
+				}
+			],
+			"origin": "samsVolition",
+			"id": "volitionRules_2"
+		},
+		{	"name": "Everyone is friendly!",
+			"conditions": [
+				{
+					"category": "bonds",
+					"type": "kinship",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 0
+				}
+			],
+			"effects": [
+				{
+					"category": "bonds",
+					"type": "kinship",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+		},
+		{	"name": "Everyone is smart!",
+			"conditions": [
+				{
+					"category": "bonds",
+					"type": "kinship",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 0
+				}
+			],
+			"effects": [
+				{
+					"category": "attribute",
+					"type": "intelligence",
+					"first": "x",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+		}
+	]
+}

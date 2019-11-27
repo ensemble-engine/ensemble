@@ -1,0 +1,146 @@
+{
+	"fileName" : "testActionsGrammar1.json",
+	"actions" : [
+		{
+			"name" : "STARTDATING",
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "involved with",
+				"intentType" : true,
+				"first" : "x",
+				"second" : "y"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["ASKOUT", "PICKUPLINE", "topTerminal"]
+		},
+		{
+			"name" : "topTerminal",
+			"description" : "experimenting having terminals and non-terminals on the same level.",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"salience" : 10,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}]
+		},	
+		{
+			"name" : "ASKOUT",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["askout1-genericAccept", "askout2-genericReject", "askout3"]
+		},
+		{
+			"name" : "PICKUPLINE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["pickupline1", "pickupline2", "pickupline3"]
+		},
+		{
+			"name" : "askout1-genericAccept",
+			"description" : "ask out generic accept",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}]	
+		},
+		{
+			"name" : "askout2-genericReject",
+			"description" : "ask out generic reject",
+			"conditions" : [],
+			"influenceRules" : [],
+			"salience" : 50,
+			"isAccept" : false,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : false
+			}, {
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "-",
+				"value" : 40
+				}]	
+		},
+		{
+			"name" : "askout3",
+			"description" : "ask out new one",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}, {
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "+",
+				"value" : 20
+				}]	
+		},
+		{
+			"name" : "pickupline1",
+			"description" : "pickup line generic accept",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}]
+		},
+		{
+			"name" : "pickupline2",
+			"description" : "pickup line generic reject",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"salience" : 65,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : false
+			}]
+		},
+		{
+			"name" : "pickupline3",
+			"description" : "pickup line EXTRA generic reject",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"salience" : 70,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : false
+			}]
+		}
+	]
+}

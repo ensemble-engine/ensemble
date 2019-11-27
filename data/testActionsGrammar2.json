@@ -1,0 +1,160 @@
+{
+	"fileName" : "testActionsGrammar2.json",
+	"actions" : [
+		{
+			"name" : "AFFINITYUP",
+			"intent" : {
+				"category" : "network",
+				"type"  : "affinity",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["REMINISCE", "TELLJOKE"]
+		},	
+		{
+			"name" : "REMINISCE",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "Hardy people are more likely to reminisce.",
+					"conditions": [
+						{
+							"category" : "trait",
+							"type" : "hardy",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : -10
+				}],
+			"leadsTo" : ["reminisce1", "reminisce2", "reminisce3"]
+		},
+		{
+			"name" : "TELLJOKE",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["telljoke1", "telljoke2", "telljoke3"]
+		},
+		{
+			"name" : "reminisce1",
+			"description" : "reminisce generic accept",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]	
+		},
+		{
+			"name" : "reminisce2",
+			"description" : "reminisce generic reject",
+			"conditions" : [],
+			"influenceRules" : [],
+			"salience" : 50,
+			"isAccept" : false,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 40
+				}]	
+		},
+		{
+			"name" : "reminisce3",
+			"description" : "reminisce FANCY accept (initiator and responder must have a mutualfriend)",
+			"conditions" : [{
+				"category" : "relationship",
+				"type" : "friends",
+				"first" : "initiator",
+				"second" : "mutualFriend",
+				"value" : true
+			},{
+				"category" : "relationship",
+				"type" : "friends",
+				"first" : "responder",
+				"second" : "mutualFriend",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"salience" : 30,
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "relationship",
+				"type" : "involved with",
+				"first" : "y",
+				"second" : "x",
+				"value" : true
+			}, {
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "y",
+				"second" : "x",
+				"operator" : "+",
+				"value" : 20
+				}]	
+		},
+		{
+			"name" : "telljoke1",
+			"description" : "TellJoke generic accept",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "telljoke2",
+			"description" : "telljoke generic reject",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"salience" : 65,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "telljoke3",
+			"description" : "telljoke FANCY reject (initiator and responder are enemies)",
+			"conditions" : [{
+				"category" : "relationship",
+				"type" : "enemies",
+				"first" : "initiator",
+				"second" : "responder",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"isAccept" : false,
+			"salience" : 70,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "-",
+				"value" : 30
+			}]
+		}
+	]
+}

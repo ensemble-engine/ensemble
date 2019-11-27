@@ -67,50 +67,8 @@ requirejs.config({
 	}
 });
 
-requirejs([
-  "ensemble",
-  "socialRecord",
-  "actionLibrary",
-  "historyViewer",
-  "rulesViewer",
-  "rulesEditor",
-  "actionEditor",
-  "consoleViewer",
-  "schemaViewer",
-  "ruleTester",
-  "fileio",
-  "jquery",
-  "text!defaultdata/schema.json",
-  "text!defaultdata/cast.json",
-  "text!defaultdata/history.json",
-  "text!defaultdata/triggerRules.json",
-  "text!defaultdata/volitionRules.json",
-  "text!defaultdata/actions.json",
-  "messages",
-  "jqueryUI",
-  "domReady!"
-],
-function(
-  ensemble,
-  socialRecord,
-  actionLibrary,
-  historyViewer,
-  rulesViewer,
-  rulesEditor,
-  actionEditor,
-  consoleViewer,
-  schemaViewer,
-  ruleTester,
-  fileio,
-  $,
-  schema,
-  cast,
-  history,
-  triggerRules,
-  volitionRules,
-  actions,
-  messages
- ){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "actionEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"],
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, actionEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
@@ -371,12 +329,12 @@ function(
 		}
 
 		if (autoLoad) {
-			loadSchema(JSON.parse(schema));
-			loadRules(JSON.parse(volitionRules));
-			loadRules(JSON.parse(triggerRules));
-			ensemble.addHistory(JSON.parse(history), "testAuto");
-			loadCast(JSON.parse(cast));
-			loadActions(JSON.parse(actions));
+			loadSchema(JSON.parse(sampleData));
+			loadRules(JSON.parse(testVolitionRules));
+			loadRules(JSON.parse(testTriggerRules));
+			ensemble.addHistory(JSON.parse(testSfdbData), "testAuto");
+			loadCast(JSON.parse(sampleChars));
+			loadActions(JSON.parse(testActions));
 			rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
 			consoleViewer.cmdLog("Autoloaded default schema.", true);
 			actionEditor.init();

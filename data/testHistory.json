@@ -1,0 +1,47 @@
+{
+	"history": [{
+		"pos": 0,
+		"data": [{
+			"category" : "trait",
+			"type" : "named hero",
+			"first" : "hero",
+			"value" : true
+				},{
+			"category" : "trait",
+			"type" : "named love",
+			"first" : "love",
+			"value" : true
+				},{
+			"category" : "trait",
+			"type" : "named rival",
+			"first" : "rival",
+			"value" : true
+				},{
+			"category" : "trait",
+			"type" : "anyone",
+			"first" : "hero",
+			"value" : true
+				},{
+			"category" : "trait",
+			"type" : "anyone",
+			"first" : "rival",
+			"value" : true
+				},{
+			"category" : "trait",
+			"type" : "anyone",
+			"first" : "love",
+			"value" : true
+				},{
+			"category" : "attribute",
+			"type" : "strength",
+			"first" : "hero",
+			"value" : 0
+			},{
+			"category" : "attribute",
+			"type" : "intelligence",
+			"first" : "hero",
+			"value" : 5
+			}
+		]}
+	]
+}

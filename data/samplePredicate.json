@@ -1,0 +1,42 @@
+{
+	"comment"	: "This documents all the possible fields for a predicate object. (Comments are written this way b/c there is no way to comment JSON.)",
+
+
+	"category"		: "Name for this category of predicate. network, relationship, etc.",
+	"type"		: "Distinguishes members of a category. For relationship, might be friends, dating, enemies, etc.",
+	"value"		: "Either true/false (for predicates about boolean categories) or a numeric value.",
+	"first"		: "The primary or 'from' character in the predicate.",
+
+
+	"ONLY_FOR_NUMERIC": 0,
+	"operator"	: "Optional string; '=' is assumed if omitted. Explains how to apply the numeric value. \
+			(for valuations) \
+			=      means the value is set absolutely \
+			+      mean the value is set relative to the existing value (if any) or the category's default value. \
+			(for evaluations) \
+			=      means the value must be exactly equal \
+			>, <   means the value is compared to the existing value (if any) or the category's default vaule.",
+
+
+	"ONLY_FOR_DIRECTED" : 0,
+	"second"	: "The secondary or 'to' character.",
+	
+	"ONLY_FOR_ACTIONS" : 0,
+	"intent": "a predicate determining what the intent of a given action is",
+
+
+	"ONLY_FOR_VOLITION_RULES": 0,
+	"weight"	: "Number; amount to sway the intent if the predicate is true.",
+	"intentType": "if true, weight applies to the desire to start/increase the given predicate; if false, weight applies to the desire to stop/decrease the given predicate. Can also be defined as 'up' or 'down', which will be converted to true or false on preprocessing.",
+
+	"OPTIONAL": 0,
+	["turnsAgoBetween"	: "A tuple of positive integers or the quoted strings START or NOW, indicating the range of time in which this is valid, relative to the current time step. Order does not matter, so both [5, 10] and [10, 5] mean 'between five and ten turns ago.' START means from the first registered timestep in the social record, and NOW means the most recent timestep, so ['NOW', 3] means in the last three turns.",]
+	"labels"	: "An array of strings, labels attached to the predicate. Unused for now but useful for future expansion to tie additional information to predicates (i.e., first: Monica is dating second: Simon because label: Cassandra.)"
+	"duration": "The number of turns until a value is reversed. Only used for booleans.
+		
+		"ONLY_FOR_CONDITIONS": 0;
+		"order"		: "the number which signifies the order in which a predicate's conditions will be evaluated; necessitates using turnsAgoBetween.",
+
+		"ONLY FOR ACTIONS": 0;
+		"conditions"	: "an array of condition predicates that determine if an action should be selected as available to a character."
+}

@@ -1,0 +1,52 @@
+{
+	"fileName" : "testActionsGrammar8.json",
+	"actions" : [
+		{
+			"name" : "AFFINITYUP",
+			"intent" : {
+				"category" : "network",
+				"type"  : "affinity",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [{
+				"category" : "trait",
+				"type"	: "lucky",
+				"first" : "luckyGuy",
+				"value" : true
+			}],
+			"influenceRules" : [],
+			"leadsTo" : ["BOND", "LAUGH"]
+		},
+		{
+			"name" : "STARTDATING",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : []
+		},
+		{
+			"name" : "LAUGH",
+			"conditions" : [
+				{
+					"category" : "trait",
+					"type" : "nimble",
+					"first" : "nimbleOne"
+				},
+				{
+					"category" : "trait",
+					"type" : "hardy",
+					"first" : "nimbleOne"
+				}
+			],
+			"influenceRules" : [],
+			"leadsTo" : ["bondTerminal"]
+		},
+		{
+			"name" : "bondTerminal",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : []
+		}
+	]
+}

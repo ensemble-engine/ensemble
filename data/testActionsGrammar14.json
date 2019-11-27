@@ -1,0 +1,97 @@
+{
+	"fileName" : "testActionsGrammar14.json",
+	"actions" : [
+		{
+			"name" : "STARTFRIENDS",
+			"intent" : {
+				"category" : "relationship",
+				"type"  : "friends",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["NIMBLEMAKEFRIENDS", "FAKEBRANCH"]
+		},
+		{
+			"name" : "FAKEBRANCH",
+			"conditions" : [
+			],
+			"influenceRules" : [],
+			"leadsTo" : ["neverGetHere"]
+		},
+		{
+			"name" : "neverGetHere",
+			"conditions" : [],
+			"influenceRules" : [],
+			"effects" : []
+		},
+		{
+			"name" : "NIMBLEMAKEFRIENDS",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "Happy people make the best nimble1 people.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "nimble1",
+							"value" : true
+						}
+					],
+					"weight" : 542
+				}
+			],
+			"leadsTo" : ["ONELASTSTEP"]
+		},
+		{
+			"name" : "ONELASTSTEP",
+			"conditions" : [],
+			"leadsTo" : ["actualFriends4Degrees"],
+			"influenceRules" : [
+				{
+					"name": "ACTUALLY, you know what, Happy people make the WORST nimble1 people.",
+					"conditions": [
+						{
+							"category" : "status",
+							"type" : "happy",
+							"first" : "nimble1",
+							"value" : true
+						}
+					],
+					"weight" : -14542
+				}
+			]
+		},
+		{
+			"name" : "actualFriends4Degrees",
+			"conditions" : [
+			],
+			"influenceRules" : [
+				{
+				"name": "Ok, ok, ok, I'm sorry. I know I keep changing my mind, but you know what? Maybe happy people aren't that bad after all for being nimble1.",
+				"conditions": [
+					{
+						"category" : "status",
+						"type" : "happy",
+						"first" : "nimble1",
+						"value" : true
+					}
+				],
+				"weight" : 37
+				}
+			],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "affinity",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		}
+	]
+}

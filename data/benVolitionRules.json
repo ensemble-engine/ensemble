@@ -1,0 +1,103 @@
+{
+	"fileName" : "Ben's Volition Rules",
+	"type" : "volition",
+	"rules": [
+		{
+			"name": "Attraction makes people want to start dating.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "attracted to",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+
+		},
+{
+			"name": "Similar interest suggests affinity up (movies).",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentType": true
+				}
+			]
+		},
+{
+			"name": "Similar interest (movies) makes people LESS Likely to start dating",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": -3,
+					"intentType": true
+				}
+			]
+		},
+		{
+			"name": "In fact, Similar interest  (movies) makes people MORE Likely to STOP dating",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentType": false
+				}
+			]
+		}
+	]
+}

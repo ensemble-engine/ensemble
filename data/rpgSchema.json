@@ -1,0 +1,33 @@
+{
+	"schema": [
+		{
+			"category": "attribute",
+			"isBoolean": false,
+			"directionType": "undirected",
+			"types": ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"],
+			"defaultValue": 10,
+			"minValue": 3,
+			"maxValue": 18,
+			"actionable": true
+		},
+		{
+			"category": "alignment",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": ["good", "lawful", "chaotic", "evil"],
+			"defaultValue": false,
+			"actionable": false
+		},
+		{
+			"category": "bonds",
+			"isBoolean": false,
+			"directionType": "reciprocal",
+			"types": ["duty", "kinship", "vengeance", "magicka link"],
+			"defaultValue": 1,
+			"minValue": 0,
+			"maxValue": 100,
+			"actionable": true
+		}
+	]
+}
+

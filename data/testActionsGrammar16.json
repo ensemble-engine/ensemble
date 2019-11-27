@@ -1,0 +1,104 @@
+{
+	"fileName" : "testActionsGrammar16.json",
+	"actions" : [
+		{
+			"name" : "RAISETRUST",
+			"intent" : {
+				"category" : "network",
+				"type"  : "trust",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["upperTerminalraiseTrust", "MIDDLELAYER"]
+		},
+		{
+			"name" : "upperTerminalraiseTrust",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 10
+			}]
+		},
+		{
+			"name" : "MIDDLELAYER",
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["lowerTerminalraiseTrust1", "lowerTerminalraiseTrust2", "lowerTerminalraiseTrust3"]
+		},
+		{
+			"name" : "lowerTerminalraiseTrust1",
+			"conditions" : [],
+			"influenceRules" : [],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "lowerTerminalraiseTrust2",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are more likely to do this.",
+					"conditions": [
+						{
+							"category" : "trait",
+							"type" : "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 10
+				}],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		},
+		{
+			"name" : "lowerTerminalraiseTrust3",
+			"conditions" : [],
+			"influenceRules" : [
+				{
+					"name": "lucky people are more likely to do this.",
+					"conditions": [
+						{
+							"category" : "trait",
+							"type" : "lucky",
+							"first" : "initiator",
+							"value" : true
+						}
+					],
+					"weight" : 5
+				}],
+			"isAccept" : true,
+			"effects" : [{
+				"category" : "network",
+				"type" : "trust",
+				"first" : "responder",
+				"second" : "initiator",
+				"operator" : "+",
+				"value" : 100
+			}]
+		}
+	]
+}

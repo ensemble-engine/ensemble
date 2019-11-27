@@ -1,0 +1,23 @@
+{
+	"fileName" : "testActionsGrammar17.json",
+	"actions" : [
+		{
+			"name" : "RAISETRUST",
+			"intent" : {
+				"category" : "network",
+				"type"  : "trust",
+				"intentType" : true,
+				"first" : "initiator",
+				"second" : "responder"
+			},
+			"conditions" : [],
+			"influenceRules" : [],
+			"leadsTo" : ["baby"]
+		},
+		{
+			"name" : "baby",
+			"conditions" : [],
+			"influenceRules" : []
+		}
+	]
+}
