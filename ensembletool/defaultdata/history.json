@@ -1,0 +1,102 @@
+{
+  "history": [{
+    "pos": 0,
+    "data": [
+      {
+        "category": "relationship",
+        "type": "involved with",
+        "first": "al",
+        "second": "bob",
+        "value": true
+      },{
+        "category": "network",
+        "type": "affinity",
+        "first": "al",
+        "second": "bob",
+        "value": 75
+      },{
+        "category": "network",
+        "type": "affinity",
+        "first": "bob",
+        "second": "al",
+        "value": 90
+      },{
+        "category": "status",
+        "type": "happy",
+        "first": "bob",
+        "value": true
+      },{
+        "category": "status",
+        "type": "injured",
+        "first": "diane",
+        "value": true
+      },{
+        "category": "directedStatus",
+        "type": "attracted to",
+        "first": "al",
+        "second": "diane",
+        "value": true
+      }
+    ]}, {
+    "pos": 1,
+    "data": [
+      {
+        "category": "relationship",
+        "type": "involved with",
+        "first": "bob",
+        "second": "al",
+        "value": false
+      },{
+        "category": "status",
+        "type": "happy",
+        "first": "bob",
+        "value": false
+      },{
+        "category": "directedStatus",
+        "type": "upset with",
+        "first": "bob",
+        "second": "al",
+        "value": true
+      }
+    ]}, {
+    "pos": 2,
+    "data": [
+      {
+        "category": "status",
+        "type": "lonely",
+        "first": "al",
+        "value": true
+      },{
+        "category": "relationship",
+        "type": "friends",
+        "first": "bob",
+        "second": "al",
+        "value": true
+      },{
+        "category": "relationship",
+        "type": "friends",
+        "first": "diane",
+        "second": "al",
+        "value": true
+      },{
+        "category": "network",
+        "type": "affinity",
+        "first": "diane",
+        "second": "bob",
+        "value": 50
+      },{
+        "category": "network",
+        "type": "affinity",
+        "first": "bob",
+        "second": "diane",
+        "value": 80
+      },{
+        "category": "directedStatus",
+        "type": "upset with",
+        "first": "bob",
+        "second": "al",
+        "value": false
+      }
+    ]}
+  ]
+}

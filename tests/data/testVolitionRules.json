@@ -1,0 +1,534 @@
+{
+	"fileName" : "testVolitionRules",
+	"type" : "volition",
+	"rules": [
+		{	"name": "Everyone is friendly!",
+			"conditions": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 0
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+		},
+		{
+			"name": "Attraction makes people want to start dating.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "attracted to",
+					"first": "x",
+					"second": "y"
+				},{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+
+		},
+		{
+			"name": "(Recent) Attraction makes people REALLY want to start dating.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "attracted to",
+					"first": "x",
+					"second": "y",
+					"turnsAgoBetween": ["NOW", 4]
+				},{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentType": true
+				}
+			]
+
+		},
+		{
+			"name": "Injured people are less interested in romance.",
+			"conditions": [
+				{
+					"category": "status",
+					"type": "injured",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": -5,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "People are very inclined to trust someone they are dating.",
+			"conditions": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone is very unlikely to trust someone they hate.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentType": false
+				},{
+					"category": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": -10,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone doesn't want to date someone they hate.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": -5,
+					"intentType": true
+				},
+				{
+					"category": "relationship",
+					"type": "involved with",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": false
+				}
+			]
+		},
+
+		{
+			"name": "Someone with a great smile is likeable.",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "has a great smile",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "y",
+					"second": "x",
+					"weight": 2,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Someone with a kind face seems trustworthy.",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "has a kind face",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "trust",
+					"first": "y",
+					"second": "x",
+					"weight": 2,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "A trusting person is more likely to give trust.",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "trusting",
+					"first": "x"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"weight": 4,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "High affinity suggests friendship.",
+			"conditions": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": ">",
+					"value": 66
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Low affinity suggests ending friendship.",
+			"conditions": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 33
+				},
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y",
+					"value": false
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Similar interest suggests affinity up (movies).",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Similar interest suggests affinity up (sports).",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked sports",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked sports",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "Similar interest suggests affinity up (music).",
+			"conditions": [
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "x"
+				},
+				{
+					"category": "trait",
+					"type": "liked movies",
+					"first": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentType": true
+				}
+			]
+		},
+
+		{
+			"name": "If you hate someone, you don't want to trust them.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "trust",
+					"intentType": true,
+					"weight": -20,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"category": "network",
+					"type": "trust",
+					"intentType": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+				{
+			"name": "Low affinity makes friendship less tenable.",
+			"conditions": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 25
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"intentType": true,
+					"weight": -10,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"intentType": false,
+					"weight": 10,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"intentType": true,
+					"weight": -15,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"category": "relationship",
+					"type": "friends",
+					"intentType": false,
+					"weight": 10,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		
+		{
+			"name": "If you hate someone, you don't want to be friends with them.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "friends",
+					"intentType": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		
+				{
+			"name": "If you hate someone, you will not be friends with them.",
+			"conditions": [
+				{
+					"category": "directedStatus",
+					"type": "hates",
+					"first": "x",
+					"second": "y"
+				}
+			],
+			"effects": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"intentType": true,
+					"weight": -20,
+					"first": "x",
+					"second": "y"
+				},
+				{
+					"category": "network",
+					"type": "affinity",
+					"intentType": false,
+					"weight": 20,
+					"first": "x",
+					"second": "y"
+				}
+			]
+		},
+		{
+			"name": "Low affinity suggests rejecting friendship.",
+			"conditions": [
+				{
+					"category": "network",
+					"type": "affinity",
+					"first": "x",
+					"second": "y",
+					"operator": "<",
+					"value": 33
+				}
+			],
+			"effects": [
+				{
+					"category": "relationship",
+					"type": "friends",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentType": false
+				}
+			]
+		}
+	]
+}

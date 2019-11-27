@@ -296,12 +296,12 @@ A few other modules help the tool function:
 
 		if (autoLoad) {
 			Promise.all([
-				makeJSONFilePromise('../data/socialData.json'),
-				makeJSONFilePromise('../data/testVolitionRules.json'),
-				makeJSONFilePromise('../data/testTriggerRules.json'),
-				makeJSONFilePromise('../data/testState.json'),
-				makeJSONFilePromise('../data/ensemble-test-chars.json'),
-				makeJSONFilePromise('../data/consoleDefaultActions.json')
+				makeJSONFilePromise('defaultdata/schema.json'),
+				makeJSONFilePromise('defaultdata/volitionRules.json'),
+				makeJSONFilePromise('defaultdata/triggerRules.json'),
+				makeJSONFilePromise('defaultdata/history.json'),
+				makeJSONFilePromise('defaultdata/cast.json'),
+				makeJSONFilePromise('defaultdata/actions.json')
 			]).then(([schema, volitionRules, triggerRules, history, cast, actions]) => {
 				loadSchema(schema);
 				loadRules(volitionRules);

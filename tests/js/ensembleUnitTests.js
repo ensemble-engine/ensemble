@@ -3,8 +3,7 @@
  * This has all of the unit tests for functions that are from ensemble.js
  */
 
-define(["util", "underscore", "ruleLibrary", "socialRecord", "ensemble", "actionLibrary", "test", "text!data/testSocial.json", "text!data/testVolitionRules.json", "text!data/testActionsGrammar8.json", "text!data/testActionsGrammar9.json"],
-function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, testSocial, testVolitionRules, testActionsGrammar8, testActionsGrammar9) {
+ensembleUnitTests = (function() {
 
 
 	/***************************************************************/
@@ -387,4 +386,4 @@ function(util, _, ruleLibrary, socialRecord, ensemble, actionLibrary, test, test
 
 	return ensembleUnitTestInterface;
 
-});
+})();

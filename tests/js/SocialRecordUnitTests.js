@@ -1,7 +1,7 @@
 /**
 * This has all of the unit tests that test functions that are from socialRecord.js
 */
-define(["util", "ensemble", "socialRecord", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(util, ensemble, socialRecord, test, validate, testSocial, testHistory) {
+socialRecordUnitTests = (function() {
 
 
 /**
@@ -1066,4 +1066,4 @@ define(["util", "ensemble", "socialRecord", "test", "validate", "text!data/testS
 	return socialRecordUnitTestInterface;
 
 
-});
+})();

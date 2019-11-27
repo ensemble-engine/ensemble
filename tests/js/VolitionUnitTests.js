@@ -3,8 +3,7 @@
  * This has all of the unit tests for functions that are from ensemble.js
  */
 
-define(["ruleLibrary", "socialRecord", "ensemble", "test", "volition"],
-function(ruleLibrary, socialRecord, ensemble, test, volition) {
+volitionUnitTests = (function() {
 
 
 	/***************************************************************/
@@ -80,4 +79,4 @@ function(ruleLibrary, socialRecord, ensemble, test, volition) {
 
 	return volitionUnitTestInterface;
 
-});
+})();

@@ -3,8 +3,7 @@
  * This has all of the unit tests for functions that are from RuleLibrary.js
  */
 
-define(["util", "underscore", "util", "ruleLibrary", "socialRecord", "ensemble", "volition", "test", "validate", "text!data/testSocial.json", "text!data/testTriggerRules.json"],
-function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, validate, testSocial, testTriggerRules) {
+ruleLibraryUnitTests = (function() {
 
 
 	/***************************************************************/
@@ -3230,4 +3229,4 @@ function(util, _, util, ruleLibrary, socialRecord, ensemble, volition, test, val
 
 	return ruleLibraryUnitTestInterface;
 
-});
+})();

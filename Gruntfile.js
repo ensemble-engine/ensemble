@@ -31,6 +31,9 @@ module.exports = function(grunt) {
         options: {
             stderr: false
         },
+        buildLibrary: {
+          command: 'node build-library.js'
+        },
         target: {
             command: 'python build-console-for-windows.py'
         },
@@ -73,7 +76,7 @@ module.exports = function(grunt) {
           platforms: ['osx64'], // Can't seem to build a non-empty Windows version with Grunt
           buildDir: './build', // Where the build version of my node-webkit app is saved
        },
-       src: ['./nwk-package.json', './bin/ensemble.js', './ensembletool/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+       src: ['./nwk-package.json', './bin/ensemble.js', './ensembletool/**/*', './jslib/**/*', './css/**/*'] // Your node-webkit app
       },
       // techRelease : {
       //   options: {
@@ -155,32 +158,7 @@ module.exports = function(grunt) {
           expand: true,           // required when using cwd
         }]
       }
-    },
-    requirejs: {
-        options: {
-            baseUrl: '.',
-            config: ['ensemble-config.js'],
-            name: 'js/ensemble/ensemble',
-            require: 'jslib/require',
-            almond: 'jslib/almond',
-            out: 'bin/ensemble.js',
-            wrap: {
-              start: '(function() {',
-              end: 'return require("js/ensemble/ensemble");\n}());'
-            },
-            optimize: "none" // 'uglify' (or just removing this line) is the default but I hope this will ease testing.
-        },
-        dev: {
-            options: {
-                build: false
-            }
-        },
-        prod: {
-            options: {
-                build: true
-            }
-        }
-      }
+    }
   });
 
   // Load the plugin that provides the "uglify" task.
@@ -213,9 +191,7 @@ module.exports = function(grunt) {
 
   ]);
 
-  grunt.registerTask("deploy", [
-    "strip_code", "requirejs:prod"
-  ]);
+  grunt.registerTask("deploy", ["shell:buildLibrary"]);
 
   grunt.registerTask("document", [
     "jsdoc",

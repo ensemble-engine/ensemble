@@ -1,7 +1,7 @@
 /**
 * This has all of the unit tests that test functions that are from Validate.js
 */
-define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], function(util, ensemble, test, validate, testSocial) {
+validateUnitTests = (function() {
 
 	var runTests = function() {
 		testValidate();
@@ -369,4 +369,4 @@ define(["util", "ensemble", "test", "validate", "text!data/testSocial.json"], fu
 	return {
 		runTests: runTests
 	}
-});
+})();

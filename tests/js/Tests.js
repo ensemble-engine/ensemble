@@ -5,8 +5,7 @@
  * @class Tests
  */
 
-define(["util", "jquery"],
-function(util, $) {
+test = (function() {
 
 	var currentFile;
 	var currentGroup;
@@ -182,4 +181,4 @@ function(util, $) {
 
 	};
 
-});
+})();
