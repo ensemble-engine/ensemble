@@ -1,7 +1,7 @@
 /**
 * This has all of the unit tests that test functions that are from socialRecord.js
 */
-define(["underscore", "util", "jquery", "ensemble", "socialRecord", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(_, util, $, ensemble, socialRecord, test, validate, testSocial, testHistory) {
+define(["util", "ensemble", "socialRecord", "test", "validate", "text!data/testSocial.json", "text!data/testHistory.json"], function(util, ensemble, socialRecord, test, validate, testSocial, testHistory) {
 
 
 /**

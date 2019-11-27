@@ -67,8 +67,8 @@ requirejs.config({
 	}
 });
 
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "actionEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "util", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"], 
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, actionEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, util, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "actionEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"],
+function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, actionEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 

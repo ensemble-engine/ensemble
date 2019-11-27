@@ -5,8 +5,8 @@
  * @class Tests
  */
 
-define(["util", "underscore", "jquery"], 
-function(util, _, $) {
+define(["util", "jquery"],
+function(util, $) {
 
 	var currentFile;
 	var currentGroup;
