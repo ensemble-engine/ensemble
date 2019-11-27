@@ -1043,11 +1043,16 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, validate) {
 		setSocialRecordById		: socialRecord.setById,
 		
 
-		reset					: reset
+		reset					: reset,
 
-
-
-	
+		// validate functions
+		validateRule: validate.rule,
+		validateTriggerCondition: validate.triggerCondition,
+		validateTriggerEffect: validate.triggerEffect,
+		validateVolitionCondition: validate.volitionCondition,
+		validateVolitionEffect: validate.volitionEffect,
+		validateBlueprint: validate.blueprint,
+		validateAction: validate.action,
 	};
 
 	/* test-code */

@@ -4,7 +4,7 @@ This module handles the Ensemble Tool's console view, where commands can be type
 
 /*global console */
 
-define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _, util){
+consoleViewer = (function(){
 
 	// Configurable params
 	var maxValidNumberOfIntents = 10;
@@ -12,8 +12,6 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	var maxActionsPerGroup = 1;
 
 	// Internal variables
-	var ensemble;
-	var socialRecord;
 	var characters;
 	var socialStructure;
 	var fullCharacters;
@@ -37,9 +35,9 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	}
 
 	// Hook up the console's local variables to the main tool's data structure holding the current Ensemble state.
-	var updateRefs = function(ensembleRef, socialRecordRef, charactersRef, fullCharactersRef, socialStructureRef) {
-		ensemble = ensembleRef;
-		socialRecord = socialRecordRef;
+	// TODO I suspect we can get all of these things from Ensemble directly,
+	// so we shouldn't have to manually maintain these refs anymore.
+	var updateRefs = function(charactersRef, fullCharactersRef, socialStructureRef) {
 		characters = charactersRef;
 		fullCharacters = fullCharactersRef;
 		socialStructure = socialStructureRef;
@@ -63,7 +61,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 	// Handle the "next" console command (advance timestep)
 	var doNext = function() {
 		ensemble.setupNextTimeStep();
-		var curr = socialRecord.getCurrentTimeStep();
+		var curr = ensemble.getCurrentTimeStep();
 		var logMsg = "ensemble timestep advanced to " + curr + ".<br/>";
 
 		// Run Trigger rules.
@@ -348,7 +346,7 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		}
 
 		if (command === "dump") {
-			console.log(socialRecord.dumpSocialRecord());
+			console.log(ensemble.dumpSocialRecord());
 			return;
 		}
 
@@ -636,4 +634,4 @@ define(["ruleTester", "jquery", "underscore", "util"], function(ruleTester, $, _
 		cmdLog: cmdLog
 	}
 
-});
+})();

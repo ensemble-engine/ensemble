@@ -7,8 +7,8 @@ Individual tabs of the tool are broken out into their own modules:
 	historyViewer.js		Social Record Viewer Tab
 	rulesViewer.js			Rules Viewer Tab
 	rulesEditor.js			Rules Editor Tab
-	actionEditor.js 		Action Editor Tab
 	--> ruleTester.js		Rule diagnostic panel ("Test Rule" button)
+	actionEditor.js 		Action Editor Tab
 	schemaviewer.js			Schema Viewer and Editor
 
 A few other modules help the tool function:
@@ -16,59 +16,7 @@ A few other modules help the tool function:
 	messages.js				Pop-up messages and errors
 */
 
-/*global console, require, requirejs, document */
-require.nodeRequire = window.requireNode;
-requirejs.config({
-	paths: {
-		"domReady": "../jslib/domReady"
-		// JS libraries
-		,"jquery": "../jslib/jquery-2.1.0"
-		,"jqueryUI": "../jslib/jquery-ui.min"
-
-		,"test": "../js/tests/Tests"
-		,"text": "../jslib/text"	// Lets require load plain text, used by jsx
-
-		// Custom libraries
-		,"underscore" : "../jslib/underscore-min"
-		,"util": "../jslib/util"
-		,"log": "../jslib/log"
-
-		// ensemble
-		,"ensemble" : "../js/ensemble/ensemble"
-		,"socialRecord" : "../js/ensemble/SocialRecord"
-		,"ruleLibrary" : "../js/ensemble/RuleLibrary"
-		,"volition": "../js/ensemble/Volition"
-		,"validate": "../js/ensemble/Validate"
-		,"actionLibrary": "../js/ensemble/ActionLibrary"
-
-		// Tool
-		,"historyViewer" : "historyViewer"
-		,"rulesViewer" : "rulesViewer"
-		,"rulesEditor" : "rulesEditor"
-		,"actionEditor" : "actionEditor"
-		,"consoleViewer" : "consoleViewer"
-		,"schemaViewer" : "schemaViewer"
-		,"messages" : "messages"
-		,"ruleTester" : "ruleTester"
-		,"fileio" : "fileio"
-
-},
-
-	// Shims let certain libraries that aren't built with the module pattern interface with require.js 
-	// Basically they tell require.js what global variable the given library will try to export all its functionality to, so require.js can do with that what it will.
-	shim : {
-		"underscore" : {
-			exports : "_"
-		},
-		"jqueryUI" : {
-			exports : '$',
-			deps	: ['jquery']
-		}
-	}
-});
-
-requirejs(["ensemble", "socialRecord", "actionLibrary", "historyViewer", "rulesViewer", "rulesEditor", "actionEditor", "consoleViewer", "schemaViewer", "ruleTester", "fileio", "jquery", "text!../data/socialData.json", "text!../data/ensemble-test-chars.json", "text!../data/testState.json", "text!../data/testTriggerRules.json", "text!../data/testVolitionRules.json", "text!../data/consoleDefaultActions.json", "messages", "jqueryUI", "domReady!"],
-function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rulesEditor, actionEditor, consoleViewer, schemaViewer, ruleTester, fileio, $, sampleData, sampleChars, testSfdbData, testTriggerRules, testVolitionRules, testActions, messages){
+(function(){
 
 	var autoLoad = false;	// Load sample schema package on launch.
 
@@ -90,7 +38,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	$("#tabs").tabs({
 		activate: function( event, ui ) {
 			if (ui.newPanel[0].id === "tabsSfdb") {
-				historyViewer.refresh(socialRecord.getCurrentTimeStep());
+				historyViewer.refresh(ensemble.getCurrentTimeStep());
 			}
 			if (ui.newPanel[0].id === "tabsConsole") {
 				consoleViewer.refreshVolitions();
@@ -233,7 +181,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 
 	// Shortcut for sending details to the console.
 	var updateConsole = function() {
-		consoleViewer.updateRefs(ensemble, socialRecord, characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
+		consoleViewer.updateRefs(characters, fullCharacters, socialStructure); // TODO this also needs to happen when a new schema is loaded.
 	}
 
 	// Reset everything in the tool, including Ensemble, back to its initial state.
@@ -299,8 +247,8 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 
 	// Take an action definition object, load it into ensemble, and display in UI.
 	var loadActions = function(actions){
-		actionLibrary.parseActions(actions);
-		var myActions = actionLibrary.getTerminalActions();
+		const allActions = ensemble.addActions(actions);
+		const myActions = allActions.filter((a) => a.effects !== undefined); // per ActionLibrary.getTerminalActions!
 		// Generate labels
 		var txt = "<ul>";
 		for (var actionPos in myActions) {
@@ -315,6 +263,23 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 	// INIT 
 	// ****************************************************************
 
+	function makeJSONFilePromise(path) {
+		return new Promise((resolve, reject) => {
+			const req = new XMLHttpRequest();
+			req.onreadystatechange = function() {
+				if (req.readyState === XMLHttpRequest.DONE) {
+					try {
+						resolve(JSON.parse(req.responseText));
+					} catch(err) {
+						reject(err);
+					}
+				}
+			};
+			req.open('GET', path);
+			req.send();
+		});
+	}
+
 	var init = function() {
 		messages.init();
 		ensemble.init();
@@ -322,6 +287,7 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		rulesViewer.init();
 		historyViewer.init();
 		schemaViewer.init();
+		consoleViewer.init();
 		
 
 		if (autoLoad === false && !fileio.enabled()) {
@@ -329,23 +295,28 @@ function(ensemble, socialRecord, actionLibrary, historyViewer, rulesViewer, rule
 		}
 
 		if (autoLoad) {
-			loadSchema(JSON.parse(sampleData));
-			loadRules(JSON.parse(testVolitionRules));
-			loadRules(JSON.parse(testTriggerRules));
-			ensemble.addHistory(JSON.parse(testSfdbData), "testAuto");
-			loadCast(JSON.parse(sampleChars));
-			loadActions(JSON.parse(testActions));
-			rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
-			consoleViewer.cmdLog("Autoloaded default schema.", true);
-			actionEditor.init();
+			Promise.all([
+				makeJSONFilePromise('../data/socialData.json'),
+				makeJSONFilePromise('../data/testVolitionRules.json'),
+				makeJSONFilePromise('../data/testTriggerRules.json'),
+				makeJSONFilePromise('../data/testState.json'),
+				makeJSONFilePromise('../data/ensemble-test-chars.json'),
+				makeJSONFilePromise('../data/consoleDefaultActions.json')
+			]).then(([schema, volitionRules, triggerRules, history, cast, actions]) => {
+				loadSchema(schema);
+				loadRules(volitionRules);
+				loadRules(triggerRules);
+				ensemble.addHistory(history, "testAuto");
+				loadCast(cast);
+				loadActions(actions);
+				rulesEditor.init(rulesViewer, ruleOriginsTrigger, ruleOriginsVolition);
+				consoleViewer.cmdLog("Autoloaded default schema.", true);
+				actionEditor.init();
+				updateConsole();
+			});
 		}
-
-		consoleViewer.init();
-		updateConsole();
 	}
-
 
 	init();
 
-
-});
+})();

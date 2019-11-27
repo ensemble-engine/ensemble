@@ -1,4 +1,4 @@
-define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensemble, util, rulesEditor, messages, $){
+rulesViewer = (function(){
 
 	var ruleFilterKey = function(e) {
 		var raw = document.getElementById("inputRuleFilter").value;
@@ -153,4 +153,4 @@ define(["ensemble", "util", "rulesEditor", "messages", "jquery"], function(ensem
 
 	}
 
-});
+})();

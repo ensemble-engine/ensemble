@@ -3,7 +3,13 @@
 <head>
 	<meta charset="utf-8">
 	<title>Ensemble Tool</title>
-	<script src="../jslib/require.js" data-main="ensembleconsole.js"></script>
+  <!-- main Ensemble library -->
+  <script src="../bin/ensemble.js"></script>
+  <!-- other external libraries -->
+  <script src="../jslib/jquery-2.1.0.js"></script>
+  <script src="../jslib/jquery-ui.min.js"></script>
+  <script src="../jslib/underscore-min.js"></script>
+  <script src="../jslib/util_standalone.js"></script> <!-- FIXME godawful max hack -->
 	<link rel="stylesheet" href="../css/jquery-ui.structure.min.css">
 	<link rel="stylesheet" href="../css/jquery-ui.theme.min.css">
 	<link rel="stylesheet" href="ensembleconsole.css">
@@ -216,6 +222,19 @@ socialRecord History viewer
       <li id="actionsExample"><span class="edHowMany">??</span> <span class="edMatchType">actions</span> referncing a member of this category</li>
   </div>
 </div>
+
+<!-- internal tool modules -->
+<script src="messages.js"></script>
+<script src="fileio.js"></script>
+<script src="rulesViewer.js"></script>
+<script src="historyViewer.js"></script>
+<script src="schemaViewer.js"></script>
+<script src="rulesEditor.js"></script>
+<script src="consoleViewer.js"></script>
+<script src="actionEditor.js"></script>
+<script src="ruleTester.js"></script>
+<!-- us -->
+<script src="ensembleconsole.js"></script>
 
 </body>
 </html>

@@ -1,7 +1,7 @@
 // This code deals with the "Test Bindings" feature of the ensemble authoring tool.
 /*global console, define */
 
-define(["ensemble", "jquery", "util"], function(ensemble, $, util){
+ruleTester = (function(){
 
 	var characters = [];
 	var bindings = [];
@@ -236,4 +236,4 @@ define(["ensemble", "jquery", "util"], function(ensemble, $, util){
 		toggle: toggle
 	}
 
-});
+})();

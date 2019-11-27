@@ -1,6 +1,6 @@
 // Module for showing alerts and messages in the ensemble Tool.
 
-define(["jquery"], function($){
+messages = (function(){
 
 	var init = function() {
 		// Click to disable message block.
@@ -48,4 +48,4 @@ define(["jquery"], function($){
 		getFileDialog: getFileDialog
 	}
 
-});
+})();

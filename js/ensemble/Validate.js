@@ -394,6 +394,8 @@ function(util, _, socialRecord) {
 		blueprint: blueprint,
 		action: action,
 
+		// TODO figure out how to avoid exporting this at all
+		// (we should just be able to call ensemble.getSocialStructure when necessary)
 		registerSocialStructure: registerSocialStructure
 
 	};

@@ -6,7 +6,7 @@ The public interface for this module is the "loadRule" function. The module's fu
 
 /*global console */
 
-define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages", "ruleTester", "fileio", "jquery"], function(util, _, socialRecord, ensemble, validate, messages, ruleTester, fileio, $){
+rulesEditor = (function(){
 
 	var showTestBindingsButton = true;
 
@@ -676,7 +676,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			controller.changeField(field, source[0], source[1], val);
 
 			// Ensure that the changed rule is valid, and revert the edited field to the old value if not.
-			var result = validate.rule(activeRule);
+			var result = ensemble.validateRule(activeRule);
 			if (typeof result === "string") {
 				// New rule is invalid, probably because entered value doesn't make sense as value for this rule: reset the input field.
 				activeRule[source[0]][source[1]].value = oldVal;
@@ -872,7 +872,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 			var isFirst = $(this).parent().hasClass("edfirst");
 			controller.changeRoleName(source[0], source[1], isFirst, val);
 
-			var result = validate.rule(activeRule);
+			var result = ensemble.validateRule(activeRule);
 			if (typeof result === "string") {
 				// New rule is invalid.
 				$(this).val("")
@@ -1085,7 +1085,7 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		// Run whenever we do an action we'd like to be undo-able. Assuming the rule state is valid, add it to the history; otherwise revert back to the last valid history step.
 		addCurrentToUndoHistory: function() {
 			// Ensure the new rule is valid.
-			var result = validate.rule(activeRule);
+			var result = ensemble.validateRule(activeRule);
 			if (typeof result === "string") {
 				messages.showError("Canceling update: the resulting rule would be invalid.", result);
 				activeRule = util.clone(undoHistory[undoPosition]);
@@ -1160,4 +1160,4 @@ define(["util", "underscore", "socialRecord", "ensemble", "validate", "messages"
 		addPredicate: controller.addPredicate
 	}
 
-});
+})();

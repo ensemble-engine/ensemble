@@ -3,7 +3,7 @@ Handles the ability to edit actions. Presents each "actionable" intent twice for
 And for each of those, offers a starter "isAccept" and "isReject" answer.
 */
 
-define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, socialRecord, util, $){
+actionEditor = (function(){
 
 	
 	var intentDisplay = $("#typesTabs");
@@ -135,5 +135,4 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 
 	}
 
-});
-
+})();

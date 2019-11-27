@@ -1,6 +1,6 @@
 /* global require, process, console */
 
-define([], function(){
+fileio = (function(){
 
 	var fs;
 	var lastPath; // Store the last path we opened a file from, so we know where to save files back to.
@@ -303,4 +303,4 @@ define([], function(){
 		clearFolder: clearFolder
 	}
 
-});
+})();

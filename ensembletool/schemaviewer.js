@@ -4,7 +4,7 @@ This module handles the viewer and editor for the currently loaded social schema
 
 /*global console */
 
-define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "util", "jquery"], function(ensemble, rulesEditor, rulesViewer, historyViewer, fileio, util, $){
+schemaViewer = (function(){
 
 	var socialStructure;
 	var editorCategory;
@@ -809,4 +809,4 @@ define(["ensemble", "rulesEditor", "rulesViewer", "historyViewer", "fileio", "ut
 		show: show
 	}
 
-});
+})();

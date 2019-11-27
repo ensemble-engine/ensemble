@@ -69,11 +69,11 @@ module.exports = function(grunt) {
       dist: {
         options: {
           //downloadUrl: "http://dl.nwjs.io/",
-          version: "0.12.2",
-          platforms: ['osx'], // Can't seem to build a non-empty Windows version with Grunt
+          version: "0.42.5",
+          platforms: ['osx64'], // Can't seem to build a non-empty Windows version with Grunt
           buildDir: './build', // Where the build version of my node-webkit app is saved
        },
-       src: ['./nwk-package.json', './ensembletool/**/*', './js/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
+       src: ['./nwk-package.json', './bin/ensemble.js', './ensembletool/**/*', './jslib/**/*', './css/**/*', './data/**/*'] // Your node-webkit app
       },
       // techRelease : {
       //   options: {
@@ -223,7 +223,7 @@ module.exports = function(grunt) {
     ]);
 
   // Clean any generated directories before rebuilding
-  grunt.registerTask("build", ["shell:clean", "nwjs"]);
+  grunt.registerTask("build", ["deploy", "shell:clean", "nwjs"]);
 
   grunt.registerTask("copyCssFile", ["copy:dist"]);
 

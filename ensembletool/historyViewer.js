@@ -1,4 +1,4 @@
-define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, socialRecord, util, $){
+historyViewer = (function(){
 
 	var interfaceTimestep;
 	var timeStepDisplay = $("#timestep");
@@ -12,7 +12,7 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 	}
 
 	var stepForward = function() {
-		if (interfaceTimestep >= socialRecord.getCurrentTimeStep()) {
+		if (interfaceTimestep >= ensemble.getCurrentTimeStep()) {
 			return;
 		}
 		interfaceTimestep += 1;
@@ -28,7 +28,7 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 	};
 
 	var reset = function() {
-		socialRecord.clearHistory();
+		ensemble.clearHistory();
 		interfaceTimestep = undefined;
 		refresh();
 	};
@@ -39,10 +39,10 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 			interfaceTimestep = newTimeStep;
 		}
 		if (interfaceTimestep === undefined) {
-			interfaceTimestep = socialRecord.getCurrentTimeStep();
+			interfaceTimestep = ensemble.getCurrentTimeStep();
 		}
 		timeStepDisplay.html(interfaceTimestep);
-		var socialRecordSlice = socialRecord.getSocialRecordCopyAtTimestep(interfaceTimestep);
+		var socialRecordSlice = ensemble.getSocialRecordCopyAtTimestep(interfaceTimestep);
 		var table = "<table class='sfdb'>";
 		for (var i = 0; i < socialRecordSlice.length; i++) {
 			var pred = socialRecordSlice[i];
@@ -67,5 +67,4 @@ define(["ensemble", "socialRecord", "util", "jquery"], function(ensemble, social
 
 	}
 
-});
-
+})();
