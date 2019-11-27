@@ -8,7 +8,7 @@ A framework for creating socially aware characters. An evolution of the Comme il
 
 `<script src="ensemble.js"></script>`
 
-Then, in your Javascript code, add the event listener, `document.addEventListener('ensembleLoaded', function (e){}`, to get access to an `ensemble` singleton object, which you can then use to call [Ensemble methods](https://github.com/ensemble-engine/ensemble/wiki/Ensemble-API).
+Then, in your JavaScript code, you can use the `ensemble` singleton object to call [Ensemble methods](https://github.com/ensemble-engine/ensemble/wiki/Ensemble-API).
 
 See the [wiki homepage](https://github.com/ensemble-engine/ensemble/wiki/) for tutorial links and other resources for getting started.
 

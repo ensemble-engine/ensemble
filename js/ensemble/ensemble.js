@@ -1,9 +1,8 @@
 /*global define */
 /**
- * This class is the top level interface into ensemble. By including ensemble.js in your project, and adding the event listener:  <BR><BR>
- document.addEventListener('ensembleLoaded', function (e){} <BR><BR>
-  you should be given access to an ensemble singleton object, which you can then use to call each of these methods. <BR><BR>
-  Inside of this event listener you will want to call ensemble.init(), ensemble.loadFile() for your schema, trigger rules, volition rules, characters, history, and actions.
+ * This class is the top level interface into ensemble. By including ensemble.js in your project,<BR><BR>
+  you should be given access to an ensemble singleton object, which you can then use to call each of these methods.<BR><BR>
+  Then you'll probably want to call ensemble.init(), ensemble.loadFile() for your schema, trigger rules, volition rules, characters, history, and actions.
  *
  *
  * @class ensemble
@@ -1054,22 +1053,11 @@ function(util, _, ruleLibrary, actionLibrary, socialRecord, validate) {
 	/* test-code */
 	/* end-test-code */
 
-	//*********
-	//Lines from interface removed due to them seeming to be obsolete?
-	// AH, the
-
-	//**********
-
 //EXPERIMENT: don't think we want these to be public.
 	//addTriggerRules			: addTriggerRules,
 	//addVolitionRules		: addVolitionRules,
 
 	// Export interface to a global variable, "ensemble".
 	ensemble = ensembleInterface;
-	var event = document.createEvent('Event');
-	event.initEvent('ensembleLoaded', true, true);
-	document.dispatchEvent(event);
-
 	return ensembleInterface;
-
 });
