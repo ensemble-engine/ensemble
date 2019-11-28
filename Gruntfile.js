@@ -46,7 +46,7 @@ module.exports = function(grunt) {
           platforms: ['osx64'], // Can't seem to build a non-empty Windows version with Grunt
           buildDir: './build', // Where the build version of my node-webkit app is saved
        },
-       src: ['./nwk-package.json', './bin/ensemble.js', './ensembletool/**/*', './jslib/**/*', './css/**/*'] // Your node-webkit app
+       src: ['./nwk-package.json', './bin/ensemble.js', './ensembletool/**/*', './jslib/**/*'] // Your node-webkit app
       },
       // techRelease : {
       //   options: {
