@@ -1,9 +1,0 @@
-{
-  "name": "Ensemble Tool",
-  "version": "0.1.0",
-  "main": "ensembletool/ensembleconsole.html",
-  "window": {
-  	"width": 960,
-  	"height": 680
-  }
-}

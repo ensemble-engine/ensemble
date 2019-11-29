@@ -1,18 +1,29 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Ensemble Tool</title>
+  <meta charset="utf-8">
+  <title>Ensemble Tool</title>
   <!-- main Ensemble library -->
-  <script src="../bin/ensemble.js"></script>
+  <script src="jslib/ensemble.js"></script>
   <!-- other external libraries -->
-  <script src="../jslib/jquery-2.1.0.js"></script>
-  <script src="../jslib/jquery-ui.min.js"></script>
-  <script src="../jslib/underscore-min.js"></script>
-	<link rel="stylesheet" href="csslib/jquery-ui.structure.min.css">
-	<link rel="stylesheet" href="csslib/jquery-ui.theme.min.css">
-	<link rel="stylesheet" href="ensembleconsole.css">
-
+  <script>
+  // pretend we're not running in Electron so that JQuery doesn't get confused
+  // (as per https://electronjs.org/docs/faq#i-can-not-use-jqueryrequirejsmeteorangularjs-in-electron)
+  window.nodeRequire = require;
+  delete window.require;
+  delete window.exports;
+  delete window.module;
+  </script>
+  <script src="jslib/jquery-2.1.0.js"></script>
+  <script src="jslib/jquery-ui.min.js"></script>
+  <script src="jslib/underscore-min.js"></script>
+  <script>
+  // restore window.require (after deleting it temporarily above)
+  window.require = window.nodeRequire;
+  </script>
+  <link rel="stylesheet" href="csslib/jquery-ui.structure.min.css">
+  <link rel="stylesheet" href="csslib/jquery-ui.theme.min.css">
+  <link rel="stylesheet" href="ensembleconsole.css">
 </head>
 <body>
 

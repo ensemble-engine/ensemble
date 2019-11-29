@@ -18,6 +18,8 @@ A few other modules help the tool function:
 
 (function(){
 
+	const {ipcRenderer} = require("electron"); // so that we can send events to the main process
+
 	var autoLoad = false;	// Load sample schema package on launch.
 
 	// These module variables will hold the active schemata info.
@@ -114,14 +116,14 @@ A few other modules help the tool function:
 
 	// Handle loading a new schema package. 
 	var selectAndLoadPackage = function() {
-		var chooser = messages.getFileDialog();
+		// send the main process an openFolder event;
+		// it'll pop a file open dialog and send us back the path to the user-selected folder
+		ipcRenderer.send("openFolder");
 
-		// The "change" event is triggered from the querySelector when the user has selected a file object (in this case, restricted to a folder by the "nwdirectory" flag in the #fileDialog item in ensembleconsole.html) and confirmed their selection by clicking OK.
-		chooser.addEventListener("change", function() {
-			loadPackage(this.value);
+		// once the user has selected a folder and confirmed their selection by clicking OK...
+		ipcRenderer.on("folderData", function(event, paths) {
+			loadPackage(paths[0]); // we're sent the user-selected paths as an array, but there should only ever be one
 		}, false);
-		chooser.click();  
-
 	};
 
 	var loadPackage = function(folder) {
