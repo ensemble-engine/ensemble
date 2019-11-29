@@ -135,11 +135,6 @@ module.exports = function(grunt) {
   grunt.registerTask("copyCssFile", ["copy:dist"]);
 
   // Make a folder for 'release'
-  grunt.registerTask("techRelease", [
-    "document", "deploy", "build", "shell:buildAuthoringTool", "nwjs:techRelease", "copy:techRelease"
-  ]);
-
-  //There is some problem going on where the console seems to not WORK when copied :( -- maybe build a new version from the webkit version?)
-  //grunt.registerTask("techRelease", ["copy:techRelease"]);
+  grunt.registerTask("techRelease", ["document", "deploy", "build", "copy:techRelease"]);
   */
 };

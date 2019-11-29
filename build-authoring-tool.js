@@ -7,7 +7,7 @@ async function bundleElectronApp(options) {
 
 bundleElectronApp({
   // options as specified in https://github.com/electron/electron-packager/blob/master/docs/api.md
-  arch: "all",
+  arch: "ia32,x64",
   dir: "ensembletool",
   platform: "darwin,win32,linux",
   out: "build",
