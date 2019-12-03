@@ -37,20 +37,20 @@ externalApplicationTest = (function() {
 		var loadResult = ensemble.init();
 		console.log(loadResult);
 
-		var rawSchema = ensemble.loadFile("../../externalApplicationFiles/schema.json");
+		var rawSchema = ensemble.loadFile("externalApplicationFiles/schema.json");
 		var schema = ensemble.loadSocialStructure(rawSchema);
 
-		var rawCast = ensemble.loadFile("../../externalApplicationFiles/cast.json");
+		var rawCast = ensemble.loadFile("externalApplicationFiles/cast.json");
 		var cast = ensemble.addCharacters(rawCast);
 
-		var rawRules = ensemble.loadFile("../../externalApplicationFiles/testTrigger.json");
+		var rawRules = ensemble.loadFile("externalApplicationFiles/testTrigger.json");
 		console.log(rawRules);
 		var ids = ensemble.addRules(rawRules);
 		console.log("ids", ids);
-		ids = ensemble.addRules(ensemble.loadFile("../../externalApplicationFiles/samsVolition.json"));
+		ids = ensemble.addRules(ensemble.loadFile("externalApplicationFiles/samsVolition.json"));
 		console.log("ids2", ids);
 
-		var rawActions = ensemble.loadFile("../../externalApplicationFiles/actions.json");
+		var rawActions = ensemble.loadFile("externalApplicationFiles/actions.json");
 		var actions = ensemble.addActions(rawActions);
 
 /*
@@ -103,24 +103,24 @@ externalApplicationTest = (function() {
 		var loadResult = ensemble.init();
 		//console.log(loadResult);
 
-		var rawSchema = ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/schema.json");
+		var rawSchema = ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/schema.json");
 		//var schema = ensemble.loadSocialStructure(rawSchema);
 		var schema = ensemble.loadBaseBlueprints(rawSchema);
 
-		var rawCast = ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/cast.json");
+		var rawCast = ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/cast.json");
 		var cast = ensemble.addCharacters(rawCast);
 
-		var rawRules = ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/triggerRules.json");
+		var rawRules = ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/triggerRules.json");
 		//console.log(rawRules);
 		var ids = ensemble.addRules(rawRules);
 		//console.log("ids", ids);
-		ids = ensemble.addRules(ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/volitionRules.json"));
+		ids = ensemble.addRules(ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/volitionRules.json"));
 		//console.log("ids2", ids);
 
-		var rawActions = ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/actions.json");
+		var rawActions = ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/actions.json");
 		var actions = ensemble.addActions(rawActions);
 
-		var rawHistory = ensemble.loadFile("../../externalApplicationFiles/dataLoversAndRivals/history.json");
+		var rawHistory = ensemble.loadFile("externalApplicationFiles/dataLoversAndRivals/history.json");
 		var history = ensemble.addHistory(rawHistory);
 
 /*
