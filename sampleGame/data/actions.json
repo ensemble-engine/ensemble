@@ -13,8 +13,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["WRITELOVENOTE", "KISS"]
-		},
-		{
+		},{
 			"name" : "RAISESTRENGTH",
 			"intent" : {
 				"category" : "attribute",
@@ -25,8 +24,7 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["WEIGHTLIFT", "PUSHUP"]
-		},
-		{
+		},{
 			"name" : "RAISEINTELLIGENCE",
 			"intent" : {
 				"category" : "attribute",
@@ -37,97 +35,89 @@
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["STUDY"]
-		},
-		{
+		},{
 			"name" : "STUDY",
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["studyMath", "studyAnatomy"]
-		},
-		{
+		},{
 			"name" : "studyMath",
 			"conditions" : [],
 			"displayName" : "Study Math",
-			"influenceRules" : [
-				{
-					"name": "People in this world are inclined to study math.",
-					"conditions": [
-						{
-							"category" : "trait",
-							"type" : "anyone",
-							"first" : "initiator",
-							"value" : true
-						}
-					],
-					"weight" : 10
-				}
-			],
+			"successMessage" : "You acutely studied your maths, and now you're just beaming",
+			"influenceRules" : [{
+				"name": "People in this world are inclined to study math.",
+				"conditions": [{
+					"category" : "trait",
+					"type" : "anyone",
+					"first" : "initiator",
+					"value" : true
+				}],
+				"weight" : 10
+			}],
 			"effects" : [{
 				"category" : "attribute",
 				"type" : "intelligence",
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10		
-			},
-			{
-					"category" : "socialRecordLabelUndirected",
-					"type" : "self-involved",
-					"first" : "initiator",
-					"value" : true
-				}]
-		},
-		{
+			},{
+				"category" : "socialRecordLabelUndirected",
+				"type" : "self-involved",
+				"first" : "initiator",
+				"value" : true
+			}]
+		},{
 			"name" : "studyAnatomy",
 			"conditions" : [],
 			"displayName" : "Study Anatomy",
-			"influenceRules" : [
-				{
-					"name": "Strong people in this world are inclined to study anatomy.",
-					"conditions": [
-						{
-							"category" : "attribute",
-							"type" : "strength",
-							"first" : "initiator",
-							"operator" : ">",
-							"value" : 10
-						}
-					],
-					"weight" : 30
-				}
-			],
+			"successMessage" : "You studied anatomy and somehow got both smarter AND stronger!",
+			"influenceRules" : [{
+				"name": "Strong people in this world are inclined to study anatomy.",
+				"conditions": [{
+					"category" : "attribute",
+					"type" : "strength",
+					"first" : "initiator",
+					"operator" : ">",
+					"value" : 10
+				}],
+				"weight" : 30
+			}],
 			"effects" : [{
 					"category" : "attribute",
 					"type" : "strength",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
-				},
-				{
+				},{
 					"category" : "attribute",
 					"type" : "intelligence",
 					"first" : "initiator",
 					"operator" : "+",
 					"value" : 10
-				},
-				{
+				},{
 					"category" : "socialRecordLabelUndirected",
 					"type" : "self-involved",
 					"first" : "initiator",
 					"value" : true
 				}
 			]
-
-		},
-		{
+		},{
 			"name" : "WEIGHTLIFT",
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["weightLiftSuccess", "weightLiftFail"]
-		},
-		{
+		},{
 			"name" : "weightLiftSuccess",
-			"conditions" : [],
+			"conditions" : [{
+				"category" : "attribute",
+				"type"  : "strength",
+				"first" : "initiator",
+				"value" : 9,
+				"operator" : ">"
+			}],
 			"displayName" : "Weightlift",
+			"successMessage" : "You lifted THE MOST weights and feel energized and confident",
 			"influenceRules" : [],
 			"effects" : [{
 				"category" : "attribute",
@@ -135,17 +125,16 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 5
-			},
-			{
+			},{
 				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
-		},
-		{
+		},{
 			"name" : "weightLiftFail",
 			"displayName" : "Weight Lift <FAIL>",
+			"failMessage" : "Ouch, you were not ready for that much weight",
 			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
@@ -154,24 +143,22 @@
 				"first" : "initiator",
 				"operator" : "-",
 				"value" : 10
-			},
-			{
+			},{
 				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
 			}]
-		},
-		{
+		},{
 			"name" : "PUSHUP",
 			"conditions" : [],
 			"influenceRules" : [],
-			"leadsTo" : ["pushup1"]
-		},
-		{
-			"name" : "pushup1",
+			"leadsTo" : ["pushup"]
+		},{
+			"name" : "pushup",
 			"conditions" : [],
 			"displayName" : "Do Pushups",
+			"successMessage" : "You did a whole lot of pushups! People like people who take care of themselves",
 			"influenceRules" : [],
 			"effects" : [{
 				"category" : "attribute",
@@ -179,50 +166,28 @@
 				"first" : "initiator",
 				"operator" : "+",
 				"value" : 10
-			},
-			{
+			},{
 				"category" : "socialRecordLabelUndirected",
 				"type" : "self-involved",
 				"first" : "initiator",
 				"value" : true
-			}
-			]
-		},
-		{
+			}]
+		},{
 			"name" : "WRITELOVENOTE",
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["writeLoveNoteAccept", "writeLoveNoteReject"]
-		},
-		{
+		},{
 			"name" : "KISS",
 			"conditions" : [],
 			"influenceRules" : [],
 			"leadsTo" : ["kissSuccess", "kissFail"]
-		},
-		{
+		},{
 			"name" : "kissSuccess",
-			"displayName" : "Kiss <SUCCESS>",
-			"conditions" : [{
-				"category" : "feeling",
-				"type"  : "closeness",
-				"first" : "initiator",
-				"second" : "responder",
-				"value" : 40,
-				"operator" : ">"
-				},{
-				"category" : "feeling",
-				"type" : "closeness",
-				"first" : "responder",
-				"second" : "initiator",
-				"operator" : "+",
-				"value" : 10
-			},{
-				"category" : "trait",
-				"type" : "rival",
-				"first" : "evilPerson",
-				"value" : true
-			}],
+			"displayName" : "Kiss <ACCEPT>",
+			"successMessage" : "You kissed! It was very sweet.",
+			"isAccept" : true,
+			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
 				"category" : "feeling",
@@ -230,42 +195,21 @@
 				"first" : "initiator",
 				"second" : "responder",
 				"operator" : "+",
-				"value" : 100
+				"value" : 20
 			},{
 				"category" : "feeling",
 				"type" : "closeness",
 				"first" : "responder",
 				"second" : "initiator",
 				"operator" : "+",
-				"value" : 100
-			},{
-				"category" : "feeling",
-				"type" : "closeness",
-				"first" : "responder",
-				"second" : "evilPerson",
-				"operator" : "=",
-				"value" : 10
-			},{
-				"category" : "feeling",
-				"type" : "closeness",
-				"first" : "initiator",
-				"second" : "evilPerson",
-				"operator" : "=",
-				"value" : 10
+				"value" : 20
 			}]
-		},
-		{
+		},{
 			"name" : "kissFail",
-			"displayName" : "Kiss <FAIL>",
+			"displayName" : "Kiss <REJECT>",
+			"failMessage" : "Oof, your kiss attempt did not go well",
 			"isAccept" : false,
-			"conditions" : [{
-				"category" : "feeling",
-				"type"  : "closeness",
-				"first" : "initiator",
-				"second" : "responder",
-				"value" : -10,
-				"operator" : ">"
-				}],
+			"conditions" : [],
 			"influenceRules" : [],
 			"effects" : [{
 				"category" : "feeling",
@@ -282,10 +226,10 @@
 				"operator" : "-",
 				"value" : 100
 			}]
-		},
-		{
+		},{
 			"name" : "writeLoveNoteAccept",
 			"displayName" : "Write Love Note <ACCEPT>",
+			"successMessage" : "Your love note was warmly received!",
 			"conditions" : [],
 			"influenceRules" : [],
 			"isAccept" : true,
@@ -304,10 +248,10 @@
 				"operator" : "+",
 				"value" : 10
 			}]
-		},
-		{
+		},{
 			"name" : "writeLoveNoteReject",
 			"displayName" : "Write Love Note <REJECT>",
+			"failMessage" : "Your love note was poorly received",
 			"conditions" : [],
 			"influenceRules" : [],
 			"isAccept" : false,

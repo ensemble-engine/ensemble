@@ -1,12 +1,17 @@
+// Lovers and Rivals 
+// A small example Ensemble game originally by Ben Samuel, c.2015
+
+// Numerical values for important schema types between characters
+// Updated by updateLocalStateInformation()
 var stateInformation = {
- "loveToHeroCloseness" : "NA",
- "loveToHeroAttraction" : "NA",
- "heroToLoveCloseness" : "NA",
- "heroToLoveAttraction" : "NA",
- "loveToRivalCloseness" : "NA",
- "loveToRivalAttraction" :"NA",
- "heroStrength" : "NA",
- "heroIntelligence" : "NA"
+	"loveToHeroCloseness" : "NA",
+	"loveToHeroAttraction" : "NA",
+	"heroToLoveCloseness" : "NA",
+	"heroToLoveAttraction" : "NA",
+	"loveToRivalCloseness" : "NA",
+	"loveToRivalAttraction" :"NA",
+	"heroStrength" : "NA",
+	"heroIntelligence" : "NA"
 };
 
 var gameVariables = {
@@ -18,7 +23,6 @@ var gameVariables = {
 };
 
 var move = function(){
-	
 	var elem = document.getElementById("hero");
 	var left = 0;
 
@@ -29,55 +33,51 @@ var move = function(){
 			clearInterval(id);
 		}
 	}
-
 	var id = setInterval(frame, 10); // draw every 10ms
 };
 
+// Move little character icons according to current Ensemble state information
 var moveAllCharacters = function() {
-	console.log("inside of moveAllCharacters");
-
-	//Takes a little bit of computation!
+	// Takes a little bit of computation!
 	var loveDestination = (stateInformation.widthOfField/2 - stateInformation.loveToHeroCloseness*1.5 + stateInformation.loveToRivalCloseness*2.5);
 	moveByCharacterName("hero", stateInformation.heroToLoveCloseness);
 	moveByCharacterName("love", loveDestination);
 };
 
 var moveByCharacterName = function(name, destination){
-	console.log("moveByCharacterName name: " , name);
-	console.log("moveByCharacterName destination: " , destination);
+	//console.log("moveByCharacterName name: " , name);
+	//console.log("moveByCharacterName destination: " , destination);
 	var elem = document.getElementById(name);
 	var startPos = parseInt(elem.style.left, 10); // start off with their current left position.
 	var currentPos = startPos;
-	console.log("startPos " , startPos);
-	console.log("elem " , elem);
+	//console.log("startPos " , startPos);
+	//console.log("elem " , elem);
 
 	function frame() {
 		if(startPos > destination){ // we are moving backwards.
-			console.log("decrementing...");
+			//console.log("decrementing...");
 			currentPos -= 1;
 		}
 		else if (startPos < destination){ // we are moving forwards.
 			currentPos += 1;
-			console.log("incrementing...");
+			//console.log("incrementing...");
 		}
 		elem.style.left = currentPos + 'px';
 		if (currentPos == destination) {
 			clearInterval(id);
 		}
 	}
-
 	var id = setInterval(frame, 10); // draw every 10ms
-
 };
 
 var positionCharacter = function(id, pos){
-	console.log("I got here, id is " + id + " and pos is " + pos);
+	//console.log("I got here, id is " + id + " and pos is " + pos);
 	var elem = document.getElementById(id);
 	elem.style.left = pos + "px";
 };
 
 var setUpLoversAndRivalsInitialState = function(){
-	//update our local copies of these variables, and display them.
+	// Update our local copies of these variables, and display them.
 	updateLocalStateInformation();
 	displayStateInformation();
 };
@@ -87,46 +87,45 @@ var setupCharacterPositions = function(widthOfField){
 	var love = document.getElementById("love");
 	var rival = document.getElementById("rival");
 
-	//Get love to hero closeness.
+	// Get love to hero closeness
 	var loveToHeroCloseness = stateInformation.loveToHeroCloseness;
 
-	//Get love to rival closeness
+	// Get love to rival closeness
 	var loveToRivalCloseness = stateInformation.loveToRivalCloseness;
 
-	//Get hero to Love closeness
+	// Get hero to love closeness
 	var heroToLoveCloseness = stateInformation.heroToLoveCloseness;
 
-
-	//store the width of field information
+	// Store the width of field information
 	stateInformation.widthOfField = widthOfField;
 
 	//console.log("Hero to love: " + heroToLoveCloseness + " love to hero: " + loveToHeroCloseness + " love to rival: " + loveToRivalCloseness);
 
-	//Actually reposition the characters based on their closeness values.
-	//The love's position is an amalgamation of things.
+	// Actually reposition the characters based on their closeness values.
+	// The love's position is an amalgamation of things.
 	var lovePosition = (widthOfField/2) + loveToRivalCloseness - loveToHeroCloseness; // starts in middle, pulled in both directions.
 	
 	hero.style.left = heroToLoveCloseness + 'px';
 	love.style.left = lovePosition + "px";
-	rival.style.left = widthOfField + "px"; // rival never moves.
+	rival.style.left = widthOfField + "px"; // rival never moves
 };
 
-//Fills in all of the actionList divs with buttons corresponding to the actions the player can take
-//by calling individual instances of populateActionList
+// Fill in all of the actionList divs with buttons corresponding to the actions 
+// the player can take by calling individual instances of populateActionList
 var populateActionLists = function(storedVolitions, cast){
-	//populate the action list of hero to love:
+	// Populate the action list of hero to love:
 	populateActionList("hero", "love", storedVolitions, cast);
 	populateActionList("hero", "rival", storedVolitions, cast);
 	populateActionList("hero", "hero", storedVolitions, cast);
 };
 
-//Fills the actionList div with buttons corresponding to the actions the player can take.
+// Fill the actionList div with buttons corresponding to the actions the player can take.
 var populateActionList = function(initiator, responder, storedVolitions, cast){
 	var char1 = initiator;
 	var char2 = responder;
 	
-	//Num intents to look at: 5
-	//Num actions per intent: 2 (for now!)
+	// Num intents to look at: 5
+	// Num actions per intent: 2 (for now!)
 	//console.log("storedVolitions before getting possible actions... " , storedVolitions.dump());
 	var possibleActions = ensemble.getActions(char1, char2, storedVolitions, cast, gameVariables.numIntents, gameVariables.numActionsPerIntent);
 	//console.log("Possible Actions From " + char1 + " to " + char2 + ": ", possibleActions);
@@ -134,13 +133,13 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 	var divName = "actionList_" + char1 + "_" + char2;
 	var actionList = document.getElementById(divName);
 
-	//Let's make a button for each action the hero wants to take!
+	// Let's make a button for each action the hero wants to take!
 	for(var i = 0; i < possibleActions.length; i += 1){
-		//Make a new button
+		// Make a new button
 		var action = possibleActions[i];
 
-		//If the character doesn't have a strong volition to do this action,
-		//don't include it in the action list.
+		// If the character doesn't have a strong volition to do this action,
+		// don't include it in the action list.
 		if(action.weight < 0){
 			continue;
 		}
@@ -153,61 +152,65 @@ var populateActionList = function(initiator, responder, storedVolitions, cast){
 		buttonnode.onclick = actionButtonClicked;
 		//buttonnode.attachEvent('onclick', actionButtonClicked2);
 
-
 		actionList.appendChild(buttonnode);
 	}
 
-	//Write a little message if there were no possible actions.
+	// Write a little message if there were no possible actions.
 	if(actionList.innerHTML === ""){
 		actionList.innerHTML = "<i>No Actions Available</i>";
 	}
-
 };
 
 var actionButtonClicked = function(){
-	//Clean away all of the other actions -- they made their choice!
+	// Clean away all of the other actions -- they made their choice!
 	clearActionList();
 
-	//Play some SICK ANIMATION (like a text bubble flashing!)
-	//playInstantiationAnimation();
+	// TODO Play some SICK ANIMATION (like a text bubble flashing!)
 
-	//CHANGE THE SOCIAL STATE -- social physics baby!!!
+	// CHANGE THE SOCIAL STATE -- social physics baby!!!
 	var effects = this.actionToPerform.effects; // should be an array of effects.
 	for(var i = 0; i < effects.length; i += 1){
 		ensemble.set(effects[i]);
 	}
 
-	//RUN SOME TRIGGER RULES based on the new state!
+	// RUN SOME TRIGGER RULES based on the new state!
 	ensemble.runTriggerRules(this.cast);
 
-	//Print out if the action was 'accepted' or rejected!
+	// Print out action success or failure messages if they're defined
 	var statusArea = document.getElementById("statusMessage");
-	var acceptMessage = this.actionToPerform.displayName + " successful!";
-	if(this.actionToPerform.isAccept !== undefined && this.actionToPerform.isAccept === false){
-		acceptMessage = this.actionToPerform.displayName + " failed!";
-	}
-	statusArea.innerHTML = acceptMessage;
+	var actionMessage = ""; 
 
-	//Re-draw the people (maybe even by having them MOVE to their new positions...)
-	//Also re-draw any debug/state informaton we want.
+	if (this.actionToPerform.successMessage !== undefined) {
+		actionMessage = this.actionToPerform.successMessage;
+	} else if (this.actionToPerform.failMessage !== undefined) {
+		actionMessage = this.actionToPerform.failMessage;
+	} else if (this.actionToPerform.failMessage !== undefined) {
+		actionMessage = this.actionToPerform.displayName; // fallback
+	}
+
+	statusArea.innerHTML = actionMessage;
+
+	// Re-draw the people (maybe even by having them MOVE to their new positions...)
+	// Also re-draw any debug/state informaton we want.
 	updateLocalStateInformation();
 	displayStateInformation();
 	moveAllCharacters();
 
-	//set up next turn.
+	// Set up next turn
 	var event = document.createEvent('Event');
 	event.initEvent('nextTurn', true, true);
 	document.dispatchEvent(event);
 };
 
 var clearActionList = function(){
-	//We're first going to make the entire action list disappear, so as not to distract the player from
-	//the beautiful instantiations.
+	// We're first going to make the entire action list disappear, 
+	// so as not to distract the player from the beautiful instantiations
 	var actionArea = document.getElementById("actionArea");
 	actionArea.style.visibility = "hidden";
 
-	//Now we're actually going to remove the actions from the actionLists, because with the new socialState,
-	//characters will likely want to take new actions towards each other.
+	// Now we're actually going to remove the actions from the actionLists, 
+	// because with the new socialState, characters will likely want to 
+	// take new actions towards each other
 	var heroToLoveActionList = document.getElementById("actionList_hero_love");
 	heroToLoveActionList.innerHTML = "";
 	var heroToRivalActionList = document.getElementById("actionList_hero_rival");
@@ -216,21 +219,21 @@ var clearActionList = function(){
 	heroToHeroActionList.innerHTML = "";
 };
 
-//Checks to see if the game is over!
+// Check to see if the game is over!
 var checkForEndConditions = function(){
 	if(stateInformation.loveToRivalCloseness >= 90){
-		//uh oh, we lose!
+		// uh oh, we lose!
 		gameVariables.gameOver = true;
-		gameVariables.endingText = "Game Over! Your Love is in the arms of your Rival!";
+		gameVariables.endingText = "Game over! Your love is in the arms of your rival!";
 	}
 	if(stateInformation.loveToHeroCloseness >= 90 && stateInformation.heroToLoveCloseness >= 90){
 		gameVariables.gameOver = true;
-		gameVariables.endingText = "Game Over! Your Love is sufficiently interested in you for you to feel good about yourself!";
+		gameVariables.endingText = "Love is not a game, but you win! Your love is somewhat interested in you!";
 	}
 };
 
-//There are certain things that we might need to 'refresh' again (the visibility of the action list,
-//the state of dialogue bubbles, etc.)
+// There are certain things that we might need to 'refresh' again 
+// (the visibility of the action list, the state of dialogue bubbles, etc.)
 var cleanUpUIForNewTurn = function(){
 	var actionArea = document.getElementById("actionArea");
 	actionArea.style.visibility = "visible";
@@ -251,7 +254,7 @@ var displayStateInformation = function(){
 };
 
 var updateLocalStateInformation = function(){
-	//First, let's grab the data we'll want to display.
+	//First, let's grab the data we'll want to display
 	var loveToHeroClosenessPred = {
 		"category" : "feeling",
 		"type" : "closeness",
@@ -299,136 +302,121 @@ var updateLocalStateInformation = function(){
 		"first" : "hero"
 	};
 
-	//Get love to hero closeness.
+	// Get love to hero closeness
 	var results = ensemble.get(loveToHeroClosenessPred);
 	stateInformation.loveToHeroCloseness = results[0].value;
 
-	//Get love to rival closeness
+	// Get love to rival closeness
 	results = ensemble.get(loveToRivalClosenessPred);
 	stateInformation.loveToRivalCloseness= results[0].value;
 
-	//Get hero to Love closeness
+	// Get hero to Love closeness
 	results = ensemble.get(heroToLoveClosenessPred);
 	stateInformation.heroToLoveCloseness = results[0].value;
 
-	//get love to hero attraction
+	// Get love to hero attraction
 	results = ensemble.get(loveToHeroAttractionPred);
 	stateInformation.loveToHeroAttraction = results[0].value;
 
-	//get love to rival attraction
+	// Get love to rival attraction
 	results = ensemble.get(loveToRivalAttractionPred);
 	stateInformation.loveToRivalAttraction = results[0].value;
 
-	//get hero to love attraction
+	// Get hero to love attraction
 	results = ensemble.get(heroToLoveattractionPred);
 	stateInformation.heroToLoveAttraction = results[0].value;
 
-	//get hero intelligence.
+	// Get hero intelligence
 	results = ensemble.get(heroIntelligencePred);
 	stateInformation.heroIntelligence = results[0].value;
 
-	//get hero strength.
+	// Get hero strength
 	results = ensemble.get(heroStrengthPred);
 	stateInformation.heroStrength = results[0].value;
 };
 
-var playInstantiationAnimation = function() {
-	console.log("playing our sick sanimation.");
-	var chatBubble = document.getElementById("chatBubble");
-	var animationLength = 160;
-	var animationFrame = 0;
-	var animationFrames = [];
-	animationFrames[0] = drawChatBubble();
-	animationFrames[1] = drawChatBubbleWritingFrame2();
-	animationFrames[2] = drawChatBubbleWritingFrame3();
-	animationFrames[3] = drawChatBubbleWritingFrame4();
+// Console log all actions available between all cast members
+function logActions (volitions,cast,numIntents,numActionsPerIntent) {
+	cast.forEach( (initiator) => {
+		console.log (` Available actions from ${initiator}:`);
+		cast.forEach( (responder) => {
+			let actions = ensemble.getActions(initiator,responder,volitions,cast,numIntents,numActionsPerIntent);
+			let actionNames = actions.reduce( (total,action) => {
+				total.push(action.name);
+				return total;
+			}, []);
+			console.log(`  to ${responder}:`, actionNames);
+		});
+	});
+}
 
-	function frame() {
-		//console.log("sweet animation frame incoming...");
-		animationLength--; // update parameters
-		var evenOrOdd = animationLength % 40;
-		if(evenOrOdd === 0){
-			animationFrame += 1;
-			if(animationFrame > 3) animationFrame = 0;
-		}
-		if(evenOrOdd <= 5){
-			//console.log("visible false NOQW");
-			chatBubble.style.visibility = "hidden";
-			chatBubble.innerHTML = animationFrames[animationFrame];
-		}
-		else{
-			chatBubble.style.visibility = "visible";
-		}
-		if (animationLength <= 0) {
+// Initialize Ensemble
 
-			clearInterval(id);
-			chatBubble.style.visibility = "visible";
+// Load our schema, cast, triggerRules, volitionRules, actions, and history
+var rawSchema = ensemble.loadFile("data/schema.json");
+var schema = ensemble.loadSocialStructure(rawSchema);
 
-			//Dispatch an event so that we know that the instantiation animation has completed.
-			//And start up the next turn!
-			var event = document.createEvent('Event');
-			event.initEvent('nextTurn', true, true);
-			document.dispatchEvent(event);
-		}
+var rawCast = ensemble.loadFile("data/cast.json");
+var cast = ensemble.addCharacters(rawCast);
+
+var rawTriggerRules = ensemble.loadFile("data/triggerRules.json");
+var triggerRules = ensemble.addRules(rawTriggerRules);
+
+var rawVolitionRules = ensemble.loadFile("data/volitionRules.json");
+var volitionRules = ensemble.addRules(rawVolitionRules);
+
+var rawActions = ensemble.loadFile("data/actions.json");
+var actions = ensemble.addActions(rawActions);
+
+var rawHistory = ensemble.loadFile("data/history.json");
+var history = ensemble.addHistory(rawHistory);
+
+// Set up our initial state
+setUpLoversAndRivalsInitialState();
+setupCharacterPositions(500);
+
+var initialVolitions = ensemble.calculateVolition(cast);
+
+// Give the player action buttons!
+populateActionLists(initialVolitions, cast);
+
+console.log("--- Turn:", gameVariables.turnNumber, "---");
+//ensemble.dumpSocialRecord();
+console.log("Calculated volitions:", initialVolitions.dump());
+logActions(initialVolitions, cast, 2, 100);
+
+// MAIN GAME LOOP
+// 1.) Calculate Volitions
+// 2.) Populate Action Area
+// 3.) Handle action selection
+
+var nextTurn = function(){
+	// We have achieved A NEW TURN!
+	gameVariables.turnNumber += 1;
+	console.log("--- Turn:", gameVariables.turnNumber, "---");
+	checkForEndConditions();
+	if(gameVariables.gameOver === true){
+		var endMessageArea = document.getElementById("statusMessage");
+		endMessageArea.innerHTML = gameVariables.endingText;
 	}
-
-	var id = setInterval(frame, 10); // draw every 10ms
-
+	else{
+		ensemble.setupNextTimeStep();
+		//ensemble.dumpSocialRecord();
+		var volitions = ensemble.calculateVolition(cast);
+		console.log("Calculated volitions:", volitions.dump());
+		logActions (volitions, cast, 2, 100);
+		populateActionLists(volitions, cast);
+		cleanUpUIForNewTurn();
+	}
 };
 
-var drawChatBubble = function(){
-	var returnString = "";
-	var chatBubble1 = " /--------------\\ ";
-	var chatBubble2 = "|                |";
-	var chatBubble3 = "|                |";
-	var chatBubble4 = "|                |";
-	var chatBubble5 = "|                |";
-	var chatBubble6 = " \\______________/ ";
-	var chatBubble7 = "       \\/         ";
+// Listen for custom event dispatched by actionButtonClicked()
+document.addEventListener("nextTurn", nextTurn);
 
-	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
-	return returnString;
-};
-
-var drawChatBubbleWritingFrame2 = function(){
-	var returnString = "";
-	var chatBubble1 = " /--------------\\ ";
-	var chatBubble2 = "|                |";
-	var chatBubble3 = "|    ~~~~~~~     |";
-	var chatBubble4 = "|                |";
-	var chatBubble5 = "|                |";
-	var chatBubble6 = " \\______________/ ";
-	var chatBubble7 = "       \\/         ";
-
-	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
-	return returnString;
-};
-
-var drawChatBubbleWritingFrame3 = function(){
-	var returnString = "";
-	var chatBubble1 = " /--------------\\ ";
-	var chatBubble2 = "|                |";
-	var chatBubble3 = "|    ~~~~~~~     |";
-	var chatBubble4 = "|    ~~~~~~~     |";
-	var chatBubble5 = "|                |";
-	var chatBubble6 = " \\______________/ ";
-	var chatBubble7 = "       \\/         ";
-
-	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
-	return returnString;
-};
-
-var drawChatBubbleWritingFrame4 = function(){
-	var returnString = "";
-	var chatBubble1 = " /--------------\\ ";
-	var chatBubble2 = "|                |";
-	var chatBubble3 = "|    ~~~~~~~     |";
-	var chatBubble4 = "|    ~~~~~~~     |";
-	var chatBubble5 = "|    ~~~~~~~     |";
-	var chatBubble6 = " \\______________/ ";
-	var chatBubble7 = "       \\/         ";
-
-	returnString = "<pre>" + chatBubble1 + "\n" + chatBubble2 + "\n" + chatBubble3 + "\n" + chatBubble4 + "\n" + chatBubble5 + "\n" + chatBubble6 + "\n" + chatBubble7 + "</pre>";
-	return returnString;
-};
+/*
+var vol = storedVolitions.getFirst("hero", "love");
+console.log("here is the first volition from hero to love: " , vol);
+vol = storedVolitions.getNext(char1, char2);
+console.log("Here is the second volition from hero to love: ", vol);
+*/
 

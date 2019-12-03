@@ -1,16 +1,24 @@
 body {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
 	background-color: black;
 	color: white;
+	margin: auto;
+	margin-bottom: 3em;
+	text-align: center;
+	width: fit-content;
+    font-family: monospace;
+	font-size: 16px;
 }
-
 .field {
 	position: relative;
 	overflow: hidden;
 	width: 530px;
 	height: 30px;
-	border: 3px solid #FFF;
+	border: 1px dashed #FFF;
+	margin: auto;
 }
-
 .character {
 	position: absolute;
 	background-color: black;
@@ -22,16 +30,64 @@ body {
 	font-size: 10px;
 	white-space: nowrap;
 }
-
-#titleDiv{
-	float : left;
+#titleDiv {
+	padding: 10px;
 }
-
-#statusDiv{
-	margin-left : 75px;
-	clear : both;
+#titleDiv>h1 {
+	font-size: 2.8em;
+    line-height: 1;
+    margin-bottom: 0px;
 }
-
-#actionList_hero_rival{
-	visibility : hidden;
+#titleDiv>p {
+	padding-top: 0px;
+    margin-top: 5px;
+	font-style: italic;
+	font-family: serif;
+	letter-spacing: 3px;
+}
+#statusDiv {
+	clear: both;
+}
+#actionArea {
+	padding: 35px;
+}
+#actionArea>p {
+	margin: 5px;
+}
+.actionList>input[type="button"] {
+	background-color: white;
+	border-radius: 3px;
+	margin: 2px;
+}
+#stateArea {
+	border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    width: fit-content;
+    margin: auto;
+    padding: 10px;
+}
+#stateArea>h1 {
+	margin-bottom: 0px;
+    width: fit-content;
+    margin: auto;
+    margin-top: 10px;
+    font-size: 1.7em;
+}
+.state {
+	display: inline-block;
+	vertical-align: top;
+	padding: 10px;
+    text-align: left;
+}
+.state>h2 {
+	margin: 5px 0px;
+	font-size: 1.2em;
+    font-family: serif;
+    font-style: italic;
+    font-weight: 100;
+}
+#attractionStateDisplay,
+#actionList_hero_rival,
+#actionArea>h1 {
+	display: none;
 }
