@@ -1058,6 +1058,4 @@ var ensembleInterface = {
 //addTriggerRules			: addTriggerRules,
 //addVolitionRules		: addVolitionRules,
 
-// Export interface to a global variable, "ensemble".
-ensemble = ensembleInterface;
 return ensembleInterface;

@@ -18,7 +18,10 @@ A few other modules help the tool function:
 
 (function(){
 
-	const {ipcRenderer} = require("electron"); // so that we can send events to the main process
+	let ipcRenderer;
+	if (window.require) {
+		ipcRenderer = require("electron").ipcRenderer; // so that we can send events to the main process
+	}
 
 	var autoLoad = false;	// Load sample schema package on launch.
 

@@ -7,16 +7,19 @@
   <script src="jslib/ensemble.js"></script>
   <!-- other external libraries -->
   <script>
-  // pretend we're not running in Electron so that JQuery doesn't get confused
-  // (as per https://electronjs.org/docs/faq#i-can-not-use-jqueryrequirejsmeteorangularjs-in-electron)
-  window.nodeRequire = require;
-  delete window.require;
-  delete window.exports;
-  delete window.module;
+  if (window.require) {
+    // pretend we're not running in Electron so that JQuery doesn't get confused
+    // (as per https://electronjs.org/docs/faq#i-can-not-use-jqueryrequirejsmeteorangularjs-in-electron)
+    window.nodeRequire = require;
+    delete window.require;
+    delete window.exports;
+    delete window.module;
+  }
   </script>
   <script src="jslib/jquery-2.1.0.js"></script>
   <script src="jslib/jquery-ui.min.js"></script>
   <script src="jslib/underscore-min.js"></script>
+  <script src="jslib/util.js"></script>
   <script>
   // restore window.require (after deleting it temporarily above)
   window.require = window.nodeRequire;

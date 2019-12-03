@@ -1,6 +1,6 @@
 {
   "name": "standalone-ensemble",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "devDependencies": {
     "electron": "^7.1.2",
     "electron-packager": "^14.1.1",
