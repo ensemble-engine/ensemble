@@ -34,6 +34,12 @@ module.exports = function(grunt) {
         }
     },
     copy: {
+      builtEnsemble: {
+        files: [
+          {src: "bin/ensemble.js", dest: "ensembletool/jslib/ensemble.js"},
+          {src: "bin/ensemble.js", dest: "sampleGame/ensemble.js"}
+        ]
+      },
       dist : {
         files: [{
           cwd: '.',  // set working folder / root to copy
@@ -107,28 +113,21 @@ module.exports = function(grunt) {
     }
   });
 
-  // Load the plugin that provides the "uglify" task.
+  // Load plugins
+  grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.loadNpmTasks("grunt-jsdoc");
+  grunt.loadNpmTasks("grunt-shell");
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  //Load the plugin that provides the 'jsdoc' task
-  grunt.loadNpmTasks('grunt-jsdoc');
-
-  //Load the plugin that provides the 'shell' task
-  grunt.loadNpmTasks('grunt-shell');
-
-  // Load the plugin to copy files
-  grunt.loadNpmTasks('grunt-contrib-copy');
-
   // Default task(s).
-  grunt.registerTask('default', ['document']);
+  grunt.registerTask("default", ["deploy"]);
 
-  // TODO after building, also copy new built ensemble.js into place for consumers
+  // build ensemble.js and copy newly built file into place for consumers
   // (i.e. ensembletool and sampleGame)
-  grunt.registerTask("deploy", ["shell:buildLibrary"]);
+  grunt.registerTask("deploy", ["shell:buildLibrary", "copy:builtEnsemble"]);
 
   grunt.registerTask("document", ["jsdoc", "copy:dist"]);
 
-  // Clean any generated directories before rebuilding
   grunt.registerTask("build", ["deploy", "shell:buildAuthoringTool"]);
 
   /*
