@@ -1,4 +1,4 @@
-// *** Ensemble 1.1.1 ***
+// *** Ensemble v1.1.1 ***
 ensemble = (function(){
 // MODULE underscore
 //     Underscore.js 1.6.0

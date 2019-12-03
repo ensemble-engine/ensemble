@@ -1,12 +1,10 @@
 // This script builds the bin/ensemble.js standalone Ensemble library file.
-// TODO: Based on CLI arguments, switch whether or not the internal Ensemble JS modules
-// are exposed to the global scope. (In testing mode they should be, in release they shouldn't.)
 
 const fs = require("fs");
 
 const mainBuildPath = "bin/ensemble.js";
 const testBuildPath = "bin/ensemble-test.js";
-const version = "1.1.1";
+const version = process.argv[2];
 
 const modules = [
   {name: "underscore",    path: "jslib/underscore-min.js", wrapper: "none"},
@@ -21,7 +19,7 @@ const modules = [
 
 for (let buildPath of [mainBuildPath, testBuildPath]) {
   console.log(`Building ${buildPath}...`);
-  fs.writeFileSync(buildPath, `// *** Ensemble ${version} ***\nensemble = (function(){\n`);
+  fs.writeFileSync(buildPath, `// *** Ensemble v${version} ***\nensemble = (function(){\n`);
   for (let mod of modules) {
     console.log("  *", mod.name, mod.path);
     fs.appendFile(buildPath, `// MODULE ${mod.name}\n`, () => {});
