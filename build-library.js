@@ -7,14 +7,14 @@ const testBuildPath = "bin/ensemble-test.js";
 const version = process.argv[2];
 
 const modules = [
-  {name: "underscore",    path: "jslib/underscore-min.js", wrapper: "none"},
-  {name: "util",          path: "jslib/util.js"},
-  {name: "socialRecord",  path: "js/ensemble/socialRecord.js"},
-  {name: "ruleLibrary",   path: "js/ensemble/RuleLibrary.js"},
-  {name: "actionLibrary", path: "js/ensemble/ActionLibrary.js"},
-  {name: "volition",      path: "js/ensemble/Volition.js"},
-  {name: "validate",      path: "js/ensemble/Validate.js"},
-  {name: "ensemble",      path: "js/ensemble/ensemble.js"}
+  {name: "underscore",    path: "ensemble/jslib/underscore-min.js", wrapper: "none"},
+  {name: "util",          path: "ensemble/jslib/util.js"},
+  {name: "socialRecord",  path: "ensemble/socialRecord.js"},
+  {name: "ruleLibrary",   path: "ensemble/RuleLibrary.js"},
+  {name: "actionLibrary", path: "ensemble/ActionLibrary.js"},
+  {name: "volition",      path: "ensemble/Volition.js"},
+  {name: "validate",      path: "ensemble/Validate.js"},
+  {name: "ensemble",      path: "ensemble/ensemble.js"}
 ];
 
 for (let buildPath of [mainBuildPath, testBuildPath]) {

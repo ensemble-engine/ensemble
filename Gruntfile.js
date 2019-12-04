@@ -10,7 +10,7 @@ module.exports = function(grunt) {
     },
     jsdoc: {
       dist: {
-        src: "js/ensemble/*.js",
+        src: "ensemble/*.js",
         options: {
           destination: "doc",
           configure: "jsdoc-conf.json",
