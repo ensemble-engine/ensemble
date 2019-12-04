@@ -1,9 +1,9 @@
-// This script builds the bin/ensemble.js standalone Ensemble library file.
+// This script builds the build/ensemble.js standalone Ensemble library file.
 
 const fs = require("fs");
 
-const mainBuildPath = "bin/ensemble.js";
-const testBuildPath = "bin/ensemble-test.js";
+const mainBuildPath = "build/ensemble.js";
+const testBuildPath = "build/ensemble-test.js";
 const version = process.argv[2];
 
 const modules = [

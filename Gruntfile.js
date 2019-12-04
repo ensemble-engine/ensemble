@@ -21,13 +21,13 @@ module.exports = function(grunt) {
     copy: {
       buildLibrary: {
         files: [
-          {src: "bin/ensemble.js", dest: "ensembletool/jslib/ensemble.js"},
-          {src: "bin/ensemble.js", dest: "sampleGame/ensemble.js"}
+          {src: "build/ensemble.js", dest: "ensembletool/jslib/ensemble.js"},
+          {src: "build/ensemble.js", dest: "sampleGame/ensemble.js"}
         ]
       },
       release: {
         files: [
-          {src: "bin/ensemble.js", dest: "release/ensemble.js"}
+          {src: "build/ensemble.js", dest: "release/ensemble.js"}
         ]
       }
     }
