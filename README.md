@@ -14,7 +14,7 @@ See the [wiki homepage](https://github.com/ensemble-engine/ensemble/wiki/) for t
 
 ## Ensemble Authoring Tool
 
-It can be difficult and tedious to author Ensemble domains (schema, trigger rules, volition rules, characters, history, and actions) in pure JSON without helper functions. The Ensemble Authoring Tool is a standalone desktop app for macOS and Windows designed to help authors develop and test their domains.
+It can be difficult and tedious to author Ensemble domains (schema, trigger rules, volition rules, characters, history, and actions) in pure JSON without helper functions. The Ensemble Authoring Tool is a standalone desktop app designed to help authors develop and test their domains.
 
 ![Screenshot of Ensemble authoring tool](https://raw.githubusercontent.com/ensemble-engine/ensemble/master/docs/toolscreenshot.png)
 
