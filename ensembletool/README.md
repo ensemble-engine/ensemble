@@ -1,4 +1,6 @@
-The tool can be built as a standalone app for Mac/Windows/Linux (via Node) with:
+# Ensemble Authoring Tool
+
+The Ensemble Authoring Tool can be built as a standalone app for Mac/Windows/Linux (via Node) with:
 
 	grunt build
 
@@ -8,4 +10,4 @@ It can also be run in a web browser for testing, but to do this you'll need a we
 
 You then need to open a web browser pointing at the right spot:
 
-	http://localhost:8000/ensembletool/ensembleconsole.html
+	http://localhost:8000/ensembletool/
