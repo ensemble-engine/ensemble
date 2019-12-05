@@ -168,10 +168,7 @@ var actionButtonClicked = function(){
 	// TODO Play some SICK ANIMATION (like a text bubble flashing!)
 
 	// CHANGE THE SOCIAL STATE -- social physics baby!!!
-	var effects = this.actionToPerform.effects; // should be an array of effects.
-	for(var i = 0; i < effects.length; i += 1){
-		ensemble.set(effects[i]);
-	}
+	ensemble.doAction(this.actionToPerform);
 
 	// RUN SOME TRIGGER RULES based on the new state!
 	ensemble.runTriggerRules(this.cast);
