@@ -39,6 +39,18 @@ var dumpActions = function(){
 	console.log("***END DUMPING ACTIONS***");
 }
 
+ /**
+ * @method  doAction
+ * @description Performs a boundAction by executing all of its effects.
+ * @public
+ * @param boundAction [The boundAction to execute, as returned by ensemble.getAction(..) or ensemble.getActions(..).]
+ */
+var doAction = function(boundAction){
+	for (let effect of boundAction.effects){
+		ensemble.set(effect);
+	}
+}
+
 /**
  * @method getStartSymbols 
  * @private
@@ -1140,7 +1152,9 @@ var actionLibraryInterface = {
 	getActions : getActions,
 	setActionById: setActionById,
 
-	dumpActions : dumpActions
+	dumpActions : dumpActions,
+
+	doAction: doAction
 };
 
 

@@ -99,6 +99,11 @@ actionLibraryUnitTests = (function() {
 		test.finish();
 	};
 
+	// TODO This test was written for the old version of actionLibrary.doAction(..),
+	// prior to the removal of this function by Ben and Aaron.
+	// Now that we've reimplemented doAction(..) with a simpler interface, this test no longer works correctly.
+	// As a result, we're going to leave it commented out for now.
+	// At some point, we should create a new test for the updated version of doAction(..).
 	var testDoAction = function(){
 		ensemble.loadBaseBlueprints(testSocial);
 		actionLibrary.clearActionLibrary();

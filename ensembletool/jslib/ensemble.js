@@ -2997,6 +2997,18 @@ var dumpActions = function(){
 	console.log("***END DUMPING ACTIONS***");
 }
 
+ /**
+ * @method  doAction
+ * @description Performs a boundAction by executing all of its effects.
+ * @public
+ * @param boundAction [The boundAction to execute, as returned by ensemble.getAction(..) or ensemble.getActions(..).]
+ */
+var doAction = function(boundAction){
+	for (let effect of boundAction.effects){
+		ensemble.set(effect);
+	}
+}
+
 /**
  * @method getStartSymbols 
  * @private
@@ -4098,7 +4110,9 @@ var actionLibraryInterface = {
 	getActions : getActions,
 	setActionById: setActionById,
 
-	dumpActions : dumpActions
+	dumpActions : dumpActions,
+
+	doAction: doAction
 };
 
 
@@ -5714,21 +5728,16 @@ var getIsCharacterEliminated  = function(characterName){
 	socialRecord.getIsCharacterEliminated(characterName);
 };
 
-//public facing function to make two characters perform an action.
-//TODO: doActon doesn't seem to exist anymore?
+//public facing function to perform a bound action.
 /**
  * @method doAction
  * @private
  * @memberOf ensemble
- * @description In theory this is a means to just run an action... though it seems as if the corresponding function in ActionLibrary.js hasn't actually been written? Very odd...
- * @param {String} actionName the name of the action to perform.
- * @param {String} initiator the name of the character to perform the action.
- * @param {String} responder The name of the character who will be the recipient of the action.
- * @param {Object} registeredVolitions A calculated volitions object (created after calling ensemble.calculateVolitions)
- * @example  ensemble.doAction("AskOut", "Bob", "Carol", volitionObject)
+ * @description Performs a bound action.
+ * @param boundAction The boundAction to perform, as returned by ensemble.getAction(..) or ensemble.getActions(..).
  */
-var doAction = function(actionName, initiator, responder, registeredVolitions){
-	actionLibrary.doAction(actionName, initiator, responder, registeredVolitions);
+var doAction = function(boundAction){
+	actionLibrary.doAction(boundAction);
 };
 
 
