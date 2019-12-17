@@ -2,8 +2,9 @@
 
 const fs = require("fs");
 
-const mainBuildPath = "build/ensemble.js";
-const testBuildPath = "build/ensemble-test.js";
+const buildDir = "build";
+const mainBuildPath = buildDir + "/ensemble.js";
+const testBuildPath = buildDir + "/ensemble-test.js";
 const version = process.argv[2];
 
 const modules = [
@@ -16,6 +17,11 @@ const modules = [
   {name: "validate",      path: "ensemble/Validate.js"},
   {name: "ensemble",      path: "ensemble/ensemble.js"}
 ];
+
+if (!fs.existsSync(buildDir)) {
+  console.log(`Creating directory ${buildDir}/`);
+  fs.mkdirSync(buildDir);
+}
 
 for (let buildPath of [mainBuildPath, testBuildPath]) {
   console.log(`Building ${buildPath}...`);
