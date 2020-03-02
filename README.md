@@ -1,3 +1,8 @@
+# Test  
+
+Sandbox for playing with Ensemble hosted at https://github.com/ensemble-engine/ensemble
+
+
 # Ensemble
 
 A framework for creating socially aware characters. An evolution of the Comme il Faut AI system, which powered the game Prom Week.
