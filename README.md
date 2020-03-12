@@ -1,7 +1,8 @@
-# Test  
+
+
+# Test Code [![Run on Repl.it](https://repl.it/badge/github/Mirv/ensemble)](https://repl.it/github/Mirv/ensemble)
 
 Sandbox for playing with Ensemble hosted at https://github.com/ensemble-engine/ensemble
-
 
 # Ensemble
 
